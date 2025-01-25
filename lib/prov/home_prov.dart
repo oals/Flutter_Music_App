@@ -1,0 +1,77 @@
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:skrrskrr/model/home/home_model.dart';
+import 'package:skrrskrr/model/member/member_model.dart';
+import 'package:skrrskrr/model/playList/play_list_model.dart';
+import 'package:skrrskrr/model/track/track.dart';
+import 'package:skrrskrr/utils/helpers.dart';
+
+class HomeProv extends ChangeNotifier {
+  HomeModel model = HomeModel();
+
+
+
+  void notify() {
+    notifyListeners();
+  }
+
+  Future<bool> firstLoad() async {
+
+    final memberId = await Helpers.getMemberId();
+
+    model.homeCategory = 0;
+    print('카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요');
+
+    final url = 'firstLoad?memberId=${memberId}';
+
+    try {
+
+      dynamic response = await Helpers.apiCall(url,method: 'GET');
+
+      if (response != null) {
+
+        model.trendingTrackList = [];
+        model.randomMemberList = [];
+        model.popularPlayList = [];
+        model.followMemberTrackList = [];
+        model.likedTrackList = [];
+
+        for(var item in response['trendingTrackList']){
+          model.trendingTrackList.add(Track.fromJson(item));
+        }
+        for(var item in response['randomMemberList']){
+          model.randomMemberList.add(MemberModel.fromJson(item));
+        }
+        for(var item in response['popularPlayList']){
+          model.popularPlayList.add(PlayListModel.fromJson(item));
+        }
+        for(var item in response['followMemberTrackList']){
+          model.followMemberTrackList.add(Track.fromJson(item));
+        }
+        for(var item in response['likedTrackList']){
+          model.likedTrackList.add(Track.fromJson(item));
+        }
+
+        Helpers.setNotificationIsView(response['notificationIsView']);
+
+
+      } else {
+        // 오류 처리
+        throw Exception('Failed to load data');
+
+      }
+    } catch (error) {
+      // 오류 처리
+      print('Error: $error');
+      return false;
+    }
+
+    return true;
+  }
+
+}
