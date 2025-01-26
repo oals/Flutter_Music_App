@@ -8,7 +8,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/main.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
-import 'package:skrrskrr/prov/user_prov.dart';
+import 'package:skrrskrr/prov/member_prov.dart';
 
 import 'package:skrrskrr/screen/appScreen/comn/login.dart';
 
@@ -37,16 +37,16 @@ class _SplashScreenState extends State<SplashScreen> {
       }
 
       AuthProv authProv = Provider.of<AuthProv>(context, listen: false);
-      UserProv userProv = Provider.of<UserProv>(context, listen: false);
+      MemberProv memberProv = Provider.of<MemberProv>(context, listen: false);
 
 
       Future<void> _tryRefreshToken(User user) async {
         try {
           await user.getIdToken(true); // 강제로 토큰 갱신
-          bool isAuth = await authProv.fnAuthing(user);
+          bool isAuth = await authProv.fnFireBaseAuthing(user);
           if (isAuth) {
             // 인증 성공
-            await userProv.getMemberInfo(user.email!);
+            await memberProv.getMemberInfo(user.email!);
             GoRouter.of(context).pushReplacement('/');
           } else {
             // 인증 실패
@@ -60,10 +60,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
       Future<void> _handleAuth(User user) async {
-        bool isAuth = await authProv.fnAuthing(user);
+        bool isAuth = await authProv.fnFireBaseAuthing(user);
         if (isAuth) {
           // 인증이 되었을 때
-          await userProv.getMemberInfo(user.email!);
+          await memberProv.getMemberInfo(user.email!);
           GoRouter.of(context).pushReplacement('/');
         } else {
           // 인증 실패

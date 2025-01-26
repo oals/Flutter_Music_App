@@ -6,7 +6,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/main.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
-import 'package:skrrskrr/prov/user_prov.dart';
+import 'package:skrrskrr/prov/member_prov.dart';
 
 import 'package:skrrskrr/fcm/auth_service.dart';
 
@@ -22,7 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserProv userProv = Provider.of<UserProv>(context);
+    MemberProv memberProv = Provider.of<MemberProv>(context);
+    AuthProv authProv = Provider.of<AuthProv>(context);
 
     return Scaffold(
       body: Container(
@@ -75,7 +76,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         User? user = await _authService.signInWithGoogle();
                         if (user != null) {
-                          await userProv.getMemberInfo(user.email!);
+                          await authProv.fnJwtAuthing(user);
+                          await memberProv.getMemberInfo(user.email!);
                           GoRouter.of(context).push('/');
                         } else {
                           print('로그인 실패');

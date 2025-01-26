@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
-import 'package:skrrskrr/prov/user_prov.dart';
+import 'package:skrrskrr/prov/member_prov.dart';
 
 import 'package:skrrskrr/screen/appScreen/comn/login.dart';
 import 'package:skrrskrr/screen/appScreen/comn/splash.dart';
@@ -44,7 +44,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
     bool _isOn = false; // 스위치 상태 변수
 
-    UserProv userProv = Provider.of<UserProv>(context);
+    MemberProv memberProv = Provider.of<MemberProv>(context);
     ImageProv imageProv = Provider.of<ImageProv>(context);
     AuthProv authProv = Provider.of<AuthProv>(context);
 

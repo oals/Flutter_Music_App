@@ -11,7 +11,7 @@ import 'package:skrrskrr/model/playList/play_list_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
-class UserProv with ChangeNotifier {
+class MemberProv with ChangeNotifier {
 
   MemberModel model = MemberModel();
 

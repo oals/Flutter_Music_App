@@ -20,7 +20,7 @@ import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
-import 'package:skrrskrr/prov/user_prov.dart';
+import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/router/app_router.dart';
 
 
@@ -40,7 +40,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => HomeProv()),
         ChangeNotifierProvider(create: (context) => SearchProv()),
         ChangeNotifierProvider(create: (context) => AudioPlayerManager()),
-        ChangeNotifierProvider(create: (context) => UserProv()),
+        ChangeNotifierProvider(create: (context) => MemberProv()),
         ChangeNotifierProvider(create: (context) => TrackProv()),
         ChangeNotifierProvider(create: (context) => PlayListProv()),
         ChangeNotifierProvider(create: (context) => ImageProv()),

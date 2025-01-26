@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/comn/upload.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
-import 'package:skrrskrr/prov/user_prov.dart';
+import 'package:skrrskrr/prov/member_prov.dart';
 
 import 'package:skrrskrr/screen/modal/title_info_edit.dart';
 import 'package:skrrskrr/screen/appScreen/playlist/play_list.dart';
@@ -57,7 +57,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
   @override
   Widget build(BuildContext context) {
 
-    UserProv userProv = Provider.of<UserProv>(context);
+    MemberProv memberProv = Provider.of<MemberProv>(context);
     ImageProv imageProv = Provider.of<ImageProv>(context);
 
     Future<void> _pickImage(MemberModel memberModel) async {
@@ -90,11 +90,11 @@ class _UserPageScreenState extends State<UserPageScreen> {
     void setNewTitle(int cd, String newTitle) async {
 
       if (cd == 1) {
-        await userProv.fnMemberInfoUpdate(memberNickName: newTitle);
-        userProv.model.memberNickName = newTitle;
+        await memberProv.fnMemberInfoUpdate(memberNickName: newTitle);
+        memberProv.model.memberNickName = newTitle;
       } else if (cd == 2) {
-        await userProv.fnMemberInfoUpdate(memberInfo: newTitle);
-        userProv.model.memberInfo = newTitle;
+        await memberProv.fnMemberInfoUpdate(memberInfo: newTitle);
+        memberProv.model.memberInfo = newTitle;
       }
       setState(() {});
 
@@ -117,13 +117,13 @@ class _UserPageScreenState extends State<UserPageScreen> {
           width: 100.w,
           height: 195.h,
           child: FutureBuilder<bool>(
-            future: !isLoading ? userProv.getMemberPageInfo(widget.memberId) : null,
+            future: !isLoading ? memberProv.getMemberPageInfo(widget.memberId) : null,
             // 비동기 함수 호출
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator();
               } else {
-                MemberModel memberModel = userProv.model;
+                MemberModel memberModel = memberProv.model;
 
                 if (memberModel.memberId.toString() == memberId) {
                   isAuth = true;

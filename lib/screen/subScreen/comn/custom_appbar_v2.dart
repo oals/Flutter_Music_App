@@ -6,7 +6,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
-import 'package:skrrskrr/prov/user_prov.dart';
+import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class CustomAppbarV2 extends StatefulWidget implements PreferredSizeWidget {
