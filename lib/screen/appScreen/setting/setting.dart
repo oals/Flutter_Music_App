@@ -51,6 +51,7 @@ class _SettingScreenState extends State<SettingScreen> {
     List<String> cateogryList = [
       '내 정보',
       '관심 트랙',
+      '앨범',
       '플레이리스트',
       '업로드한 트랙',
       '팔로잉',
@@ -68,7 +69,7 @@ class _SettingScreenState extends State<SettingScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
 
-            for (int i = 0; i < 6; i++) ...[
+            for (int i = 0; i < 7; i++) ...[
               Container(
                 padding: EdgeInsets.only(bottom: 10, top: 10),
                 child: GestureDetector(
@@ -79,17 +80,17 @@ class _SettingScreenState extends State<SettingScreen> {
                       } else if (i == 1) {
                         GoRouter.of(context).push('/adminLikeTrack/${adminId}');
                       } else if (i == 2) {
-                        GoRouter.of(context).push('/adminPlayList/${adminId}');
+                        GoRouter.of(context).push('/adminAlbum/${adminId}');
                       } else if (i == 3) {
-                        GoRouter.of(context).push('/adminUploadTrack/${adminId}');
+                        GoRouter.of(context).push('/adminPlayList/${adminId}');
                       } else if (i == 4) {
-                        GoRouter.of(context).push('/adminFollow/${adminId}');
+                        GoRouter.of(context).push('/adminUploadTrack/${adminId}');
                       } else if (i == 5) {
+                        GoRouter.of(context).push('/adminFollow/${adminId}');
+                      } else if (i == 6) {
                         print('로그아웃 클릭');
-
                         await authProv.logout();
                         GoRouter.of(context).push('/splash');
-
                       }
                     },
                     child: Row(
@@ -113,7 +114,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       ],
                     )),
               ),
-              if (i != 5)
+              if (i != 6)
                 Container(
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(

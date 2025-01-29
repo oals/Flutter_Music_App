@@ -81,6 +81,7 @@ class _FollowScreenState extends State<FollowScreen>
                         isEditBtn: false,
                         isAddPlayListBtn : false,
                         isAddTrackBtn : false,
+                        isAddAlbumBtn : false,
                       ),
                     ),
                     SizedBox(height: 10,),

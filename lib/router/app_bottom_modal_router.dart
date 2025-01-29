@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/screen/modal/child_comment.dart';
-import 'package:skrrskrr/screen/modal/comment.dart';
-import 'package:skrrskrr/screen/modal/my_play_list_modal.dart';
-import 'package:skrrskrr/screen/modal/new_play_list.dart';
-import 'package:skrrskrr/screen/modal/track_more_info.dart';
-import 'package:skrrskrr/screen/appScreen/track/upload.dart';
+import 'package:skrrskrr/screen/modal/comment/child_comment.dart';
+import 'package:skrrskrr/screen/modal/comment/comment.dart';
+import 'package:skrrskrr/screen/modal/playList/my_play_list_modal.dart';
+import 'package:skrrskrr/screen/modal/playList/new_play_list.dart';
+import 'package:skrrskrr/screen/modal/track/track_more_info.dart';
+import 'package:skrrskrr/screen/appScreen/upload/upload.dart';
 
 // AppBottomRouter 클래스 정의
 class AppBottomModalRouter {
@@ -18,6 +18,7 @@ class AppBottomModalRouter {
         int? trackId,
         int? commentId,
         Track? track,
+        bool? isAlbum,
       }) async {
 
     final Map<int, Future<dynamic> Function()> modalWidgets = {
@@ -26,11 +27,12 @@ class AppBottomModalRouter {
       },
       1: () async {
         // 파일 선택 처리
+        // 파일 선택 처리
         FilePickerResult? selectedFile = await FilePicker.platform.pickFiles(type: FileType.audio);
         if (selectedFile != null && selectedFile.files.isNotEmpty) {
           return Container(
             height: 100.h,
-            child: UploadScreen(uploadTrackFile: selectedFile),
+            child: UploadScreen(uploadTrackFile: selectedFile,isAlbum: false,),
           );
         } else {
           print("파일이 선택되지 않았습니다.");
@@ -46,6 +48,13 @@ class AppBottomModalRouter {
       4: () async {
         return ChildCommentScreen(trackId: trackId, commentId: commentId);
       },
+      5: () async {
+        return  Container(
+          height: 100.h,
+          child: UploadScreen(uploadTrackFile: null,isAlbum : isAlbum!),
+        );
+      }
+
     };
 
     // Modal 위젯이 존재하면 showModalBottomSheet 호출

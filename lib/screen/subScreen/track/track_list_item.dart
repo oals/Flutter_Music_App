@@ -122,18 +122,17 @@ class _TrackListItemState extends State<TrackListItem> {
                           fontSize: 14,
                         ),
                       ),
-                      if(widget.trackItem.trackTime != null)
-                        Text(
-                          '${widget.trackItem.trackTime}',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
-                        ),
-
-
                       Row(
                         children: [
+                          if(widget.trackItem.trackTime != null)
+                            Text(
+                              '${widget.trackItem.trackTime}',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          // SizedBox(width: 5,),
                           // Text(
                           //   Helpers.getCategory(widget.trackItem.trackCategoryId),
                           //   style: TextStyle(

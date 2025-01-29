@@ -18,7 +18,7 @@ import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
-import 'package:skrrskrr/screen/appScreen/track/upload.dart';
+import 'package:skrrskrr/screen/appScreen/upload/upload.dart';
 import 'package:skrrskrr/screen/appScreen/member/user_page.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 

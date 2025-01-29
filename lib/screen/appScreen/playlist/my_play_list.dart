@@ -37,7 +37,7 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
 
     return Scaffold(
       body: FutureBuilder<bool>(
-        future: !isLoading ? playListProv.getPlayList(0,0) : null, // 비동기 메소드 호출
+        future: !isLoading ? playListProv.getPlayList(0,0,false) : null, // 비동기 메소드 호출
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -70,7 +70,7 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                         });
                         listIndex = listIndex + 20;
                         print('더가져오기');
-                        await playListProv.getPlayList(0,listIndex);
+                        await playListProv.getPlayList(0,listIndex,false);
                         await Future.delayed(Duration(seconds: 3));
                         setState(() {
                           isApiCall = false;
@@ -94,7 +94,6 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           SizedBox(
                             height: 50,
                           ),
@@ -108,6 +107,7 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                               isEditBtn: false,
                               isAddPlayListBtn : true,
                               isAddTrackBtn : false,
+                              isAddAlbumBtn : false,
                             ),
                           ),
                           SizedBox(

@@ -88,12 +88,12 @@ class PlayListProv extends ChangeNotifier {
     return true;
   }
 
-  Future<bool> getPlayList(int trackId,int listIndex) async {
+  Future<bool> getPlayList(int trackId,int listIndex,bool isAlbum) async {
     print('getPlaylist 호출1');
     print(trackId);
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'getPlayList?memberId=${memberId}&trackId=${trackId}&listIndex=${listIndex}';
+    final url = 'getPlayList?memberId=${memberId}&trackId=${trackId}&listIndex=${listIndex}&isAlbum=${isAlbum}';
 
     try {
       final response = await Helpers.apiCall(
@@ -204,7 +204,7 @@ class PlayListProv extends ChangeNotifier {
     return true;
   }
 
-  Future<bool> setNewPlaylist(String playListNm, bool isPlayListPrivacy) async {
+  Future<bool> setNewPlaylist(String playListNm, bool isPlayListPrivacy,bool isAlbum) async {
 
     final String memberId = await Helpers.getMemberId();
     final url = 'newPlayList';
@@ -222,12 +222,13 @@ class PlayListProv extends ChangeNotifier {
               'memberId': memberId,
               'playListNm': playListNm,
               'isPlayListPrivacy': isPlayListPrivacy,
+              'isAlbum' : isAlbum,
             }
           );
 
       if ((response != null)) {
         playlistList = PlaylistList();
-        await getPlayList(0, 0);
+        await getPlayList(0, 0,false);
         notify();
       } else {
         // 오류 처리

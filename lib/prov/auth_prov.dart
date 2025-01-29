@@ -40,20 +40,17 @@ class AuthProv with ChangeNotifier{
           'Content-Type': 'application/json',
         },
         body: {
-          'uid' : user.uid,
+          'uid' : user.uid.toString(),
           'email' : user.email
         }
       );
 
       if (response != null) {
         if(response['status'] == '200'){
-          print(response);
 
-          String jwtToken = response['jwtToken'];
-          String refreshToken = response['refreshToken'];
           final storage = FlutterSecureStorage();
-          await storage.write(key: "Jwt_token", value: jwtToken);
-          await storage.write(key: "Refresh_token", value: refreshToken);
+          await storage.write(key: "jwt_token", value: response['jwtToken']);
+          await storage.write(key: "refresh_token", value: response['refreshToken']);
 
           return true;
         } else {
@@ -69,12 +66,11 @@ class AuthProv with ChangeNotifier{
   }
 
   // jwt token 검증
-  Future<bool> fnJwtAuthing(User user) async {
+  Future<bool> fnJwtAuthing(String? jwtToken) async {
 
     print('fnJwtAuthing');
     final url = 'jwtAuthing';
-    final storage = FlutterSecureStorage();
-    final jwt_Token = await storage.read(key: "Jwt_Token");
+
 
     try {
       final response = await Helpers.apiCall(
@@ -82,28 +78,59 @@ class AuthProv with ChangeNotifier{
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $jwt_Token',
+            'Authorization': 'Bearer $jwtToken',
           },
-
       );
 
       if (response != null) {
         if(response['status'] == '200'){
-          print(response);
-
-          String jwtToken = response['jwt_token'];
-          final storage = FlutterSecureStorage();
-          await storage.write(key: "Jwt_token", value: jwtToken);
-
           return true;
-        } else {
-          return false;
         }
       } else {
         // 오류 처리
         return false;
       }
+      return false;
     } catch (error) {
+      return false;
+    }
+  }
+
+
+  // jwt refresh token 검증
+  Future<bool> fnRefreshJwtAuthing(String? refreshJwtToken) async {
+
+    print('fnRefreshJwtAuthing');
+    final url = 'jwtAuthing';
+    final refresh_jwt_Token = refreshJwtToken;
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $refresh_jwt_Token',
+        },
+
+      );
+
+      if (response != null) {
+        print(response);
+
+        if(response['status'] == '200'){
+          String newJwtToken = response['new_jwt_token'];
+          final storage = FlutterSecureStorage();
+          await storage.write(key: "jwt_token", value: newJwtToken);
+          return true;
+        }
+      } else {
+        // 오류 처리
+        return false;
+      }
+      return false;
+    } catch (error) {
+      print(error);
       return false;
     }
   }
@@ -155,7 +182,8 @@ class AuthProv with ChangeNotifier{
     await prefs.clear();
 
     // 저장된 JWT 토큰 삭제
-    await storage.delete(key: "Jwt_token");
+    await storage.delete(key: "jwt_token");
+    await storage.delete(key: "refresh_token");
 
     final GoogleSignIn _googleSignIn = GoogleSignIn();
     await _googleSignIn.signOut();

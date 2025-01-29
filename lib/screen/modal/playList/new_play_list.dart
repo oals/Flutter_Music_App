@@ -30,7 +30,7 @@ class _NewPlayListScreenState extends State<NewPlayListScreen> {
 
     return Container(
       width: 100.w,
-      height: 95.h,
+      height: 75.h,
       color: Colors.black,
       padding: EdgeInsets.all(16),
       child: Column(
@@ -91,7 +91,7 @@ class _NewPlayListScreenState extends State<NewPlayListScreen> {
               // 플레이리스트 생성 메서드 호출
 
               playListProv.setNewPlaylist(
-                  textController.text, isAlbumPrivacy);
+                  textController.text, isAlbumPrivacy,false);
 
               Navigator.pop(context); // 바텀 시트 닫기
             },

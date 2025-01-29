@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -38,16 +39,37 @@ class _SplashScreenState extends State<SplashScreen> {
 
       AuthProv authProv = Provider.of<AuthProv>(context, listen: false);
       MemberProv memberProv = Provider.of<MemberProv>(context, listen: false);
+      final storage = FlutterSecureStorage();
 
+      Future<void> _jwtAuthing() async {
+        final jwt_Token = await storage.read(key: "jwt_token");
+        bool isJwtAuth = await authProv.fnJwtAuthing(jwt_Token);
+        if (isJwtAuth) {
+          // 인증 성공
+          await memberProv.getMemberInfo(user.email!);
+          GoRouter.of(context).pushReplacement('/');
+        } else {
+          // jwt 토큰이 만료된 경우
+          final refresh_token = await storage.read(key: "refresh_token");
+          bool isRefreshJwtAuth = await authProv.fnRefreshJwtAuthing(refresh_token);
+          if (isRefreshJwtAuth){
+            // 새 jwt 토큰 발급 완료
+            await memberProv.getMemberInfo(user.email!);
+            GoRouter.of(context).pushReplacement('/');
+          } else {
+            // 인증 실패
+            GoRouter.of(context).pushReplacement('/login');
+          }
+        }
+      }
 
       Future<void> _tryRefreshToken(User user) async {
         try {
           await user.getIdToken(true); // 강제로 토큰 갱신
-          bool isAuth = await authProv.fnFireBaseAuthing(user);
-          if (isAuth) {
-            // 인증 성공
-            await memberProv.getMemberInfo(user.email!);
-            GoRouter.of(context).pushReplacement('/');
+          bool isFireBaseAuth = await authProv.fnFireBaseAuthing(user);
+
+          if (isFireBaseAuth) {
+            _jwtAuthing();
           } else {
             // 인증 실패
             GoRouter.of(context).pushReplacement('/login');
@@ -60,11 +82,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
       Future<void> _handleAuth(User user) async {
-        bool isAuth = await authProv.fnFireBaseAuthing(user);
-        if (isAuth) {
-          // 인증이 되었을 때
-          await memberProv.getMemberInfo(user.email!);
-          GoRouter.of(context).pushReplacement('/');
+        bool isFireBaseAuth = await authProv.fnFireBaseAuthing(user);
+        if (isFireBaseAuth) {
+          _jwtAuthing();
         } else {
           // 인증 실패
           await _tryRefreshToken(user);

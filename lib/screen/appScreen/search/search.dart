@@ -5,9 +5,9 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/search/search_history_model.dart';
 import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
-import 'package:skrrskrr/screen/appScreen/search/search_find.dart';
-import 'package:skrrskrr/screen/appScreen/search/search_main.dart';
-import 'package:skrrskrr/screen/appScreen/search/search_result.dart';
+import 'package:skrrskrr/screen/subScreen/search/search_find.dart';
+import 'package:skrrskrr/screen/subScreen/search/search_main.dart';
+import 'package:skrrskrr/screen/subScreen/search/search_result.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({

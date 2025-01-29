@@ -98,11 +98,12 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                         fnBackBtnCallBack: () => {Navigator.pop(context)},
                         fnUpdtBtnCallBack:()=>{},
 
-                        title: "관심 트랙",
+                        title: "내 트랙",
                         isNotification : false,
                         isEditBtn: false,
                         isAddPlayListBtn : false,
                         isAddTrackBtn : true,
+                        isAddAlbumBtn : false,
                       ),
                     ),
                     SizedBox(height: 25,),

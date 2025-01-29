@@ -16,6 +16,7 @@ class CustomAppbar extends StatefulWidget {
     required this.isEditBtn,
     required this.isAddPlayListBtn,
     required this.isAddTrackBtn,
+    required this.isAddAlbumBtn,
   });
 
   final Function fnBackBtnCallBack;
@@ -26,6 +27,7 @@ class CustomAppbar extends StatefulWidget {
   final bool isEditBtn;
   final bool isAddPlayListBtn;
   final bool isAddTrackBtn;
+  final bool isAddAlbumBtn;
 
   @override
   State<CustomAppbar> createState() => _CustomAppbarState();
@@ -90,11 +92,23 @@ class _CustomAppbarState extends State<CustomAppbar> {
                 ),
               ),
             ],
+            if (widget.isAddAlbumBtn) ...[
+              GestureDetector(
+                onTap: () {
+                  AppBottomModalRouter.fnModalRouter(context, 5,isAlbum: widget.isAddAlbumBtn);
+                },
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
+            ],
 
             if (widget.isAddTrackBtn) ...[
               GestureDetector(
                 onTap: () {
-                  AppBottomModalRouter.fnModalRouter(context,1);
+                  AppBottomModalRouter.fnModalRouter(context,1,isAlbum: widget.isAddAlbumBtn);
                 },
                 child: Icon(
                   Icons.add,

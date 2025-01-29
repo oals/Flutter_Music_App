@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:skrrskrr/screen/appScreen/album/my_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/feed/Feed.dart';
 import 'package:skrrskrr/screen/appScreen/category/category.dart';
 import 'package:skrrskrr/screen/appScreen/follow/follow.dart';
@@ -119,6 +120,13 @@ final router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/adminAlbum/:adminId',
+      builder: (context, state) {
+        final adminId = int.parse(state.pathParameters['adminId']!);
+        return AppScreen(child: MyAlbumScreen(adminId: adminId));
+      },
+    ),
+    GoRoute(
       path: '/playList/:playListId',
       builder: (context, state) {
         final playListId = int.parse(state.pathParameters['playListId']!);
@@ -228,7 +236,7 @@ class _AppScreenState extends State<AppScreen> {
               );
             },
           ),
-          if (_currentIndex != 2 && showBottomNav)
+          if (showBottomNav)
             Positioned(
               left: 0,
               right: 0,

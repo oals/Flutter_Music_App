@@ -9,9 +9,11 @@ part of 'comment_model.dart';
 CommentModel _$CommentModelFromJson(Map<String, dynamic> json) => CommentModel()
   ..commentId = (json['commentId'] as num?)?.toInt()
   ..memberId = (json['memberId'] as num?)?.toInt()
+  ..parentCommentMemberId = (json['parentCommentMemberId'] as num?)?.toInt()
   ..trackId = (json['trackId'] as num?)?.toInt()
   ..memberImagePath = json['memberImagePath'] as String?
   ..memberNickName = json['memberNickName'] as String?
+  ..parentCommentMemberNickName = json['parentCommentMemberNickName'] as String?
   ..commentLikeStatus = json['commentLikeStatus'] as bool?
   ..commentLikeCnt = (json['commentLikeCnt'] as num?)?.toInt()
   ..commentText = json['commentText'] as String?
@@ -26,9 +28,11 @@ Map<String, dynamic> _$CommentModelToJson(CommentModel instance) =>
     <String, dynamic>{
       'commentId': instance.commentId,
       'memberId': instance.memberId,
+      'parentCommentMemberId': instance.parentCommentMemberId,
       'trackId': instance.trackId,
       'memberImagePath': instance.memberImagePath,
       'memberNickName': instance.memberNickName,
+      'parentCommentMemberNickName': instance.parentCommentMemberNickName,
       'commentLikeStatus': instance.commentLikeStatus,
       'commentLikeCnt': instance.commentLikeCnt,
       'commentText': instance.commentText,

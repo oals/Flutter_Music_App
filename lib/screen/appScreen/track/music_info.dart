@@ -17,9 +17,10 @@ import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 
-import 'package:skrrskrr/screen/modal/comment.dart';
-import 'package:skrrskrr/screen/modal/track_info_edit.dart';
-import 'package:skrrskrr/screen/modal/track_like_btn.dart';
+import 'package:skrrskrr/screen/modal/comment/comment.dart';
+import 'package:skrrskrr/screen/modal/track/track_info_edit.dart';
+import 'package:skrrskrr/screen/modal/track/track_like_btn.dart';
+
 import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
@@ -218,6 +219,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                    isEditBtn: isAuth,
                                   isAddPlayListBtn : false,
                                   isAddTrackBtn : false,
+                                  isAddAlbumBtn : false,
                                 )
                             ),
 

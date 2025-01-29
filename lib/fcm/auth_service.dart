@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:skrrskrr/utils/helpers.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -22,9 +23,38 @@ class AuthService {
 
     ///위 자격 증명을 받아 사용자가 올바른 구글 계정으로
     ///로그인한 것을 확인 및 로그인 정보를 담은 UserCredential 객체를 반환
+    /// 구글 id token을 통해 파이어베이스 id token 얻음
     UserCredential userCredential = await _auth.signInWithCredential(credential);
 
-    return userCredential.user;
+
+    //idToken 검증 과정 위해 서버로 전송
+    try {
+      final response = await Helpers.apiCall(
+          'fireBaseAuthing',
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ${await userCredential.user?.getIdToken()}',
+          },
+
+      );
+
+      if (response != null) {
+        if(response['status'] == '200'){
+          return userCredential.user;
+        } else {
+          return null;
+        }
+      } else {
+        // 오류 처리
+        return null;
+      }
+    } catch (error) {
+      return null;
+    }
+
+
+
   }
 
   Future<void> signOut() async {

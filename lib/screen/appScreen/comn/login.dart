@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -76,11 +77,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         User? user = await _authService.signInWithGoogle();
                         if (user != null) {
-                          await authProv.fnJwtAuthing(user);
-                          await memberProv.getMemberInfo(user.email!);
-                          GoRouter.of(context).push('/');
+                          bool isCreateJwt = await authProv.fnGetJwtToken(user);
+                          if(isCreateJwt) {
+                            await memberProv.getMemberInfo(user.email!);
+                            GoRouter.of(context).push('/');
+                          } else {
+                            Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요..');
+                        }
                         } else {
-                          print('로그인 실패');
+                          Fluttertoast.showToast(msg: '로그인 실패');
                         }
                       },
                       child: Container(

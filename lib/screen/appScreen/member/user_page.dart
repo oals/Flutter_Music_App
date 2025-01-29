@@ -14,7 +14,7 @@ import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 
-import 'package:skrrskrr/screen/modal/title_info_edit.dart';
+import 'package:skrrskrr/screen/modal/track/title_info_edit.dart';
 import 'package:skrrskrr/screen/appScreen/playlist/play_list.dart';
 import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
@@ -208,6 +208,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                         isEditBtn: isAuth,
                         isAddPlayListBtn : false,
                         isAddTrackBtn : false,
+                        isAddAlbumBtn : false,
                       ),
                     ),
                     Positioned(

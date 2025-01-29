@@ -38,6 +38,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 isEditBtn: false,
                 isAddPlayListBtn : false,
                 isAddTrackBtn : false,
+                isAddAlbumBtn : false,
               ),
               SizedBox(
                 height: 25,

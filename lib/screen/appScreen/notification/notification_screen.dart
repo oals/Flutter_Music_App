@@ -12,10 +12,7 @@ import 'package:skrrskrr/utils/helpers.dart';
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({
     super.key,
-    
   });
-
-
 
   @override
   State<NotificationScreen> createState() => _NotificationScreenState();

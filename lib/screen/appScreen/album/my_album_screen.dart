@@ -1,42 +1,42 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/model/track/track_list.dart';
+import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
-import 'package:skrrskrr/prov/track_prov.dart';
+import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 
-class MyLikeTrackScreen extends StatefulWidget {
-  const MyLikeTrackScreen({
+class MyAlbumScreen extends StatefulWidget {
+  const MyAlbumScreen({
     super.key,
-
+    required this.adminId,
   });
 
+  final int? adminId;
 
   @override
-  State<MyLikeTrackScreen> createState() => _MyLikeTrackScreenState();
+  State<MyAlbumScreen> createState() => _MyAlbumScreenState();
 }
 
-class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
-  late TrackList trackModel;
+class _MyAlbumScreenState extends State<MyAlbumScreen> {
+  late PlaylistList playListModel;
+
   bool isLoading = false;
   bool isApiCall = false;
   int listIndex = 0;
 
+
+
   @override
   Widget build(BuildContext context) {
-    TrackProv trackProv = Provider.of<TrackProv>(context);
+    PlayListProv playListProv = Provider.of<PlayListProv>(context);
+    ImageProv imageProv = Provider.of<ImageProv>(context);
+
 
     return Scaffold(
       body: FutureBuilder<bool>(
-        future: !isLoading ? trackProv.getLikeTrack(0) : null, // 비동기 메소드 호출
+        future: !isLoading ? playListProv.getPlayList(0,0,true) : null, // 비동기 메소드 호출
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -46,26 +46,30 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
             return Center(child: Text('데이터가 없습니다.'));
           }
 
-          trackModel = trackProv.trackModel;
+          playListModel = playListProv.playlistList;
           isLoading = true;
 
+
           return Container(
-            color: Color(0xff1c1c1c),
             height: 100.h,
+            color: Color(0xff1c1c1c),
             child: NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if (trackModel.totalCount! > trackModel.trackList.length) {
+                if (playListModel.totalCount! > playListModel.playList.length) {
+                  print('스크롤1');
                   // 스크롤이 끝에 도달했을 때
                   if (notification is ScrollUpdateNotification &&
                       notification.metrics.pixels ==
                           notification.metrics.maxScrollExtent) {
+                    print('스크롤2');
                     if (!isApiCall) {
                       Future(() async {
                         setState(() {
                           isApiCall = true;
                         });
                         listIndex = listIndex + 20;
-                        await trackProv.getLikeTrack(listIndex);
+                        print('더가져오기');
+                        await playListProv.getPlayList(0,listIndex,true);
                         await Future.delayed(Duration(seconds: 3));
                         setState(() {
                           isApiCall = false;
@@ -79,53 +83,48 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                 }
                 return false;
               },
-
-
               child: SingleChildScrollView(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 50,
-                    ),
+
                     Container(
-                      padding: EdgeInsets.only(left: 15,right: 15,top: 15),
-                      child: CustomAppbar(
-                        fnBackBtnCallBack: () => {Navigator.pop(context)},
-                        fnUpdtBtnCallBack:()=>{},
-                        
-                        title: "관심 트랙",
-                        isNotification : false,
-                        isEditBtn: false,
-                        isAddPlayListBtn : false,
-                        isAddTrackBtn : false,
-                        isAddAlbumBtn : false,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 50,
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 15,right: 15,top: 15),
+                            child: CustomAppbar(
+                              fnBackBtnCallBack: () => {Navigator.pop(context)},
+                              fnUpdtBtnCallBack:()=>{},
+                              title: "내 앨범",
+                              isNotification : false,
+                              isEditBtn: false,
+                              isAddPlayListBtn : false,
+                              isAddAlbumBtn : true,
+                              isAddTrackBtn : false,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+
+                          PlayListSquareItem(
+                            playList: playListModel.playList,
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-
-
-                    Wrap(
-                      spacing: 30.0,
-                      runSpacing: 20.0,
-                      alignment: WrapAlignment.spaceBetween,
-                      children: trackModel.trackList.map((item) {
-                        return TrackSquareItem(
-                          track: item,
-                          
-                          bgColor: Colors.red,
-                        );
-                      }).toList(),
-                    ),
-                    SizedBox(height: 10,),
-
                     if (isApiCall)
                       CircularProgressIndicator(
                         color: Color(0xffff0000),
                       ),
                     SizedBox(
-                      height: 80,
+                      height: 90,
                     ),
                   ],
                 ),
