@@ -102,6 +102,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
         child: Container(
           color: Color(0xff000000),
           width: 100.w,
+          height: 140.h,
           child: FutureBuilder<bool>(
             future: !isLoading ? trackProv.getTrackInfo(widget.trackId) : null,
             // 비동기 메소드 호출
@@ -115,7 +116,6 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
               }
 
               Track trackInfoModel = trackProv.trackInfoModel;
-              List<Track> recommendTrackModel = trackProv.trackModel.trackList;
 
               isLoading = true;
 
@@ -137,9 +137,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    print(isAuth);
                                     if (isAuth) {
-                                      print('트랙 이미지 변경');
                                       _pickImage(trackInfoModel);
                                     }
                                   },
@@ -204,9 +202,9 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                             ),
 
                             Positioned(
-                                top: 50,
-                                left: 10,
-                                right : 10,
+                                top: 0,
+                                left: 0,
+                                right : 0,
                                 child: CustomAppbar(
                                     fnBackBtnCallBack: ()=>{Navigator.pop(context)},
                                     fnUpdtBtnCallBack:()=>{
@@ -532,9 +530,9 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
-                                          for(int i = 0; i< recommendTrackModel.length; i++)...[
+                                          for(int i = 0; i< trackInfoModel.recommendTrackList.length; i++)...[
                                             TrackSquareItem(
-                                              track: recommendTrackModel[i],
+                                              track: trackInfoModel.recommendTrackList[i],
 
                                               bgColor: Colors.lightBlueAccent,
                                             ),

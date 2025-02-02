@@ -27,9 +27,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 40,
-              ),
               CustomAppbar(
                 fnBackBtnCallBack: () => {Navigator.pop(context)},
                 fnUpdtBtnCallBack: () => {},

@@ -63,7 +63,7 @@ class _HomeScreenStateState extends State<HomeScreenState> {
 
     HomeProv homeProv = Provider.of<HomeProv>(context);
 
-    print('홈 빌드');
+    print('홈 빌드2');
 
     // 0xff200f2e
 
@@ -73,7 +73,6 @@ class _HomeScreenStateState extends State<HomeScreenState> {
         width: 100.w,
         height: 100.h,
         color: Colors.black,
-        padding: EdgeInsets.all(10),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
 
@@ -92,12 +91,11 @@ class _HomeScreenStateState extends State<HomeScreenState> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // CustomAppbarV2(
-                      //   isNotification: true,
-                      // ),
+
                       SizedBox(height: 10,),
 
                       Container(
+                        padding: EdgeInsets.all(10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -173,9 +171,13 @@ class _HomeScreenStateState extends State<HomeScreenState> {
                               height: 13,
                             ),
 
-                            Text(
-                              '플레이 리스트',
-                              style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 20),
+
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Text(
+                                '플레이 리스트',
+                                style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 20),
+                              ),
                             ),
 
                             SizedBox(
@@ -191,125 +193,153 @@ class _HomeScreenStateState extends State<HomeScreenState> {
                             ),
 
                             Container(
-                              child: Text(
-                                '팔로우한 유저의 새로운 곡',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700),
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '팔로우한 유저의 새로운 곡',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+
+                                  for(int i = 0; i <homeModel.followMemberTrackList.length; i++)...[
+                                    Column(
+                                      children: [
+                                        TrackListItem(
+                                          trackItem: homeModel.followMemberTrackList[i],
+
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                  ],
+
+
+                                ],
                               ),
                             ),
 
-                            SizedBox(
-                              height: 20,
-                            ),
 
-                            for(int i = 0; i <homeModel.followMemberTrackList.length; i++)...[
-                              Column(
+
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  TrackListItem(
-                                    trackItem: homeModel.followMemberTrackList[i],
-
+                                  Text(
+                                    '추천',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
                                   ),
                                   SizedBox(
-                                    height: 10,
+                                    height: 20,
+                                  ),
+
+                                  SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          for(int i = 0; i< homeModel.trendingTrackList.length; i++)...[
+                                            TrackSquareItem(
+                                              track: homeModel.trendingTrackList[i],
+
+                                              bgColor: Colors.lightBlueAccent,
+                                            ),
+                                            SizedBox(width: 15,),
+                                          ]
+
+                                        ],
+                                      )
+                                  ),
+                                  SizedBox(
+                                    height: 20,
                                   ),
                                 ],
                               ),
-
-                            ],
-
-                            SizedBox(
-                              height: 20,
-                            ),
-
-                            Container(
-                              child: Text(
-                                '추천',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20,
                             ),
 
 
-                            SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    for(int i = 0; i< homeModel.trendingTrackList.length; i++)...[
-                                      TrackSquareItem(
-                                        track: homeModel.trendingTrackList[i],
-
-                                        bgColor: Colors.lightBlueAccent,
-                                      ),
-                                      SizedBox(width: 15,),
-                                    ]
-
-                                  ],
-                                )
-                            ),
-
-                            SizedBox(
-                              height: 20,
-                            ),
-
-                            Container(
-                              child: Text(
-                                '내가 좋아요 한 트랙',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-
-                            SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    for(int i = 0; i< homeModel.likedTrackList.length; i++)...[
-                                      TrackSquareItem(
-                                      track: homeModel.likedTrackList[i],
-
-                                      bgColor: Colors.redAccent,
-                                      ),
-                                      SizedBox(width: 15,),
-                                    ]
-
-                                  ],
-                                )
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
 
 
                             Container(
-                              child: Text(
-                                'Artists you should follow',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700),
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+
+                                  Text(
+                                    '내가 좋아요 한 트랙',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+
+                                  SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          for(int i = 0; i< homeModel.likedTrackList.length; i++)...[
+                                            TrackSquareItem(
+                                              track: homeModel.likedTrackList[i],
+
+                                              bgColor: Colors.redAccent,
+                                            ),
+                                            SizedBox(width: 15,),
+                                          ]
+
+                                        ],
+                                      )
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
                               ),
                             ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            MemberScrollHorizontalItem(
-                                memberList: homeModel.randomMemberList,
 
+
+
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Artists you should follow',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  MemberScrollHorizontalItem(
+                                    memberList: homeModel.randomMemberList,
+
+                                  ),
+
+                                ],
+                              ),
                             ),
+
 
                             SizedBox(height: 120,),
                           ],

@@ -259,12 +259,11 @@ class TrackProv extends ChangeNotifier{
 
       if (response['status'] == '200') {
         // 성공적으로 데이터를 가져옴
-        trackModel = TrackList();
         trackInfoModel = Track();
         trackInfoModel = Track.fromJson(response['trackInfo']);
 
         for(var data in response['recommendTrack']){
-          trackModel.trackList.add(Track.fromJson(data));
+          trackInfoModel.recommendTrackList.add(Track.fromJson(data));
         }
 
         print('$url - Successful');

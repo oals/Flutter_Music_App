@@ -54,30 +54,29 @@ class _PlayListScreenState extends State<PlayListScreen> {
     ImageProv imageProv = Provider.of<ImageProv>(context);
 
     return Scaffold(
-      body: FutureBuilder<bool>(
-        future:
-            !isLoading ? playListProv.getPlayListInfo(widget.playListId) : null,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+      body: Container(
+        width: 100.w,
+        height: 100.h,
+        color: Colors.black,
+        child: FutureBuilder<bool>(
+          future:
+              !isLoading ? playListProv.getPlayListInfo(widget.playListId) : null,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
 
-          PlayListInfoModel playListModel = playListProv.modelPlayInfo;
+            PlayListInfoModel playListModel = playListProv.modelPlayInfo;
 
-          if (playListModel.memberId.toString() == memberId) {
-            isAuth = true;
-          }
+            if (playListModel.memberId.toString() == memberId) {
+              isAuth = true;
+            }
 
-          isLoading = true;
+            isLoading = true;
 
-          return Container(
-            // 전체 컨테이너의 크기를 지정하거나 부모 위젯의 크기를 채울 수 있게 설정
-            width: 100.w,
-            height: 100.h,
-            color: Colors.black,
-            child: SingleChildScrollView(
+            return SingleChildScrollView(
               child: Column(
                 children: [
                   // Stack을 화면 상단에 배치
@@ -112,9 +111,9 @@ class _PlayListScreenState extends State<PlayListScreen> {
                         ),
 
                         Positioned(
-                            top: 50,
-                            left: 10,
-                            right: 10,
+                            top: 0,
+                            left: 0,
+                            right: 0,
                             child: CustomAppbar(
                               fnBackBtnCallBack: () => {Navigator.pop(context)},
                               fnUpdtBtnCallBack:()=>{
@@ -122,7 +121,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                   isEdit = !isEdit;
                                 }),
                               },
-                              
+
                               title: "",
                               isNotification : true,
                               isEditBtn: isAuth,
@@ -345,9 +344,9 @@ class _PlayListScreenState extends State<PlayListScreen> {
                   ),
                 ],
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

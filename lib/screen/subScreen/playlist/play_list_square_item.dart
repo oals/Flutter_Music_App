@@ -26,7 +26,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
 
 
     return Container(
-      padding: EdgeInsets.only(left: 5,right: 5),
+      padding: EdgeInsets.only(left: 15,right: 15),
       child: Wrap(
         spacing: 20.0, // 아이템 간의 가로 간격
         runSpacing: 20.0, // 줄 간격

@@ -118,10 +118,9 @@ class _MoreScreenState extends State<MoreScreen> {
                               });
                             });
                           }
-                          return true;
                         }
                       } else {
-                        isApiCall = true;
+                        isApiCall = false;
                       }
                       return false;
                     },
@@ -174,10 +173,9 @@ class _MoreScreenState extends State<MoreScreen> {
                               });
                             });
                           }
-                          return true;
                         }
                       } else {
-                        isApiCall = true;
+                        isApiCall = false;
                       }
                       return false;
                     },
@@ -239,10 +237,12 @@ class _MoreScreenState extends State<MoreScreen> {
                 ],
               ],
 
-              if (isApiCall)
+              if (isApiCall)...[
+                SizedBox(height: 10,),
                 CircularProgressIndicator(
                   color: Color(0xffff0000),
-                )
+                ),
+              ],
 
             ],
           );

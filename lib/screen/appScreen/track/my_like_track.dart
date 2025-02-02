@@ -35,24 +35,24 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
     TrackProv trackProv = Provider.of<TrackProv>(context);
 
     return Scaffold(
-      body: FutureBuilder<bool>(
-        future: !isLoading ? trackProv.getLikeTrack(0) : null, // 비동기 메소드 호출
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('오류 발생: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
-            return Center(child: Text('데이터가 없습니다.'));
-          }
+      body: Container(
+        color: Color(0xff1c1c1c),
+        height: 100.h,
+        child: FutureBuilder<bool>(
+          future: !isLoading ? trackProv.getLikeTrack(0) : null, // 비동기 메소드 호출
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('오류 발생: ${snapshot.error}'));
+            } else if (!snapshot.hasData) {
+              return Center(child: Text('데이터가 없습니다.'));
+            }
 
-          trackModel = trackProv.trackModel;
-          isLoading = true;
+            trackModel = trackProv.trackModel;
+            isLoading = true;
 
-          return Container(
-            color: Color(0xff1c1c1c),
-            height: 100.h,
-            child: NotificationListener<ScrollNotification>(
+            return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (trackModel.totalCount! > trackModel.trackList.length) {
                   // 스크롤이 끝에 도달했을 때
@@ -72,10 +72,9 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                         });
                       });
                     }
-                    return true;
                   }
                 } else {
-                  isApiCall = true;
+                  isApiCall = false;
                 }
                 return false;
               },
@@ -84,22 +83,15 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: 50,
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 15,right: 15,top: 15),
-                      child: CustomAppbar(
-                        fnBackBtnCallBack: () => {Navigator.pop(context)},
-                        fnUpdtBtnCallBack:()=>{},
-                        
-                        title: "관심 트랙",
-                        isNotification : false,
-                        isEditBtn: false,
-                        isAddPlayListBtn : false,
-                        isAddTrackBtn : false,
-                        isAddAlbumBtn : false,
-                      ),
+                    CustomAppbar(
+                      fnBackBtnCallBack: () => {Navigator.pop(context)},
+                      fnUpdtBtnCallBack:()=>{},
+                      title: "관심 트랙",
+                      isNotification : false,
+                      isEditBtn: false,
+                      isAddPlayListBtn : false,
+                      isAddTrackBtn : false,
+                      isAddAlbumBtn : false,
                     ),
                     SizedBox(
                       height: 20,
@@ -113,26 +105,26 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                       children: trackModel.trackList.map((item) {
                         return TrackSquareItem(
                           track: item,
-                          
+
                           bgColor: Colors.red,
                         );
                       }).toList(),
                     ),
-                    SizedBox(height: 10,),
-
-                    if (isApiCall)
+                    if (isApiCall)...[
+                      SizedBox(height: 10,),
                       CircularProgressIndicator(
                         color: Color(0xffff0000),
                       ),
+                    ],
                     SizedBox(
                       height: 80,
                     ),
                   ],
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -61,7 +61,7 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
       color: Color(0xff000000),
       height: widget.preferredSize.height, // 생성자에서 설정한 높이를 사용
       child: Container(
-        padding: EdgeInsets.only(top: 40,left: 15,right: 15),
+        padding: EdgeInsets.only(top: 40,left: 10,right: 15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

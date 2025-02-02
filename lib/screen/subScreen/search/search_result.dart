@@ -73,7 +73,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               return true;
             }
           } else {
-            isApiCall = true;
+            isApiCall = false;
           }
           return false;
         },
@@ -205,10 +205,12 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   )
                 ],
               ],
-              if (isApiCall)
+              if (isApiCall)...[
+                SizedBox(height: 10,),
                 CircularProgressIndicator(
                   color: Color(0xffff0000),
-                )
+                ),
+              ],
             ],
           ),
         ),

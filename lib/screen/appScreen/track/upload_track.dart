@@ -27,7 +27,7 @@ class UploadTrackScreen extends StatefulWidget {
 
 class _UploadTrackScreenState extends State<UploadTrackScreen> {
 
-  final TextEditingController _searchController = TextEditingController();
+  late TrackList trackModel;
   bool isLoading = false;
   bool isApiCall = false;
   int listIndex = 0;
@@ -35,31 +35,28 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
   @override
   Widget build(BuildContext context) {
 
-
     TrackProv trackProv = Provider.of<TrackProv>(context);
-    ImageProv imageProv = Provider.of<ImageProv>(context);
 
     return Scaffold(
-      body: FutureBuilder<bool>(
-        future: !isLoading ? trackProv.getUploadTrack(0) : null, // 비동기 메소드 호출
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('오류 발생: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
-            return Center(child: Text('데이터가 없습니다.'));
-          }
+      body: Container(
+        color: Color(0XFF1C1C1C),
+        width: 100.w,
+        height: 100.h,
+        child: FutureBuilder<bool>(
+          future: !isLoading ? trackProv.getUploadTrack(0) : null, // 비동기 메소드 호출
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('오류 발생: ${snapshot.error}'));
+            } else if (!snapshot.hasData) {
+              return Center(child: Text('데이터가 없습니다.'));
+            }
 
+            trackModel = trackProv.trackModel;
+            isLoading = true;
 
-          TrackList trackModel = trackProv.trackModel;
-          isLoading = true;
-
-          return Container(
-            color: Color(0XFF1C1C1C),
-            width: 100.w,
-            height: 100.h,
-            child: NotificationListener<ScrollNotification>(
+            return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (trackModel.totalCount! > trackModel.trackList.length) {
                   // 스크롤이 끝에 도달했을 때
@@ -69,6 +66,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                     if (!isApiCall) {
                       Future(() async {
                         setState(() {
+                          print('2');
                           isApiCall = true;
                         });
                         listIndex = listIndex + 20;
@@ -79,10 +77,9 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                         });
                       });
                     }
-                    return true;
                   }
                 } else {
-                  isApiCall = true;
+                  isApiCall = false;
                 }
                 return false;
               },
@@ -90,22 +87,17 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 50,),
 
+                    CustomAppbar(
+                      fnBackBtnCallBack: () => {Navigator.pop(context)},
+                      fnUpdtBtnCallBack:()=>{},
 
-                    Container(
-                      padding: EdgeInsets.only(left: 15,right: 15,top: 15),
-                      child: CustomAppbar(
-                        fnBackBtnCallBack: () => {Navigator.pop(context)},
-                        fnUpdtBtnCallBack:()=>{},
-
-                        title: "내 트랙",
-                        isNotification : false,
-                        isEditBtn: false,
-                        isAddPlayListBtn : false,
-                        isAddTrackBtn : true,
-                        isAddAlbumBtn : false,
-                      ),
+                      title: "내 트랙",
+                      isNotification : false,
+                      isEditBtn: false,
+                      isAddPlayListBtn : false,
+                      isAddTrackBtn : true,
+                      isAddAlbumBtn : false,
                     ),
                     SizedBox(height: 25,),
 
@@ -123,7 +115,6 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                     ),
 
 
-
                     SizedBox(height: 5),
 
                     if(isApiCall)
@@ -136,9 +127,9 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                   ],
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -102,7 +102,6 @@ class _UserPageScreenState extends State<UserPageScreen> {
 
     return Scaffold(
       body: SingleChildScrollView(
-
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -192,9 +191,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
                       ],
                     ),
                     Positioned(
-                      top: 50,
-                      left: 5,
-                      right: 10,
+                      top: 0,
+                      left: 0,
+                      right: 0,
                       child: CustomAppbar(
                         fnBackBtnCallBack: () => {Navigator.pop(context)},
                         fnUpdtBtnCallBack: () => {
@@ -415,10 +414,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                                     BorderRadius.circular(10)),
                                             child: GestureDetector(
                                               onTap: () {
-
-
-                                                context.push('/userPage');
-
+                                                GoRouter.of(context).push('/playList/${memberModel.playListDTO![i].playListId}');
                                               },
                                               child: Column(
                                                 crossAxisAlignment:

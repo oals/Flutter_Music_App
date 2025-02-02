@@ -29,14 +29,24 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) {
-        return AppScreen(child: HomeScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: HomeScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
       path: '/login',
-      builder: (context, state) {
-        return AppScreen(child: LoginScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: LoginScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
@@ -71,78 +81,136 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/musicInfo/:trackId',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final trackId = int.parse(state.pathParameters['trackId']!);
-        return AppScreen(child: MusicInfoScreen(trackId: trackId));
+        return CustomTransitionPage(
+          child: AppScreen(child: MusicInfoScreen(trackId: trackId)),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
       path: '/more/:moreId/:searchText/:totalCount',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final moreId = int.parse(state.pathParameters['moreId']!);
         final searchText = state.pathParameters['searchText']!;
         final totalCount = int.parse(state.pathParameters['totalCount']!);
-        return AppScreen(
-            child: MoreScreen(
-                moreId: moreId,
-                searchText: searchText,
-                totalCount: totalCount));
+        return CustomTransitionPage(
+          child: AppScreen(child: MoreScreen(
+              moreId: moreId,
+              searchText: searchText,
+              totalCount: totalCount)),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
       path: '/adminLikeTrack/:adminId',
-      builder: (context, state) {
-        return AppScreen(child: MyLikeTrackScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: MyLikeTrackScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
       path: '/adminPlayList/:adminId',
-      builder: (context, state) {
-        return AppScreen(child: MyPlayListScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: MyPlayListScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
       path: '/adminUploadTrack/:adminId',
-      builder: (context, state) {
-        return AppScreen(child: UploadTrackScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: UploadTrackScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
       path: '/adminFollow/:adminId',
-      builder: (context, state) {
-        return AppScreen(child: FollowScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: FollowScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
       path: '/splash',
-      builder: (context, state) {
-        return AppScreen(child: SplashScreen());
+
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: SplashScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
+
     ),
     GoRoute(
       path: '/adminAlbum/:adminId',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final adminId = int.parse(state.pathParameters['adminId']!);
-        return AppScreen(child: MyAlbumScreen(adminId: adminId));
+        return CustomTransitionPage(
+          child: AppScreen(child: MyAlbumScreen(adminId: adminId)),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
+
     ),
     GoRoute(
       path: '/playList/:playListId',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final playListId = int.parse(state.pathParameters['playListId']!);
-        return AppScreen(child: PlayListScreen(playListId: playListId));
+        return CustomTransitionPage(
+          child: AppScreen(child: PlayListScreen(playListId: playListId)),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
+
     ),
     GoRoute(
       path: '/notification',
-      builder: (context, state) {
-        return AppScreen(child: NotificationScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: NotificationScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
       path: '/category/:categoryId',
-      builder: (context, state) {
-        return AppScreen(child: CategoryScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: CategoryScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
   ],
@@ -215,7 +283,7 @@ class _AppScreenState extends State<AppScreen> {
         !(widget.child is SplashScreen || widget.child is LoginScreen);
 
     bool showAppbar =
-        !(widget.child is HomeScreen || widget.child is SettingScreen);
+        isFullScreen || !(widget.child is HomeScreen || widget.child is SettingScreen);
 
     return Scaffold(
       appBar: !showAppbar

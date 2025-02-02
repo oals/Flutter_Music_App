@@ -26,6 +26,7 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track()
   ..followMember = json['followMember'] as bool?
   ..commentsCnt = (json['commentsCnt'] as num?)?.toInt();
 
+
 Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'trackId': instance.trackId,
       'trackNm': instance.trackNm,

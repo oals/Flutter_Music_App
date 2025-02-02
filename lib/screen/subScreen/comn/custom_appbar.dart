@@ -50,106 +50,108 @@ class _CustomAppbarState extends State<CustomAppbar> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        GestureDetector(
-            onTap: () {
-              widget.fnBackBtnCallBack();
-            },
-            child: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-            )),
-        Text(
-          widget.title,
-          style: TextStyle(
-              color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
-        ),
-        Row(
-          children: [
-            if (widget.isEditBtn) ...[
-              GestureDetector(
-                onTap: () => {widget.fnUpdtBtnCallBack()},
-                child: SvgPicture.asset(
-                  'assets/images/edit.svg',
-                  width: 24,
+    return Container(
+      padding: EdgeInsets.only(top: 55,left: 15,right: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          GestureDetector(
+              onTap: () {
+                widget.fnBackBtnCallBack();
+              },
+              child: Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.white,
+              )),
+          Text(
+            widget.title,
+            style: TextStyle(
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
+          ),
+          Row(
+            children: [
+              if (widget.isEditBtn) ...[
+                GestureDetector(
+                  onTap: () => {widget.fnUpdtBtnCallBack()},
+                  child: SvgPicture.asset(
+                    'assets/images/edit.svg',
+                    width: 24,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-            ],
-            if (widget.isAddPlayListBtn) ...[
-              GestureDetector(
-                onTap: () {
-                  AppBottomModalRouter.fnModalRouter(context, 2);
-                },
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 30,
+                SizedBox(
+                  width: 5,
                 ),
-              ),
-            ],
-            if (widget.isAddAlbumBtn) ...[
-              GestureDetector(
-                onTap: () {
-                  AppBottomModalRouter.fnModalRouter(context, 5,isAlbum: widget.isAddAlbumBtn);
-                },
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 30,
+              ],
+              if (widget.isAddPlayListBtn) ...[
+                GestureDetector(
+                  onTap: () {
+                    AppBottomModalRouter.fnModalRouter(context, 2);
+                  },
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 30,
+                  ),
                 ),
-              ),
-            ],
-
-            if (widget.isAddTrackBtn) ...[
-              GestureDetector(
-                onTap: () {
-                  AppBottomModalRouter.fnModalRouter(context,1,isAlbum: widget.isAddAlbumBtn);
-                },
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 30,
+              ],
+              if (widget.isAddAlbumBtn) ...[
+                GestureDetector(
+                  onTap: () {
+                    AppBottomModalRouter.fnModalRouter(context, 5,isAlbum: widget.isAddAlbumBtn);
+                  },
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 30,
+                  ),
                 ),
-              ),
-            ],
+              ],
+
+              if (widget.isAddTrackBtn) ...[
+                GestureDetector(
+                  onTap: () {
+                    AppBottomModalRouter.fnModalRouter(context,1,isAlbum: widget.isAddAlbumBtn);
+                  },
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              ],
 
 
 
-            if (widget.isNotification) ...[
-              Stack(
-                children: [
-                  GestureDetector(
-                      onTap: () async {
-                        GoRouter.of(context).push(
-                            '/notification/${await Helpers.getMemberId()}');
-                      },
-                      child: Icon(
-                        Icons.notifications,
-                        color: Colors.white,
-                      )),
-                  if (notificationisView)
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(100)),
+              if (widget.isNotification) ...[
+                Stack(
+                  children: [
+                    GestureDetector(
+                        onTap: () async {
+                          GoRouter.of(context).push('/notification');
+                        },
+                        child: Icon(
+                          Icons.notifications,
+                          color: Colors.white,
+                        )),
+                    if (notificationisView)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(100)),
+                        ),
                       ),
-                    ),
-                ],
-              ),
-            ]
-          ],
-        ),
-      ],
+                  ],
+                ),
+              ]
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

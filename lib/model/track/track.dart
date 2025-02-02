@@ -1,5 +1,6 @@
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:skrrskrr/model/track/track_list.dart';
 
 part 'track.g.dart'; // 생성될 파일
 
@@ -42,6 +43,8 @@ class Track {
 
   int? commentsCnt;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<Track> recommendTrackList = [];
 
   Track();
 
