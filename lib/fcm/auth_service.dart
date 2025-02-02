@@ -26,7 +26,6 @@ class AuthService {
     /// 구글 id token을 통해 파이어베이스 id token 얻음
     UserCredential userCredential = await _auth.signInWithCredential(credential);
 
-
     //idToken 검증 과정 위해 서버로 전송
     try {
       final response = await Helpers.apiCall(
@@ -39,12 +38,10 @@ class AuthService {
 
       );
 
-      if (response != null) {
-        if(response['status'] == '200'){
-          return userCredential.user;
-        } else {
-          return null;
-        }
+      if(response['status'] == '200'){
+
+        return userCredential.user;
+
       } else {
         // 오류 처리
         return null;

@@ -2,19 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-import 'package:skrrskrr/model/playList/play_list_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class MemberProv with ChangeNotifier {
 
   MemberModel model = MemberModel();
-
 
   void notify() {
     notifyListeners();
@@ -25,13 +22,10 @@ class MemberProv with ChangeNotifier {
   }
 
 
-
   Future<void> fnMemberInfoUpdate({memberNickName,memberInfo}) async {
-
+    final url = 'setMemberInfoUpdate';
     try{
-      final url = 'setMemberInfoUpdate';
       final String memberId = await Helpers.getMemberId();
-
       dynamic response = await Helpers.apiCall(
             url,
             method: 'POST',
@@ -45,24 +39,21 @@ class MemberProv with ChangeNotifier {
             }
           );
 
-      if (response != null) {
-
-
+      if (response['status'] == '200') {
+        print('$url - Successful');
+      } else {
+        // 오류 처리
+        throw Exception('Failed to load data');
       }
-
-
     } catch (error) {
-      debugPrintStack();
-      print(error);
+      // 오류 처리
+      print('$url - Fail');
     }
-
-
   }
 
 
   Future<void> getMemberInfo(String memberEmail) async {
 
-    print('getMemberInfo');
     final String? deviceToken = await FcmNotifications.getMyDeviceToken();
     final url = 'getMemberInfo?memberEmail=${memberEmail}&deviceToken=${deviceToken}';
 
@@ -71,19 +62,17 @@ class MemberProv with ChangeNotifier {
         url,
       );
 
-      if (response != null) {
-        print(response);
+      if (response['status'] == '200') {
         model = MemberModel.fromJson(response['member']);
         await saveMemberData();
-
+        print('$url - Successful');
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
-    } catch (error,stackTrace) {
+    } catch (error) {
       // 오류 처리
-      print('멤버정보 조회중 오류 발생');
-      print('Error: ${error}');
+      print('$url - Fail');
     }
   }
 
@@ -110,7 +99,7 @@ class MemberProv with ChangeNotifier {
         url,
       );
 
-      if (response != null) {
+      if (response['status'] == '200') {
 
         model = MemberModel();
         model.playListDTO = [];
@@ -122,7 +111,6 @@ class MemberProv with ChangeNotifier {
         List<Track> allTrackList = [];
 
         model = MemberModel.fromJson(response['memberDTO']);
-        print(model.toJson());
 
         for (var item in response['playListDTO']) {
           PlayListInfoModel playListInfoModel = PlayListInfoModel.fromJson(item);
@@ -144,7 +132,7 @@ class MemberProv with ChangeNotifier {
         model.allTrackList = allTrackList;
 
 
-
+        print('$url - Successful');
         return true;
       } else {
         // 오류 처리
@@ -152,14 +140,9 @@ class MemberProv with ChangeNotifier {
       }
     } catch (error) {
       // 오류 처리
-      print('마이페이지 조회 중 오류 발생');
-      print('Error: ${error}');
+      print('$url - Fail');
       return false;
     }
   }
-
-
-
-
 
 }

@@ -21,7 +21,6 @@ class SearchProv extends ChangeNotifier {
 
   Future<bool> fnInit() async {
 
-
     final String memberId = await Helpers.getMemberId();
     final url = 'getSearchInit?memberId=${memberId}';
 
@@ -33,41 +32,32 @@ class SearchProv extends ChangeNotifier {
         },
       );
 
-      if (response != null) {
-        // 성공적으로 데이터를 가져옴
-        
+      if (response['status'] == '200') {
         searchHistoryModel = [];
         popularTrackHistory = [];
 
         for (var item in response['searchHistory']) {
           searchHistoryModel.add(SearchHistoryModel.fromJson(item));
         }
-
         for (var item in response['popularTrackHistory']) {
           popularTrackHistory.add(item);
         }
-        
 
+        print('$url - Successful');
+        return true;
       } else {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
 
-
-    return true;
   }
 
 
 
   Future<bool> searchMore(int moreId, String searchText,int listIndex) async {
-
-
-    print('searchMore 호출');
-    print(listIndex);
-    print(moreId);
 
     final String memberId = await Helpers.getMemberId();
     
@@ -84,12 +74,7 @@ class SearchProv extends ChangeNotifier {
         },
       );
 
-      if ((response != null)) {
-        // 성공적으로 데이터를 가져옴
-
-        print('데이터 받음');
-        print(response);
-
+      if ((response['status'] == '200')) {
         if (listIndex == 0) {
           moreModel.trackList = [];
           moreModel.memberList = [];
@@ -111,26 +96,21 @@ class SearchProv extends ChangeNotifier {
             model.trackList.add(Track.fromJson(item));
           }
         }
-
         moreModel.status = response['status'];
-
-
+        print('$url - Successful');
+        return true;
       } else {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
-
-    return true;
   }
 
 
 
   Future<bool> searchTrack(String searchText,listIndex) async {
-
-    print('searchTrack 호출');
 
     final String memberId = await Helpers.getMemberId();
     final url = 'getSearchTrack?memberId=${memberId}&searchText=$searchText&listIndex=$listIndex';
@@ -143,51 +123,36 @@ class SearchProv extends ChangeNotifier {
         },
       );
 
-      if ((response != null)) {
-        // 성공적으로 데이터를 가져옴
-        print('검색결과');
-
-
+      if (response['status'] == '200') {
         model.trackList = [];
         model.memberList = [];
         model.playListList = [];
 
-        print(response);
-
         for (var item in response['trackList']) {
           model.trackList.add(Track.fromJson(item));
         }
-
-
 
         for (var item in response['memberList']) {
           model.memberList.add(FollowInfoModel.fromJson(item));
         }
         model.memberListCnt = response['memberListCnt'];
 
-
         for (var item in response['playListList']) {
           model.playListList.add(PlayListModel.fromJson(item));
         }
         model.playListListCnt = response['playListListCnt'];
 
-        print('플리 크기');
-        print(model.playListListCnt);
-
         model.status = response['status'];
         model.totalCount = response['totalCount'];
-
+        print('$url - Successful');
+        return true;
       } else {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
-
-    return true;
   }
-
-
 
 }

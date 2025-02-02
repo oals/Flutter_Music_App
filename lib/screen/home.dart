@@ -155,6 +155,16 @@ class _HomeScreenStateState extends State<HomeScreenState> {
                             ),
 
                             Text(
+                              '앨범',
+                              style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 20),
+                            ),
+
+                            SizedBox(
+                              height: 13,
+                            ),
+
+
+                            Text(
                               '내가 감상한 음악',
                               style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 20),
                             ),

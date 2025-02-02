@@ -29,7 +29,6 @@ class AuthProv with ChangeNotifier{
   // jwt 토큰 생성
   Future<bool> fnGetJwtToken(User user) async {
 
-    print('fnGetJwtToken');
     final url = 'getJwtToken';
 
     try {
@@ -45,22 +44,18 @@ class AuthProv with ChangeNotifier{
         }
       );
 
-      if (response != null) {
-        if(response['status'] == '200'){
+      if(response['status'] == '200'){
 
-          final storage = FlutterSecureStorage();
-          await storage.write(key: "jwt_token", value: response['jwtToken']);
-          await storage.write(key: "refresh_token", value: response['refreshToken']);
-
-          return true;
-        } else {
-          return false;
-        }
+        final storage = FlutterSecureStorage();
+        await storage.write(key: "jwt_token", value: response['jwtToken']);
+        await storage.write(key: "refresh_token", value: response['refreshToken']);
+        print('$url - Successful');
+        return true;
       } else {
-        // 오류 처리
-        return false;
+        throw Exception('Failed to load data');
       }
     } catch (error) {
+      print('$url - Fail');
       return false;
     }
   }
@@ -68,9 +63,7 @@ class AuthProv with ChangeNotifier{
   // jwt token 검증
   Future<bool> fnJwtAuthing(String? jwtToken) async {
 
-    print('fnJwtAuthing');
     final url = 'jwtAuthing';
-
 
     try {
       final response = await Helpers.apiCall(
@@ -82,16 +75,14 @@ class AuthProv with ChangeNotifier{
           },
       );
 
-      if (response != null) {
-        if(response['status'] == '200'){
-          return true;
-        }
+      if(response['status'] == '200'){
+        print('$url - Successful');
+        return true;
       } else {
-        // 오류 처리
-        return false;
+        throw Exception('Failed to load data');
       }
-      return false;
     } catch (error) {
+      print('$url - Fail');
       return false;
     }
   }
@@ -100,7 +91,6 @@ class AuthProv with ChangeNotifier{
   // jwt refresh token 검증
   Future<bool> fnRefreshJwtAuthing(String? refreshJwtToken) async {
 
-    print('fnRefreshJwtAuthing');
     final url = 'jwtAuthing';
     final refresh_jwt_Token = refreshJwtToken;
 
@@ -115,22 +105,19 @@ class AuthProv with ChangeNotifier{
 
       );
 
-      if (response != null) {
-        print(response);
+      if(response['status'] == '200'){
+        String newJwtToken = response['new_jwt_token'];
+        final storage = FlutterSecureStorage();
+        await storage.write(key: "jwt_token", value: newJwtToken);
+        print('$url - Successful');
+        return true;
 
-        if(response['status'] == '200'){
-          String newJwtToken = response['new_jwt_token'];
-          final storage = FlutterSecureStorage();
-          await storage.write(key: "jwt_token", value: newJwtToken);
-          return true;
-        }
       } else {
-        // 오류 처리
-        return false;
+        throw Exception('Failed to load data');
       }
       return false;
     } catch (error) {
-      print(error);
+      print('$url - Fail');
       return false;
     }
   }
@@ -139,9 +126,7 @@ class AuthProv with ChangeNotifier{
   // 파이어베이스 id Token 인증을 위한
   Future<bool> fnFireBaseAuthing(User user) async {
 
-    print('fnFireBaseAuthing');
     final url = 'fireBaseAuthing';
-
 
     try {
       final response = await Helpers.apiCall(
@@ -153,20 +138,14 @@ class AuthProv with ChangeNotifier{
           },
       );
 
-      if (response != null) {
-        if(response['status'] == '200'){
-          print(response);
-
-
-          return true;
-        } else {
-          return false;
-        }
+      if(response['status'] == '200'){
+        print('$url - Successful');
+        return true;
       } else {
-        // 오류 처리
-        return false;
+        throw Exception('Failed to load data');
       }
     } catch (error) {
+      print('$url - Fail');
       return false;
     }
   }

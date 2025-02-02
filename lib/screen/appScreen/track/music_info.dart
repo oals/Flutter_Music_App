@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';
@@ -89,7 +90,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
 
 
         String newImagePath = await imageProv.setTrackImage(upload);
-        if(newImagePath.isNotEmpty){
+        if(newImagePath != ""){
           trackInfoModel.trackImagePath = newImagePath;
         }
         setState(() {});
@@ -387,16 +388,16 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                                   child: TrackInfoEdit(
                                                     trackInfo:
                                                     trackInfoModel.trackInfo!,
-                                                    onSave:
-                                                        (String? trackInfo) async {
-                                                      trackInfoModel.trackInfo =
-                                                          trackInfo;
+                                                    onSave: (String? trackInfo) async {
+                                                      trackInfoModel.trackInfo = trackInfo;
 
-                                                      print(
-                                                          trackInfoModel.trackInfo);
-                                                      await trackProv
-                                                          .setTrackInfo(trackInfo);
-
+                                                      bool isUpdate = await trackProv.setTrackInfo(trackInfo);
+                                                      if(isUpdate) {
+                                                        Fluttertoast.showToast(msg: '변경되었습니다.');
+                                                        setState(() {});
+                                                      } else {
+                                                        Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요');
+                                                      }
                                                       ///  저장할떄 리빌드되면서 기본값으로 덮어씌우는 듯
                                                       ///  영역 나누고나서 다시 테스트 필요 우선 trackinfo 넘겨서 저장
                                                     },

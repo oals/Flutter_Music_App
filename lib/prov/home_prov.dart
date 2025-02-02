@@ -1,10 +1,7 @@
 import 'dart:io';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 import 'package:skrrskrr/model/home/home_model.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/playList/play_list_model.dart';
@@ -13,8 +10,6 @@ import 'package:skrrskrr/utils/helpers.dart';
 
 class HomeProv extends ChangeNotifier {
   HomeModel model = HomeModel();
-
-
 
   void notify() {
     notifyListeners();
@@ -33,7 +28,7 @@ class HomeProv extends ChangeNotifier {
 
       dynamic response = await Helpers.apiCall(url,method: 'GET');
 
-      if (response != null) {
+      if (response['status'] == '200') {
 
         model.trendingTrackList = [];
         model.randomMemberList = [];
@@ -58,20 +53,16 @@ class HomeProv extends ChangeNotifier {
         }
 
         Helpers.setNotificationIsView(response['notificationIsView']);
-
-
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
-
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
-
-    return true;
   }
-
 }

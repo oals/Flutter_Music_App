@@ -27,17 +27,10 @@ class AppBottomModalRouter {
       },
       1: () async {
         // 파일 선택 처리
-        // 파일 선택 처리
-        FilePickerResult? selectedFile = await FilePicker.platform.pickFiles(type: FileType.audio);
-        if (selectedFile != null && selectedFile.files.isNotEmpty) {
-          return Container(
-            height: 100.h,
-            child: UploadScreen(uploadTrackFile: selectedFile,isAlbum: false,),
-          );
-        } else {
-          print("파일이 선택되지 않았습니다.");
-          return null;
-        }
+
+        return Container(
+          height: 90.h,
+            child: UploadScreen(isAlbum: false,));
       },
       2: () async {
         return NewPlayListScreen();
@@ -50,8 +43,8 @@ class AppBottomModalRouter {
       },
       5: () async {
         return  Container(
-          height: 100.h,
-          child: UploadScreen(uploadTrackFile: null,isAlbum : isAlbum!),
+          height: 90.h,
+          child: UploadScreen(isAlbum : isAlbum!),
         );
       }
 

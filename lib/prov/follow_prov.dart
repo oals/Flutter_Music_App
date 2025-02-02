@@ -18,9 +18,6 @@ class FollowProv extends ChangeNotifier{
   }
 
   Future<bool> getFollow() async {
-
-    print("getFollow");
-    
     String memberId = await Helpers.getMemberId();
     final url = 'getFollow?memberId=${memberId}';
 
@@ -33,7 +30,7 @@ class FollowProv extends ChangeNotifier{
         }, // JSON 형태로 전송
       );
 
-      if (response != null) {
+      if (response['status'] == '200') {
         // 성공적으로 데이터를 가져옴
         
         model = FollowModel();
@@ -47,28 +44,21 @@ class FollowProv extends ChangeNotifier{
         for(var followingData in response['followingList']) {
           model.followingList?.add(FollowInfoModel.fromJson(followingData));
         }
-
-        print(response);
-
-        // print(model);
-
-
+        print('$url - Successful');
+        return true;
       } else {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
-    return true;
   }
 
 
   Future<bool> setFollow(followerId,followingId) async {
 
-    
     final url = 'setFollow';
-
     try {
 
       // POST 요청
@@ -82,20 +72,18 @@ class FollowProv extends ChangeNotifier{
           },
       );
 
-      if (response != null) {
+      if (response['status'] == '200') {
         // 성공적으로 데이터를 가져옴
-        
-
+        print('$url - Successful');
+        return true;
       } else {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
-    return true;
+
   }
-
-
 
 }

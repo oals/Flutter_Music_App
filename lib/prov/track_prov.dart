@@ -40,19 +40,17 @@ class TrackProv extends ChangeNotifier{
       );
       
 
-      if (response != null) {
-
-        print('setTrackInfo');
-
-
+      if (response['status'] == "200") {
+        print('$url - Successful');
+        return true;
       } else {
+        print('$url - Fail');
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
-    return true;
   }
 
 
@@ -69,27 +67,24 @@ class TrackProv extends ChangeNotifier{
         },
       );
 
-      if (response != null) {
+      if (response['status'] == "200") {
         // 성공적으로 데이터를 가져옴
-
         if(listIndex == 0){
           trackModel = TrackList();
         }
-
         for (var item in response['likeTrackList']) {
           trackModel.trackList.add(Track.fromJson(item));
         }
-
         trackModel.totalCount = response['totalCount'];
-
+        print('$url - Successful');
+        return true;
       } else {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
-    return true;
   }
 
   Future<bool> setTrackLike(trackId) async {
@@ -105,20 +100,16 @@ class TrackProv extends ChangeNotifier{
         },
       );
 
-      if (response != null) {
-        // 성공적으로 데이터를 가져옴
-
-        print(response);
-
-
+      if (response['status'] == "200") {
+        print('$url - Successful');
+        return true;
       } else {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
-    return true;
   }
 
   void getUploadTrackTime() async {
@@ -139,7 +130,15 @@ class TrackProv extends ChangeNotifier{
   }
 
 
-  Future<void> uploadTrack() async {
+
+
+  Future<void> uploadTrack(
+                            bool isAlbum,
+                            List<Upload> uploadTrackList,
+                            String title,
+                            String info,
+                            bool isPrivacy,
+                            int category) async {
 
 
     final String memberId = await Helpers.getMemberId();
@@ -149,69 +148,67 @@ class TrackProv extends ChangeNotifier{
       Uri.parse( dotenv.get('API_URL') + 'trackUpload'),
     );
 
-
     request.fields['memberId'] = memberId;
-    request.fields['trackNm'] = model.trackNm ?? "제목 없음";
-    request.fields['trackInfo'] = model.trackInfo ?? "내용 없음";
+    request.fields[ isAlbum ? 'albumNm' :'trackNm'] = title;
+    request.fields['trackInfo'] = info;
     request.fields['trackTime'] = model.trackTime ?? "00:00";
-    request.fields['trackCategoryId'] = (model.trackCategoryId + 1).toString();
-    request.fields['albumId'] = model.albumId.toString();
-    request.fields['trackPrivacy'] = model.isTrackPrivacy.toString();
+    request.fields['trackCategoryId'] = (category + 1).toString();
+    request.fields['album'] = isAlbum.toString();
+    request.fields['trackPrivacy'] = isPrivacy.toString();
 
 
-    File file = File(model.uploadFile!.files.first.path.toString());
-    List<int> fileBytes = await file.readAsBytes();
+    // 여러 파일을 업로드하는 과정
+    for (Upload upload in uploadTrackList) {
+      // uploadFile이 null이 아닌 경우에만 처리
+      if (upload.uploadFile != null && upload.uploadFile!.files.isNotEmpty) {
+        // 파일을 읽어들여 바이트 배열로 변환
+        File file = File(upload.uploadFile!.files.first.path.toString());
+        List<int> fileBytes = await file.readAsBytes();
 
-    // 바이트 배열을 멀티파트 파일로 추가
-    request.files.add(
-      http.MultipartFile.fromBytes(
-        'uploadFile', // 서버에서 받을 필드 이름
-        fileBytes, // 선택한 파일의 바이트
-        filename: model.uploadFileNm, // 파일 이름
-        contentType: MediaType('audio', 'mpeg'),
-      ),
-    );
-
-    // 이미지 파일 추가
-    if(model.uploadImage != null){
-
-      File file = File(model.uploadImage!.files.first.path.toString());
-      List<int> fileBytes = await file.readAsBytes();
+        // 바이트 배열을 멀티파트 파일로 추가
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'uploadFileList', // 서버에서 받을 필드 이름
+            fileBytes, // 선택한 파일의 바이트
+            filename: upload.uploadFileNm, // 파일 이름
+            contentType: MediaType('audio', 'mpeg'), // MIME 타입
+          ),
+        );
+      }
 
 
-      request.files.add(
-        http.MultipartFile.fromBytes(
-          'uploadImage', // 서버에서 받을 필드 이름
-          fileBytes,
-          filename: model.uploadImageNm ?? "", // 파일 이름
-          contentType: MediaType('image', 'jpeg'), // MIME 타입 (필요에 따라 수정)
-        ),
-      );
+      // 이미지 파일 추가
+      if(uploadTrackList[0].uploadImage != null){
+
+        File file = File(uploadTrackList[0].uploadImage!.files.first.path.toString());
+        List<int> fileBytes = await file.readAsBytes();
+
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'uploadImage', // 서버에서 받을 필드 이름
+            fileBytes,
+            filename: uploadTrackList[0].uploadImageNm ?? "", // 파일 이름
+            contentType: MediaType('image', 'jpeg'), // MIME 타입 (필요에 따라 수정)
+          ),
+        );
+      }
     }
-
-
 
     // 요청 보내기
     var response = await request.send();
-
-    if (response != null) {
-
+    if (response.statusCode == 200) {
       var responseBody = await http.Response.fromStream(response);
-      bool isUpload = json.decode(responseBody.body);
-
-      if (isUpload){
+      var jsonResponse = jsonDecode(responseBody.body);
+      if (jsonResponse['status'] == "200") {
         print('Upload successful');
-
         trackModel = TrackList();
         await getUploadTrack(0);
         notify();
-
       } else {
-        print('Upload failed: ${response.statusCode}');
+        print('Upload Fail');
       }
-
     } else {
-      print('Upload failed: ${response.statusCode}');
+      print('Upload Fail');
     }
   }
 
@@ -229,39 +226,26 @@ class TrackProv extends ChangeNotifier{
         },
       );
 
-      if (response != null) {
-        // 성공적으로 데이터를 가져옴
-
-        print(response);
-
+      if (response['status'] == "200") {
         if(listIndex == 0) {
           trackModel = TrackList();
         }
-
         for (var item in response['uploadTrackList']) {
           trackModel.trackList.add(Track.fromJson(item));
         }
-
         trackModel.totalCount = response['totalCount'];
-
-        ///isTrackPrivacy 가 아니라 trackPrivacy가 반환되는데 뭐지
-
-        print(trackModel);
-
+        print('$url - Successful');
+        return true;
       } else {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
-
-
-    return true;
   }
 
   Future<bool> getTrackInfo(trackId) async {
-    print("getTrackInfo");
     final String memberId = await Helpers.getMemberId();
     final url = 'getTrackInfo?trackId=${trackId}&memberId=${memberId}';
 
@@ -273,30 +257,25 @@ class TrackProv extends ChangeNotifier{
         },
       );
 
-      if (response != null) {
+      if (response['status'] == '200') {
         // 성공적으로 데이터를 가져옴
-
-        print(response);
-
-
         trackModel = TrackList();
         trackInfoModel = Track();
-
         trackInfoModel = Track.fromJson(response['trackInfo']);
 
         for(var data in response['recommendTrack']){
           trackModel.trackList.add(Track.fromJson(data));
         }
 
-
+        print('$url - Successful');
+        return true;
       } else {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
-    return true;
   }
 
 }

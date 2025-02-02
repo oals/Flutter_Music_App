@@ -17,15 +17,10 @@ class PlayListProv extends ChangeNotifier {
 
 
   Future<bool> setPlayListLike(int playListId) async {
-    print('setPlayListLike 호출1');
-    print(playListId);
-
-
     final String memberId = await Helpers.getMemberId();
     final url = 'setPlayListLike'; // POST URL
 
     try {
-      // POST 요청 보내기
       final response = await Helpers.apiCall(
           url,
           method: "POST",
@@ -38,23 +33,20 @@ class PlayListProv extends ChangeNotifier {
           }
       );
 
-      if ((response != null)) {
+      if ((response['status'] == '200')) {
         // 성공적으로 데이터를 가져옴
-        print('Successfully set playlist like');
+        print('$url - Successful');
         return true;
       } else {
-        // 오류 처리
         throw Exception('Failed to set playlist like');
       }
     } catch (error) {
-      // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
   }
 
   Future<bool> setPlayListInfo(int playListId, String playListNewNm) async {
-    print('setPlayListInfo 호출');
 
     final url = 'setPlayListInfo';
 
@@ -71,26 +63,22 @@ class PlayListProv extends ChangeNotifier {
           }
           );
 
-      if ((response != null)) {
-        // 성공적으로 데이터를 가져옴
-
-        print('플리에 트랙 추가');
+      if ((response['status'] == '200')) {
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
 
-    return true;
   }
 
   Future<bool> getPlayList(int trackId,int listIndex,bool isAlbum) async {
-    print('getPlaylist 호출1');
-    print(trackId);
 
     final String memberId = await Helpers.getMemberId();
     final url = 'getPlayList?memberId=${memberId}&trackId=${trackId}&listIndex=${listIndex}&isAlbum=${isAlbum}';
@@ -103,37 +91,28 @@ class PlayListProv extends ChangeNotifier {
         },
       );
 
-      if ((response != null)) {
-        // 성공적으로 데이터를 가져옴
-
+      if ((response['status'] == '200')) {
         if(listIndex == 0 ){
           playlistList = PlaylistList();
         }
-
         for (var item in response['playList']) {
           playlistList.playList.add(PlayListModel.fromJson(item));
         }
-
         playlistList.totalCount = response['totalCount'];
-
-        print(playlistList.totalCount);
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
-
-    return true;
   }
 
   Future<bool> getPlayListInfo(int playListId) async {
-    print('getPlayListInfo 호출1');
-    print(playListId);
-
 
     final String memberId = await Helpers.getMemberId();
     final url = 'getPlayListInfo?playListId=${playListId}&memberId=${memberId}';
@@ -146,32 +125,24 @@ class PlayListProv extends ChangeNotifier {
         },
       );
 
-      if ((response != null)) {
-        // 성공적으로 데이터를 가져옴
-
-        print(response);
+      if ((response['status'] == '200')) {
         modelPlayInfo = PlayListInfoModel();
-        modelPlayInfo = PlayListInfoModel.fromJson(response);
-
-        // print(modelPlayInfo);
-
+        modelPlayInfo = PlayListInfoModel.fromJson(response['playList']);
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
-
-    return true;
   }
 
 
   Future<bool> setPlayListTrack(int playListId, int trackId) async {
-    print('setPlayListTrack 호출');
-
     final url = 'setPlayListTrack';
 
     try {
@@ -187,29 +158,25 @@ class PlayListProv extends ChangeNotifier {
             }
           );
 
-      if ((response != null)) {
-        // 성공적으로 데이터를 가져옴
-        print('플리에 트랙 추가');
-
+      if ((response['status'] == '200')) {
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
 
-    return true;
   }
 
   Future<bool> setNewPlaylist(String playListNm, bool isPlayListPrivacy,bool isAlbum) async {
 
     final String memberId = await Helpers.getMemberId();
     final url = 'newPlayList';
-
-    print('setNewPlaylist 호출');
 
     try {
       final response = await Helpers.apiCall(
@@ -226,20 +193,21 @@ class PlayListProv extends ChangeNotifier {
             }
           );
 
-      if ((response != null)) {
+      if ((response['status'] == '200')) {
         playlistList = PlaylistList();
         await getPlayList(0, 0,false);
         notify();
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
 
-    return true;
   }
 }

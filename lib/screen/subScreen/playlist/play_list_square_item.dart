@@ -34,7 +34,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
         children: widget.playList.map((item) {
 
           return Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey,width: 2),
               borderRadius: BorderRadius.circular(10)

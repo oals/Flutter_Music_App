@@ -14,10 +14,7 @@ class NotificationsProv extends ChangeNotifier{
     notifyListeners();
   }
 
-
-
   Future<bool> setDelNotificationIsView() async {
-    print('setDelNotificationIsView 호출');
 
     final String memberId = await Helpers.getMemberId();
     final url = 'setDelNotificationIsView';
@@ -35,26 +32,24 @@ class NotificationsProv extends ChangeNotifier{
         );
 
 
-      if ((response != null)) {
+      if (response['status'] == '200') {
         Helpers.setNotificationIsView(false);
-
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
 
-    return true;
   }
 
 
   Future<bool> setAllNotificationisView() async {
-    print('setAllNotificationisView 호출');
-
     final String memberId = await Helpers.getMemberId();
     final url = 'setAllNotificationisView';
 
@@ -70,26 +65,24 @@ class NotificationsProv extends ChangeNotifier{
           },
         );
 
-      if ((response != null)) {
+      if (response['status'] == '200') {
         Helpers.setNotificationIsView(false);
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
-
-    return true;
   }
 
 
 
   Future<bool> setNotificationIsView(int notificationId) async {
-    print('setNotificationIsView 호출');
-    print(notificationId);
 
     final String memberId = await Helpers.getMemberId();
     final url = 'setNotificationIsView';
@@ -107,28 +100,24 @@ class NotificationsProv extends ChangeNotifier{
             },
         );
 
-      if ((response != null)) {
-        // 성공적으로 데이터를 가져옴
-
+      if (response['status'] == '200') {
         Helpers.setNotificationIsView(response['notificationIsView']);
-
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
 
-    return true;
   }
 
 
   Future<bool> getNotifications(listIndex) async {
-
-    print("getNotifications");
 
     String memberId = await Helpers.getMemberId();
 
@@ -142,9 +131,8 @@ class NotificationsProv extends ChangeNotifier{
         },
       );
 
-      if ((response != null)) {
+      if (response['status'] == '200') {
         // 성공적으로 데이터를 가져옴
-
         model = NotificationsModel();
 
         for(var item in response['todayNotificationsList']){
@@ -159,21 +147,15 @@ class NotificationsProv extends ChangeNotifier{
           model.yearNotificationsList.add(NotificationsModel.fromJson(item));
         }
 
-
+        print('$url - Successful');
+        return true;
       } else {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      print('SearchTrack Error: $error');
+      print('$url - Fail');
       return false;
     }
-    return true;
   }
-
-
-
-
-
-
 
 }

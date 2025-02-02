@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -12,46 +11,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
-
-class ImageProv extends ChangeNotifier{
-
+class ImageProv extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }
 
-
   String imageLoader(imagePath) {
     if (imagePath == "" || imagePath == null) {
-      // print('이미지없음');
       imagePath = "C:/uploads/trackImage/defaultTrackImage";
     }
 
     final url = dotenv.get('API_URL') + 'imageLoader?trackImagePath=${imagePath}';
-
-    // print(url);
     return url;
   }
 
-
-
-
-
   Future<String> setMemberImage(Upload? upload) async {
-
-
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse( dotenv.get('API_URL') + 'setMemberImage'),
+      Uri.parse(dotenv.get('API_URL') + 'setMemberImage'),
     );
 
     try {
-
-
       // 이미지 파일 추가
-      if(upload != null){
-
+      if (upload != null) {
         request.fields['memberId'] = upload.memberId.toString();
-
 
         File file = File(upload.uploadImage!.files.first.path.toString());
         List<int> fileBytes = await file.readAsBytes();
@@ -69,45 +52,30 @@ class ImageProv extends ChangeNotifier{
         // 요청 보내기
         var response = await request.send();
         if (response.statusCode == 200) {
-
           var responseBody = await http.Response.fromStream(response);
-
-          return responseBody.body;
-
-
-
-
-        } else {
-          print('Upload failed: ${response.statusCode}');
+          var jsonResponse = jsonDecode(responseBody.body);
+          if (jsonResponse['status'] == "200") {
+            return jsonResponse['imagePath'];
+          }
         }
-
       }
-
-
-
       return "";
-
     } catch (error) {
       // 오류 처리
       print('Error: $error');
       return "";
-
     }
   }
 
   Future<String> setTrackImage(Upload? upload) async {
-
-
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse( dotenv.get('API_URL') + 'setTrackImage'),
+      Uri.parse(dotenv.get('API_URL') + 'setTrackImage'),
     );
 
     try {
-
       // 이미지 파일 추가
-      if(upload != null){
-
+      if (upload != null) {
         request.fields['trackId'] = upload.trackId.toString();
 
         File file = File(upload.uploadImage!.files.first.path.toString());
@@ -128,19 +96,16 @@ class ImageProv extends ChangeNotifier{
 
         if (response.statusCode == 200) {
           var responseBody = await http.Response.fromStream(response);
-          return responseBody.body;
+          var jsonResponse = jsonDecode(responseBody.body);
+          if (jsonResponse['status'] == "200") {
+            return jsonResponse['imagePath'];
+          }
         }
       }
-
       return "";
-
     } catch (error) {
-      // 오류 처리
       print('Error: $error');
       return "";
-
     }
   }
-
-  }
-
+}

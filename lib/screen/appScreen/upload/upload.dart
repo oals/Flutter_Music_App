@@ -19,11 +19,9 @@ import 'package:skrrskrr/utils/helpers.dart';
 class UploadScreen extends StatefulWidget {
   const UploadScreen({
     super.key,
-    required this.uploadTrackFile,
+    // required this.uploadTrackFile,
     required this.isAlbum,
   });
-
-  final FilePickerResult? uploadTrackFile;
   final bool isAlbum;
 
   @override
@@ -31,28 +29,50 @@ class UploadScreen extends StatefulWidget {
 }
 
 class _UploadScreenState extends State<UploadScreen> {
-  String? fileName;
+  final ScrollController _scrollController = ScrollController();
+
   bool _isToggled = false;
   Uint8List? _imageBytes; // 선택된 이미지의 바이트 데이터
   final TextEditingController controller1 = TextEditingController();
   final TextEditingController controller2 = TextEditingController();
+  List<Upload> uploadTrackList = [];
+  late String? title;
+  late String? info;
+  bool isPrivacy = false;
+  int category = 0;
 
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    for(int i = 0; i < 4; i++){
+      Upload upload = Upload();
+      upload.uploadFileNm = "음원 추가";
+      uploadTrackList.add(upload);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-
     TrackProv trackProv = Provider.of<TrackProv>(context);
-    Upload upload = trackProv.model;
 
-    upload.uploadFile = widget.uploadTrackFile;
-    upload.uploadFileNm = widget.uploadTrackFile?.files.first.name;
+    void selectedFile(i) async {
+      FilePickerResult? selectedFile = await FilePicker.platform.pickFiles(type: FileType.audio);
+      if (selectedFile != null && selectedFile.files.isNotEmpty) {
+        uploadTrackList[i].uploadFile = selectedFile;
+        uploadTrackList[i].uploadFileNm = selectedFile.files.first.name;
 
-    void _saveTrackInfo() {
-      upload.trackNm = controller1.text;
-      upload.trackInfo = controller2.text;
+        setState(() {});
+      } else {
+        print("파일이 선택되지 않았습니다.");
+        return null;
+      }
     }
 
+    void _saveTrackInfo() {
+      title = controller1.text;
+      info = controller2.text;
+    }
 
     Future<void> _pickImage() async {
 
@@ -66,11 +86,10 @@ class _UploadScreenState extends State<UploadScreen> {
 
         FilePickerResult filePickerResult = await Helpers.convertUint8ListToFilePickerResult(_imageBytes!,result.files.first.size);
 
-        upload.uploadImage = filePickerResult;
-        upload.uploadImageNm = result.files.first.name ?? "";
+        uploadTrackList[0].uploadImage = filePickerResult;
+        uploadTrackList[0].uploadImageNm = result.files.first.name ?? "";
 
         setState(() {});
-
       }
     }
 
@@ -86,120 +105,344 @@ class _UploadScreenState extends State<UploadScreen> {
 
     return Container(
       width: 100.w,
+      height: 150.h,
       color: Colors.black,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 75),
-
+            SizedBox(height: 35),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white, //0xff8515e7
+                borderRadius: BorderRadius.circular(30),
+              ),
+              width: 50,
+              height: 8,
+            ),
             if(!widget.isAlbum)...[
+              SizedBox(height: 15,),
               GestureDetector(
                 onTap: (){
                   _pickImage();
                 },
                 child: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child:  _imageBytes != null // 선택된 이미지가 있을 경우
-                        ? Image.memory(
-                      _imageBytes!, // 선택된 이미지 표시
-                      width: 280,
-                      height: 280,
-                      fit: BoxFit.cover,
-                    ) : Image.asset(
-                      'assets/images/testImage.png', // 기본 이미지
-                      width: 280,
-                      height: 280,
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey,width: 3),
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child:  _imageBytes != null // 선택된 이미지가 있을 경우
+                          ? Image.memory(
+                        _imageBytes!, // 선택된 이미지 표시
+                        width: 40.w,
+                        height: 20.h,
+                        fit: BoxFit.cover,
+                      ) : Image.asset(
+                        'assets/images/testImage.png', // 기본 이미지
+                        width: 40.w,
+                        height: 20.h,
+                      ),
                     ),
                   ),
                 ),
               ),
+
+              SizedBox(height: 20,),
+
+
+              GestureDetector(
+                onTap:(){
+                  selectedFile(0);
+                },
+                child: Container(
+                  width: 70.w,
+                  height: 5.h,
+                  padding: EdgeInsets.only(left: 10,right: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(width: 2,color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child:Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            child: Icon(Icons.music_video_sharp,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(width: 5,),
+                          Container(
+                            child:Text(
+                              uploadTrackList[0].uploadFileNm!,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        child: Icon(Icons.add,
+                          color: Colors.white,
+                        ),
+
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
               SizedBox(height: 15),
             ],
 
             if(widget.isAlbum)...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      _pickImage();
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child:  _imageBytes != null // 선택된 이미지가 있을 경우
-                          ? Image.memory(
-                        _imageBytes!, // 선택된 이미지 표시
-                        width: 90,
-                        height: 90,
-                        fit: BoxFit.cover,
-                      ) : Image.asset(
-                        'assets/images/testImage.png', // 기본 이미지
-                        width: 90,
-                        height: 90,
-                      ),
+              Container(
+                height: 35.h,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 35,),
+                        GestureDetector(
+                          onTap: (){
+                            _pickImage();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey,width: 3),
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15.0),
+                              child:  _imageBytes != null // 선택된 이미지가 있을 경우
+                                  ? Image.memory(
+                                _imageBytes!, // 선택된 이미지 표시
+                                width: 40.w,
+                                height: 20.h,
+                                fit: BoxFit.cover,
+                              ) : Image.asset(
+                                'assets/images/testImage.png', // 기본 이미지
+                                width: 40.w,
+                                height: 20.h,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 15,),
+                        GestureDetector(
+                          onTap: (){
+                            _pickImage();
+                          },
+                          child: Container(
+                            width: 44 .w,
+                            height: 5.h,
+                            padding: EdgeInsets.only(left: 10,right: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.black,
+                                border: Border.all(width: 2,color: Colors.grey),
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            child:Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      child: Icon(Icons.image,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(width: 5,),
+                                    Container(
+                                      width: 25.w,
+                                      child:Text(
+                                        uploadTrackList[0].uploadImageNm ?? "이미지 선택",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+
+
+                                  ],
+                                ),
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: (){
-                      _pickImage();
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child:  _imageBytes != null // 선택된 이미지가 있을 경우
-                          ? Image.memory(
-                        _imageBytes!, // 선택된 이미지 표시
-                        width: 90,
-                        height: 90,
-                        fit: BoxFit.cover,
-                      ) : Image.asset(
-                        'assets/images/testImage.png', // 기본 이미지
-                        width: 90,
-                        height: 90,
+
+                    Scrollbar(
+                      thumbVisibility: true,
+                      controller: _scrollController,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 15),
+                        child: SingleChildScrollView(
+                          controller: _scrollController,
+                          child: Container(
+                            child: Column(
+                              children: [
+                                // SizedBox(height: 35,),
+                                for(int i = 0; i < uploadTrackList.length; i++)...[
+                                  GestureDetector(
+                                    onTap: (){
+                                      selectedFile(i);
+                                    },
+                                    child: Container(
+                                      width: 40.w,
+                                      height: 5.h,
+                                      padding: EdgeInsets.only(left: 10,right: 10),
+                                      decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          border: Border.all(width: 2,color: Colors.grey),
+                                          borderRadius: BorderRadius.circular(10)
+                                      ),
+                                      child:Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                child: Icon(Icons.music_video_sharp,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              SizedBox(width: 5,),
+                                              Container(
+                                                width: 20.w,
+                                                child:Text(
+                                                  uploadTrackList[i].uploadFileNm ?? "null",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w700
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            child: Icon(Icons.add,
+                                              color: Colors.white,
+                                            ),
+
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10,),
+                                ],
+                                GestureDetector(
+                                  onTap: (){
+                                    Upload addUpload = new Upload();
+                                    addUpload.uploadFileNm ='테스트';
+                                    uploadTrackList.add(addUpload);
+                                    setState(() {
+
+                                    });
+                                  },
+                                  child: Icon(Icons.add,
+                                    color: Colors.white,
+                                      size: 30,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: (){
-                      _pickImage();
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child:  _imageBytes != null // 선택된 이미지가 있을 경우
-                          ? Image.memory(
-                        _imageBytes!, // 선택된 이미지 표시
-                        width: 90,
-                        height: 90,
-                        fit: BoxFit.cover,
-                      ) : Image.asset(
-                        'assets/images/testImage.png', // 기본 이미지
-                        width: 90,
-                        height: 90,
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: (){
-                      _pickImage();
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child:  _imageBytes != null // 선택된 이미지가 있을 경우
-                          ? Image.memory(
-                        _imageBytes!, // 선택된 이미지 표시
-                        width: 90,
-                        height: 90,
-                        fit: BoxFit.cover,
-                      ) : Image.asset(
-                        'assets/images/testImage.png', // 기본 이미지
-                        width: 90,
-                        height: 90,
-                      ),
-                    ),
-                  ),
-                ],
+                    )
+
+
+                  ],
+                ),
               ),
+              SizedBox(height: 15),
+
+
+
+
+              // Wrap(
+              //   spacing: 15.0,
+              //   runSpacing: 20.0,
+              //   alignment: WrapAlignment.spaceBetween,
+              //   children: List.generate(uploadTrackList.length, (index) {
+              //     return GestureDetector(
+              //       onTap: (){
+              //         selectedFile(index);
+              //       },
+              //       child: Container(
+              //         width: 40.w,
+              //         height: 5.h,
+              //         padding: EdgeInsets.only(left: 10,right: 10),
+              //         decoration: BoxDecoration(
+              //             color: Colors.black,
+              //             border: Border.all(width: 2,color: Colors.grey),
+              //             borderRadius: BorderRadius.circular(10)
+              //         ),
+              //         child:Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //           children: [
+              //             Row(
+              //               crossAxisAlignment: CrossAxisAlignment.center,
+              //               children: [
+              //                 Container(
+              //                   child: Icon(Icons.music_video_sharp,
+              //                     color: Colors.white,
+              //                   ),
+              //                 ),
+              //                 SizedBox(width: 5,),
+              //                 Container(
+              //                   width: 20.w,
+              //                   child:Text(
+              //                     uploadTrackList[index].uploadFileNm ?? "null",
+              //                     style: TextStyle(
+              //                         color: Colors.white,
+              //                         fontSize: 16,
+              //                         fontWeight: FontWeight.w700
+              //                     ),
+              //                     overflow: TextOverflow.ellipsis,
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),
+              //             Container(
+              //               child: Icon(Icons.add,
+              //                 color: Colors.white,
+              //               ),
+              //
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     );
+              //   }).toList(),
+              // ),
+
               SizedBox(height: 15),
             ],
 
@@ -216,7 +459,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     GestureDetector(
                       onTap: (){
                         setState(() {
-                          upload.trackCategoryId = i;
+                          category = i;
                         },
                         );
                       },
@@ -224,7 +467,7 @@ class _UploadScreenState extends State<UploadScreen> {
                         width: 60,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: i == upload.trackCategoryId ?  Colors.black : Colors.white,
+                          color: i == category ?  Colors.black : Colors.white,
                           // color: i == upload.trackCategoryId ? Color(0xff8515e7) : Color(0xff200f2e),
                           // border: Border.all(width: 1, color: Color(0xff8515e7)),
                           borderRadius: BorderRadius.circular(20),
@@ -233,7 +476,7 @@ class _UploadScreenState extends State<UploadScreen> {
                           child: Text(
                             categoryList[i],
                             style: TextStyle(
-                              color: i == upload.trackCategoryId ?  Colors.white : Colors.black,
+                              color: i == category ?  Colors.white : Colors.black,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -289,7 +532,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     onTap : (){
                       setState(() {
                         _isToggled = !_isToggled;
-                        upload.isTrackPrivacy = _isToggled;
+                        isPrivacy = _isToggled;
 
                       });
                     },
@@ -321,12 +564,9 @@ class _UploadScreenState extends State<UploadScreen> {
             GestureDetector(
               onTap: () async {
                 _saveTrackInfo();
-                print('업로드 버튼 클릭');
-                await trackProv.uploadTrack();
+                await trackProv.uploadTrack(widget.isAlbum,uploadTrackList,title!,info!,isPrivacy,category);
                 Fluttertoast.showToast(msg: "업로드 되었습니다.");
-
                 Navigator.pop(context);
-
               },
               child: Center(
                 child: Container(

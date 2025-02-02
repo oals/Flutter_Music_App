@@ -15,13 +15,9 @@ class CommentProv extends ChangeNotifier {
   }
 
   Future<bool> setCommentLike(commentId) async {
-    print(commentId);
 
     final String memberId = await Helpers.getMemberId();
     final url = 'setCommentLike';
-
-    print('setCommentLike 호출');
-
     try {
 
       // POST 요청
@@ -35,39 +31,30 @@ class CommentProv extends ChangeNotifier {
         }, 
       );
 
-      if (response != null) {
-    
-        print(response);
+      if (response['status'] == '200') {
 
-
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
 
-    return true;
   }
 
 
   Future<bool> setComment(trackId, commentText,commentId) async {
-    print(trackId);
-    print(commentText);
-    print(commentId);
 
     final String memberId = await Helpers.getMemberId();
     final url = 'setComment';
 
-    print('setComment 호출');
-
     try {
-      // 요청 본문에 포함할 데이터 설정
 
-      // POST 요청
       final response = await Helpers.apiCall(
         url,
         method: "POST",
@@ -77,29 +64,26 @@ class CommentProv extends ChangeNotifier {
           'trackId': trackId.toString(),
           'commentText': commentText,
           'commentId': commentId,
-        }, // JSON으로 변환하여 본문에 포함
+        },
       );
 
-      if (response != null) {
-     
-        print(response);
+      if (response['status'] == '200') {
+        print('$url - Successful');
+        return true;;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
 
-    return true;
   }
 
   Future<bool> getComment(trackId) async {
 
-
-    print('getComment 호출');
     final String memberId = await Helpers.getMemberId();
     final url = 'getComment?trackId=${trackId}&memberId=${memberId}';
 
@@ -109,33 +93,29 @@ class CommentProv extends ChangeNotifier {
           url
       );
 
-      if (response != null) {
-        print(response);
+      if (response['status'] == '200') {
 
         commentModel = [];
         for (var comment in response['commentList']) {
           commentModel.add(CommentModel.fromJson(comment));
         }
-
+        print('$url - Successful');
+        return true;;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
-
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
 
-    return true;
   }
 
 
   Future<bool> getChildComment(commentId) async {
-    
-    print('getChildComment 호출');
-    
+
     final String memberId = await Helpers.getMemberId();
     final url = 'getChildComment?commentId=${commentId}&memberId=${memberId}';
 
@@ -145,7 +125,7 @@ class CommentProv extends ChangeNotifier {
           url
       );
 
-      if (response != null) {
+      if (response['status'] == '200') {
         
         childCommentModel = CommentModel();
         childCommentModel = CommentModel.fromJson(response['comment']);
@@ -154,20 +134,18 @@ class CommentProv extends ChangeNotifier {
         for(var childComment in response['childComment']){
           childCommentModel.childComment?.add(CommentModel.fromJson(childComment));
         }
-
-
+        print('$url - Successful');
+        return true;;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
-
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return false;
     }
 
-    return true;
   }
 
 }

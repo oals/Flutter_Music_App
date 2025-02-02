@@ -9,6 +9,10 @@ class Upload {
 
   String? trackNm;
 
+  String? albumNm;
+
+  String? albumInfo;
+
   String? trackInfo;
 
   String? trackTime;

@@ -27,7 +27,6 @@ class UploadTrackScreen extends StatefulWidget {
 
 class _UploadTrackScreenState extends State<UploadTrackScreen> {
 
-  late TrackList trackModel;
   final TextEditingController _searchController = TextEditingController();
   bool isLoading = false;
   bool isApiCall = false;
@@ -52,7 +51,8 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
             return Center(child: Text('데이터가 없습니다.'));
           }
 
-          trackModel = trackProv.trackModel;
+
+          TrackList trackModel = trackProv.trackModel;
           isLoading = true;
 
           return Container(
@@ -88,6 +88,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
               },
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 50,),
 
@@ -109,18 +110,17 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                     SizedBox(height: 25,),
 
 
-                Wrap(
-                  spacing: 30.0,
-                  runSpacing: 20.0,
-                  alignment: WrapAlignment.spaceBetween,
-                  children: trackModel.trackList.map((item) {
-                    return TrackSquareItem(
-                      track: item,
-                      
-                      bgColor: Colors.purpleAccent,
-                    );
-                  }).toList(),
-                ),
+                    Wrap(
+                      spacing: 30.0,
+                      runSpacing: 20.0,
+                      alignment: WrapAlignment.spaceBetween,
+                      children: trackModel.trackList.map((item) {
+                        return TrackSquareItem(
+                          track: item,
+                          bgColor: Colors.purpleAccent,
+                        );
+                      }).toList(),
+                    ),
 
 
 
