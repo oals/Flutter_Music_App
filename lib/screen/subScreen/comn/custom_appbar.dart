@@ -9,8 +9,8 @@ import 'package:skrrskrr/utils/helpers.dart';
 class CustomAppbar extends StatefulWidget {
   const CustomAppbar({
     super.key,
-    required this.fnBackBtnCallBack,
-    required this.fnUpdtBtnCallBack,
+    required this.fnBackBtncallBack,
+    required this.fnUpdtBtncallBack,
     required this.title,
     required this.isNotification,
     required this.isEditBtn,
@@ -19,8 +19,8 @@ class CustomAppbar extends StatefulWidget {
     required this.isAddAlbumBtn,
   });
 
-  final Function fnBackBtnCallBack;
-  final Function fnUpdtBtnCallBack;
+  final Function fnBackBtncallBack;
+  final Function fnUpdtBtncallBack;
 
   final String title;
   final bool isNotification;
@@ -57,7 +57,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
         children: [
           GestureDetector(
               onTap: () {
-                widget.fnBackBtnCallBack();
+                widget.fnBackBtncallBack();
               },
               child: Icon(
                 Icons.arrow_back_rounded,
@@ -72,7 +72,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
             children: [
               if (widget.isEditBtn) ...[
                 GestureDetector(
-                  onTap: () => {widget.fnUpdtBtnCallBack()},
+                  onTap: () => {widget.fnUpdtBtncallBack()},
                   child: SvgPicture.asset(
                     'assets/images/edit.svg',
                     width: 24,

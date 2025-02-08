@@ -22,7 +22,7 @@ class SearchProv extends ChangeNotifier {
   Future<bool> fnInit() async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'getSearchInit?memberId=${memberId}';
+    final url= '/api/getSearchInit?memberId=${memberId}';
 
     try {
       final response = await Helpers.apiCall(
@@ -61,7 +61,7 @@ class SearchProv extends ChangeNotifier {
 
     final String memberId = await Helpers.getMemberId();
     
-    final url = 'getSearchMore?'
+    final url= '/api/getSearchMore?'
         'memberId=${memberId}&'
         'moreId=${moreId}&searchText=${searchText}&'
         'listIndex=${listIndex}';
@@ -113,7 +113,7 @@ class SearchProv extends ChangeNotifier {
   Future<bool> searchTrack(String searchText,listIndex) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'getSearchTrack?memberId=${memberId}&searchText=$searchText&listIndex=$listIndex';
+    final url= '/api/getSearchTrack?memberId=${memberId}&searchText=$searchText&listIndex=$listIndex';
 
     try {
       final response = await Helpers.apiCall(

@@ -6,11 +6,11 @@ class TitleInfoEditModal extends StatefulWidget {
   const TitleInfoEditModal({
     super.key,
     required this.title,
-    required this.fnCallBack,
+    required this.fncallBack,
   });
 
   final String title;
-  final Function fnCallBack;
+  final Function fncallBack;
 
   @override
   State<TitleInfoEditModal> createState() => _TitleInfoEditModalState();
@@ -82,7 +82,7 @@ class _TitleInfoEditModalState extends State<TitleInfoEditModal> {
                     if(_editConntroller.text.length == 0){
                       Fluttertoast.showToast(msg: "닉네임을 입력해주세요.");
                     } else {
-                      widget.fnCallBack(_editConntroller.text); // 수정된 텍스트를 부모 위젯으로 전달
+                      widget.fncallBack(_editConntroller.text); // 수정된 텍스트를 부모 위젯으로 전달
                       Navigator.of(context).pop(); // 다이얼로그 닫기
                     }
                   },

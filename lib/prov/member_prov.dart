@@ -23,7 +23,7 @@ class MemberProv with ChangeNotifier {
 
 
   Future<void> fnMemberInfoUpdate({memberNickName,memberInfo}) async {
-    final url = 'setMemberInfoUpdate';
+    final url= '/api/setMemberInfoUpdate';
     try{
       final String memberId = await Helpers.getMemberId();
       dynamic response = await Helpers.apiCall(
@@ -55,7 +55,7 @@ class MemberProv with ChangeNotifier {
   Future<void> getMemberInfo(String memberEmail) async {
 
     final String? deviceToken = await FcmNotifications.getMyDeviceToken();
-    final url = 'getMemberInfo?memberEmail=${memberEmail}&deviceToken=${deviceToken}';
+    final url= '/api/getMemberInfo?memberEmail=${memberEmail}&deviceToken=${deviceToken}';
 
     try {
       final response = await Helpers.apiCall(
@@ -92,7 +92,7 @@ class MemberProv with ChangeNotifier {
   Future<bool> getMemberPageInfo(int memberId) async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url = 'getMemberPageInfo?memberId=${memberId}&loginMemberId=${loginMemberId}';
+    final url= '/api/getMemberPageInfo?memberId=${memberId}&loginMemberId=${loginMemberId}';
 
     try {
       final response = await Helpers.apiCall(

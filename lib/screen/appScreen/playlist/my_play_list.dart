@@ -33,7 +33,6 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
   @override
   Widget build(BuildContext context) {
     PlayListProv playListProv = Provider.of<PlayListProv>(context);
-    ImageProv imageProv = Provider.of<ImageProv>(context);
 
     return Scaffold(
       body: Container(
@@ -90,8 +89,8 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomAppbar(
-                            fnBackBtnCallBack: () => {Navigator.pop(context)},
-                            fnUpdtBtnCallBack:()=>{},
+                            fnBackBtncallBack: () => {Navigator.pop(context)},
+                            fnUpdtBtncallBack:()=>{},
                             title: "플레이리스트",
                             isNotification : false,
                             isEditBtn: false,

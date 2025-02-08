@@ -7,7 +7,8 @@ import 'package:skrrskrr/screen/modal/comment/comment.dart';
 import 'package:skrrskrr/screen/modal/playList/my_play_list_modal.dart';
 import 'package:skrrskrr/screen/modal/playList/new_play_list.dart';
 import 'package:skrrskrr/screen/modal/track/track_more_info.dart';
-import 'package:skrrskrr/screen/appScreen/upload/upload.dart';
+import 'package:skrrskrr/screen/modal/upload/upload.dart';
+import 'package:skrrskrr/screen/modal/upload/select_category.dart';
 
 // AppBottomRouter 클래스 정의
 class AppBottomModalRouter {
@@ -19,6 +20,7 @@ class AppBottomModalRouter {
         int? commentId,
         Track? track,
         bool? isAlbum,
+        Function? callBack,
       }) async {
 
     final Map<int, Future<dynamic> Function()> modalWidgets = {
@@ -29,7 +31,7 @@ class AppBottomModalRouter {
         // 파일 선택 처리
 
         return Container(
-          height: 90.h,
+          height: 100.h,
             child: UploadScreen(isAlbum: false,));
       },
       2: () async {
@@ -46,8 +48,13 @@ class AppBottomModalRouter {
           height: 90.h,
           child: UploadScreen(isAlbum : isAlbum!),
         );
+      },
+      6: () async {
+        return  Container(
+          height: 90.h,
+          child: SelectCategory(callBack: callBack!,),
+        );
       }
-
     };
 
     // Modal 위젯이 존재하면 showModalBottomSheet 호출

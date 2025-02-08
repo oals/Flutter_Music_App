@@ -24,7 +24,7 @@ class TrackProv extends ChangeNotifier{
 
   Future<bool> setTrackInfo(String? trackInfo) async {
 
-    final url = "setTrackInfo";
+    final url = "/api/setTrackInfo";
     
     try {
       final response = await Helpers.apiCall(
@@ -57,7 +57,7 @@ class TrackProv extends ChangeNotifier{
   Future<bool> getLikeTrack(listIndex) async {
     
     final String memberId = await Helpers.getMemberId();
-    final url = 'getLikeTrack?memberId=${memberId}&listIndex=${listIndex}';
+    final url= '/api/getLikeTrack?memberId=${memberId}&listIndex=${listIndex}';
 
     try {
       final response = await Helpers.apiCall(
@@ -90,7 +90,7 @@ class TrackProv extends ChangeNotifier{
   Future<bool> setTrackLike(trackId) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'setTrackLike?memberId=${memberId}&trackId=${trackId}';
+    final url= '/api/setTrackLike?memberId=${memberId}&trackId=${trackId}';
 
     try {
       final response = await Helpers.apiCall(
@@ -138,21 +138,21 @@ class TrackProv extends ChangeNotifier{
                             String title,
                             String info,
                             bool isPrivacy,
-                            int category) async {
+                            int categoryCd) async {
 
 
     final String memberId = await Helpers.getMemberId();
 
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse( dotenv.get('API_URL') + 'trackUpload'),
+      Uri.parse( dotenv.get('API_URL') + '/api/trackUpload'),
     );
 
     request.fields['memberId'] = memberId;
     request.fields[ isAlbum ? 'albumNm' :'trackNm'] = title;
     request.fields['trackInfo'] = info;
     request.fields['trackTime'] = model.trackTime ?? "00:00";
-    request.fields['trackCategoryId'] = (category + 1).toString();
+    request.fields['trackCategoryId'] = (categoryCd + 1).toString();
     request.fields['album'] = isAlbum.toString();
     request.fields['trackPrivacy'] = isPrivacy.toString();
 
@@ -216,7 +216,7 @@ class TrackProv extends ChangeNotifier{
   Future<bool> getUploadTrack(int listIndex) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'getUploadTrack?memberId=${memberId}&listIndex=${listIndex}';
+    final url= '/api/getUploadTrack?memberId=${memberId}&listIndex=${listIndex}';
 
     try {
       final response = await Helpers.apiCall(
@@ -247,7 +247,7 @@ class TrackProv extends ChangeNotifier{
 
   Future<bool> getTrackInfo(trackId) async {
     final String memberId = await Helpers.getMemberId();
-    final url = 'getTrackInfo?trackId=${trackId}&memberId=${memberId}';
+    final url= '/api/getTrackInfo?trackId=${trackId}&memberId=${memberId}';
 
     try {
       final response = await Helpers.apiCall(

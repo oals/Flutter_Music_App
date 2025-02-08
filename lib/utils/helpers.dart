@@ -93,11 +93,17 @@ class Helpers {
       var uri = Uri.parse(dotenv.get('API_URL') + url);
       var request;
 
-      // final storage = FlutterSecureStorage();
-      // String? jwtToken = await storage.read(key: "auth_token");
+      final storage = FlutterSecureStorage();
+      String? jwtToken = await storage.read(key: "jwt_token");
+      // 기본 헤더에 accessToken 추가
+      if (jwtToken != null) {
+        headers ??= {};  // headers가 null인 경우 빈 맵으로 초기화
+        if(!url.startsWith("/auth/")){
+          headers['Authorization'] = 'Bearer $jwtToken';  // 액세스 토큰을 Authorization 헤더에 추가
+        }
+      }
 
       if (method == 'POST') {
-
         // POST 요청 처리
         if (file != null) {
           // 파일이 있는 경우 Multipart 요청 사용

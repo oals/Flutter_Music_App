@@ -89,8 +89,8 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                   children: [
 
                     CustomAppbar(
-                      fnBackBtnCallBack: () => {Navigator.pop(context)},
-                      fnUpdtBtnCallBack:()=>{},
+                      fnBackBtncallBack: () => {Navigator.pop(context)},
+                      fnUpdtBtncallBack:()=>{},
 
                       title: "내 트랙",
                       isNotification : false,

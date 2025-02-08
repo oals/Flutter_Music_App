@@ -29,7 +29,7 @@ class AuthProv with ChangeNotifier{
   // jwt 토큰 생성
   Future<bool> fnGetJwtToken(User user) async {
 
-    final url = 'getJwtToken';
+    final url= '/auth/getJwtToken';
 
     try {
       final response = await Helpers.apiCall(
@@ -63,7 +63,7 @@ class AuthProv with ChangeNotifier{
   // jwt token 검증
   Future<bool> fnJwtAuthing(String? jwtToken) async {
 
-    final url = 'jwtAuthing';
+    final url= '/auth/jwtAuthing';
 
     try {
       final response = await Helpers.apiCall(
@@ -91,7 +91,7 @@ class AuthProv with ChangeNotifier{
   // jwt refresh token 검증
   Future<bool> fnRefreshJwtAuthing(String? refreshJwtToken) async {
 
-    final url = 'jwtAuthing';
+    final url= '/auth/jwtAuthing';
     final refresh_jwt_Token = refreshJwtToken;
 
     try {
@@ -126,7 +126,7 @@ class AuthProv with ChangeNotifier{
   // 파이어베이스 id Token 인증을 위한
   Future<bool> fnFireBaseAuthing(User user) async {
 
-    final url = 'fireBaseAuthing';
+    final url= '/auth/fireBaseAuthing';
 
     try {
       final response = await Helpers.apiCall(

@@ -18,7 +18,7 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> setPlayListLike(int playListId) async {
     final String memberId = await Helpers.getMemberId();
-    final url = 'setPlayListLike'; // POST URL
+    final url= '/api/setPlayListLike'; // POST URL
 
     try {
       final response = await Helpers.apiCall(
@@ -48,7 +48,7 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> setPlayListInfo(int playListId, String playListNewNm) async {
 
-    final url = 'setPlayListInfo';
+    final url= '/api/setPlayListInfo';
 
     try {
       final response = await Helpers.apiCall(
@@ -81,7 +81,7 @@ class PlayListProv extends ChangeNotifier {
   Future<bool> getPlayList(int trackId,int listIndex,bool isAlbum) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'getPlayList?memberId=${memberId}&trackId=${trackId}&listIndex=${listIndex}&isAlbum=${isAlbum}';
+    final url= '/api/getPlayList?memberId=${memberId}&trackId=${trackId}&listIndex=${listIndex}&isAlbum=${isAlbum}';
 
     try {
       final response = await Helpers.apiCall(
@@ -115,7 +115,7 @@ class PlayListProv extends ChangeNotifier {
   Future<bool> getPlayListInfo(int playListId) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'getPlayListInfo?playListId=${playListId}&memberId=${memberId}';
+    final url= '/api/getPlayListInfo?playListId=${playListId}&memberId=${memberId}';
 
     try {
       final response = await Helpers.apiCall(
@@ -143,7 +143,7 @@ class PlayListProv extends ChangeNotifier {
 
 
   Future<bool> setPlayListTrack(int playListId, int trackId) async {
-    final url = 'setPlayListTrack';
+    final url= '/api/setPlayListTrack';
 
     try {
       final response = await Helpers.apiCall(
@@ -176,7 +176,7 @@ class PlayListProv extends ChangeNotifier {
   Future<bool> setNewPlaylist(String playListNm, bool isPlayListPrivacy,bool isAlbum) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'newPlayList';
+    final url= '/api/newPlayList';
 
     try {
       final response = await Helpers.apiCall(

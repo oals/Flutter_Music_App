@@ -195,8 +195,8 @@ class _UserPageScreenState extends State<UserPageScreen> {
                       left: 0,
                       right: 0,
                       child: CustomAppbar(
-                        fnBackBtnCallBack: () => {Navigator.pop(context)},
-                        fnUpdtBtnCallBack: () => {
+                        fnBackBtncallBack: () => {Navigator.pop(context)},
+                        fnUpdtBtncallBack: () => {
                           setState(() {
                             isEdit = !isEdit;
                           })
@@ -247,7 +247,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                               child: TitleInfoEditModal(
                                                   title: memberModel
                                                       .memberNickName!,
-                                                  fnCallBack:
+                                                  fncallBack:
                                                       (String? newTitle) {
                                                     setNewTitle(1, newTitle!);
                                                   }),
@@ -312,7 +312,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                                                 title: memberModel
                                                                         .memberInfo ??
                                                                     "",
-                                                                fnCallBack:
+                                                                fncallBack:
                                                                     (String?
                                                                         newTitle) {
                                                                   setNewTitle(2,

@@ -17,7 +17,7 @@ class NotificationsProv extends ChangeNotifier{
   Future<bool> setDelNotificationIsView() async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'setDelNotificationIsView';
+    final url= '/api/setDelNotificationIsView';
 
     try {
       final response = await Helpers.apiCall(
@@ -51,7 +51,7 @@ class NotificationsProv extends ChangeNotifier{
 
   Future<bool> setAllNotificationisView() async {
     final String memberId = await Helpers.getMemberId();
-    final url = 'setAllNotificationisView';
+    final url= '/api/setAllNotificationisView';
 
     try {
       final response = await Helpers.apiCall(
@@ -85,7 +85,7 @@ class NotificationsProv extends ChangeNotifier{
   Future<bool> setNotificationIsView(int notificationId) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'setNotificationIsView';
+    final url= '/api/setNotificationIsView';
 
     try {
       final response = await Helpers.apiCall(
@@ -121,7 +121,7 @@ class NotificationsProv extends ChangeNotifier{
 
     String memberId = await Helpers.getMemberId();
 
-    final url = 'getNotifications?memberId=${memberId}&listIndex=${listIndex}';
+    final url= '/api/getNotifications?memberId=${memberId}&listIndex=${listIndex}';
 
     try {
       final response = await Helpers.apiCall(

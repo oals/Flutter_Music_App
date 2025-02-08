@@ -17,7 +17,7 @@ class CommentProv extends ChangeNotifier {
   Future<bool> setCommentLike(commentId) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'setCommentLike';
+    final url= '/api/setCommentLike';
     try {
 
       // POST 요청
@@ -51,7 +51,7 @@ class CommentProv extends ChangeNotifier {
   Future<bool> setComment(trackId, commentText,commentId) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'setComment';
+    final url= '/api/setComment';
 
     try {
 
@@ -85,7 +85,7 @@ class CommentProv extends ChangeNotifier {
   Future<bool> getComment(trackId) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'getComment?trackId=${trackId}&memberId=${memberId}';
+    final url= '/api/getComment?trackId=${trackId}&memberId=${memberId}';
 
 
     try {
@@ -117,7 +117,7 @@ class CommentProv extends ChangeNotifier {
   Future<bool> getChildComment(commentId) async {
 
     final String memberId = await Helpers.getMemberId();
-    final url = 'getChildComment?commentId=${commentId}&memberId=${memberId}';
+    final url= '/api/getChildComment?commentId=${commentId}&memberId=${memberId}';
 
 
     try {

@@ -27,21 +27,20 @@ class AuthService {
     UserCredential userCredential = await _auth.signInWithCredential(credential);
 
     //idToken 검증 과정 위해 서버로 전송
+    final url= '/auth/fireBaseAuthing';
+
     try {
       final response = await Helpers.apiCall(
-          'fireBaseAuthing',
+          url,
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ${await userCredential.user?.getIdToken()}',
           },
-
       );
 
       if(response['status'] == '200'){
-
         return userCredential.user;
-
       } else {
         // 오류 처리
         return null;

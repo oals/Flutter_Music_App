@@ -206,8 +206,8 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                 left: 0,
                                 right : 0,
                                 child: CustomAppbar(
-                                    fnBackBtnCallBack: ()=>{Navigator.pop(context)},
-                                    fnUpdtBtnCallBack:()=>{
+                                    fnBackBtncallBack: ()=>{Navigator.pop(context)},
+                                    fnUpdtBtncallBack:()=>{
                                       setState(() {
                                         isEdit = !isEdit;
                                       }),

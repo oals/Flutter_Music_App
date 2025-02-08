@@ -19,7 +19,7 @@ class FollowProv extends ChangeNotifier{
 
   Future<bool> getFollow() async {
     String memberId = await Helpers.getMemberId();
-    final url = 'getFollow?memberId=${memberId}';
+    final url= '/api/getFollow?memberId=${memberId}';
 
     try {
       // POST 요청
@@ -58,7 +58,7 @@ class FollowProv extends ChangeNotifier{
 
   Future<bool> setFollow(followerId,followingId) async {
 
-    final url = 'setFollow';
+    final url= '/api/setFollow';
     try {
 
       // POST 요청

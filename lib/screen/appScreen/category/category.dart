@@ -28,8 +28,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomAppbar(
-                fnBackBtnCallBack: () => {Navigator.pop(context)},
-                fnUpdtBtnCallBack: () => {},
+                fnBackBtncallBack: () => {Navigator.pop(context)},
+                fnUpdtBtncallBack: () => {},
                 title: "카테고리",
                 isNotification: true,
                 isEditBtn: false,

@@ -84,8 +84,8 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                 child: Column(
                   children: [
                     CustomAppbar(
-                      fnBackBtnCallBack: () => {Navigator.pop(context)},
-                      fnUpdtBtnCallBack:()=>{},
+                      fnBackBtncallBack: () => {Navigator.pop(context)},
+                      fnUpdtBtncallBack:()=>{},
                       title: "관심 트랙",
                       isNotification : false,
                       isEditBtn: false,

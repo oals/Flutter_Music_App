@@ -69,8 +69,8 @@ class _FollowScreenState extends State<FollowScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CustomAppbar(
-                    fnBackBtnCallBack: ()=>{Navigator.pop(context)},
-                    fnUpdtBtnCallBack:()=>{},
+                    fnBackBtncallBack: ()=>{Navigator.pop(context)},
+                    fnUpdtBtncallBack:()=>{},
                       title: titleText,
                       isNotification: true,
                     isEditBtn: false,

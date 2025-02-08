@@ -115,8 +115,8 @@ class _PlayListScreenState extends State<PlayListScreen> {
                             left: 0,
                             right: 0,
                             child: CustomAppbar(
-                              fnBackBtnCallBack: () => {Navigator.pop(context)},
-                              fnUpdtBtnCallBack:()=>{
+                              fnBackBtncallBack: () => {Navigator.pop(context)},
+                              fnUpdtBtncallBack:()=>{
                                 setState(() {
                                   isEdit = !isEdit;
                                 }),
@@ -178,7 +178,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                                 backgroundColor: Colors.transparent,
                                                 child: TitleInfoEditModal(
                                                   title: playListModel.playListNm!,
-                                                  fnCallBack:
+                                                  fncallBack:
                                                       (String? newTitle) async {
                                                     await playListProv
                                                         .setPlayListInfo(playListModel.playListId!, newTitle!);

@@ -21,14 +21,14 @@ class ImageProv extends ChangeNotifier {
       imagePath = "C:/uploads/trackImage/defaultTrackImage";
     }
 
-    final url = dotenv.get('API_URL') + 'imageLoader?trackImagePath=${imagePath}';
+    final url = dotenv.get('API_URL') + '/viewer/imageLoader?trackImagePath=${imagePath}';
     return url;
   }
 
   Future<String> setMemberImage(Upload? upload) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse(dotenv.get('API_URL') + 'setMemberImage'),
+      Uri.parse(dotenv.get('API_URL') + '/api/setMemberImage'),
     );
 
     try {
@@ -70,7 +70,7 @@ class ImageProv extends ChangeNotifier {
   Future<String> setTrackImage(Upload? upload) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse(dotenv.get('API_URL') + 'setTrackImage'),
+      Uri.parse(dotenv.get('API_URL') + '/api/setTrackImage'),
     );
 
     try {

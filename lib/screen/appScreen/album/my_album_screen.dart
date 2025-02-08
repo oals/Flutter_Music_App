@@ -90,8 +90,8 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomAppbar(
-                            fnBackBtnCallBack: () => {Navigator.pop(context)},
-                            fnUpdtBtnCallBack:()=>{},
+                            fnBackBtncallBack: () => {Navigator.pop(context)},
+                            fnUpdtBtncallBack:()=>{},
                             title: "내 앨범",
                             isNotification : false,
                             isEditBtn: false,
