@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class AuthService {

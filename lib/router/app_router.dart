@@ -9,6 +9,7 @@ import 'package:skrrskrr/screen/appScreen/playlist/my_play_list.dart';
 import 'package:skrrskrr/screen/appScreen/search/search.dart';
 import 'package:skrrskrr/screen/home.dart';
 import 'package:skrrskrr/screen/appScreen/comn/login.dart';
+import 'package:skrrskrr/screen/modal/new_player.dart';
 import 'package:skrrskrr/screen/modal/player.dart';
 import 'package:skrrskrr/screen/appScreen/comn/more.dart';
 import 'package:skrrskrr/screen/appScreen/track/music_info.dart';
@@ -242,9 +243,8 @@ class _AppScreenState extends State<AppScreen> {
     _pageController.addListener(() {
       int newPage = _pageController.page!.round();
       if (newPage != _currentPage) {
-        setState(() {
-          _currentPage = newPage;
-        });
+        _currentPage = newPage;
+        setState(() {});
       }
     });
 
@@ -252,9 +252,8 @@ class _AppScreenState extends State<AppScreen> {
   }
 
   void isFullScreenFunc(bool isFullScreenVal) {
-    setState(() {
-      isFullScreen = isFullScreenVal;
-    });
+    isFullScreen = isFullScreenVal;
+    setState(() {});
   }
 
   void isPlayingFunc(bool isPlayingVal) {
@@ -306,6 +305,7 @@ class _AppScreenState extends State<AppScreen> {
           ),
           if (showBottomNav)
             Positioned(
+              // top: 0,
               left: 0,
               right: 0,
               bottom: 2,
@@ -318,14 +318,29 @@ class _AppScreenState extends State<AppScreen> {
                 child: PageView(
                   controller: _pageController,
                   children: [
-                    PlayerScreen(
+                    HLSStreamPage(
                       isFullScreenFunc: isFullScreenFunc,
                       playerHeight: _height,
                       isFullScreen: isFullScreen,
-                      audioPath: testAudioPathList[0],
                       isPlayingFunc: isPlayingFunc,
                       isPlaying: isPlaying,
                     ),
+
+                    HLSStreamPage(
+                      isFullScreenFunc: isFullScreenFunc,
+                      playerHeight: _height,
+                      isFullScreen: isFullScreen,
+                      isPlayingFunc: isPlayingFunc,
+                      isPlaying: isPlaying,
+                    )
+                    // PlayerScreen(
+                    //   isFullScreenFunc: isFullScreenFunc,
+                    //   playerHeight: _height,
+                    //   isFullScreen: isFullScreen,
+                    //   audioPath: testAudioPathList[0],
+                    //   isPlayingFunc: isPlayingFunc,
+                    //   isPlaying: isPlaying,
+                    // ),
                   ],
                 ),
               ),

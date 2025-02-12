@@ -88,7 +88,7 @@ class AuthProv with ChangeNotifier{
   }
 
 
-  // jwt refresh token 검증
+  // jwt refresh token 검증 및 발행
   Future<bool> fnRefreshJwtAuthing(String? refreshJwtToken) async {
 
     final url= '/auth/jwtAuthing';

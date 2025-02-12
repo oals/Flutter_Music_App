@@ -35,6 +35,11 @@ dependencies:
   cached_network_image: ^3.2.0
   flutter_dotenv: ^5.0.2
   flutter_secure_storage : ^9.2.4
+  flutter_vlc_player: ^7.4.2
+  just_audio: ^0.9.18
+
+
+
   flutter:
     sdk: flutter
   firebase_messaging: ^15.1.5
