@@ -391,13 +391,6 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                       ],
                     ),
 
-
-
-
-
-
-
-
                   ]
                 ],
               );
@@ -406,92 +399,95 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
         )
 
             :  Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-              colors: [
-                Color(0xff000000), // 상단의 연한 색 (색상값을 조정하세요)
-                Color(0xff1c1c1c), // 하단의 어두운 색 (현재 색상)
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          width: 100.w,
-          padding: EdgeInsets.only(left: 10,right: 10,top: 10,bottom: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    // 원하는 둥글기 조정
-                    child: Image.asset(
-                      'assets/images/testImage.png',
-                      width: 45,
-                      height: 45,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'test',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        'test123',
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
+              color: Colors.black.withOpacity(1),
+              child: Container(
+                decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xff000000), // 상단의 연한 색 (색상값을 조정하세요)
+                  Color(0xff1c1c1c), // 하단의 어두운 색 (현재 색상)
                 ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              Container(
-                padding: EdgeInsets.only(right: 30),
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/images/backward_left.svg',
-                      width: 20,
-                      height: 20,
-                    ),
-                    SizedBox(width: 15,),
-                    if (!audioPlayerManager.model.fullScreen)
-                      Container(
-                        child: IconButton(
-                          icon: Icon(
-                            _isPlaying ? Icons.pause : Icons.play_arrow,
-                            size: 32,
-                            color: Colors.white,
-                          ),
-                          onPressed: _togglePlayPause,
                         ),
+                        width: 100.w,
+                        padding: EdgeInsets.only(left: 10,right: 10,top: 10,bottom: 10),
+                        child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      // 원하는 둥글기 조정
+                      child: Image.asset(
+                        'assets/images/testImage.png',
+                        width: 45,
+                        height: 45,
                       ),
-                    SizedBox(width: 15,),
-                    SvgPicture.asset(
-                      'assets/images/backward_right.svg',
-                      width: 20,
-                      height: 20,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'test',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          'test123',
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        ),
+                Container(
+                  padding: EdgeInsets.only(right: 30),
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/backward_left.svg',
+                        width: 20,
+                        height: 20,
+                      ),
+                      SizedBox(width: 15,),
+                      if (!audioPlayerManager.model.fullScreen)
+                        Container(
+                          child: IconButton(
+                            icon: Icon(
+                              _isPlaying ? Icons.pause : Icons.play_arrow,
+                              size: 32,
+                              color: Colors.white,
+                            ),
+                            onPressed: _togglePlayPause,
+                          ),
+                        ),
+                      SizedBox(width: 15,),
+                      SvgPicture.asset(
+                        'assets/images/backward_right.svg',
+                        width: 20,
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+                        ),
+                      ),
+            ),
 
       ),
     );

@@ -45,7 +45,7 @@ class AppBottomModalRouter {
       },
       5: () async {
         return  Container(
-          height: 90.h,
+          height: 100.h,
           child: UploadScreen(isAlbum : isAlbum!),
         );
       },
