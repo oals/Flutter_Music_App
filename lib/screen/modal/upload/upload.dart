@@ -215,7 +215,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   ),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
                       child: Text('앨범 수록곡',
@@ -226,26 +226,6 @@ class _UploadScreenState extends State<UploadScreen> {
                         ),
                       ),
                     ),
-
-                    GestureDetector(
-                      onTap : (){
-                        setState(() {
-                          _isToggled = !_isToggled;
-                          isPrivacy = _isToggled;
-                        });
-                      },
-                      child: Container(
-
-                        height: 50,
-                        child: Icon(
-                          !_isToggled ?
-                            Icons.lock_open :
-                            Icons.local_activity_outlined,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-
 
                   ],
                 ),
@@ -353,66 +333,6 @@ class _UploadScreenState extends State<UploadScreen> {
               ),
 
 
-
-
-              // Wrap(
-              //   spacing: 15.0,
-              //   runSpacing: 20.0,
-              //   alignment: WrapAlignment.spaceBetween,
-              //   children: List.generate(uploadTrackList.length, (index) {
-              //     return GestureDetector(
-              //       onTap: (){
-              //         selectedFile(index);
-              //       },
-              //       child: Container(
-              //         width: 40.w,
-              //         height: 5.h,
-              //         padding: EdgeInsets.only(left: 10,right: 10),
-              //         decoration: BoxDecoration(
-              //             color: Colors.black,
-              //             border: Border.all(width: 2,color: Colors.grey),
-              //             borderRadius: BorderRadius.circular(10)
-              //         ),
-              //         child:Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //           children: [
-              //             Row(
-              //               crossAxisAlignment: CrossAxisAlignment.center,
-              //               children: [
-              //                 Container(
-              //                   child: Icon(Icons.music_video_sharp,
-              //                     color: Colors.white,
-              //                   ),
-              //                 ),
-              //                 SizedBox(width: 5,),
-              //                 Container(
-              //                   width: 20.w,
-              //                   child:Text(
-              //                     uploadTrackList[index].uploadFileNm ?? "null",
-              //                     style: TextStyle(
-              //                         color: Colors.white,
-              //                         fontSize: 16,
-              //                         fontWeight: FontWeight.w700
-              //                     ),
-              //                     overflow: TextOverflow.ellipsis,
-              //                   ),
-              //                 ),
-              //               ],
-              //             ),
-              //             Container(
-              //               child: Icon(Icons.add,
-              //                 color: Colors.white,
-              //               ),
-              //
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     );
-              //   }).toList(),
-              // ),
-
-
             ],
 
             Padding(
@@ -425,59 +345,16 @@ class _UploadScreenState extends State<UploadScreen> {
                 isOnTap : true,
                 callBack : ()=>{
 
-                  // print('모달'),
                 AppBottomModalRouter.fnModalRouter(context,6, callBack:(categoryNm,categoryIdx)=>{
                   controller4.text = categoryNm,
                   categoryCd = categoryIdx
                 })
-
 
                 },
               ),
             ),
 
 
-
-            // Container(
-            //   width: 100.w,
-            //   child: SingleChildScrollView(
-            //     scrollDirection: Axis.horizontal,
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.start,
-            //       children: [
-            //         for (int i = 0; i < categoryList.length; i++) ...[
-            //           GestureDetector(
-            //             onTap: (){
-            //               setState(() {
-            //                 category = i;
-            //               },
-            //               );
-            //             },
-            //             child: Container(
-            //               width: 60,
-            //               height: 40,
-            //               decoration: BoxDecoration(
-            //                 color: i == category ?  Colors.black : Colors.white,
-            //                 border: Border.all(width: 2.5, color: Colors.white),
-            //                 borderRadius: BorderRadius.circular(20),
-            //               ),
-            //               child: Center(
-            //                 child: Text(
-            //                   categoryList[i],
-            //                   style: TextStyle(
-            //                     color: i == category ?  Colors.white : Colors.black,
-            //                     fontWeight: FontWeight.w700,
-            //                   ),
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //           SizedBox(width: 5,),
-            //         ]
-            //       ],
-            //     ),
-            //   ),
-            // ),
 
 
 
@@ -509,48 +386,59 @@ class _UploadScreenState extends State<UploadScreen> {
 
 
 
-            SizedBox(height: 25),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                if(!widget.isAlbum)
-                  Container(
-                  width: 48.w,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 3,color: Colors.black12),
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/images/album.svg',
-                            width: 30,
-                            height: 30,
-                            color: Colors.black,
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            '내 앨범에 추가',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16),
-                          ),
-                        ],
-                      ),
-                  ),
+            SizedBox(height: 10),
+            if(!widget.isAlbum)
+              Container(
+                width: 97.w,
+                height: 5.h,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 3,color: Color(0xff1c1c1c)),
+                  color: Color(0xff1c1c1c),
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                      GestureDetector(
+                        onTap : (){
+                          setState(() {
+                            _isToggled = !_isToggled;
+                            isPrivacy = _isToggled;
+                          });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 50,
+                              child:  !_isToggled ? SvgPicture.asset(
+                                'assets/images/lock_on.svg',
+                                width: 2.5.w,
+                                height: 2.5.h,
+                                color: Colors.white,
+                              ) : SvgPicture.asset(
+                                'assets/images/lock_off.svg',
+                                width: 2.5.w,
+                                height: 2.5.h,
+                                color: Colors.white,
+                              )
+                            ),
+                            SizedBox(width: 1.5,),
+                            Text( !_isToggled ? '공개' : '비공개',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
 
-              ],
-            ),
 
-
-
+            SizedBox(height: 10),
             GestureDetector(
               onTap: () async {
                 _saveTrackInfo();
@@ -561,18 +449,18 @@ class _UploadScreenState extends State<UploadScreen> {
               child: Center(
                 child: Container(
                   width: 97.w,
-                  height: 50,
+                  height: 5.h,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 3,color: Colors.black12),
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(width: 3,color: Color(0xff1c1c1c)),
+                    color: Color(0xff1c1c1c),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
                     child: Text(
                       '업로드',
                       style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 17,
+                          color: Colors.white,
+                          fontSize: 15,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.5),
                     ),

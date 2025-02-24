@@ -85,7 +85,7 @@ class Helpers {
         String method = 'GET',  // 기본값 'GET'
         Map<String, String>? headers,  // 요청 헤더 (optional)
         Map<String, dynamic>? body,    // 요청 바디 (optional)
-        File? file, // 파일 첨부 (optional)
+        List<http.MultipartFile?>? fileList, // 파일 첨부 (optional)
       }) async {
     try {
       print('공통 API 호출 : ' + url);
@@ -105,11 +105,17 @@ class Helpers {
 
       if (method == 'POST') {
         // POST 요청 처리
-        if (file != null) {
+        if (fileList != null && fileList.length != 0) {
+
+
           // 파일이 있는 경우 Multipart 요청 사용
           request = http.MultipartRequest('POST', uri)
-            ..headers.addAll(headers ?? {})
-            ..files.add(await http.MultipartFile.fromPath('file', file.path));
+            ..headers.addAll(headers ?? {});
+
+          for (http.MultipartFile? fileItem in fileList) {
+            request.files.add(fileItem);
+          }
+
 
           // 바디 추가
           if (body != null) {
@@ -117,6 +123,8 @@ class Helpers {
               request.fields[key] = value;
             });
           }
+
+
 
         } else {
           // 바디가 있는 일반 POST 요청 처리

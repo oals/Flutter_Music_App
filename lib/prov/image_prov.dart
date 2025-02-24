@@ -21,26 +21,22 @@ class ImageProv extends ChangeNotifier {
       imagePath = "C:/uploads/trackImage/defaultTrackImage";
     }
 
-    final url = dotenv.get('API_URL') + '/viewer/imageLoader?trackImagePath=${imagePath}';
+    final url = dotenv.get('API_URL') +
+        '/viewer/imageLoader?trackImagePath=${imagePath}';
     return url;
   }
 
   Future<String> setMemberImage(Upload? upload) async {
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse(dotenv.get('API_URL') + '/api/setMemberImage'),
-    );
+    List<http.MultipartFile?> fileList = [];
+    final url = '/api/setMemberImage';
 
     try {
-      // 이미지 파일 추가
       if (upload != null) {
-        request.fields['memberId'] = upload.memberId.toString();
-
         File file = File(upload.uploadImage!.files.first.path.toString());
         List<int> fileBytes = await file.readAsBytes();
 
         // 바이트 배열을 멀티파트 파일로 추가
-        request.files.add(
+        fileList.add(
           http.MultipartFile.fromBytes(
             'uploadImage', // 서버에서 받을 필드 이름
             fileBytes, // 선택한 파일의 바이트
@@ -48,41 +44,50 @@ class ImageProv extends ChangeNotifier {
             contentType: MediaType('image', 'jpeg'), // MIME 타입 (필요에 따라 수정)
           ),
         );
-
-        // 요청 보내기
-        var response = await request.send();
-        if (response.statusCode == 200) {
-          var responseBody = await http.Response.fromStream(response);
-          var jsonResponse = jsonDecode(responseBody.body);
-          if (jsonResponse['status'] == "200") {
-            return jsonResponse['imagePath'];
-          }
-        }
       }
-      return "";
+
+      // POST 요청
+      final response = await Helpers.apiCall(
+        url,
+        method: "POST",
+        headers: {'Content-Type': 'application/json'}, // JSON 형태로 전송
+        fileList: fileList,
+        body: {
+          'memberId': upload?.memberId.toString(),
+        },
+      );
+
+
+
+      if (response['status'] == "200") {
+        return response['imagePath'];
+      }
+
+
+      throw Exception('Failed to load data');
+
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
+      print('$url - Fail');
       return "";
     }
   }
 
   Future<String> setTrackImage(Upload? upload) async {
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse(dotenv.get('API_URL') + '/api/setTrackImage'),
-    );
+
+    List<http.MultipartFile?> fileList = [];
+    final url = '/api/setTrackImage';
 
     try {
+
       // 이미지 파일 추가
       if (upload != null) {
-        request.fields['trackId'] = upload.trackId.toString();
 
         File file = File(upload.uploadImage!.files.first.path.toString());
         List<int> fileBytes = await file.readAsBytes();
 
         // 바이트 배열을 멀티파트 파일로 추가
-        request.files.add(
+        fileList.add(
           http.MultipartFile.fromBytes(
             'uploadImage', // 서버에서 받을 필드 이름
             fileBytes, // 선택한 파일의 바이트
@@ -91,20 +96,29 @@ class ImageProv extends ChangeNotifier {
           ),
         );
 
-        // 요청 보내기
-        var response = await request.send();
-
-        if (response.statusCode == 200) {
-          var responseBody = await http.Response.fromStream(response);
-          var jsonResponse = jsonDecode(responseBody.body);
-          if (jsonResponse['status'] == "200") {
-            return jsonResponse['imagePath'];
-          }
-        }
       }
-      return "";
+
+
+      // POST 요청
+      final response = await Helpers.apiCall(
+        url,
+        method: "POST",
+        headers: {'Content-Type': 'application/json'}, // JSON 형태로 전송
+        fileList: fileList,
+        body: {
+          'trackId': upload?.trackId.toString(),
+        },
+      );
+
+
+      if(response['status'] == "200"){
+        return response['imagePath'];
+      }
+
+      throw Exception('Failed to load data');
     } catch (error) {
-      print('Error: $error');
+      // 오류 처리
+      print('$url - Fail');
       return "";
     }
   }

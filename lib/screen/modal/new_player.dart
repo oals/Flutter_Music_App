@@ -136,267 +136,254 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
         onTap: () {
           _height = 100.h; // 화면 전체 크기 확장
           audioPlayerManager.model.fullScreen = true;
-          setState(() {
-          });
+          setState(() {});
           widget.isFullScreenFunc(true);
         },
         child: widget.isFullScreen
             ?  Container(
-          height: 100.h,
+          height: 100.h, // 화면 높이에 맞게 조정
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xff000000), // 상단의 연한 색
-                Color(0xff000000),    // 하단의 어두운 색
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            color: Color(0xff000000),
+            // borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
               bool isCollapsed = constraints.maxHeight < 100; // 기준 높이 설정
 
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-
-
-                  if (!isCollapsed) ...[
-
-                    Stack(
-                      children: [
-                        Container(
-                          height : 100.h,
-                          child: Stack(
-                            children: [
-                              Image.asset(
-                                'assets/images/category_hiphop.jpg',
-                                width: 100.w,
-                                height: 85.h,
-                                fit: BoxFit.cover,
-                              ),
-                              Container(
-                                width: 100.w,
-                                height: 85.h,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.9), // 하단은 어두운 색
-                                      Colors.transparent, // 상단은 투명
-                                    ],
-                                    stops: [0, 1.0],
+              return SingleChildScrollView( // 화면 크기에 맞게 스크롤 가능하게
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (!isCollapsed) ...[
+                      Stack(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width, // 화면 너비에 맞게 조정
+                            height: 100.h, // 이미지 높이를 적절히 조정
+                            child: Stack(
+                              children: [
+                                Image.asset(
+                                  'assets/images/category_hiphop.jpg',
+                                  width: double.infinity, // 이미지 너비를 화면에 맞게
+                                  height: 85.h,
+                                  fit: BoxFit.cover,
+                                ),
+                                Container(
+                                  width: double.infinity, // 이미지와 동일한 너비로 설정
+                                  height: 85.h,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.9), // 하단은 어두운 색
+                                        Colors.transparent, // 상단은 투명
+                                      ],
+                                      stops: [0, 1.0],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Positioned(
-                          top : 40,
-                          right : 10,
-                          child: GestureDetector(
-                            onTap:(){
-                              audioPlayerManager.model.fullScreen = false;
-                              widget.isFullScreenFunc(false);
-                              _height = 80;
-                              setState(() {});
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 10),
-                              child: Container(
-                                  width: 30,
-                                  height : 30,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: Colors.grey,
-                                  ),
-                                  child: Icon(
-                                    Icons.keyboard_arrow_down_sharp,color: Colors.white,)
+                          Positioned(
+                            top : 40,
+                            right : 10,
+                            child: GestureDetector(
+                              onTap:(){
+                                audioPlayerManager.model.fullScreen = false;
+                                widget.isFullScreenFunc(false);
+                                _height = 80;
+                                setState(() {});
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 10),
+                                child: Container(
+                                    width: 30,
+                                    height : 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: Colors.grey,
+                                    ),
+                                    child: Icon(
+                                      Icons.keyboard_arrow_down_sharp,color: Colors.white,)
+                                ),
                               ),
                             ),
                           ),
-                        ),
 
-                        Positioned(
-                          top: 75.h,
-                          left : 0,
-                          right : 0,
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            print('해당 곡 정보 페이지로 이동');
-                                            audioPlayerManager.model.fullScreen =
-                                            false;
-                                            widget.isFullScreenFunc(false);
-                                            _height = 80;
-
-                                            // AppRouter.fnRouter(0);
-                                          },
-                                          child: const Text(
-                                            '종착역 (Feat. PH-1)',
-                                            style: TextStyle(
-                                              fontSize: 23,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () async {
-                                            print('해당 유저 페이지로 이동');
-                                            audioPlayerManager.model.fullScreen = false;
-                                            widget.isFullScreenFunc(false);
-                                            _height = 80;
-
-                                            GoRouter.of(context).push('/userPage/${await Helpers.getMemberId()}');
-                                          },
-                                          child: const Text(
-                                            '테이크원',
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              ValueListenableBuilder<Duration>(
-                                valueListenable:
-                                audioPlayerManager.positionNotifier,
-                                builder: (context, position, child) {
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Slider(
-                                        value: _currentPosition.inSeconds.toDouble(),
-                                        min: 0.0,
-                                        max: _totalDuration.inSeconds.toDouble(),
-                                        onChanged: _isBuffering
-                                            ? null
-                                            : (value) {
-                                          _currentPosition = Duration(seconds: value.toInt());
-                                          setState(() {});
-                                        },
-                                        onChangeEnd: _isBuffering ? null : _onSliderChangeEnd,
-                                        activeColor: Colors.white,
-                                        inactiveColor: Colors.grey,
-                                      ),
-                                      Container(
-                                        padding:
-                                        EdgeInsets.only(left: 20, right: 30),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              '${_currentPosition.toString().split('.').first}',
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors
-                                                      .white),
-                                            ),
-                                            Text(
-                                              '${_totalDuration.toString().split('.').first}',
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors
-                                                      .white),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-
-                              Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          Positioned(
+                            top: 75.h, // 전체 화면 높이에 비례한 위치 지정
+                            left : 0,
+                            right : 0,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundColor: Color(0xff1c1c1c),
-                                      // Changed to black
-                                      child: SvgPicture.asset(
-                                        'assets/images/backward_left.svg',
-                                        width: 15,
-                                        height: 15,
-                                      ),
-                                    ),
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundColor: Color(0xff1c1c1c),
-                                      // Changed to black
-                                      child: SvgPicture.asset(
-                                        'assets/images/rewind_15_left.svg',
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                    ),
-                                    _isBuffering
-                                        ? CircularProgressIndicator()
-                                        : IconButton(
-                                      icon: Icon(
-                                        _isPlaying ? Icons.pause : Icons.play_arrow,
-                                        size: 48,
-                                        color: Colors.grey,
-                                      ),
-                                      onPressed: _togglePlayPause,
-                                    ),
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundColor: Color(0xff1c1c1c),
-                                      child: SvgPicture.asset(
-                                        'assets/images/rewind_15_right.svg',
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                    ),
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundColor: Color(0xff1c1c1c),
-                                      child: SvgPicture.asset(
-                                        'assets/images/backward_right.svg',
-                                        width: 15,
-                                        height: 15,
+                                    Container(
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              print('해당 곡 정보 페이지로 이동');
+                                              audioPlayerManager.model.fullScreen =
+                                              false;
+                                              widget.isFullScreenFunc(false);
+                                              _height = 80;
+                                            },
+                                            child: const Text(
+                                              '종착역 (Feat. PH-1)',
+                                              style: TextStyle(
+                                                fontSize: 23,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              print('해당 유저 페이지로 이동');
+                                              audioPlayerManager.model.fullScreen = false;
+                                              widget.isFullScreenFunc(false);
+                                              _height = 80;
+
+                                              GoRouter.of(context).push('/userPage/${await Helpers.getMemberId()}');
+                                            },
+                                            child: const Text(
+                                              '테이크원',
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+
+                                ValueListenableBuilder<Duration>(
+                                  valueListenable:
+                                  audioPlayerManager.positionNotifier,
+                                  builder: (context, position, child) {
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Slider(
+                                          value: _currentPosition.inSeconds.toDouble(),
+                                          min: 0.0,
+                                          max: _totalDuration.inSeconds.toDouble(),
+                                          onChanged: _isBuffering
+                                              ? null
+                                              : (value) {
+                                            _currentPosition = Duration(seconds: value.toInt());
+                                            setState(() {});
+                                          },
+                                          onChangeEnd: _isBuffering ? null : _onSliderChangeEnd,
+                                          activeColor: Colors.white,
+                                          inactiveColor: Colors.grey,
+                                        ),
+                                        Container(
+                                          padding:
+                                          EdgeInsets.only(left: 20, right: 30),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                '${_currentPosition.toString().split('.').first}',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors
+                                                        .white),
+                                              ),
+                                              Text(
+                                                '${_totalDuration.toString().split('.').first}',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors
+                                                        .white),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+
+                                Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 30,
+                                        backgroundColor: Color(0xff1c1c1c),
+                                        child: SvgPicture.asset(
+                                          'assets/images/backward_left.svg',
+                                          width: 15,
+                                          height: 15,
+                                        ),
+                                      ),
+                                      CircleAvatar(
+                                        radius: 30,
+                                        backgroundColor: Color(0xff1c1c1c),
+                                        child: SvgPicture.asset(
+                                          'assets/images/rewind_15_left.svg',
+                                          width: 20,
+                                          height: 20,
+                                        ),
+                                      ),
+                                      _isBuffering
+                                          ? CircularProgressIndicator()
+                                          : IconButton(
+                                        icon: Icon(
+                                          _isPlaying ? Icons.pause : Icons.play_arrow,
+                                          size: 48,
+                                          color: Colors.grey,
+                                        ),
+                                        onPressed: _togglePlayPause,
+                                      ),
+                                      CircleAvatar(
+                                        radius: 30,
+                                        backgroundColor: Color(0xff1c1c1c),
+                                        child: SvgPicture.asset(
+                                          'assets/images/rewind_15_right.svg',
+                                          width: 20,
+                                          height: 20,
+                                        ),
+                                      ),
+                                      CircleAvatar(
+                                        radius: 30,
+                                        backgroundColor: Color(0xff1c1c1c),
+                                        child: SvgPicture.asset(
+                                          'assets/images/backward_right.svg',
+                                          width: 15,
+                                          height: 15,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
 
-                      ],
-                    ),
-
-                  ]
-                ],
+                        ],
+                      ),
+                    ]
+                  ],
+                ),
               );
             },
           ),
         )
+
 
             :  Container(
               color: Colors.black.withOpacity(1),

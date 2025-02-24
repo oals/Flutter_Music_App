@@ -28,6 +28,23 @@ class TrackMoreInfoScreen extends StatefulWidget {
 class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
 
   bool isImageLoad = false;
+  bool isAuth = false;
+  late String? memberId;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMemberId();
+  }
+
+  void _loadMemberId() async {
+    memberId = await Helpers.getMemberId();
+    if (widget.track.memberId.toString() == memberId) {
+      isAuth = true;
+      setState(() {});
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +52,7 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
     PlayListProv playListProv = Provider.of<PlayListProv>(context);
     TrackProv trackProv = Provider.of<TrackProv>(context);
     ImageProv imageProv = Provider.of<ImageProv>(context);
+
 
     return Container(
       width: 100.w,
@@ -137,8 +155,8 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
                   Row(
                     children: [
                       SvgPicture.asset(
-                        width: 13,
-                        height: 13,
+                        width: 16,
+                        height: 16,
                         widget.track.trackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
                         color: Colors.red,
                       ),
@@ -211,6 +229,23 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
               ),
             ),
 
+          ),
+
+        if(isAuth)
+          GestureDetector(
+            onTap: () async {
+              print(widget.track.trackId);
+              await trackProv.setLockTrack(widget.track.trackId,true);
+              Navigator.pop(context);
+            },
+            child: Container(
+              width: 94.w,
+              padding: EdgeInsets.all(10),
+              child: Text(
+                "트랙 비공개로 변경",
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              ),
+            ),
           ),
         ],
       ),

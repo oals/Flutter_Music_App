@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,6 +40,38 @@ class TrackProv extends ChangeNotifier{
           }
       );
       
+
+      if (response['status'] == "200") {
+        print('$url - Successful');
+        return true;
+      } else {
+        print('$url - Fail');
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
+  Future<bool> setLockTrack(int? trackId, bool isTrackPrivacy) async {
+
+    final url = "/api/setLockTrack";
+
+    try {
+      final response = await Helpers.apiCall(
+          url,
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: {
+            'trackId' : trackId,
+            'trackPrivacy' : isTrackPrivacy,
+          }
+      );
+
 
       if (response['status'] == "200") {
         print('$url - Successful');
@@ -140,75 +173,78 @@ class TrackProv extends ChangeNotifier{
                             bool isPrivacy,
                             int categoryCd) async {
 
-
     final String memberId = await Helpers.getMemberId();
+    final url = '/api/trackUpload';
+    try {
 
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse( dotenv.get('API_URL') + '/api/trackUpload'),
-    );
+      List<http.MultipartFile?> fileList = [];
 
-    request.fields['memberId'] = memberId;
-    request.fields[ isAlbum ? 'albumNm' :'trackNm'] = title;
-    request.fields['trackInfo'] = info;
-    request.fields['trackTime'] = model.trackTime ?? "00:00";
-    request.fields['trackCategoryId'] = (categoryCd + 1).toString();
-    request.fields['album'] = isAlbum.toString();
-    request.fields['trackPrivacy'] = isPrivacy.toString();
+      // 여러 파일을 업로드하는 과정
+      for (Upload upload in uploadTrackList) {
+        // uploadFile이 null이 아닌 경우에만 처리
+        if (upload.uploadFile != null && upload.uploadFile!.files.isNotEmpty) {
+          // 파일을 읽어들여 바이트 배열로 변환
+          File file = File(upload.uploadFile!.files.first.path.toString());
+          List<int> fileBytes = await file.readAsBytes();
+
+          // 바이트 배열을 멀티파트 파일로 추가
+          fileList.add(
+            http.MultipartFile.fromBytes(
+              'uploadFileList', // 서버에서 받을 필드 이름
+              fileBytes, // 선택한 파일의 바이트
+              filename: upload.uploadFileNm, // 파일 이름
+              contentType: MediaType('audio', 'mpeg'), // MIME 타입
+            ),
+          );
+        }
 
 
-    // 여러 파일을 업로드하는 과정
-    for (Upload upload in uploadTrackList) {
-      // uploadFile이 null이 아닌 경우에만 처리
-      if (upload.uploadFile != null && upload.uploadFile!.files.isNotEmpty) {
-        // 파일을 읽어들여 바이트 배열로 변환
-        File file = File(upload.uploadFile!.files.first.path.toString());
-        List<int> fileBytes = await file.readAsBytes();
+        // 이미지 파일 추가
+        if (uploadTrackList[0].uploadImage != null) {
+          File file = File(
+              uploadTrackList[0].uploadImage!.files.first.path.toString());
+          List<int> fileBytes = await file.readAsBytes();
 
-        // 바이트 배열을 멀티파트 파일로 추가
-        request.files.add(
-          http.MultipartFile.fromBytes(
-            'uploadFileList', // 서버에서 받을 필드 이름
-            fileBytes, // 선택한 파일의 바이트
-            filename: upload.uploadFileNm, // 파일 이름
-            contentType: MediaType('audio', 'mpeg'), // MIME 타입
-          ),
-        );
+          fileList.add(
+            http.MultipartFile.fromBytes(
+              'uploadImage', // 서버에서 받을 필드 이름
+              fileBytes,
+              filename: uploadTrackList[0].uploadImageNm ?? "", // 파일 이름
+              contentType: MediaType('image', 'jpeg'), // MIME 타입 (필요에 따라 수정)
+            ),
+          );
+        }
       }
 
 
-      // 이미지 파일 추가
-      if(uploadTrackList[0].uploadImage != null){
+      final response = await Helpers.apiCall(
+        url,
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}, // JSON 형태로 전송
+        fileList: fileList,
+        body: {
+          'memberId': memberId,
+          isAlbum ? 'albumNm' : 'trackNm': title,
+          'trackInfo': info,
+          'trackTime': model.trackTime ?? "00:00",
+          'trackCategoryId': (categoryCd + 1).toString(),
+          'album': isAlbum.toString(),
+          'trackPrivacy': isPrivacy.toString(),
+        },
+      );
 
-        File file = File(uploadTrackList[0].uploadImage!.files.first.path.toString());
-        List<int> fileBytes = await file.readAsBytes();
 
-        request.files.add(
-          http.MultipartFile.fromBytes(
-            'uploadImage', // 서버에서 받을 필드 이름
-            fileBytes,
-            filename: uploadTrackList[0].uploadImageNm ?? "", // 파일 이름
-            contentType: MediaType('image', 'jpeg'), // MIME 타입 (필요에 따라 수정)
-          ),
-        );
-      }
-    }
-
-    // 요청 보내기
-    var response = await request.send();
-    if (response.statusCode == 200) {
-      var responseBody = await http.Response.fromStream(response);
-      var jsonResponse = jsonDecode(responseBody.body);
-      if (jsonResponse['status'] == "200") {
+      if (response['status'] == "200") {
         print('Upload successful');
         trackModel = TrackList();
         await getUploadTrack(0);
         notify();
       } else {
-        print('Upload Fail');
+        throw Exception('Failed to load data');
       }
-    } else {
-      print('Upload Fail');
+    } catch (error) {
+      print('$url - Fail');
+      return null;
     }
   }
 
