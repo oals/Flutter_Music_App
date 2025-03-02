@@ -43,6 +43,7 @@ class FcmNotifications{
         ));
 
 
+
     /**로컬 알림을 초기화 하는 메서드
      *  알림을 표시하기 전에 꼭 초기화를 해야함
      * */
@@ -56,6 +57,9 @@ class FcmNotifications{
       badge: true, /** 앱 아이콘에 배지를 표시할 지 */
       sound: true, /** 알림 소리를 울릴 지 여부 */
     );
+
+    firebaseMessagingForegroundHandler();
+
   }
 
   /** 백그라운드 이벤트 리스너*/
@@ -72,7 +76,6 @@ class FcmNotifications{
 
       /** message(알림메시지)에서 푸시 알림에 대한 정보 가져옴 */
       RemoteNotification? notification = message.notification;
-
       /** 알림이 존재하면 */
       if (notification != null) {
 
