@@ -19,8 +19,6 @@ class SearchResultScreen extends StatefulWidget {
   const SearchResultScreen({
     super.key,
     required this.searchModel,
-    
-    
   });
 
 
@@ -32,48 +30,36 @@ class SearchResultScreen extends StatefulWidget {
 }
 
 class _SearchResultScreenState extends State<SearchResultScreen> {
-  bool isApiCall = false;
-  int listIndex = 0;
+
+  late SearchProv searchProv;
+
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    searchProv.clear();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     FollowProv followProv = Provider.of<FollowProv>(context);
+    searchProv = Provider.of<SearchProv>(context);
 
     void setFollow(int? followerId, int? followingId) async {
       await followProv.setFollow(followerId, followingId);
     }
 
-    ImageProv imageProv = Provider.of<ImageProv>(context);
-    SearchProv searchProv = Provider.of<SearchProv>(context);
-
     return Container(
       height: 67.h,
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
-          if (widget.searchModel.totalCount! >
-              widget.searchModel.trackList.length) {
-            // 스크롤이 끝에 도달했을 때
-            if (notification is ScrollUpdateNotification &&
-                notification.metrics.pixels ==
-                    notification.metrics.maxScrollExtent) {
-              if (!isApiCall) {
-                Future(() async {
-                  setState(() {
-                    isApiCall = true;
-                  });
-                  listIndex = listIndex + 20;
-                  await searchProv.searchMore(
-                      3, widget.searchModel.searchText!, listIndex);
-                  await Future.delayed(Duration(seconds: 3));
-                  setState(() {
-                    isApiCall = false;
-                  });
-                });
-              }
-              return true;
+          if (widget.searchModel.totalCount! > widget.searchModel.trackList.length) {
+            if (searchProv.shouldLoadMoreData(notification)) {
+              searchProv.loadMoreData(3);
             }
           } else {
-            isApiCall = false;
+            searchProv.resetApiCallStatus();
           }
           return false;
         },
@@ -114,11 +100,8 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                 SizedBox(
                   height: 8,
                 ),
-                for (int i = 0;
-                    i < widget.searchModel.memberList.length;
-                    i++) ...[
+                for (int i = 0; i < widget.searchModel.memberList.length; i++) ...[
                   FollowItem(
-
                     filteredFollowItem: widget.searchModel.memberList[i],
                     setFollow: setFollow,
                     isFollowingItem: false,
@@ -205,7 +188,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   )
                 ],
               ],
-              if (isApiCall)...[
+              if (searchProv.isApiCall)...[
                 SizedBox(height: 10,),
                 CircularProgressIndicator(
                   color: Color(0xffff0000),

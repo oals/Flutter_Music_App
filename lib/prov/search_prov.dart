@@ -10,16 +10,52 @@ import 'package:skrrskrr/utils/helpers.dart';
 
 class SearchProv extends ChangeNotifier {
   SearchModel model = SearchModel();
-  SearchModel moreModel = SearchModel();
   List<SearchHistoryModel> searchHistoryModel = [];
   List<String> popularTrackHistory = [];
+  bool isApiCall = false;
+  int listIndex = 0;
 
   void notify() {
     notifyListeners();
   }
 
+  void clear() {
+    model = SearchModel();
+    searchHistoryModel = [];
+    popularTrackHistory = [];
+    isApiCall = false;
+    listIndex = 0;
+  }
 
-  Future<bool> fnInit() async {
+  Future<void> loadMoreData(int moreId) async {
+    if (!isApiCall) {
+      setApiCallStatus(true);
+      listIndex += 20;
+      await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
+      await searchMore(moreId, model.searchText!, listIndex);
+      setApiCallStatus(false);
+    }
+  }
+
+  bool shouldLoadMoreData(ScrollNotification notification) {
+    return notification is ScrollUpdateNotification &&
+        notification.metrics.pixels == notification.metrics.maxScrollExtent;
+  }
+
+  void setApiCallStatus(bool status) {
+    isApiCall = status;
+    notify();
+  }
+
+  void resetApiCallStatus() {
+    isApiCall = false;
+    notify();
+  }
+
+
+
+
+  Future<bool> fnSearchInit() async {
 
     final String memberId = await Helpers.getMemberId();
     final url= '/api/getSearchInit?memberId=${memberId}';
@@ -76,27 +112,27 @@ class SearchProv extends ChangeNotifier {
 
       if ((response['status'] == '200')) {
         if (listIndex == 0) {
-          moreModel.trackList = [];
-          moreModel.memberList = [];
-          moreModel.playListList = [];
+          model.trackList = [];
+          model.memberList = [];
+          model.playListList = [];
         }
 
         if(moreId == 1) {
           for (var item in response['memberList']) {
-            moreModel.memberList.add(FollowInfoModel.fromJson(item));
+            model.memberList.add(FollowInfoModel.fromJson(item));
           }
-          moreModel.totalCount = response['totalCount'];
+          model.totalCount = response['totalCount'];
         } else if (moreId == 2) {
           for (var item in response['playListList']) {
-            moreModel.playListList.add(PlayListModel.fromJson(item));
+            model.playListList.add(PlayListModel.fromJson(item));
           }
-          moreModel.totalCount = response['totalCount'];
+          model.totalCount = response['totalCount'];
         } else if (moreId == 3) {
           for (var item in response['trackList']) {
             model.trackList.add(Track.fromJson(item));
           }
         }
-        moreModel.status = response['status'];
+        model.status = response['status'];
         print('$url - Successful');
         return true;
       } else {

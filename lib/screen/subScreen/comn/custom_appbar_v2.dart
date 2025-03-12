@@ -43,7 +43,7 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     memberNickName = prefs.getString("memberNickName");
-    memberImagePath= prefs.getString("memberImagePath");
+    memberImagePath = prefs.getString("memberImagePath");
     isLoading = true;
     setState(() {});
   }

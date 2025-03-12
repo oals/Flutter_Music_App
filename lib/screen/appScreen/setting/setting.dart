@@ -23,8 +23,6 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
 
-  bool isLoading = false;
-
   @override
   Widget build(BuildContext context) {
 

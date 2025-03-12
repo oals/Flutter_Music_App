@@ -20,11 +20,22 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
 
-  bool isLoading = false;
-  late NotificationsModel notificationsModel;
+  late Future<bool> _getNotificationInitFuture;
   late bool notificationIsViewExistence = false;
   late bool notificationIsExistence = false;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getNotificationInitFuture = Provider.of<NotificationsProv>(context,listen: false).getNotifications(0);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,15 +59,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 height: 75.h,
                 child: SingleChildScrollView(
                   child: FutureBuilder<bool>(
-                    future: !isLoading ? notificationsProv.getNotifications(0) : null,
+                    future: _getNotificationInitFuture,
 
                     builder: (context, snapshot){
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator();
                       } else {
-                        isLoading = true;
-                        notificationsModel = notificationsProv.model;
 
+                        NotificationsModel notificationsModel = notificationsProv.model;
 
                         void setNotificationIsView(NotificationsModel notificationItem) async {
 
@@ -145,10 +155,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                                           notificationIsViewExistence = false,
 
-
-                                          setState(() {
-
-                                          },
+                                          setState(() {},
                                           ),
 
                                         },

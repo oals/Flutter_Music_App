@@ -269,20 +269,21 @@ class _AppScreenState extends State<AppScreen> {
     }
   }
 
-  List<String> testAudioPathList = [
-    'audios/testAudio.mp3',
-    'audios/testAudio2.mp3',
-    'audios/testAudio3.mp3'
-  ];
+  bool isShowBottomNav() {
+    return !(widget.child is SplashScreen || widget.child is LoginScreen);
+  }
+
+  bool isShowAppbar() {
+    return isFullScreen || !(widget.child is HomeScreen || widget.child is SettingScreen);
+  }
+
 
   @override
   Widget build(BuildContext context) {
     double _height = isFullScreen ? 100.h : 80;
-    bool showBottomNav =
-        !(widget.child is SplashScreen || widget.child is LoginScreen);
 
-    bool showAppbar =
-        isFullScreen || !(widget.child is HomeScreen || widget.child is SettingScreen);
+    bool showBottomNav = isShowBottomNav();
+    bool showAppbar = isShowAppbar();
 
     return Scaffold(
       appBar: !showAppbar
@@ -318,29 +319,23 @@ class _AppScreenState extends State<AppScreen> {
                 child: PageView(
                   controller: _pageController,
                   children: [
-                    HLSStreamPage(
-                      isFullScreenFunc: isFullScreenFunc,
-                      playerHeight: _height,
-                      isFullScreen: isFullScreen,
-                      isPlayingFunc: isPlayingFunc,
-                      isPlaying: isPlaying,
-                    ),
 
-                    HLSStreamPage(
-                      isFullScreenFunc: isFullScreenFunc,
-                      playerHeight: _height,
-                      isFullScreen: isFullScreen,
-                      isPlayingFunc: isPlayingFunc,
-                      isPlaying: isPlaying,
-                    )
-                    // PlayerScreen(
+                    // HLSStreamPage(
                     //   isFullScreenFunc: isFullScreenFunc,
                     //   playerHeight: _height,
                     //   isFullScreen: isFullScreen,
-                    //   audioPath: testAudioPathList[0],
                     //   isPlayingFunc: isPlayingFunc,
                     //   isPlaying: isPlaying,
                     // ),
+                    //
+                    // HLSStreamPage(
+                    //   isFullScreenFunc: isFullScreenFunc,
+                    //   playerHeight: _height,
+                    //   isFullScreen: isFullScreen,
+                    //   isPlayingFunc: isPlayingFunc,
+                    //   isPlaying: isPlaying,
+                    // ),
+
                   ],
                 ),
               ),

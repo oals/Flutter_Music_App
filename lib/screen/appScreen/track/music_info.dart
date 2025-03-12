@@ -48,11 +48,15 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
   late String? memberId;
   bool isAuth = false;
   bool isEdit = false;
-  bool isLoading = false;
+  Uint8List? _imageBytes = null; // 선택된 이미지의 바이트 데이터
+
+  late Future<bool> _getTrackInfoFuture;
+
 
   @override
   void initState() {
     super.initState();
+    _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getTrackInfo(widget.trackId);
     _loadMemberId();
   }
 
@@ -60,7 +64,6 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
     memberId = await Helpers.getMemberId();
   }
 
-  Uint8List? _imageBytes = null; // 선택된 이미지의 바이트 데이터
 
   @override
   Widget build(BuildContext context) {
@@ -89,13 +92,15 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
         upload.uploadImageNm = result.files.first.name ?? "";
 
 
-        String newImagePath = await imageProv.setTrackImage(upload);
+        String newImagePath = await imageProv.updateTrackImage(upload);
         if(newImagePath != ""){
           trackInfoModel.trackImagePath = newImagePath;
         }
         setState(() {});
       }
     }
+
+
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -104,7 +109,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
           width: 100.w,
           height: 140.h,
           child: FutureBuilder<bool>(
-            future: !isLoading ? trackProv.getTrackInfo(widget.trackId) : null,
+            future: _getTrackInfoFuture,
             // 비동기 메소드 호출
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -115,9 +120,9 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                 return Center(child: Text('데이터가 없습니다.'));
               }
 
+
               Track trackInfoModel = trackProv.trackInfoModel;
 
-              isLoading = true;
 
               if (trackInfoModel.memberId.toString() == memberId.toString()) {
                 isAuth = true;

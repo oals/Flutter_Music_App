@@ -150,10 +150,6 @@ class AuthProv with ChangeNotifier{
     }
   }
 
-
-
-
-
   Future<void> logout() async {
     final storage = FlutterSecureStorage();
     SharedPreferences prefs =

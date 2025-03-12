@@ -27,15 +27,28 @@ class UploadTrackScreen extends StatefulWidget {
 
 class _UploadTrackScreenState extends State<UploadTrackScreen> {
 
-  late TrackList trackModel;
-  bool isLoading = false;
-  bool isApiCall = false;
-  int listIndex = 0;
+  late Future<bool> _getUploadInitFuture;
+  late TrackProv trackProv;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getUploadInitFuture = Provider.of<TrackProv>(context, listen: false).getUploadTrack(0);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    trackProv.clear();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
 
-    TrackProv trackProv = Provider.of<TrackProv>(context);
+    trackProv = Provider.of<TrackProv>(context);
 
     return Scaffold(
       body: Container(
@@ -43,7 +56,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
         width: 100.w,
         height: 100.h,
         child: FutureBuilder<bool>(
-          future: !isLoading ? trackProv.getUploadTrack(0) : null, // 비동기 메소드 호출
+          future: _getUploadInitFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -53,33 +66,16 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
               return Center(child: Text('데이터가 없습니다.'));
             }
 
-            trackModel = trackProv.trackModel;
-            isLoading = true;
+            TrackList trackModel = trackProv.trackModel;
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (trackModel.totalCount! > trackModel.trackList.length) {
-                  // 스크롤이 끝에 도달했을 때
-                  if (notification is ScrollUpdateNotification &&
-                      notification.metrics.pixels ==
-                          notification.metrics.maxScrollExtent) {
-                    if (!isApiCall) {
-                      Future(() async {
-                        setState(() {
-                          print('2');
-                          isApiCall = true;
-                        });
-                        listIndex = listIndex + 20;
-                        await trackProv.getUploadTrack(listIndex);
-                        await Future.delayed(Duration(seconds: 3));
-                        setState(() {
-                          isApiCall = false;
-                        });
-                      });
-                    }
+                  if (trackProv.shouldLoadMoreData(notification)) {
+                    trackProv.loadMoreData("UploadTrack");
                   }
                 } else {
-                  isApiCall = false;
+                  trackProv.resetApiCallStatus();
                 }
                 return false;
               },
@@ -117,7 +113,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
 
                     SizedBox(height: 5),
 
-                    if(isApiCall)
+                    if(trackProv.isApiCall)
                       CircularProgressIndicator(
                         color: Color(0xffff0000),
                       ),

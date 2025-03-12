@@ -12,16 +12,12 @@ class MoreScreen extends StatefulWidget {
   const MoreScreen({
     super.key,
     required this.moreId,
-    
-    
     required this.searchText,
     required this.totalCount,
   });
 
 
   final int? moreId;
-  
-  
   final String searchText;
   final int? totalCount;
 
@@ -31,16 +27,29 @@ class MoreScreen extends StatefulWidget {
 
 class _MoreScreenState extends State<MoreScreen> {
 
-  bool isLoading = false;
-  bool isApiCall = false;
-  int listIndex = 0;
 
+  late Future<bool> _getMoreInfoInitFuture;
+  late SearchProv searchProv;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getMoreInfoInitFuture = Provider.of<SearchProv>(context,listen: false).searchMore(widget.moreId!, widget.searchText,0);
+
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    searchProv.clear();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    print('more build');
-
+    searchProv = Provider.of<SearchProv>(context);
     FollowProv followProv = Provider.of<FollowProv>(context);
 
     void setFollow(int? followerId, int? followingId) async {
@@ -48,16 +57,12 @@ class _MoreScreenState extends State<MoreScreen> {
     }
 
 
-    SearchProv searchProv = Provider.of<SearchProv>(context);
-
-    print('전달된 길이값');
-    print(widget.totalCount);
 
     return Container(
       padding: EdgeInsets.all(5),
       color: Color(0xff1c1c1c),
       child: FutureBuilder<bool>(
-        future: !isLoading ? searchProv.searchMore(widget.moreId!, widget.searchText,0) : null,
+        future: _getMoreInfoInitFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -65,8 +70,8 @@ class _MoreScreenState extends State<MoreScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          isLoading = true;
-          SearchModel searchModel = searchProv.moreModel;
+
+          SearchModel searchModel = searchProv.model;
           searchModel.searchText = widget.searchText;
 
 
@@ -102,25 +107,12 @@ class _MoreScreenState extends State<MoreScreen> {
                   height: 72.h,
                   child: NotificationListener<ScrollNotification>(
                     onNotification: (notification) {
-                      if(widget.totalCount! > searchModel.memberList.length){
-                        // 스크롤이 끝에 도달했을 때
-                        if (notification is ScrollUpdateNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                          if(!isApiCall) {
-                            Future(() async {
-                              setState(() {
-                                isApiCall = true;
-                              });
-                              listIndex = listIndex + 20;
-                              await searchProv.searchMore(widget.moreId!, searchModel.searchText!,listIndex);
-                              await Future.delayed(Duration(seconds: 3));
-                              setState(() {
-                                isApiCall = false;
-                              });
-                            });
-                          }
+                      if (widget.totalCount! > searchModel.memberList.length) {
+                        if (searchProv.shouldLoadMoreData(notification)) {
+                          searchProv.loadMoreData(widget.moreId!);
                         }
                       } else {
-                        isApiCall = false;
+                        searchProv.resetApiCallStatus();
                       }
                       return false;
                     },
@@ -132,7 +124,6 @@ class _MoreScreenState extends State<MoreScreen> {
                           ),
                           for (int i = 0; i < searchModel.memberList.length; i++) ...[
                             FollowItem(
-                              
                               filteredFollowItem: searchModel.memberList[i],
                               setFollow: setFollow,
                               isFollowingItem: false,
@@ -151,31 +142,19 @@ class _MoreScreenState extends State<MoreScreen> {
                   ),
                 ),
               ],
+
               if (widget.moreId == 2) ...[
                 SizedBox(height: 15,),
                 Container(
                   height: 72.h,
-                  child: NotificationListener(
+                  child: NotificationListener <ScrollNotification>(
                     onNotification: (notification) {
-                      if(widget.totalCount! > searchModel.playListList.length){
-                        // 스크롤이 끝에 도달했을 때
-                        if (notification is ScrollUpdateNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                          if(!isApiCall) {
-                            Future(() async {
-                              setState(() {
-                                isApiCall = true;
-                              });
-                              listIndex = listIndex + 20;
-                              await searchProv.searchMore(widget.moreId!, searchModel.searchText!,listIndex);
-                              await Future.delayed(Duration(seconds: 3));
-                              setState(() {
-                                isApiCall = false;
-                              });
-                            });
-                          }
+                      if (widget.totalCount! > searchModel.playListList.length) {
+                        if (searchProv.shouldLoadMoreData(notification)) {
+                          searchProv.loadMoreData(widget.moreId!);
                         }
                       } else {
-                        isApiCall = false;
+                        searchProv.resetApiCallStatus();
                       }
                       return false;
                     },
@@ -184,7 +163,6 @@ class _MoreScreenState extends State<MoreScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           PlayListSquareItem(
-                            
                             playList: searchModel.playListList,
                           ),
                         ],
@@ -231,13 +209,11 @@ class _MoreScreenState extends State<MoreScreen> {
                   ),
                   TrackListItem(
                     trackItem: searchModel.trackList[i],
-                    
-                    
                   )
                 ],
               ],
 
-              if (isApiCall)...[
+              if (searchProv.isApiCall)...[
                 SizedBox(height: 10,),
                 CircularProgressIndicator(
                   color: Color(0xffff0000),

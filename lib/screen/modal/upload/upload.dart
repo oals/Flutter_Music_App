@@ -442,7 +442,11 @@ class _UploadScreenState extends State<UploadScreen> {
             GestureDetector(
               onTap: () async {
                 _saveTrackInfo();
-                await trackProv.uploadTrack(widget.isAlbum,uploadTrackList,title!,info!,isPrivacy,categoryCd);
+                if (widget.isAlbum) {
+                  await trackProv.uploadAlbum(uploadTrackList,title!,info!,isPrivacy,categoryCd);
+                } else {
+                  await trackProv.uploadTrack(uploadTrackList,title!,info!,isPrivacy,categoryCd);
+                }
                 Fluttertoast.showToast(msg: "업로드 되었습니다.");
                 Navigator.pop(context);
               },

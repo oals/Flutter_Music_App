@@ -40,11 +40,12 @@ class _UserPageScreenState extends State<UserPageScreen> {
   bool isAuth = false;
   bool isEdit = false;
   late String? memberId;
-  bool isLoading = false;
 
+  late Future<bool> _getUserInitFuture;
   @override
   void initState() {
     super.initState();
+    _getUserInitFuture = Provider.of<MemberProv>(context, listen: false).getMemberPageInfo(widget.memberId);
     _loadMemberId();
   }
 
@@ -78,7 +79,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
         upload.uploadImage = filePickerResult;
         upload.uploadImageNm = result.files.first.name ?? "";
 
-        String newImagePath = await imageProv.setMemberImage(upload);
+        String newImagePath = await imageProv.updateMemberImage(upload);
         if(newImagePath.isNotEmpty){
           memberModel.memberImagePath = newImagePath;
         }
@@ -116,7 +117,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
           width: 100.w,
           height: 195.h,
           child: FutureBuilder<bool>(
-            future: !isLoading ? memberProv.getMemberPageInfo(widget.memberId) : null,
+            future: _getUserInitFuture,
             // 비동기 함수 호출
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -127,8 +128,6 @@ class _UserPageScreenState extends State<UserPageScreen> {
                 if (memberModel.memberId.toString() == memberId) {
                   isAuth = true;
                 }
-
-                isLoading = true;
 
                 return Stack(
                   children: [

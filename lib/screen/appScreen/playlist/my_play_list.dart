@@ -22,62 +22,56 @@ class MyPlayListScreen extends StatefulWidget {
   State<MyPlayListScreen> createState() => _MyPlayListScreenState();
 }
 
+
 class _MyPlayListScreenState extends State<MyPlayListScreen> {
-  late PlaylistList playListModel;
+  late PlayListProv playListProv;
+  late Future<bool> _getPlayListInitFuture;
 
-  bool isLoading = false;
-  bool isApiCall = false;
-  int listIndex = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getPlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getPlayList(0, 0, false);
+  }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    playListProv.clear();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    PlayListProv playListProv = Provider.of<PlayListProv>(context);
+    playListProv = Provider.of<PlayListProv>(context);
 
     return Scaffold(
       body: Container(
         height: 100.h,
         color: Color(0xff1c1c1c),
         child: FutureBuilder<bool>(
-          future: !isLoading ? playListProv.getPlayList(0,0,false) : null, // 비동기 메소드 호출
+          future: _getPlayListInitFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('오류 발생: ${snapshot.error}'));
-            } else if (!snapshot.hasData) {
-              return Center(child: Text('데이터가 없습니다.'));
             }
 
-            playListModel = playListProv.playlistList;
-            isLoading = true;
+            PlaylistList playListModel = playListProv.playlistList;
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (playListModel.totalCount! > playListModel.playList.length) {
-                  // 스크롤이 끝에 도달했을 때
-                  if (notification is ScrollUpdateNotification &&
-                      notification.metrics.pixels ==
-                          notification.metrics.maxScrollExtent) {
-                    if (!isApiCall) {
-                      Future(() async {
-                        setState(() {
-                          isApiCall = true;
-                        });
-                        listIndex = listIndex + 20;
-                        await playListProv.getPlayList(0,listIndex,false);
-                        await Future.delayed(Duration(seconds: 3));
-                        setState(() {
-                          isApiCall = false;
-                        });
-                      });
-                    }
+                  if (playListProv.shouldLoadMoreData(notification)) {
+                    playListProv.loadMoreData();
                   }
                 } else {
-                  isApiCall = false;
+                  playListProv.resetApiCallStatus();
                 }
                 return false;
               },
+
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -108,7 +102,7 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                         ],
                       ),
                     ),
-                    if (isApiCall)...[
+                    if (playListProv.isApiCall)...[
                       SizedBox(height: 10,),
                       CircularProgressIndicator(
                         color: Color(0xffff0000),

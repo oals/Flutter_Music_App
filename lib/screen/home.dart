@@ -56,7 +56,16 @@ class HomeScreenState extends StatefulWidget {
 
 class _HomeScreenStateState extends State<HomeScreenState> {
 
-  bool isLoading = false;
+  late Future<bool> _getHomeInitFuture;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getHomeInitFuture = Provider.of<HomeProv>(context, listen: false).firstLoad();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,14 +86,14 @@ class _HomeScreenStateState extends State<HomeScreenState> {
           scrollDirection: Axis.vertical,
 
           child: FutureBuilder<bool>(
-              future: !isLoading ? homeProv.firstLoad() : null, // 비동기 함수 호출
+              future: _getHomeInitFuture, // 비동기 함수 호출
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
                       child: SizedBox()
                   );
                 } else {
-                  isLoading = true;
+
                   HomeModel homeModel = homeProv.model;
 
                   // 데이터가 성공적으로 로드되었을 때

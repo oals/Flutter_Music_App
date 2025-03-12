@@ -26,7 +26,14 @@ class _CommentScreenState extends State<CommentScreen> {
   final TextEditingController textController = TextEditingController();
   String? selectCommentMemberNickName = "";
   int? commentId = null;
-  bool? isLoading = false;
+  late Future<bool> _getCommentInitFuture;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getCommentInitFuture = Provider.of<CommentProv>(context, listen: false).getComment(widget.trackId);
+  }
 
   @override
   void dispose() {
@@ -65,9 +72,7 @@ class _CommentScreenState extends State<CommentScreen> {
               width: 90.w,
               height: 75.h,
               child: FutureBuilder<bool>(
-                future: !isLoading!
-                    ? commentProv.getComment(widget.trackId)
-                    : null, // 비동기 함수 호출
+                future: _getCommentInitFuture, // 비동기 함수 호출
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // 로딩 상태
@@ -75,8 +80,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   } else {
                     // 데이터가 있을 때
                     List<CommentModel> commentModel = commentProv.commentModel;
-        
-                    isLoading = true;
+
         
                     Future<void> fnRouter(memberId)  async{
                       GoRouter.of(context).push('/userPage/${memberId}');

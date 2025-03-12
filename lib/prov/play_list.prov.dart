@@ -10,9 +10,45 @@ class PlayListProv extends ChangeNotifier {
 
   PlaylistList playlistList = PlaylistList();
   PlayListInfoModel modelPlayInfo = PlayListInfoModel();
+  bool isApiCall = false;
+  int listIndex = 0;
+
 
   void notify() {
     notifyListeners();
+  }
+
+  void clear() {
+    playlistList = PlaylistList();
+    modelPlayInfo = PlayListInfoModel();
+    isApiCall = false;
+    listIndex = 0;
+  }
+
+
+  bool shouldLoadMoreData(ScrollNotification notification) {
+    return notification is ScrollUpdateNotification &&
+        notification.metrics.pixels == notification.metrics.maxScrollExtent;
+  }
+
+  void setApiCallStatus(bool status) {
+    isApiCall = status;
+    notify();
+  }
+
+  void resetApiCallStatus() {
+    isApiCall = false;
+    notify();
+  }
+
+  Future<void> loadMoreData() async {
+    if (!isApiCall) {
+      setApiCallStatus(true);
+      listIndex = listIndex + 20;
+      await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
+      await getPlayList(0, listIndex, false);
+      setApiCallStatus(false);
+    }
   }
 
 

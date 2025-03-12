@@ -22,24 +22,54 @@ class MyAlbumScreen extends StatefulWidget {
 class _MyAlbumScreenState extends State<MyAlbumScreen> {
   late PlaylistList playListModel;
 
-  bool isLoading = false;
+  late Future<bool> _getPlayListFuture;
   bool isApiCall = false;
   int listIndex = 0;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getPlayList(0, 0, true);
+  }
 
+  bool _shouldLoadMoreData(ScrollNotification notification) {
+    return notification is ScrollUpdateNotification &&
+        notification.metrics.pixels == notification.metrics.maxScrollExtent;
+  }
+
+  void _setApiCallStatus(bool status) {
+    setState(() {
+      isApiCall = status;
+    });
+  }
+
+  void _resetApiCallStatus() {
+    setState(() {
+      isApiCall = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     PlayListProv playListProv = Provider.of<PlayListProv>(context);
-    ImageProv imageProv = Provider.of<ImageProv>(context);
 
+    Future<void> _loadMoreData() async {
+      if (!isApiCall) {
+        _setApiCallStatus(true);
+        listIndex = listIndex + 20;
+        await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
+        await playListProv.getPlayList(0, listIndex, true);
+        _setApiCallStatus(false);
+      }
+    }
 
     return Scaffold(
       body: Container(
         height: 100.h,
         color: Color(0xff1c1c1c),
         child: FutureBuilder<bool>(
-          future: !isLoading ? playListProv.getPlayList(0,0,true) : null, // 비동기 메소드 호출
+          future: _getPlayListFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -50,32 +80,15 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
             }
 
             playListModel = playListProv.playlistList;
-            isLoading = true;
-
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (playListModel.totalCount! > playListModel.playList.length) {
-                  // 스크롤이 끝에 도달했을 때
-                  if (notification is ScrollUpdateNotification &&
-                      notification.metrics.pixels ==
-                          notification.metrics.maxScrollExtent) {
-                    if (!isApiCall) {
-                      Future(() async {
-                        setState(() {
-                          isApiCall = true;
-                        });
-                        listIndex = listIndex + 20;
-                        await playListProv.getPlayList(0,listIndex,true);
-                        await Future.delayed(Duration(seconds: 3));
-                        setState(() {
-                          isApiCall = false;
-                        });
-                      });
-                    }
+                  if (_shouldLoadMoreData(notification)) {
+                    _loadMoreData();
                   }
                 } else {
-                  isApiCall = false;
+                  _resetApiCallStatus();
                 }
                 return false;
               },

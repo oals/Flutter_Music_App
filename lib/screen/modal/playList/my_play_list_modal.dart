@@ -24,19 +24,22 @@ class MyPlayListModalScreen extends StatefulWidget {
 }
 
 class _MyPlayListModalScreenState extends State<MyPlayListModalScreen> {
+  late PlayListProv playListProv;
+  late Future<bool> _getPlayListInitFuture;
 
-  bool isLoading = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getPlayListInitFuture = Provider.of<PlayListProv>(context,listen: false).getPlayList(widget.trackId,0,false);
+  }
 
   @override
   Widget build(BuildContext context) {
 
-
-
-    PlayListProv playListProv = Provider.of<PlayListProv>(context);
-
+    playListProv = Provider.of<PlayListProv>(context);
     ImageProv imageProv = Provider.of<ImageProv>(context);
 
-    print('myplaylist빌드');
 
     return Container(
       height: 70.h,
@@ -46,21 +49,18 @@ class _MyPlayListModalScreenState extends State<MyPlayListModalScreen> {
         color: Colors.black,
       ),
       child: FutureBuilder<bool>(
-        future: !isLoading ? playListProv.getPlayList(widget.trackId,0,false) : null, // 데이터를 가져오는 함수
+        future: _getPlayListInitFuture, // 데이터를 가져오는 함수
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // 데이터 로딩 중
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // 에러 발생
             return Center(child: Text('오류 발생: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
-            // 데이터가 없거나 비어있는 경우
             return Center(child: Text('플레이리스트가 없습니다.'));
           }
 
           PlaylistList playListModel = playListProv.playlistList;
-          isLoading = true;
 
           return SingleChildScrollView(
             child: Column(
@@ -122,7 +122,6 @@ class _MyPlayListModalScreenState extends State<MyPlayListModalScreen> {
                                     child: CachedNetworkImage(
                                       imageUrl: imageProv.imageLoader(playListModel.playList[index].playListImagePath),  // 이미지 URL
                                       placeholder: (context, url) {
-
                                         return CircularProgressIndicator();  // 로딩 중에 표시할 위젯
                                       },
                                       errorWidget: (context, url, error) {

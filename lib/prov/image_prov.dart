@@ -26,9 +26,9 @@ class ImageProv extends ChangeNotifier {
     return url;
   }
 
-  Future<String> setMemberImage(Upload? upload) async {
+  Future<String> updateMemberImage(Upload? upload) async {
     List<http.MultipartFile?> fileList = [];
-    final url = '/api/setMemberImage';
+    final url = '/api/updateMemberImage';
 
     try {
       if (upload != null) {
@@ -73,10 +73,10 @@ class ImageProv extends ChangeNotifier {
     }
   }
 
-  Future<String> setTrackImage(Upload? upload) async {
+  Future<String> updateTrackImage(Upload? upload) async {
 
     List<http.MultipartFile?> fileList = [];
-    final url = '/api/setTrackImage';
+    final url = '/api/updateTrackImage';
 
     try {
 

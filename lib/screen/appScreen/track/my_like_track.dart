@@ -25,21 +25,34 @@ class MyLikeTrackScreen extends StatefulWidget {
 }
 
 class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
-  late TrackList trackModel;
-  bool isLoading = false;
-  bool isApiCall = false;
-  int listIndex = 0;
+  late TrackProv trackProv;
+  late Future<bool> _getLikeTrackInitFuture;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getLikeTrackInitFuture = Provider.of<TrackProv>(context,listen: false,).getLikeTrack(0);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    trackProv.clear();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    TrackProv trackProv = Provider.of<TrackProv>(context);
+    trackProv = Provider.of<TrackProv>(context);
 
     return Scaffold(
       body: Container(
         color: Color(0xff1c1c1c),
         height: 100.h,
         child: FutureBuilder<bool>(
-          future: !isLoading ? trackProv.getLikeTrack(0) : null, // 비동기 메소드 호출
+          future: _getLikeTrackInitFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -49,35 +62,20 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
               return Center(child: Text('데이터가 없습니다.'));
             }
 
-            trackModel = trackProv.trackModel;
-            isLoading = true;
+            TrackList trackModel = trackProv.trackModel;
+
 
             return NotificationListener<ScrollNotification>(
-              onNotification: (notification) {
-                if (trackModel.totalCount! > trackModel.trackList.length) {
-                  // 스크롤이 끝에 도달했을 때
-                  if (notification is ScrollUpdateNotification &&
-                      notification.metrics.pixels ==
-                          notification.metrics.maxScrollExtent) {
-                    if (!isApiCall) {
-                      Future(() async {
-                        setState(() {
-                          isApiCall = true;
-                        });
-                        listIndex = listIndex + 20;
-                        await trackProv.getLikeTrack(listIndex);
-                        await Future.delayed(Duration(seconds: 3));
-                        setState(() {
-                          isApiCall = false;
-                        });
-                      });
+                onNotification: (notification) {
+                  if (trackModel.totalCount! > trackModel.trackList.length) {
+                    if (trackProv.shouldLoadMoreData(notification)) {
+                      trackProv.loadMoreData("LikeTrack");
                     }
+                  } else {
+                    trackProv.resetApiCallStatus();
                   }
-                } else {
-                  isApiCall = false;
-                }
-                return false;
-              },
+                  return false;
+                },
 
 
               child: SingleChildScrollView(
@@ -110,7 +108,7 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                         );
                       }).toList(),
                     ),
-                    if (isApiCall)...[
+                    if (trackProv.isApiCall)...[
                       SizedBox(height: 10,),
                       CircularProgressIndicator(
                         color: Color(0xffff0000),
@@ -119,6 +117,7 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                     SizedBox(
                       height: 80,
                     ),
+
                   ],
                 ),
               ),

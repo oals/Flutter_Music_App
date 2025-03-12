@@ -34,11 +34,14 @@ class _PlayListScreenState extends State<PlayListScreen> {
   late String? memberId;
   bool isAuth = false;
   bool isEdit = false;
-  bool isLoading = false;
+
+  late PlayListProv playListProv;
+  late Future<bool> _getPlayListInitFuture;
 
   @override
   void initState() {
     super.initState();
+    _getPlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getPlayListInfo(widget.playListId);
     _loadMemberId();
   }
 
@@ -49,9 +52,8 @@ class _PlayListScreenState extends State<PlayListScreen> {
   @override
   Widget build(BuildContext context) {
 
-    PlayListProv playListProv = Provider.of<PlayListProv>(context);
+    playListProv = Provider.of<PlayListProv>(context);
 
-    ImageProv imageProv = Provider.of<ImageProv>(context);
 
     return Scaffold(
       body: Container(
@@ -59,8 +61,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
         height: 100.h,
         color: Colors.black,
         child: FutureBuilder<bool>(
-          future:
-              !isLoading ? playListProv.getPlayListInfo(widget.playListId) : null,
+          future: _getPlayListInitFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -73,8 +74,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
             if (playListModel.memberId.toString() == memberId) {
               isAuth = true;
             }
-
-            isLoading = true;
 
             return SingleChildScrollView(
               child: Column(
