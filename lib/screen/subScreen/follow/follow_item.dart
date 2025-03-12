@@ -7,6 +7,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/follow/follow_info_model.dart';
 import 'package:skrrskrr/model/follow/follow_model.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
 import 'package:skrrskrr/utils/helpers.dart';
 
@@ -20,7 +21,6 @@ class FollowItem extends StatefulWidget {
     required this.isFollowingItem,
     required this.isSearch,
   });
-
 
   final FollowInfoModel? filteredFollowItem;
   final Function setFollow;
@@ -54,25 +54,10 @@ class _FollowItemState extends State<FollowItem> {
               children: [
 
                 ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: imageProv.imageLoader(widget.filteredFollowItem!.followImagePath),  // 이미지 URL
-                    placeholder: (context, url) {
-                      
-                      return CircularProgressIndicator();  // 로딩 중에 표시할 위젯
-                    },
-                    errorWidget: (context, url, error) {
-                      print('이미지 로딩 실패: $error');
-                      return Icon(Icons.error);  // 로딩 실패 시 표시할 위젯
-                    },
-                    fadeInDuration: Duration(milliseconds: 500),  // 이미지가 로드될 때 페이드 인 효과
-                    fadeOutDuration: Duration(milliseconds: 500),  // 이미지가 사라질 때 페이드 아웃 효과
-                    width: 13.w,  // 이미지의 세로 크기
-                  
-                    fit: BoxFit.cover,  // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
-                    imageBuilder: (context, imageProvider) {
-                      
-                      return Image(image: imageProvider);  // 이미지가 로드되면 표시
-                    },
+                  child: CustomCachedNetworkImage(
+                    imagePath: widget.filteredFollowItem!.followImagePath,
+                    imageWidth : 13.w,
+                    imageHeight : null
                   ),
                 ),
 

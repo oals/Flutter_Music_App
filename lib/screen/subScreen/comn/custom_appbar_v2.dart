@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class CustomAppbarV2 extends StatefulWidget implements PreferredSizeWidget {
@@ -67,22 +68,10 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
           children: [
             Row(
               children: [
-                CachedNetworkImage(
-                  imageUrl: imageProv.imageLoader(memberImagePath),
-                  placeholder: (context, url) {
-                    return SizedBox(); // 로딩 중에 표시할 위젯
-                  },
-                  errorWidget: (context, url, error) {
-                    return Icon(Icons.error); // 로딩 실패 시 표시할 위젯
-                  },
-                  fadeInDuration: Duration(milliseconds: 1000),
-                  fadeOutDuration: Duration(milliseconds: 1000),
-                  width: 9.w,
-                  height: 4.5.h,
-                  fit: BoxFit.cover,
-                  imageBuilder: (context, imageProvider) {
-                    return ClipOval(child: Image(image: imageProvider)); // 이미지가 로드되면 표시
-                  },
+                CustomCachedNetworkImage(
+                    imagePath:memberImagePath,
+                    imageWidth : 9.w,
+                    imageHeight : 4.5.h
                 ),
                 SizedBox(
                   width: 10,

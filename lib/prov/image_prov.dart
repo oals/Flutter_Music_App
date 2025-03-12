@@ -17,12 +17,12 @@ class ImageProv extends ChangeNotifier {
   }
 
   String imageLoader(imagePath) {
+
     if (imagePath == "" || imagePath == null) {
       imagePath = "C:/uploads/trackImage/defaultTrackImage";
     }
 
-    final url = dotenv.get('API_URL') +
-        '/viewer/imageLoader?trackImagePath=${imagePath}';
+    final url = dotenv.get('API_URL') + '/viewer/imageLoader?trackImagePath=${imagePath}';
     return url;
   }
 
@@ -32,18 +32,7 @@ class ImageProv extends ChangeNotifier {
 
     try {
       if (upload != null) {
-        File file = File(upload.uploadImage!.files.first.path.toString());
-        List<int> fileBytes = await file.readAsBytes();
-
-        // 바이트 배열을 멀티파트 파일로 추가
-        fileList.add(
-          http.MultipartFile.fromBytes(
-            'uploadImage', // 서버에서 받을 필드 이름
-            fileBytes, // 선택한 파일의 바이트
-            filename: upload.uploadImageNm ?? "", // 파일 이름
-            contentType: MediaType('image', 'jpeg'), // MIME 타입 (필요에 따라 수정)
-          ),
-        );
+        fileList.add(await Helpers.fnSetUploadImageFile(upload, "uploadImage"));
       }
 
       // POST 요청
@@ -57,12 +46,9 @@ class ImageProv extends ChangeNotifier {
         },
       );
 
-
-
       if (response['status'] == "200") {
         return response['imagePath'];
       }
-
 
       throw Exception('Failed to load data');
 
@@ -82,20 +68,8 @@ class ImageProv extends ChangeNotifier {
 
       // 이미지 파일 추가
       if (upload != null) {
-
-        File file = File(upload.uploadImage!.files.first.path.toString());
-        List<int> fileBytes = await file.readAsBytes();
-
         // 바이트 배열을 멀티파트 파일로 추가
-        fileList.add(
-          http.MultipartFile.fromBytes(
-            'uploadImage', // 서버에서 받을 필드 이름
-            fileBytes, // 선택한 파일의 바이트
-            filename: upload.uploadImageNm ?? "", // 파일 이름
-            contentType: MediaType('image', 'jpeg'), // MIME 타입 (필요에 따라 수정)
-          ),
-        );
-
+        fileList.add(await Helpers.fnSetUploadImageFile(upload, "uploadImage"));
       }
 
 

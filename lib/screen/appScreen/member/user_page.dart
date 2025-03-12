@@ -16,6 +16,7 @@ import 'package:skrrskrr/prov/member_prov.dart';
 
 import 'package:skrrskrr/screen/modal/track/title_info_edit.dart';
 import 'package:skrrskrr/screen/appScreen/playlist/play_list.dart';
+import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
@@ -39,9 +40,11 @@ class UserPageScreen extends StatefulWidget {
 class _UserPageScreenState extends State<UserPageScreen> {
   bool isAuth = false;
   bool isEdit = false;
-  late String? memberId;
 
+  Uint8List? _imageBytes = null; // 선택된 이미지의 바이트 데이터
+  late String? memberId;
   late Future<bool> _getUserInitFuture;
+
   @override
   void initState() {
     super.initState();
@@ -53,7 +56,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
     memberId = await Helpers.getMemberId();
   }
 
-  Uint8List? _imageBytes = null; // 선택된 이미지의 바이트 데이터
+  bool getIsAuth(checkMemberId)  {
+    return checkMemberId == memberId;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,37 +130,18 @@ class _UserPageScreenState extends State<UserPageScreen> {
               } else {
                 MemberModel memberModel = memberProv.model;
 
-                if (memberModel.memberId.toString() == memberId) {
-                  isAuth = true;
-                }
+                isAuth = getIsAuth(memberModel.memberId.toString());
 
                 return Stack(
                   children: [
                     Stack(
                       children: [
-                        CachedNetworkImage(
-                          imageUrl: imageProv
-                              .imageLoader(memberModel.memberImagePath),
-                          // 이미지 URL
-                          placeholder: (context, url) {
-                            return CircularProgressIndicator(); // 로딩 중에 표시할 위젯
-                          },
-                          errorWidget: (context, url, error) {
-                            print('이미지 로딩 실패: $error');
-                            return Icon(Icons.error); // 로딩 실패 시 표시할 위젯
-                          },
-                          fadeInDuration: Duration(milliseconds: 500),
-                          // 이미지가 로드될 때 페이드 인 효과
-                          fadeOutDuration: Duration(milliseconds: 500),
-                          // 이미지가 사라질 때 페이드 아웃 효과
-                          width: 100.w,
-                          height: 50.h,
-                          fit: BoxFit.cover,
-                          // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
-                          imageBuilder: (context, imageProvider) {
-                            return Image(image: imageProvider); // 이미지가 로드되면 표시
-                          },
+                        CustomCachedNetworkImage(
+                            imagePath: memberModel.memberImagePath,
+                            imageWidth : 100.w,
+                            imageHeight : 50.h
                         ),
+
                         Container(
                           width: 100.w,
                           height: 50.h,
@@ -423,49 +409,10 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                                     children: [
                                                       ClipRRect(
                                                         child:
-                                                            CachedNetworkImage(
-                                                          imageUrl: imageProv
-                                                              .imageLoader(memberModel
-                                                                  .playListDTO?[
-                                                                      i]
-                                                                  .playListImagePath),
-                                                          // 이미지 URL
-                                                          placeholder:
-                                                              (context, url) {
-                                                            return CircularProgressIndicator(); // 로딩 중에 표시할 위젯
-                                                          },
-                                                          errorWidget: (context,
-                                                              url, error) {
-                                                            print(
-                                                                '이미지 로딩 실패: $error');
-                                                            return Icon(Icons
-                                                                .error); // 로딩 실패 시 표시할 위젯
-                                                          },
-                                                          fadeInDuration:
-                                                              Duration(
-                                                                  milliseconds:
-                                                                      500),
-                                                          // 이미지가 로드될 때 페이드 인 효과
-                                                          fadeOutDuration:
-                                                              Duration(
-                                                                  milliseconds:
-                                                                      500),
-                                                          // 이미지가 사라질 때 페이드 아웃 효과
-                                                          width: 40.w,
-                                                          // 이미지의 가로 크기
-                                                          height:
-                                                              20.h,
-                                                          // 이미지의 세로 크기
-                                                          fit: BoxFit.fill,
-                                                          // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
-                                                          imageBuilder: (context,
-                                                              imageProvider) {
-                                                            return Image(
-                                                              image:
-                                                                  imageProvider,
-                                                              fit: BoxFit.fill,
-                                                            ); // 이미지가 로드되면 표시
-                                                          },
+                                                        CustomCachedNetworkImage(
+                                                            imagePath: memberModel.playListDTO![i].playListImagePath,
+                                                            imageWidth : 40.w,
+                                                            imageHeight : 20.h
                                                         ),
                                                       ),
                                                       Container(
@@ -498,55 +445,13 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                                         right: 10,
                                                         bottom: 10,
                                                         child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      15.0),
-                                                          child:
-                                                              CachedNetworkImage(
-                                                            imageUrl: imageProv
-                                                                .imageLoader(memberModel
-                                                                    .playListDTO?[
-                                                                        i]
-                                                                    .playListImagePath),
-                                                            // 이미지 URL
-                                                            placeholder:
-                                                                (context, url) {
-                                                              return CircularProgressIndicator(); // 로딩 중에 표시할 위젯
-                                                            },
-                                                            errorWidget:
-                                                                (context, url,
-                                                                    error) {
-                                                              print(
-                                                                  '이미지 로딩 실패: $error');
-                                                              return Icon(Icons
-                                                                  .error); // 로딩 실패 시 표시할 위젯
-                                                            },
-                                                            fadeInDuration:
-                                                                Duration(
-                                                                    milliseconds:
-                                                                        500),
-                                                            // 이미지가 로드될 때 페이드 인 효과
-                                                            fadeOutDuration:
-                                                                Duration(
-                                                                    milliseconds:
-                                                                        500),
-                                                            // 이미지가 사라질 때 페이드 아웃 효과
-                                                            width:
-                                                                20.w,
-                                                            // 이미지의 가로 크기
-                                                            height:
-                                                                10.h,
-                                                            // 이미지의 세로 크기
-                                                            fit: BoxFit.cover,
-                                                            // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
-                                                            imageBuilder: (context,
-                                                                imageProvider) {
-                                                              return Image(
-                                                                  image:
-                                                                      imageProvider); // 이미지가 로드되면 표시
-                                                            },
+                                                          borderRadius: BorderRadius.circular(15.0),
+                                                          child: CustomCachedNetworkImage(
+                                                              imagePath: memberModel.playListDTO![i].playListImagePath,
+                                                              imageWidth : 20.w,
+                                                              imageHeight : 10.h
                                                           ),
+
                                                         ),
                                                       ),
                                                     ],

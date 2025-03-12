@@ -8,6 +8,7 @@ import 'package:skrrskrr/model/playList/play_list_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
 
 class TrackSquareItem extends StatefulWidget {
@@ -49,31 +50,11 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
           children: [
             Stack(
               children: [
-
-                CachedNetworkImage(
-                  imageUrl: imageProv.imageLoader(widget.track.trackImagePath),
-                  // 이미지 URL
-                  placeholder: (context, url) {
-                    return CircularProgressIndicator(); // 로딩 중에 표시할 위젯
-                  },
-                  errorWidget: (context, url, error) {
-                    print('이미지 로딩 실패: $error');
-                    return Icon(Icons.error); // 로딩 실패 시 표시할 위젯
-                  },
-                  fadeInDuration: Duration(milliseconds: 500),
-                  // 이미지가 로드될 때 페이드 인 효과
-                  fadeOutDuration: Duration(milliseconds: 500),
-                  // 이미지가 사라질 때 페이드 아웃 효과
-                  width: 40.w,
-                  height: 20.h,
-                  // 이미지의 세로 크기
-                  imageBuilder: (context, imageProvider) {
-                    return Image(
-                        image: imageProvider); // 이미지가 로드되면 표시
-                  },
+                CustomCachedNetworkImage(
+                    imagePath: widget.track.trackImagePath,
+                    imageWidth : 40.w,
+                    imageHeight : 20.h
                 ),
-
-
                 Container(
                   width: 40.w,
                   height: 20.h,
@@ -130,7 +111,7 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
 
             if(widget.track.memberNickName == null && widget.track.trackTime != null)
               Text(
-                widget.track.trackTime ?? "",
+                widget.track.trackTime ?? "124",
                 style: TextStyle(
                   fontSize: 15,
                   color: Colors.grey,

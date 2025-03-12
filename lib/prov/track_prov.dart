@@ -30,18 +30,17 @@ class TrackProv extends ChangeNotifier {
     listIndex = 0;
   }
 
+
   Future<void> loadMoreData(String apiName) async {
     if (!isApiCall) {
       setApiCallStatus(true);
       listIndex += 20;
       await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
-
       if (apiName == 'UploadTrack') {
         await getUploadTrack(listIndex);
       } else if (apiName == 'LikeTrack'){
         await getLikeTrack(listIndex);
       }
-
       setApiCallStatus(false);
     }
   }
@@ -60,8 +59,6 @@ class TrackProv extends ChangeNotifier {
     isApiCall = false;
     notify();
   }
-
-
 
   Future<bool> setTrackInfo(String? trackInfo) async {
     final url = "/api/setTrackInfo";
@@ -185,50 +182,21 @@ class TrackProv extends ChangeNotifier {
   }
 
 
-  Future<http.MultipartFile?> fnSetUploadAudioFile(Upload upload, serverFileNm) async {
-
-    File file = File(upload.uploadFile!.files.first.path.toString());
-    List<int> fileBytes = await file.readAsBytes();
-
-    // 바이트 배열을 멀티파트 파일로 추가
-    return http.MultipartFile.fromBytes(
-      serverFileNm, // 서버에서 받을 필드 이름
-      fileBytes, // 선택한 파일의 바이트
-      filename: upload.uploadFileNm, // 파일 이름
-      contentType: MediaType('audio', 'mpeg'), // MIME 타입
-    );
-  }
-
-
-  Future<http.MultipartFile?> fnSetUploadImageFile(Upload upload, serverFileNm) async {
-
-    File file = File(upload.uploadImage!.files.first.path.toString());
-    List<int> fileBytes = await file.readAsBytes();
-
-    return http.MultipartFile.fromBytes(
-      serverFileNm, // 서버에서 받을 필드 이름
-      fileBytes,
-      filename: upload.uploadImageNm ?? "", // 파일 이름
-      contentType: MediaType('image', 'jpeg'), // MIME 타입 (필요에 따라 수정)
-    );
-
-  }
-
-
   Future<List<http.MultipartFile?>> fnSetUploadFileList(List<Upload> uploadTrackList) async {
 
     List<http.MultipartFile?> fileList = [];
 
     // 여러 파일을 업로드하는 과정
     for (Upload upload in uploadTrackList) {
+
       // uploadFile이 null이 아닌 경우에만 처리
       if (upload.uploadFile != null && upload.uploadFile!.files.isNotEmpty) {
-        fileList.add(await fnSetUploadAudioFile(upload, "uploadFileList"));
+        fileList.add(await Helpers.fnSetUploadAudioFile(upload, "uploadFileList"));
       }
 
       // 이미지 파일 추가
       if (uploadTrackList[0].uploadImage != null) {
-        fileList.add(await fnSetUploadImageFile(upload, "uploadImage"));
+        fileList.add(await Helpers.fnSetUploadImageFile(upload, "uploadImage"));
       }
     }
 
@@ -282,17 +250,16 @@ class TrackProv extends ChangeNotifier {
       List<http.MultipartFile?> fileList = [];
 
       // 파일을 업로드
-
       Upload upload = uploadTrackList[0];
 
       // 파일을 읽어들여 바이트 배열로 변환
       if (upload.uploadFile != null && upload.uploadFile!.files.isNotEmpty) {
-          fileList.add(await fnSetUploadAudioFile(upload, "uploadFile"));
+          fileList.add(await Helpers.fnSetUploadAudioFile(upload, "uploadFile"));
       }
 
       // 이미지 파일 추가
       if (uploadTrackList[0].uploadImage != null) {
-        fileList.add(await fnSetUploadImageFile(upload, "uploadImage"));
+        fileList.add(await Helpers.fnSetUploadImageFile(upload, "uploadImage"));
       }
 
       final response = await Helpers.apiCall(

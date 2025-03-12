@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
 
 class TrackScrollHorizontalItem extends StatefulWidget {
@@ -52,24 +53,10 @@ class _TrackScrollHorizontalItemState extends State<TrackScrollHorizontalItem> {
                   children: [
                     Stack(
                       children: [
-                        CachedNetworkImage(
-                          imageUrl: imageProv.imageLoader(widget.trackList![i].trackImagePath),  // 이미지 URL
-                          placeholder: (context, url) {
-
-                            return CircularProgressIndicator();  // 로딩 중에 표시할 위젯
-                          },
-                          errorWidget: (context, url, error) {
-                            print('이미지 로딩 실패: $error');
-                            return Icon(Icons.error);  // 로딩 실패 시 표시할 위젯
-                          },
-                          fadeInDuration: Duration(milliseconds: 500),  // 이미지가 로드될 때 페이드 인 효과
-                          fadeOutDuration: Duration(milliseconds: 500),  // 이미지가 사라질 때 페이드 아웃 효과
-                          width: 28.w,
-                          height: 15.h,  // 이미지의 세로 크기
-                          fit: BoxFit.fill,  // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
-                          imageBuilder: (context, imageProvider) {
-                            return Image(image: imageProvider,fit: BoxFit.fill,);  // 이미지가 로드되면 표시
-                          },
+                        CustomCachedNetworkImage(
+                            imagePath: widget.trackList![i].trackImagePath,
+                            imageWidth : 28.w,
+                            imageHeight : 15.h
                         ),
 
                         Container(

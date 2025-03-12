@@ -10,6 +10,7 @@ import 'package:skrrskrr/model/playList/play_list_model.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
 class MyPlayListModalScreen extends StatefulWidget {
   const MyPlayListModalScreen({
@@ -119,24 +120,10 @@ class _MyPlayListModalScreenState extends State<MyPlayListModalScreen> {
                                       borderRadius: BorderRadius.circular(10)),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(15.0), // 원하는 둥글기 조정
-                                    child: CachedNetworkImage(
-                                      imageUrl: imageProv.imageLoader(playListModel.playList[index].playListImagePath),  // 이미지 URL
-                                      placeholder: (context, url) {
-                                        return CircularProgressIndicator();  // 로딩 중에 표시할 위젯
-                                      },
-                                      errorWidget: (context, url, error) {
-                                        print('이미지 로딩 실패: $error');
-                                        return Icon(Icons.error);  // 로딩 실패 시 표시할 위젯
-                                      },
-                                      fadeInDuration: Duration(milliseconds: 500),  // 이미지가 로드될 때 페이드 인 효과
-                                      fadeOutDuration: Duration(milliseconds: 500),  // 이미지가 사라질 때 페이드 아웃 효과
-                                      width: 30.w,  // 이미지의 가로 크기
-                                      height: 14.h,  // 이미지의 세로 크기
-                                      fit: BoxFit.cover,  // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
-                                      imageBuilder: (context, imageProvider) {
-
-                                        return Image(image: imageProvider);  // 이미지가 로드되면 표시
-                                      },
+                                    child: CustomCachedNetworkImage(
+                                        imagePath:playListModel.playList[index].playListImagePath,
+                                        imageWidth : 30.w,
+                                        imageHeight : 14.h
                                     ),
 
                                   ),

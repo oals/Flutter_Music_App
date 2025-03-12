@@ -33,12 +33,9 @@ class _FollowListState extends State<FollowList> {
   @override
   void initState() {
     // TODO: implement initState
-    print('test12341');
     filteredFollowList = widget.followList;
     super.initState();
   }
-
-  bool isImageLoad = false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +45,10 @@ class _FollowListState extends State<FollowList> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
 
-
         for (int i = 0; i < filteredFollowList!.length; i++)
           Container(
               padding: EdgeInsets.all(10),
               child: FollowItem(
-                  
                   filteredFollowItem: filteredFollowList![i],
                   setFollow: widget.setFollow,
                   isFollowingItem: widget.isFollowingItem,

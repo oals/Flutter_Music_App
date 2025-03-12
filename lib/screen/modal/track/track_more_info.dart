@@ -9,6 +9,7 @@ import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class TrackMoreInfoScreen extends StatefulWidget {
@@ -39,10 +40,12 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
 
   void _loadMemberId() async {
     memberId = await Helpers.getMemberId();
-    if (widget.track.memberId.toString() == memberId) {
-      isAuth = true;
-      setState(() {});
-    }
+    isAuth = getIsAuth(widget.track.memberId);
+    setState(() {});
+  }
+
+  bool getIsAuth(checkMemberId)  {
+    return checkMemberId == memberId;
   }
 
 
@@ -85,31 +88,11 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15.0), // 원하는 둥글기 조정
-                    child: CachedNetworkImage(
-                      imageUrl: imageProv.imageLoader(widget.track.trackImagePath),  // 이미지 URL
-                      placeholder: (context, url) {
-
-                        return CircularProgressIndicator();  // 로딩 중에 표시할 위젯
-                      },
-                      errorWidget: (context, url, error) {
-                        print('이미지 로딩 실패: $error');
-                        return Icon(Icons.error);  // 로딩 실패 시 표시할 위젯
-                      },
-                      fadeInDuration: Duration(milliseconds: 500),  // 이미지가 로드될 때 페이드 인 효과
-                      fadeOutDuration: Duration(milliseconds: 500),  // 이미지가 사라질 때 페이드 아웃 효과
-                      width: 33.w,  // 이미지의 가로 크기
-                      height: 16.h,  // 이미지의 세로 크기
-                      fit: BoxFit.cover,  // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
-                      imageBuilder: (context, imageProvider) {
-
-                        return Image(
-                            image: imageProvider,
-
-                        );  // 이미지가 로드되면 표시
-                      },
+                    child: CustomCachedNetworkImage(
+                        imagePath:widget.track.trackImagePath,
+                        imageWidth : 33.w,
+                        imageHeight : 16.h
                     ),
-
-
                   ),
                 ),
               ),

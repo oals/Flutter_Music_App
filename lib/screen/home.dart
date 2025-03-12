@@ -118,7 +118,7 @@ class _HomeScreenStateState extends State<HomeScreenState> {
                                   onTap: (){
                                     GoRouter.of(context).push('/category/${1}');
                                   },
-                                    child: CategorySquareItem(imageWidth: 30, imagePath:   'assets/images/testImage3.png', imageText: "Month", imageSubText: "Beat")),
+                                    child: CategorySquareItem(imageWidth: 30, imagePath: 'assets/images/testImage3.png', imageText: "Month", imageSubText: "Beat")),
                                 SizedBox(width: 10,),
                                 CategorySquareItem(imageWidth: 30, imagePath:   'assets/images/testImage4.png', imageText: "Month", imageSubText: "Ballad"),
                                 SizedBox(width: 10,),
@@ -307,7 +307,6 @@ class _HomeScreenStateState extends State<HomeScreenState> {
                                           for(int i = 0; i< homeModel.likedTrackList.length; i++)...[
                                             TrackSquareItem(
                                               track: homeModel.likedTrackList[i],
-
                                               bgColor: Colors.redAccent,
                                             ),
                                             SizedBox(width: 15,),

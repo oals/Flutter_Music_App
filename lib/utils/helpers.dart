@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:skrrskrr/model/comn/upload.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class Helpers {
 
@@ -78,6 +80,35 @@ class Helpers {
     return "장르 없음";
   }
 
+
+  static Future<http.MultipartFile?> fnSetUploadAudioFile(Upload upload, serverFileNm) async {
+
+    File file = File(upload.uploadFile!.files.first.path.toString());
+    List<int> fileBytes = await file.readAsBytes();
+
+    // 바이트 배열을 멀티파트 파일로 추가
+    return http.MultipartFile.fromBytes(
+      serverFileNm, // 서버에서 받을 필드 이름
+      fileBytes, // 선택한 파일의 바이트
+      filename: upload.uploadFileNm, // 파일 이름
+      contentType: MediaType('audio', 'mpeg'), // MIME 타입
+    );
+  }
+
+
+  static Future<http.MultipartFile?> fnSetUploadImageFile(Upload upload, serverFileNm) async {
+
+    File file = File(upload.uploadImage!.files.first.path.toString());
+    List<int> fileBytes = await file.readAsBytes();
+
+    return http.MultipartFile.fromBytes(
+      serverFileNm, // 서버에서 받을 필드 이름
+      fileBytes,
+      filename: upload.uploadImageNm ?? "", // 파일 이름
+      contentType: MediaType('image', 'jpeg'), // MIME 타입 (필요에 따라 수정)
+    );
+
+  }
 
 
   static Future<dynamic> apiCall(

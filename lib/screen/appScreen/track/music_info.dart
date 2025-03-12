@@ -21,6 +21,7 @@ import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
 import 'package:skrrskrr/screen/modal/track/track_info_edit.dart';
 import 'package:skrrskrr/screen/modal/track/track_like_btn.dart';
+import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
 import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
@@ -30,12 +31,9 @@ import 'package:skrrskrr/utils/helpers.dart';
 class MusicInfoScreen extends StatefulWidget {
   const MusicInfoScreen({
     super.key,
-    
     required this.trackId,
-    
   });
 
-  
   final int? trackId;
 
 
@@ -44,14 +42,14 @@ class MusicInfoScreen extends StatefulWidget {
 }
 
 class _MusicInfoScreenState extends State<MusicInfoScreen> {
-  bool moreInfo = false;
   late String? memberId;
   bool isAuth = false;
   bool isEdit = false;
+  bool moreInfo = false;
   Uint8List? _imageBytes = null; // 선택된 이미지의 바이트 데이터
 
+  late TrackProv trackProv;
   late Future<bool> _getTrackInfoFuture;
-
 
   @override
   void initState() {
@@ -64,18 +62,23 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
     memberId = await Helpers.getMemberId();
   }
 
+  bool getIsAuth(checkMemberId)  {
+    return checkMemberId == memberId;
+  }
+
 
   @override
   Widget build(BuildContext context) {
 
-    TrackProv trackProv = Provider.of<TrackProv>(context);
+    trackProv = Provider.of<TrackProv>(context);
     ImageProv imageProv = Provider.of<ImageProv>(context);
-
     FollowProv followProv = Provider.of<FollowProv>(context);
+
 
     Future<void> _pickImage(Track trackInfoModel) async {
       Upload upload = Upload();
       upload.trackId = trackInfoModel.trackId;
+
 
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.image, // 이미지 파일만 선택
@@ -91,14 +94,19 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
         upload.uploadImage = filePickerResult;
         upload.uploadImageNm = result.files.first.name ?? "";
 
-
         String newImagePath = await imageProv.updateTrackImage(upload);
+
+
+
         if(newImagePath != ""){
           trackInfoModel.trackImagePath = newImagePath;
         }
         setState(() {});
       }
     }
+
+
+
 
 
 
@@ -123,10 +131,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
 
               Track trackInfoModel = trackProv.trackInfoModel;
 
-
-              if (trackInfoModel.memberId.toString() == memberId.toString()) {
-                isAuth = true;
-              }
+              isAuth = getIsAuth(trackInfoModel.memberId.toString());
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,29 +151,12 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                       _pickImage(trackInfoModel);
                                     }
                                   },
-                                  child: CachedNetworkImage(
-                                    imageUrl: imageProv.imageLoader(
-                                        trackInfoModel.trackImagePath),
-                                    // 이미지 URL
-                                    placeholder: (context, url) {
-                                      return CircularProgressIndicator(); // 로딩 중에 표시할 위젯
-                                    },
-                                    errorWidget: (context, url, error) {
-                                      print('이미지 로딩 실패: $error');
-                                      return Icon(Icons.error); // 로딩 실패 시 표시할 위젯
-                                    },
-                                    fadeInDuration: Duration(milliseconds: 500),
-                                    // 이미지가 로드될 때 페이드 인 효과
-                                    fadeOutDuration: Duration(milliseconds: 500),
-                                    // 이미지가 사라질 때 페이드 아웃 효과
-                                    width: 100.w,
-                                    height: 50.h,
-                                    // 이미지의 세로 크기
-                                    imageBuilder: (context, imageProvider) {
-                                      return Image(
-                                          image: imageProvider); // 이미지가 로드되면 표시
-                                    },
+                                  child: CustomCachedNetworkImage(
+                                      imagePath: trackInfoModel.trackImagePath,
+                                      imageWidth : 100.w,
+                                      imageHeight : 50.h
                                   ),
+
                                 ),
                                 Container(
                                   width: 100.w,
@@ -538,7 +526,6 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                           for(int i = 0; i< trackInfoModel.recommendTrackList.length; i++)...[
                                             TrackSquareItem(
                                               track: trackInfoModel.recommendTrackList[i],
-
                                               bgColor: Colors.lightBlueAccent,
                                             ),
                                             SizedBox(width: 15,),

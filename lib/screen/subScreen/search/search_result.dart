@@ -33,7 +33,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
 
   late SearchProv searchProv;
 
-
   @override
   void dispose() {
     // TODO: implement dispose

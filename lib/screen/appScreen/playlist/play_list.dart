@@ -49,11 +49,14 @@ class _PlayListScreenState extends State<PlayListScreen> {
     memberId = await Helpers.getMemberId();
   }
 
+  bool getIsAuth(checkMemberId)  {
+    return checkMemberId == memberId;
+  }
+
   @override
   Widget build(BuildContext context) {
 
     playListProv = Provider.of<PlayListProv>(context);
-
 
     return Scaffold(
       body: Container(
@@ -71,9 +74,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
 
             PlayListInfoModel playListModel = playListProv.modelPlayInfo;
 
-            if (playListModel.memberId.toString() == memberId) {
-              isAuth = true;
-            }
+            isAuth = getIsAuth(playListModel.memberId.toString());
 
             return SingleChildScrollView(
               child: Column(
