@@ -15,6 +15,8 @@ MemberModel _$MemberModelFromJson(Map<String, dynamic> json) => MemberModel()
   ..memberAddr = json['memberAddr'] as String?
   ..memberDate = json['memberDate'] as String?
   ..memberFollowCnt = (json['memberFollowCnt'] as num?)?.toInt()
+  ..playListListCnt = (json['playListListCnt'] as num?)?.toInt()
+  ..allTrackListCnt = (json['allTrackListCnt'] as num?)?.toInt()
   ..memberFollowerCnt = (json['memberFollowerCnt'] as num?)?.toInt()
   ..memberImagePath = json['memberImagePath'] as String?
   ..popularTrackList = (json['popularTrackList'] as List<dynamic>?)
@@ -38,6 +40,8 @@ Map<String, dynamic> _$MemberModelToJson(MemberModel instance) =>
       'memberAddr': instance.memberAddr,
       'memberDate': instance.memberDate,
       'memberFollowCnt': instance.memberFollowCnt,
+      'playListListCnt': instance.playListListCnt,
+      'allTrackListCnt': instance.allTrackListCnt,
       'memberFollowerCnt': instance.memberFollowerCnt,
       'memberImagePath': instance.memberImagePath,
       'popularTrackList': instance.popularTrackList,

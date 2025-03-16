@@ -14,11 +14,9 @@ import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart'
 class TrackSquareItem extends StatefulWidget {
   const TrackSquareItem({
     super.key,
-    
     required this.track,
     required this.bgColor,
   });
-
 
   final Track track;
   final Color bgColor;
@@ -30,9 +28,6 @@ class TrackSquareItem extends StatefulWidget {
 class _TrackSquareItemState extends State<TrackSquareItem> {
   @override
   Widget build(BuildContext context) {
-
-    ImageProv imageProv = Provider.of<ImageProv>(context);
-
 
     return Container(
       padding: EdgeInsets.all(5),
@@ -111,7 +106,7 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
 
             if(widget.track.memberNickName == null && widget.track.trackTime != null)
               Text(
-                widget.track.trackTime ?? "124",
+                widget.track.trackTime ?? "",
                 style: TextStyle(
                   fontSize: 15,
                   color: Colors.grey,

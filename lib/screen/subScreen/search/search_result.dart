@@ -37,6 +37,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   void dispose() {
     // TODO: implement dispose
     searchProv.clear();
+    // searchProv.listIndex = 0;
     super.dispose();
   }
 
@@ -85,7 +86,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                           print(widget.searchModel.searchText);
                           GoRouter.of(context).push('/more/${1}/${widget.searchModel.searchText}/${widget.searchModel.memberListCnt}');
 
-                        },
+                          },
                         child: Text(
                           'more',
                           style: TextStyle(

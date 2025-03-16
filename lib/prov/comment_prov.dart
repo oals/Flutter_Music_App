@@ -16,7 +16,7 @@ class CommentProv extends ChangeNotifier {
 
   Future<bool> setCommentLike(commentId) async {
 
-    final String memberId = await Helpers.getMemberId();
+    final String loginMemberId = await Helpers.getMemberId();
     final url= '/api/setCommentLike';
     try {
 
@@ -26,7 +26,7 @@ class CommentProv extends ChangeNotifier {
         method: "POST",
         headers: {'Content-Type': 'application/json'}, // JSON 형태로 전송
         body:{
-          'memberId': memberId,
+          'loginMemberId': loginMemberId,
           'commentId': commentId,
         }, 
       );
@@ -48,9 +48,9 @@ class CommentProv extends ChangeNotifier {
   }
 
 
-  Future<bool> setComment(trackId, commentText,commentId) async {
+  Future<bool> setComment(trackId, String commentText,commentId) async {
 
-    final String memberId = await Helpers.getMemberId();
+    final String loginMemberId = await Helpers.getMemberId();
     final url= '/api/setComment';
 
     try {
@@ -60,15 +60,19 @@ class CommentProv extends ChangeNotifier {
         method: "POST",
         headers: {'Content-Type': 'application/json'}, // JSON 형태로 전송
         body: {
-          'memberId': memberId,
+          'loginMemberId': loginMemberId,
           'trackId': trackId.toString(),
           'commentText': commentText,
           'commentId': commentId,
         },
       );
 
+      print('123123123');
+      print(response['status']);
       if (response['status'] == '200') {
+        print('1231231234');
         print('$url - Successful');
+        print('1231231235');
         return true;;
       } else {
         // 오류 처리
@@ -84,8 +88,8 @@ class CommentProv extends ChangeNotifier {
 
   Future<bool> getComment(trackId) async {
 
-    final String memberId = await Helpers.getMemberId();
-    final url= '/api/getComment?trackId=${trackId}&memberId=${memberId}';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url= '/api/getComment?trackId=${trackId}&loginMemberId=${loginMemberId}';
 
 
     try {
@@ -116,8 +120,8 @@ class CommentProv extends ChangeNotifier {
 
   Future<bool> getChildComment(commentId) async {
 
-    final String memberId = await Helpers.getMemberId();
-    final url= '/api/getChildComment?commentId=${commentId}&memberId=${memberId}';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url= '/api/getChildComment?commentId=${commentId}&loginMemberId=${loginMemberId}';
 
 
     try {

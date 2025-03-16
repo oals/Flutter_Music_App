@@ -22,14 +22,17 @@ class FollowScreen extends StatefulWidget {
 
 class _FollowScreenState extends State<FollowScreen>
     with SingleTickerProviderStateMixin {
-  late FollowModel followModel;
+
   late TabController _tabController;
-  bool isLoading = false;
+  late FollowProv followProv;
+  late Future<bool> _getFollowListInitFuture;
+
   String titleText = "팔로잉";
 
   @override
   void initState() {
     super.initState();
+    _getFollowListInitFuture = Provider.of<FollowProv>(context, listen: false).getFollow();
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -37,6 +40,10 @@ class _FollowScreenState extends State<FollowScreen>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  void setFollow(int? followerId, int? followingId) async {
+    await followProv.setFollow(followerId, followingId);
   }
 
   @override
@@ -50,20 +57,15 @@ class _FollowScreenState extends State<FollowScreen>
         width : 100.w,
         height: 120.h,
         child: FutureBuilder<bool>(
-          future: !isLoading ? followProv.getFollow() : null,
+          future: _getFollowListInitFuture,
           // 팔로우 및 팔로잉 데이터를 비동기적으로 가져오는 함수
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else {
-              followProv.isFirstLoad = false;
-              followModel = followProv.model;
 
-              isLoading = true;
+              FollowModel followModel = followProv.followModel;
 
-              void setFollow(int? followerId, int? followingId) async {
-                await followProv.setFollow(followerId, followingId);
-              }
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

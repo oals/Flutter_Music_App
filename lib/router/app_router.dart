@@ -52,20 +52,36 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/feed',
-      builder: (context, state) {
-        return AppScreen(child: FeedScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: FeedScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
       path: '/search',
-      builder: (context, state) {
-        return AppScreen(child: SearchScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: SearchScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
+
     GoRoute(
       path: '/setting',
-      builder: (context, state) {
-        return AppScreen(child: SettingScreen());
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          child: AppScreen(child: SettingScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(
@@ -93,16 +109,19 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/more/:moreId/:searchText/:totalCount',
+      path: '/more/:moreId/:searchText/:memberId/:totalCount',
       pageBuilder: (context, state) {
         final moreId = int.parse(state.pathParameters['moreId']!);
         final searchText = state.pathParameters['searchText']!;
+        final memberId = state.pathParameters['memberId']!;
         final totalCount = int.parse(state.pathParameters['totalCount']!);
         return CustomTransitionPage(
           child: AppScreen(child: MoreScreen(
               moreId: moreId,
               searchText: searchText,
-              totalCount: totalCount)),
+              totalCount: totalCount,
+              memberId : memberId
+          )),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -320,21 +339,21 @@ class _AppScreenState extends State<AppScreen> {
                   controller: _pageController,
                   children: [
 
-                    // HLSStreamPage(
-                    //   isFullScreenFunc: isFullScreenFunc,
-                    //   playerHeight: _height,
-                    //   isFullScreen: isFullScreen,
-                    //   isPlayingFunc: isPlayingFunc,
-                    //   isPlaying: isPlaying,
-                    // ),
-                    //
-                    // HLSStreamPage(
-                    //   isFullScreenFunc: isFullScreenFunc,
-                    //   playerHeight: _height,
-                    //   isFullScreen: isFullScreen,
-                    //   isPlayingFunc: isPlayingFunc,
-                    //   isPlaying: isPlaying,
-                    // ),
+                    HLSStreamPage(
+                      isFullScreenFunc: isFullScreenFunc,
+                      playerHeight: _height,
+                      isFullScreen: isFullScreen,
+                      isPlayingFunc: isPlayingFunc,
+                      isPlaying: isPlaying,
+                    ),
+
+                    HLSStreamPage(
+                      isFullScreenFunc: isFullScreenFunc,
+                      playerHeight: _height,
+                      isFullScreen: isFullScreen,
+                      isPlayingFunc: isPlayingFunc,
+                      isPlaying: isPlaying,
+                    ),
 
                   ],
                 ),
@@ -346,19 +365,19 @@ class _AppScreenState extends State<AppScreen> {
           ? CustomBottomNavigationBar(
               currentIndex: _currentIndex,
               onTap: (index) {
-                setState(() {
                   _currentIndex = index;
                   // 화면 전환
                   if (index == 0) {
-                    context.replace('/');
+                    context.pushReplacement('/');
                   } else if (index == 1) {
-                    context.replace('/feed');
+                    context.pushReplacement('/feed');
                   } else if (index == 2) {
-                    context.replace('/search');
+                    context.pushReplacement('/search');
                   } else if (index == 3) {
-                    context.replace('/setting');
+                    context.pushReplacement('/setting');
                   }
-                });
+
+                  setState(() {});
               },
             )
           : null,

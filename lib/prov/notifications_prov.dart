@@ -9,14 +9,21 @@ class NotificationsProv extends ChangeNotifier{
 
 
   NotificationsModel model = NotificationsModel();
+  bool notificationsIsView = false;
 
   void notify() {
     notifyListeners();
   }
 
+  void setNotificationsIsView(bool isView){
+    notificationsIsView = isView;
+    notify();
+  }
+
+
   Future<bool> setDelNotificationIsView() async {
 
-    final String memberId = await Helpers.getMemberId();
+    final String loginMemberId = await Helpers.getMemberId();
     final url= '/api/setDelNotificationIsView';
 
     try {
@@ -27,13 +34,13 @@ class NotificationsProv extends ChangeNotifier{
             'Content-Type': 'application/json',
           },
           body: {
-            'memberId' : memberId,
+            'loginMemberId' : loginMemberId,
           }
         );
 
 
       if (response['status'] == '200') {
-        Helpers.setNotificationIsView(false);
+        setNotificationsIsView(false);
         print('$url - Successful');
         return true;
       } else {
@@ -49,8 +56,8 @@ class NotificationsProv extends ChangeNotifier{
   }
 
 
-  Future<bool> setAllNotificationisView() async {
-    final String memberId = await Helpers.getMemberId();
+  Future<bool> setAllNotificationIsView() async {
+    final String loginMemberId = await Helpers.getMemberId();
     final url= '/api/setAllNotificationisView';
 
     try {
@@ -61,12 +68,12 @@ class NotificationsProv extends ChangeNotifier{
             'Content-Type': 'application/json',
           },
           body:{
-            'memberId' : memberId,
+            'loginMemberId' : loginMemberId,
           },
         );
 
       if (response['status'] == '200') {
-        Helpers.setNotificationIsView(false);
+        setNotificationsIsView(false);
         print('$url - Successful');
         return true;
       } else {
@@ -84,7 +91,7 @@ class NotificationsProv extends ChangeNotifier{
 
   Future<bool> setNotificationIsView(int notificationId) async {
 
-    final String memberId = await Helpers.getMemberId();
+    final String loginMemberId = await Helpers.getMemberId();
     final url= '/api/setNotificationIsView';
 
     try {
@@ -96,12 +103,12 @@ class NotificationsProv extends ChangeNotifier{
             },
             body:{
               'notificationId': notificationId,
-              'memberId' : memberId,
+              'loginMemberId' : loginMemberId,
             },
         );
 
       if (response['status'] == '200') {
-        Helpers.setNotificationIsView(response['notificationIsView']);
+        setNotificationsIsView(response['notificationIsView']);
         print('$url - Successful');
         return true;
       } else {
@@ -119,9 +126,9 @@ class NotificationsProv extends ChangeNotifier{
 
   Future<bool> getNotifications(listIndex) async {
 
-    String memberId = await Helpers.getMemberId();
+    String loginMemberId = await Helpers.getMemberId();
 
-    final url= '/api/getNotifications?memberId=${memberId}&listIndex=${listIndex}';
+    final url= '/api/getNotifications?loginMemberId=${loginMemberId}&listIndex=${listIndex}';
 
     try {
       final response = await Helpers.apiCall(

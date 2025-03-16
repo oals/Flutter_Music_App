@@ -134,13 +134,13 @@ class Helpers {
         }
       }
 
-      if (method == 'POST') {
+      if (method == 'POST' || method == 'PUT') {
         // POST 요청 처리
         if (fileList != null && fileList.length != 0) {
 
 
           // 파일이 있는 경우 Multipart 요청 사용
-          request = http.MultipartRequest('POST', uri)
+          request = http.MultipartRequest(method, uri)
             ..headers.addAll(headers ?? {});
 
           for (http.MultipartFile? fileItem in fileList) {
@@ -157,7 +157,7 @@ class Helpers {
 
         } else {
           // 바디가 있는 일반 POST 요청 처리
-          request = http.Request('POST', uri)
+          request = http.Request(method, uri)
             ..headers.addAll(headers ?? {})
             ..body = json.encode(body);
 

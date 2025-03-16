@@ -19,7 +19,9 @@ class MemberModel {
 
   List<Track>? popularTrackList = [];
   List<PlayListInfoModel>? playListDTO = [];
+  int? playListListCnt;
   List<Track>? allTrackList = [];
+  int? allTrackListCnt;
 
   int? isFollowedCd;
 

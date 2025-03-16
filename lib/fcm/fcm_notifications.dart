@@ -1,6 +1,11 @@
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
+import 'package:skrrskrr/prov/notifications_prov.dart';
+import 'package:skrrskrr/utils/helpers.dart';
 
 class FcmNotifications{
 
@@ -19,7 +24,7 @@ class FcmNotifications{
    * Firebase Cloud Messaging(FCM)을 사용하여 푸시 알림을 처리하고,
    * Flutter Local Notifications를 사용하여 알림을 화면에 표시하는 설정을 담당
    */
-  static void initializeNotification() async {
+  static void initializeNotification(BuildContext context) async {
 
     /** 백그라운드에서 메시지를 받을 때 호출 할 백그라운드 이벤트 리스너 설정*/
     FirebaseMessaging.onBackgroundMessage(
@@ -58,7 +63,7 @@ class FcmNotifications{
       sound: true, /** 알림 소리를 울릴 지 여부 */
     );
 
-    firebaseMessagingForegroundHandler();
+    firebaseMessagingForegroundHandler(context);
 
   }
 
@@ -69,7 +74,7 @@ class FcmNotifications{
 
 
   /** 포그라운드 이벤트 리스너 */
-  static void firebaseMessagingForegroundHandler() async {
+  static void firebaseMessagingForegroundHandler(BuildContext context) async {
 
     /** 포그라운드 푸시 알림이 왔을 때 실행 되는 이벤트 리스너 */
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -89,17 +94,22 @@ class FcmNotifications{
         // 이미 초기화된 flutterLocalNotificationsPlugin을 사용해야 함
         /** 푸시 알림을 화면에 표시*/
         flutterLocalNotificationsPlugin.show(
-          notification.hashCode, /** 알림의 고유 id , 알림을 식별하기 위한 값 */
-          notification.title, /** 알림의 제목 */
-          notification.body,  /** 알림의 내용 */
-          const NotificationDetails(  /** 알림의 세부 설정, 알램 채널과 알림의 중요도 등*/
+          notification.hashCode, // 알림의 고유 id
+          notification.title, // 알림의 제목
+          notification.body, // 알림의 내용
+          NotificationDetails(
             android: AndroidNotificationDetails(
-              'high_importance_channel',  /** 채널의 고유 id*/
-              'high_importance_notification',   /**채널의 이름 */
-              importance: Importance.max, /** 채널의 중요도 */
+              'high_importance_channel',
+              'high_importance_notification',
+              importance: Importance.max,
+              color: Colors.black54, // 알림 아이콘 색상 설정 (배경 색상은 따로 스타일로 설정)
+              category: 'category_alert',
             ),
           ),
         );
+
+
+        Provider.of<NotificationsProv>(context, listen: false).setNotificationsIsView(true);
         print("Foreground 메시지 수신: ${{message.notification!.body!}}");
       }
     });

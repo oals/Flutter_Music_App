@@ -10,16 +10,17 @@ import 'package:skrrskrr/utils/helpers.dart';
 
 class FollowProv extends ChangeNotifier{
 
-  FollowModel model = FollowModel();
-  bool isFirstLoad = true;
+  FollowModel followModel = FollowModel();
+
 
   void notify() {
     notifyListeners();
   }
 
+
   Future<bool> getFollow() async {
-    String memberId = await Helpers.getMemberId();
-    final url= '/api/getFollow?memberId=${memberId}';
+    String loginMemberId = await Helpers.getMemberId();
+    final url= '/api/getFollow?memberId=${loginMemberId}';
 
     try {
       // POST 요청
@@ -32,17 +33,17 @@ class FollowProv extends ChangeNotifier{
 
       if (response['status'] == '200') {
         // 성공적으로 데이터를 가져옴
-        
-        model = FollowModel();
-        model.followerList = [];
-        model.followingList = [];
+
+        followModel = FollowModel();
+        followModel.followerList = [];
+        followModel.followingList = [];
 
         for(var followerData in response['followerList']) {
-          model.followerList?.add(FollowInfoModel.fromJson(followerData));
+          followModel.followerList?.add(FollowInfoModel.fromJson(followerData));
         }
 
         for(var followingData in response['followingList']) {
-          model.followingList?.add(FollowInfoModel.fromJson(followingData));
+          followModel.followingList?.add(FollowInfoModel.fromJson(followingData));
         }
         print('$url - Successful');
         return true;

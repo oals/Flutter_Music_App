@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
@@ -26,7 +27,6 @@ class CustomAppbarV2 extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomAppbarV2State extends State<CustomAppbarV2> {
-  late bool notificationisView = false;
   bool isLoading = false;
   late String? memberNickName;
   late String? memberImagePath;
@@ -40,7 +40,6 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
 
   // 비동기적으로 SharedPreferences를 로드하는 함수
   Future<void> _loadPreferences() async {
-    notificationisView = await Helpers.getNotificationIsView();
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     memberNickName = prefs.getString("memberNickName");
@@ -56,7 +55,7 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
       return CircularProgressIndicator();
     }
 
-    ImageProv imageProv = Provider.of<ImageProv>(context);
+    NotificationsProv notificationsProv = Provider.of<NotificationsProv>(context);
 
     return Container(
       color: Color(0xff000000),
@@ -98,7 +97,7 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
                       color: Colors.white,
                     ),
                   ),
-                  if (notificationisView)
+                  if (notificationsProv.notificationsIsView)
                     Positioned(
                       top: 0,
                       right: 0,

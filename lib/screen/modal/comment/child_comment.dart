@@ -48,7 +48,6 @@ class _ChildCommentScreenState extends State<ChildCommentScreen> {
   Widget build(BuildContext context) {
 
     commentProv = Provider.of<CommentProv>(context);
-    ImageProv imageProv = Provider.of<ImageProv>(context);
 
     return Container(
       height: 90.h,
@@ -90,6 +89,7 @@ class _ChildCommentScreenState extends State<ChildCommentScreen> {
                     selectCommentId = childCommentModel.commentId;
                     selectCommentMemberNickName = '@${childCommentModel.memberNickName} ';
                     textController.text = '@${childCommentModel.memberNickName} ';
+
                     // textController.selection =
                     //     TextSelection.fromPosition(
                     //         TextPosition(
@@ -218,11 +218,9 @@ class _ChildCommentScreenState extends State<ChildCommentScreen> {
                                             ///화면 구조 나누고 나서 setstate로
                                           },
                                           child: SvgPicture.asset(
-                                            !childCommentModel
-                                                .commentLikeStatus!
+                                            !childCommentModel.commentLikeStatus!
                                                 ? 'assets/images/heart.svg'
                                                 : 'assets/images/heart_red.svg',
-                                            color: Color(0xffff0000),
                                           ),
                                         ),
                                         Text(
@@ -375,12 +373,9 @@ class _ChildCommentScreenState extends State<ChildCommentScreen> {
 
                                               },
                                               child: SvgPicture.asset(
-                                                childCommentModel.childComment![i]
-                                                            .commentLikeStatus !=
-                                                        true
+                                                childCommentModel.childComment![i].commentLikeStatus != true
                                                     ? 'assets/images/heart.svg'
                                                     : 'assets/images/heart_red.svg',
-                                                color: Color(0xffff0000),
                                               ),
                                             ),
                                             Text(
@@ -418,9 +413,9 @@ class _ChildCommentScreenState extends State<ChildCommentScreen> {
                 Expanded(
                   child: TextField(
                     onChanged: (text) {
-                      if (!text
-                          .contains(selectCommentMemberNickName.toString())) {
+                      if (!text.contains(selectCommentMemberNickName.toString())) {
                         textController.text = "";
+                        textController.text = selectCommentMemberNickName.toString();
                       }
                     },
                     controller: textController,
@@ -436,19 +431,22 @@ class _ChildCommentScreenState extends State<ChildCommentScreen> {
                   icon: Icon(Icons.send, color: Colors.black), // 전송 버튼 아이콘
                   onPressed: () async {
                     // 댓글 전송 로직 추가
-                    print('댓글 작성');
-                    if (textController.text != "") {
-                      if (textController.text.contains(selectCommentMemberNickName.toString())) {
-                        textController.text = textController.text
-                            .split(selectCommentMemberNickName.toString())[1];
-                        selectCommentMemberNickName = "";
+
+                    String commentText = "";
+                    if (textController.text.contains(selectCommentMemberNickName.toString())) {
+                      commentText = textController.text;
+                      commentText = commentText.split(selectCommentMemberNickName.toString())[1];
+                      if(commentText == "") {
+                        return;
                       }
-                      print(selectCommentId);
-                      await commentProv.setComment(widget.trackId, textController.text,selectCommentId);
-                      selectCommentId = widget.commentId;
                       textController.text = "";
-                      commentProv.notify();
                     }
+
+                    await commentProv.setComment(widget.trackId, commentText,selectCommentId);
+                    selectCommentId = widget.commentId;
+                    _getChildCommentInitFuture = commentProv.getChildComment(selectCommentId);
+                    commentProv.notify();
+
                   },
                 ),
               ],

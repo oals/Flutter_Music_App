@@ -9,13 +9,13 @@ import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 class SearchMainScreen extends StatefulWidget {
   const SearchMainScreen({
     super.key,
-    required this.popularTrackHistory,
+    required this.recentListenTrackHistory,
     required this.onTap,
     
     
   });
 
-  final List<String> popularTrackHistory;
+  final List<String> recentListenTrackHistory;
   final Function onTap;
   
   

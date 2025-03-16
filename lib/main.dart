@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ import 'package:skrrskrr/prov/comment_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/home_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/prov/more_prov.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
@@ -32,7 +34,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions,  // FirebaseOptions 설정
   );
-  FcmNotifications.initializeNotification();  // Firebase 알림 초기화
 
   runApp(
     MultiProvider(
@@ -49,6 +50,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => NotificationsProv()),
         ChangeNotifierProvider(create: (context) => CategoryProv()),
         ChangeNotifierProvider(create: (context) => AuthProv()),
+        ChangeNotifierProvider(create: (context) => MoreProv()),
       ],
       child: const MyApp(),
     ),
@@ -57,11 +59,15 @@ void main() async {
   Permissions.requestNotificationPermission();  // 알림 권한 요청
 }
 
+
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    FcmNotifications.initializeNotification(context);  // Firebase 알림 초기화
+
     return ResponsiveSizer(  // 화면 크기 자동 조정
       builder: (context, orientation, screenType) {
         return MaterialApp.router(

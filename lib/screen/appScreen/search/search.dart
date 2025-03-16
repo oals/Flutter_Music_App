@@ -21,17 +21,17 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-  bool isSeachHistory = true;
+  bool isSearchHistory = true;
   bool isSearchMain = true;
   late SearchModel searchModel;
-  late List<SearchHistoryModel> searchHistoryModel;
-  late List<String> popularTrackHistory;
+
+  late List<String> recentListenTrackHistory;
   late Future<bool> _getSearchInitFuture;
 
   @override
   void initState() {
     super.initState();
-    _getSearchInitFuture = Provider.of<SearchProv>(context, listen: false).fnSearchInit();
+    _getSearchInitFuture = Provider.of<SearchProv>(context, listen: false).fnSearchRecentListenTrack();
   }
 
   @override
@@ -61,13 +61,12 @@ class _SearchScreenState extends State<SearchScreen> {
               }
 
               searchModel = searchProv.model;
-              searchHistoryModel = searchProv.searchHistoryModel;
-              popularTrackHistory = searchProv.popularTrackHistory;
+              recentListenTrackHistory = searchProv.recentListenTrackHistory;
 
               return Column(
                 children: [
                   SizedBox(
-                    height: 50,
+                    height: 41,
                   ),
 
                   Container(
@@ -110,64 +109,42 @@ class _SearchScreenState extends State<SearchScreen> {
                           onPressed: () =>
                           {
                             if(!isSearchMain){
-                              setState(() {
-                                isSearchMain = !isSearchMain;
-                              })
+                              isSearchMain = !isSearchMain,
+                              setState(() {})
                             }
                           },
                         ),
 
                         // 오른쪽 끝에 X 버튼 추가
-                        suffixIcon: isSeachHistory
+                        suffixIcon: isSearchHistory
                             ? _searchController.text.isNotEmpty
                             ? IconButton(
-                          icon: const Icon(Icons.close,
-                              size: 17, color: Colors.white),
-                          onPressed: () {
-                            setState(() {
-                              _searchController.clear(); // 텍스트 필드 비우기
-                            });
+                          icon: const Icon(
+                              Icons.close,
+                              size: 17,
+                              color: Colors.white
+                          ),
+                          onPressed: () {_searchController.clear(); // 텍스트 필드 비우기
+                              setState(() {});
                           },
                         )
                             : null
                             : null, // 텍스트가 비어 있으면 X 버튼을 안 보이게 함
                       ),
                       onTap: () {
-                        setState(() {
-                          isSearchMain = false;
-                          isSeachHistory = true;
-                        });
+                        isSearchMain = false;
+                        isSearchHistory = true;
+                        setState(() {});
                       },
 
                       // 검색
                       onSubmitted: (text) async {
                         if (text != "") {
                           searchModel.searchText = text;
-                          await searchProv.searchTrack(text, 0);
-                          DateTime currentDate = DateTime.now();
-
-                          // 연도, 일, 월을 추출
-                          String year = currentDate.year.toString();
-                          String day = currentDate.day
-                              .toString()
-                              .padLeft(2, '0'); // 일(day)을 두 자릿수로
-                          String month = currentDate.month
-                              .toString()
-                              .padLeft(2, '0'); // 월(month)을 두 자릿수로
-
-                          // 원하는 형식으로 날짜 포맷
-                          String formattedDate = '$year-$day-$month';
-
-                          SearchHistoryModel newSearchHistory = SearchHistoryModel();
-                          newSearchHistory.historyText = text;
-                          newSearchHistory.historyDate = formattedDate;
-
-                          searchHistoryModel.insert(0, newSearchHistory);
-
-                          setState(() {
-                            isSearchMain = false;
-                            isSeachHistory = false;
-                          });
+                          await searchProv.search(text, 0);
+                          isSearchMain = false;
+                          isSearchHistory = false;
+                          setState(() {});
                         }
                       },
                     ),
@@ -177,39 +154,26 @@ class _SearchScreenState extends State<SearchScreen> {
                   Container(
                       width: 100.w,
                       child: isSearchMain
-
                       /// 검색 결과
                           ? SearchMainScreen(
-                        popularTrackHistory: popularTrackHistory,
-
-
-                        onTap: (String searchHistory) async {
-                          await searchProv.searchTrack(searchHistory, 0);
-                          _searchController.text = searchHistory;
-                          searchModel.searchText = _searchController.text;
-                          setState(() {
-                            isSearchMain = false;
-                            isSeachHistory = false;
-                          });
-                        },
-                      )
-                          : isSeachHistory
+                            recentListenTrackHistory: recentListenTrackHistory,
+                            onTap: (String searchHistory) async {
+                              isSearchMain = false;
+                              isSearchHistory = false;
+                            },
+                          )
+                          : isSearchHistory
                           ? SearchFindScreen(
-                        searchHistoryModel: searchHistoryModel,
-                        onTap: (String searchHistory) async {
-                          await searchProv.searchTrack(searchHistory, 0);
-                          _searchController.text = searchHistory;
-                          searchModel.searchText = _searchController.text;
-                          setState(() {
-                            isSearchMain = false;
-                            isSeachHistory = false;
-                          });
-                        },
-                      )
-                          : SearchResultScreen(
-
-
-                          searchModel: searchModel)),
+                              onTap: (String searchHistory) async {
+                                await searchProv.search(searchHistory, 0);
+                                _searchController.text = searchHistory;
+                                searchModel.searchText = _searchController.text;
+                                isSearchMain = false;
+                                isSearchHistory = false;
+                                setState(() {});
+                              },
+                            )
+                          : SearchResultScreen(searchModel: searchModel)),
                 ],
               );
             }

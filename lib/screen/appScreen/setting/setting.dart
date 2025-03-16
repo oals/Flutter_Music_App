@@ -54,19 +54,19 @@ class _SettingScreenState extends State<SettingScreen> {
                 padding: EdgeInsets.only(bottom: 10, top: 10),
                 child: GestureDetector(
                     onTap: () async {
-                      String adminId = await Helpers.getMemberId();
+                      String loginMemberId = await Helpers.getMemberId();
                       if (i == 0) {
-                        GoRouter.of(context).push('/userPage/${adminId}');
+                        GoRouter.of(context).push('/userPage/${loginMemberId}');
                       } else if (i == 1) {
-                        GoRouter.of(context).push('/adminLikeTrack/${adminId}');
+                        GoRouter.of(context).push('/adminLikeTrack/${loginMemberId}');
                       } else if (i == 2) {
-                        GoRouter.of(context).push('/adminAlbum/${adminId}');
+                        GoRouter.of(context).push('/adminAlbum/${loginMemberId}');
                       } else if (i == 3) {
-                        GoRouter.of(context).push('/adminPlayList/${adminId}');
+                        GoRouter.of(context).push('/adminPlayList/${loginMemberId}');
                       } else if (i == 4) {
-                        GoRouter.of(context).push('/adminUploadTrack/${adminId}');
+                        GoRouter.of(context).push('/adminUploadTrack/${loginMemberId}');
                       } else if (i == 5) {
-                        GoRouter.of(context).push('/adminFollow/${adminId}');
+                        GoRouter.of(context).push('/adminFollow/${loginMemberId}');
                       } else if (i == 6) {
                         print('로그아웃 클릭');
                         await authProv.logout();

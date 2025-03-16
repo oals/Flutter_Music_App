@@ -39,8 +39,6 @@ class _FollowItemState extends State<FollowItem> {
   @override
   Widget build(BuildContext context) {
 
-    ImageProv imageProv = Provider.of<ImageProv>(context);
-
     return Container(
       padding: EdgeInsets.only(top : 5, bottom : 5,),
       child: Row(
@@ -60,7 +58,6 @@ class _FollowItemState extends State<FollowItem> {
                     imageHeight : null
                   ),
                 ),
-
 
                 SizedBox(
                   width: 10,
@@ -102,16 +99,7 @@ class _FollowItemState extends State<FollowItem> {
                   borderRadius: BorderRadius.circular(1),  // 모서리 둥글지 않게 설정 (네모 형태)
                 ),
               ),
-              backgroundColor: WidgetStateProperty.all(
-                  widget.filteredFollowItem!.isFollowedCd == 0
-                      ? widget.filteredFollowItem!.isFollow! ? Color(0xff1c1c1c) : Color(0xff1c1c1c)
-                      : widget.filteredFollowItem!.isFollowedCd == 1
-                      ? widget.filteredFollowItem!.isFollow! ? Color(0xff1c1c1c) : Color(0xff1c1c1c)
-                      : widget.filteredFollowItem!.isFollowedCd == 3
-                      ? widget.filteredFollowItem!.isFollow! ? Color(0xff1c1c1c) : Color(0xff1c1c1c)
-                      : widget.filteredFollowItem!.isFollowedCd == 2
-                      ? widget.filteredFollowItem!.isFollow! ? Color(0xff1c1c1c) : Color(0xff1c1c1c) : Color(0xff1c1c1c),
-              ),
+              backgroundColor: WidgetStateProperty.all(Color(0xff1c1c1c)),
 
               side: WidgetStateProperty.all(
                 BorderSide(

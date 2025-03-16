@@ -17,12 +17,12 @@ class HomeProv extends ChangeNotifier {
 
   Future<bool> firstLoad() async {
 
-    final memberId = await Helpers.getMemberId();
+    final loginMemberId = await Helpers.getMemberId();
 
     model.homeCategory = 0;
     print('카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요카테고리수정필요');
 
-    final url= '/api/firstLoad?memberId=${memberId}';
+    final url= '/api/firstLoad?loginMemberId=${loginMemberId}';
 
     try {
 
@@ -52,7 +52,6 @@ class HomeProv extends ChangeNotifier {
           model.likedTrackList.add(Track.fromJson(item));
         }
 
-        Helpers.setNotificationIsView(response['notificationIsView']);
         print('$url - Successful');
         return true;
       } else {

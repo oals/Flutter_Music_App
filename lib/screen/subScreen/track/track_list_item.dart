@@ -35,8 +35,6 @@ class _TrackListItemState extends State<TrackListItem> {
   @override
   Widget build(BuildContext context) {
 
-    ImageProv imageProv = Provider.of<ImageProv>(context);
-
     return GestureDetector(
       onTap: (){
         print('음원 실행');

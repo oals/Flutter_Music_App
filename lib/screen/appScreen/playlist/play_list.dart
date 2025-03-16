@@ -31,7 +31,7 @@ class PlayListScreen extends StatefulWidget {
 }
 
 class _PlayListScreenState extends State<PlayListScreen> {
-  late String? memberId;
+  late String? loginMemberId;
   bool isAuth = false;
   bool isEdit = false;
 
@@ -46,11 +46,11 @@ class _PlayListScreenState extends State<PlayListScreen> {
   }
 
   void _loadMemberId() async {
-    memberId = await Helpers.getMemberId();
+    loginMemberId = await Helpers.getMemberId();
   }
 
   bool getIsAuth(checkMemberId)  {
-    return checkMemberId == memberId;
+    return checkMemberId == loginMemberId;
   }
 
   @override

@@ -31,8 +31,6 @@ class _TrackScrollHorizontalItemState extends State<TrackScrollHorizontalItem> {
   @override
   Widget build(BuildContext context) {
 
-    ImageProv imageProv = Provider.of<ImageProv>(context);
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(

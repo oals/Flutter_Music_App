@@ -30,7 +30,7 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
 
   bool isImageLoad = false;
   bool isAuth = false;
-  late String? memberId;
+  late String? loginMemberId;
 
   @override
   void initState() {
@@ -39,13 +39,13 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
   }
 
   void _loadMemberId() async {
-    memberId = await Helpers.getMemberId();
+    loginMemberId = await Helpers.getMemberId();
     isAuth = getIsAuth(widget.track.memberId);
     setState(() {});
   }
 
   bool getIsAuth(checkMemberId)  {
-    return checkMemberId == memberId;
+    return checkMemberId == loginMemberId;
   }
 
 
@@ -54,7 +54,6 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
 
     PlayListProv playListProv = Provider.of<PlayListProv>(context);
     TrackProv trackProv = Provider.of<TrackProv>(context);
-    ImageProv imageProv = Provider.of<ImageProv>(context);
 
 
     return Container(

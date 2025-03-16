@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
+import 'package:skrrskrr/prov/more_prov.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
 import 'package:skrrskrr/screen/subScreen/follow/follow_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
@@ -13,12 +14,13 @@ class MoreScreen extends StatefulWidget {
     super.key,
     required this.moreId,
     required this.searchText,
+    required this.memberId,
     required this.totalCount,
   });
 
-
   final int? moreId;
-  final String searchText;
+  final String? searchText;
+  final String? memberId;
   final int? totalCount;
 
   @override
@@ -29,34 +31,31 @@ class _MoreScreenState extends State<MoreScreen> {
 
 
   late Future<bool> _getMoreInfoInitFuture;
-  late SearchProv searchProv;
+  late MoreProv moreProv;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getMoreInfoInitFuture = Provider.of<SearchProv>(context,listen: false).searchMore(widget.moreId!, widget.searchText,0);
-
+    _getMoreInfoInitFuture = Provider.of<MoreProv>(context,listen: false).searchMore(widget.moreId!, widget.searchText, widget.memberId,0);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    searchProv.clear();
+    moreProv.clear();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
 
-    searchProv = Provider.of<SearchProv>(context);
+    moreProv = Provider.of<MoreProv>(context);
     FollowProv followProv = Provider.of<FollowProv>(context);
 
     void setFollow(int? followerId, int? followingId) async {
       await followProv.setFollow(followerId, followingId);
     }
-
-
 
     return Container(
       padding: EdgeInsets.all(5),
@@ -70,10 +69,8 @@ class _MoreScreenState extends State<MoreScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-
-          SearchModel searchModel = searchProv.model;
-          searchModel.searchText = widget.searchText;
-
+          SearchModel searchMoreModel = moreProv.moreModel;
+          moreProv.moreModel.searchText = widget.searchText;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,7 +87,7 @@ class _MoreScreenState extends State<MoreScreen> {
                         child: Icon(Icons.arrow_back_rounded,color: Colors.white,)),
                     SizedBox(width: 5,),
                     Text(
-                      widget.moreId == 1 ? '아티스트' : widget.moreId == 2 ? '플레이리스트' :'test',
+                      widget.moreId == 1 ? '아티스트' : widget.moreId == 2 ? '플레이리스트' : widget.moreId == 4 ? '플레이리스트': '트랙',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 18,
@@ -107,12 +104,12 @@ class _MoreScreenState extends State<MoreScreen> {
                   height: 72.h,
                   child: NotificationListener<ScrollNotification>(
                     onNotification: (notification) {
-                      if (widget.totalCount! > searchModel.memberList.length) {
-                        if (searchProv.shouldLoadMoreData(notification)) {
-                          searchProv.loadMoreData(widget.moreId!);
+                      if (widget.totalCount! > searchMoreModel.memberList.length) {
+                        if (moreProv.shouldLoadMoreData(notification)) {
+                          moreProv.loadMoreData(widget.moreId!,widget.searchText,widget.memberId);
                         }
                       } else {
-                        searchProv.resetApiCallStatus();
+                        moreProv.resetApiCallStatus();
                       }
                       return false;
                     },
@@ -122,9 +119,9 @@ class _MoreScreenState extends State<MoreScreen> {
                           SizedBox(
                             height: 8,
                           ),
-                          for (int i = 0; i < searchModel.memberList.length; i++) ...[
+                          for (int i = 0; i < searchMoreModel.memberList.length; i++) ...[
                             FollowItem(
-                              filteredFollowItem: searchModel.memberList[i],
+                              filteredFollowItem: searchMoreModel.memberList[i],
                               setFollow: setFollow,
                               isFollowingItem: false,
                               isSearch: true,
@@ -143,18 +140,18 @@ class _MoreScreenState extends State<MoreScreen> {
                 ),
               ],
 
-              if (widget.moreId == 2) ...[
+              if (widget.moreId == 2 || widget.moreId == 4) ...[
                 SizedBox(height: 15,),
                 Container(
                   height: 72.h,
                   child: NotificationListener <ScrollNotification>(
                     onNotification: (notification) {
-                      if (widget.totalCount! > searchModel.playListList.length) {
-                        if (searchProv.shouldLoadMoreData(notification)) {
-                          searchProv.loadMoreData(widget.moreId!);
+                      if (widget.totalCount! > searchMoreModel.playListList.length) {
+                        if (moreProv.shouldLoadMoreData(notification)) {
+                          moreProv.loadMoreData(widget.moreId!,widget.searchText,widget.memberId);
                         }
                       } else {
-                        searchProv.resetApiCallStatus();
+                        moreProv.resetApiCallStatus();
                       }
                       return false;
                     },
@@ -163,7 +160,7 @@ class _MoreScreenState extends State<MoreScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           PlayListSquareItem(
-                            playList: searchModel.playListList,
+                            playList: searchMoreModel.playListList,
                           ),
                         ],
                       ),
@@ -175,45 +172,40 @@ class _MoreScreenState extends State<MoreScreen> {
                 ),
               ],
 
-              if (widget.moreId == 3) ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '트랙',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                        color: Colors.white,
+              if (widget.moreId == 3 || widget.moreId == 5) ...[
+                Container(
+                  height: 72.h,
+                  child: NotificationListener <ScrollNotification>(
+                    onNotification: (notification) {
+                      if (widget.totalCount! > searchMoreModel.trackList.length) {
+                        if (moreProv.shouldLoadMoreData(notification)) {
+                          moreProv.loadMoreData(widget.moreId!,widget.searchText,widget.memberId);
+                        }
+                      } else {
+                        moreProv.resetApiCallStatus();
+                      }
+                      return false;
+                    },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          for (int i = 0; i < searchMoreModel.trackList.length; i++) ...[
+                            SizedBox(
+                              height: 16,
+                            ),
+                            TrackListItem(
+                              trackItem: searchMoreModel.trackList[i],
+                            )
+                          ],
+                        ],
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        'more',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                for (int i = 0; i < searchModel.trackList.length; i++) ...[
-                  SizedBox(
-                    height: 16,
                   ),
-                  TrackListItem(
-                    trackItem: searchModel.trackList[i],
-                  )
-                ],
+                ),
+
               ],
 
-              if (searchProv.isApiCall)...[
+              if (moreProv.isApiCall)...[
                 SizedBox(height: 10,),
                 CircularProgressIndicator(
                   color: Color(0xffff0000),

@@ -64,12 +64,15 @@ class TrackProv extends ChangeNotifier {
     final url = "/api/setTrackInfo";
 
     try {
-      final response = await Helpers.apiCall(url, method: "POST", headers: {
-        'Content-Type': 'application/json',
-      }, body: {
-        'trackId': trackInfoModel.trackId,
-        'trackInfo': trackInfo,
-      });
+      final response = await Helpers.apiCall(
+          url,
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json',
+          }, body: {
+            'trackId': trackInfoModel.trackId,
+            'trackInfo': trackInfo,
+          });
 
       if (response['status'] == "200") {
         print('$url - Successful');
@@ -88,12 +91,15 @@ class TrackProv extends ChangeNotifier {
     final url = "/api/setLockTrack";
 
     try {
-      final response = await Helpers.apiCall(url, method: "POST", headers: {
-        'Content-Type': 'application/json',
-      }, body: {
-        'trackId': trackId,
-        'trackPrivacy': isTrackPrivacy,
-      });
+      final response = await Helpers.apiCall(
+          url,
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json',
+          }, body: {
+            'trackId': trackId,
+            'trackPrivacy': isTrackPrivacy,
+          });
 
       if (response['status'] == "200") {
         print('$url - Successful');
@@ -109,8 +115,8 @@ class TrackProv extends ChangeNotifier {
   }
 
   Future<bool> getLikeTrack(listIndex) async {
-    final String memberId = await Helpers.getMemberId();
-    final url = '/api/getLikeTrack?memberId=${memberId}&listIndex=${listIndex}';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getLikeTrack?loginMemberId=${loginMemberId}&listIndex=${listIndex}';
 
     try {
       final response = await Helpers.apiCall(
@@ -141,15 +147,21 @@ class TrackProv extends ChangeNotifier {
   }
 
   Future<bool> setTrackLike(trackId) async {
-    final String memberId = await Helpers.getMemberId();
-    final url = '/api/setTrackLike?memberId=${memberId}&trackId=${trackId}';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/setTrackLike';
 
     try {
       final response = await Helpers.apiCall(
         url,
+        method: "POST",
         headers: {
           'Content-Type': 'application/json',
         },
+        body :{
+          'loginMemberId' : loginMemberId,
+          'trackId' : trackId
+        }
+
       );
 
       if (response['status'] == "200") {
@@ -206,7 +218,7 @@ class TrackProv extends ChangeNotifier {
 
   Future<void> uploadAlbum(List<Upload> uploadTrackList,
       String title, String info, bool isPrivacy, int categoryCd) async {
-    final String memberId = await Helpers.getMemberId();
+    final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/albumUpload';
     try {
 
@@ -218,7 +230,7 @@ class TrackProv extends ChangeNotifier {
         headers: {'Content-Type': 'application/json'}, // JSON 형태로 전송
         fileList: fileList,
         body: {
-          'memberId': memberId,
+          'loginMemberId': loginMemberId,
           'albumNm': title,
           'trackInfo': info,
           'trackTime': model.trackTime ?? "00:00",
@@ -243,7 +255,7 @@ class TrackProv extends ChangeNotifier {
 
   Future<void> uploadTrack(List<Upload> uploadTrackList,
       String title, String info, bool isPrivacy, int categoryCd) async {
-    final String memberId = await Helpers.getMemberId();
+    final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/trackUpload';
     try {
 
@@ -268,7 +280,7 @@ class TrackProv extends ChangeNotifier {
         headers: {'Content-Type': 'application/json'}, // JSON 형태로 전송
         fileList: fileList,
         body: {
-          'memberId': memberId,
+          'loginMemberId': loginMemberId,
           'trackNm': title,
           'trackInfo': info,
           'trackTime': model.trackTime ?? "00:00",
@@ -292,8 +304,8 @@ class TrackProv extends ChangeNotifier {
   }
 
   Future<bool> getUploadTrack(int listIndex) async {
-    final String memberId = await Helpers.getMemberId();
-    final url = '/api/getUploadTrack?memberId=${memberId}&listIndex=${listIndex}';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getUploadTrack?loginMemberId=${loginMemberId}&listIndex=${listIndex}';
 
     try {
       final response = await Helpers.apiCall(
@@ -323,8 +335,8 @@ class TrackProv extends ChangeNotifier {
   }
 
   Future<bool> getTrackInfo(trackId) async {
-    final String memberId = await Helpers.getMemberId();
-    final url = '/api/getTrackInfo?trackId=${trackId}&memberId=${memberId}';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getTrackInfo?trackId=${trackId}&loginMemberId=${loginMemberId}';
 
     try {
       final response = await Helpers.apiCall(

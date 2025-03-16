@@ -81,7 +81,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                           if(notificationItem.notificationType == 1){
                             GoRouter.of(context).push('/musicInfo/${notificationItem.notificationTrackId}');
-                          }else if (notificationItem.notificationType == 3){
+                          } else if (notificationItem.notificationType == 2){
+                            GoRouter.of(context).push('/musicInfo/${notificationItem.notificationTrackId}');
+                          } else if (notificationItem.notificationType == 3){
                             GoRouter.of(context).push('/userPage/${notificationItem.notificationMemberId}');
                           }
 
@@ -136,7 +138,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     GestureDetector(
                                       onTap: ()=>{
                                         if(notificationIsViewExistence){
-                                          notificationsProv.setAllNotificationisView(),
+                                          notificationsProv.setAllNotificationIsView(),
 
                                           for(int i = 0; i < notificationsModel.todayNotificationsList.length; i++){
                                             notificationsModel.todayNotificationsList[i]

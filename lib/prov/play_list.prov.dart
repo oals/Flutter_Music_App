@@ -53,7 +53,7 @@ class PlayListProv extends ChangeNotifier {
 
 
   Future<bool> setPlayListLike(int playListId) async {
-    final String memberId = await Helpers.getMemberId();
+    final String loginMemberId = await Helpers.getMemberId();
     final url= '/api/setPlayListLike'; // POST URL
 
     try {
@@ -64,7 +64,7 @@ class PlayListProv extends ChangeNotifier {
             'Content-Type': 'application/json', // JSON 형식
           },
           body: {
-            'memberId': memberId,
+            'loginMemberId': loginMemberId,
             'playListId': playListId,
           }
       );
@@ -116,8 +116,8 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> getPlayList(int trackId,int listIndex,bool isAlbum) async {
 
-    final String memberId = await Helpers.getMemberId();
-    final url= '/api/getPlayList?memberId=${memberId}&trackId=${trackId}&listIndex=${listIndex}&isAlbum=${isAlbum}';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url= '/api/getPlayList?loginMemberId=${loginMemberId}&trackId=${trackId}&listIndex=${listIndex}&isAlbum=${isAlbum}';
 
     try {
       final response = await Helpers.apiCall(
@@ -150,8 +150,8 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> getPlayListInfo(int playListId) async {
 
-    final String memberId = await Helpers.getMemberId();
-    final url= '/api/getPlayListInfo?playListId=${playListId}&memberId=${memberId}';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url= '/api/getPlayListInfo?playListId=${playListId}&loginMemberId=${loginMemberId}';
 
     try {
       final response = await Helpers.apiCall(
@@ -211,7 +211,7 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> setNewPlaylist(String playListNm, bool isPlayListPrivacy,bool isAlbum) async {
 
-    final String memberId = await Helpers.getMemberId();
+    final String loginMemberId = await Helpers.getMemberId();
     final url= '/api/newPlayList';
 
     try {
@@ -222,7 +222,7 @@ class PlayListProv extends ChangeNotifier {
               'Content-Type': 'application/json',
             },
             body: {
-              'memberId': memberId,
+              'loginMemberId': loginMemberId,
               'playListNm': playListNm,
               'isPlayListPrivacy': isPlayListPrivacy,
               'isAlbum' : isAlbum,

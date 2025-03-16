@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 
 import 'package:skrrskrr/utils/helpers.dart';
@@ -34,22 +36,19 @@ class CustomAppbar extends StatefulWidget {
 }
 
 class _CustomAppbarState extends State<CustomAppbar> {
-  late bool notificationisView = false;
+
 
   @override
   void initState() {
     super.initState();
-    _loadPreferences();
   }
 
-  // 비동기적으로 SharedPreferences를 로드하는 함수
-  Future<void> _loadPreferences() async {
-    notificationisView = await Helpers.getNotificationIsView();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    NotificationsProv notificationsProv = Provider.of<NotificationsProv>(context);
+
     return Container(
       padding: EdgeInsets.only(top: 55,left: 15,right: 15),
       child: Row(
@@ -133,7 +132,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
                           Icons.notifications,
                           color: Colors.white,
                         )),
-                    if (notificationisView)
+                    if (notificationsProv.notificationsIsView)
                       Positioned(
                         top: 0,
                         right: 0,

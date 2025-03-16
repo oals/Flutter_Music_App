@@ -10,8 +10,9 @@ import 'package:skrrskrr/utils/helpers.dart';
 
 class SearchProv extends ChangeNotifier {
   SearchModel model = SearchModel();
+
   List<SearchHistoryModel> searchHistoryModel = [];
-  List<String> popularTrackHistory = [];
+  List<String> recentListenTrackHistory = [];
   bool isApiCall = false;
   int listIndex = 0;
 
@@ -22,7 +23,7 @@ class SearchProv extends ChangeNotifier {
   void clear() {
     model = SearchModel();
     searchHistoryModel = [];
-    popularTrackHistory = [];
+    recentListenTrackHistory = [];
     isApiCall = false;
     listIndex = 0;
   }
@@ -53,12 +54,10 @@ class SearchProv extends ChangeNotifier {
   }
 
 
+  Future<bool> fnSearchTextHistory() async {
 
-
-  Future<bool> fnSearchInit() async {
-
-    final String memberId = await Helpers.getMemberId();
-    final url= '/api/getSearchInit?memberId=${memberId}';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url= '/api/getSearchTextHistory?loginMemberId=${loginMemberId}';
 
     try {
       final response = await Helpers.apiCall(
@@ -70,14 +69,11 @@ class SearchProv extends ChangeNotifier {
 
       if (response['status'] == '200') {
         searchHistoryModel = [];
-        popularTrackHistory = [];
 
         for (var item in response['searchHistory']) {
           searchHistoryModel.add(SearchHistoryModel.fromJson(item));
         }
-        for (var item in response['popularTrackHistory']) {
-          popularTrackHistory.add(item);
-        }
+
 
         print('$url - Successful');
         return true;
@@ -93,12 +89,48 @@ class SearchProv extends ChangeNotifier {
 
 
 
+  Future<bool> fnSearchRecentListenTrack() async {
+
+    return true;
+
+    // final String loginMemberId = await Helpers.getMemberId();
+    // final url= '/api/getSearchInit?memberId=${memberId}';
+    //
+    // try {
+    //   final response = await Helpers.apiCall(
+    //     url,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //   );
+    //
+    //   if (response['status'] == '200') {
+    //     recentListenTrackHistory = [];
+    //
+    //     for (var item in response['popularTrackHistory']) {
+    //       recentListenTrackHistory.add(item);
+    //     }
+    //
+    //     print('$url - Successful');
+    //     return true;
+    //   } else {
+    //     throw Exception('Failed to load data');
+    //   }
+    // } catch (error) {
+    //   print('$url - Fail');
+    //   return false;
+    // }
+
+  }
+
+
+
   Future<bool> searchMore(int moreId, String searchText,int listIndex) async {
 
-    final String memberId = await Helpers.getMemberId();
-    
+    final String loginMemberId = await Helpers.getMemberId();
+
     final url= '/api/getSearchMore?'
-        'memberId=${memberId}&'
+        'loginMemberId=${loginMemberId}&'
         'moreId=${moreId}&searchText=${searchText}&'
         'listIndex=${listIndex}';
 
@@ -113,25 +145,14 @@ class SearchProv extends ChangeNotifier {
       if ((response['status'] == '200')) {
         if (listIndex == 0) {
           model.trackList = [];
-          model.memberList = [];
-          model.playListList = [];
         }
 
-        if(moreId == 1) {
-          for (var item in response['memberList']) {
-            model.memberList.add(FollowInfoModel.fromJson(item));
-          }
-          model.totalCount = response['totalCount'];
-        } else if (moreId == 2) {
-          for (var item in response['playListList']) {
-            model.playListList.add(PlayListModel.fromJson(item));
-          }
-          model.totalCount = response['totalCount'];
-        } else if (moreId == 3) {
+        if (moreId == 3) {
           for (var item in response['trackList']) {
             model.trackList.add(Track.fromJson(item));
           }
         }
+
         model.status = response['status'];
         print('$url - Successful');
         return true;
@@ -146,10 +167,10 @@ class SearchProv extends ChangeNotifier {
 
 
 
-  Future<bool> searchTrack(String searchText,listIndex) async {
+  Future<bool> search(String searchText,listIndex) async {
 
-    final String memberId = await Helpers.getMemberId();
-    final url= '/api/getSearchTrack?memberId=${memberId}&searchText=$searchText&listIndex=$listIndex';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url= '/api/search?loginMemberId=${loginMemberId}&searchText=$searchText&listIndex=$listIndex';
 
     try {
       final response = await Helpers.apiCall(

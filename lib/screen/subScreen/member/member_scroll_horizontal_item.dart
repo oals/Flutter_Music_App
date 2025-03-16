@@ -34,7 +34,6 @@ class _MemberScrollHorizontalItemState
   @override
   Widget build(BuildContext context) {
     FollowProv followProv = Provider.of<FollowProv>(context);
-    ImageProv imageProv = Provider.of<ImageProv>(context);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,

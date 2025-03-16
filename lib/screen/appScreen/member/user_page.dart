@@ -24,9 +24,7 @@ import 'package:skrrskrr/utils/helpers.dart';
 class UserPageScreen extends StatefulWidget {
   const UserPageScreen({
     super.key,
-    
     required this.memberId,
-    
   });
 
 
@@ -42,7 +40,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
   bool isEdit = false;
 
   Uint8List? _imageBytes = null; // 선택된 이미지의 바이트 데이터
-  late String? memberId;
+  late String? loginMemberId;
   late Future<bool> _getUserInitFuture;
 
   @override
@@ -53,11 +51,11 @@ class _UserPageScreenState extends State<UserPageScreen> {
   }
 
   void _loadMemberId() async {
-    memberId = await Helpers.getMemberId();
+    loginMemberId = await Helpers.getMemberId();
   }
 
   bool getIsAuth(checkMemberId)  {
-    return checkMemberId == memberId;
+    return checkMemberId == loginMemberId;
   }
 
   @override
@@ -372,12 +370,31 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                   SizedBox(
                                     height: 20,
                                   ),
-                                  Text(
-                                    '앨범',
-                                    style: GoogleFonts.roboto(
-                                        color: Colors.white,
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.w600),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '앨범',
+                                        style: GoogleFonts.roboto(
+                                            color: Colors.white,
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      if (memberModel.playListDTO!.length != 0)
+                                        GestureDetector(
+                                          onTap:(){
+                                            GoRouter.of(context).push('/more/${4}/${null}/${memberModel.memberId}/${memberModel.playListListCnt}');
+                                          },
+                                          child: Text(
+                                            'more',
+                                            style: GoogleFonts.roboto(
+                                                color: Colors.grey,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                   SizedBox(
                                     height: 15,
@@ -505,13 +522,19 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                             fontSize: 19,
                                             fontWeight: FontWeight.w600),
                                       ),
-                                      Text(
-                                        'more',
-                                        style: GoogleFonts.roboto(
-                                            color: Colors.grey,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600),
-                                      ),
+                                      if (memberModel.allTrackList!.length != 0)
+                                        GestureDetector(
+                                          onTap : (){
+                                            GoRouter.of(context).push('/more/${5}/${null}/${memberModel.memberId}/${memberModel.allTrackListCnt}');
+                                          },
+                                          child: Text(
+                                            'more',
+                                            style: GoogleFonts.roboto(
+                                                color: Colors.grey,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
                                     ],
                                   ),
                                   SizedBox(

@@ -42,7 +42,7 @@ class MusicInfoScreen extends StatefulWidget {
 }
 
 class _MusicInfoScreenState extends State<MusicInfoScreen> {
-  late String? memberId;
+  late String? loginMemberId;
   bool isAuth = false;
   bool isEdit = false;
   bool moreInfo = false;
@@ -59,11 +59,11 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
   }
 
   void _loadMemberId() async {
-    memberId = await Helpers.getMemberId();
+    loginMemberId = await Helpers.getMemberId();
   }
 
   bool getIsAuth(checkMemberId)  {
-    return checkMemberId == memberId;
+    return checkMemberId == loginMemberId;
   }
 
 
@@ -493,7 +493,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
 
                                             await followProv.setFollow(
                                                 trackInfoModel.memberId,
-                                                memberId);
+                                                loginMemberId);
 
                                             setState(() {});
                                           },

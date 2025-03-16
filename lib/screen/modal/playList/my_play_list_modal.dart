@@ -39,8 +39,6 @@ class _MyPlayListModalScreenState extends State<MyPlayListModalScreen> {
   Widget build(BuildContext context) {
 
     playListProv = Provider.of<PlayListProv>(context);
-    ImageProv imageProv = Provider.of<ImageProv>(context);
-
 
     return Container(
       height: 70.h,

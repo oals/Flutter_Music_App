@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/playList/play_list_model.dart';
+import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
 
 class PlayListSquareItem extends StatefulWidget {
@@ -26,7 +27,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
 
 
     return Container(
-      padding: EdgeInsets.only(left: 15,right: 15),
+      padding: EdgeInsets.only(left: 15,right: 0),
       child: Wrap(
         spacing: 20.0, // 아이템 간의 가로 간격
         runSpacing: 20.0, // 줄 간격
@@ -50,14 +51,8 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
-                        child: Image.asset(
-                          'assets/images/testImage4.png',
-                          width: 40.w,
-                          height: 20.h,
-                          fit: BoxFit.fill,
-                        ),
+                        child: CustomCachedNetworkImage(imagePath: item.playListImagePath, imageWidth: 40.w, imageHeight: 20.h),
                       ),
-
 
                       Container(
                         width: 40.w,
@@ -82,11 +77,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
                           bottom: 10,
                           child:  ClipRRect(
                             borderRadius: BorderRadius.circular(15.0),
-                            child: Image.asset(
-                              'assets/images/testImage4.png',
-                              width: 20.w,
-                              height: 10.h,
-                            ),
+                            child: CustomCachedNetworkImage(imagePath: item.playListImagePath, imageWidth: 15.w, imageHeight: 7.h),
                           ),
                       ),
                     ],

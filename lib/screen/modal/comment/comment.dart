@@ -46,7 +46,6 @@ class _CommentScreenState extends State<CommentScreen> {
   Widget build(BuildContext context) {
 
     CommentProv commentProv = Provider.of<CommentProv>(context);
-    ImageProv imageProv = Provider.of<ImageProv>(context);
 
     return Container(
       height: 90.h,
@@ -219,7 +218,6 @@ class _CommentScreenState extends State<CommentScreen> {
                                                   !comment.commentLikeStatus!
                                                       ? 'assets/images/heart.svg'
                                                       : 'assets/images/heart_red.svg',
-                                                  color: Color(0xffff0000),
                                                 ),
                                               ),
                                               Text(
@@ -284,24 +282,25 @@ class _CommentScreenState extends State<CommentScreen> {
                     icon: Icon(Icons.send, color: Colors.black), // 전송 버튼 아이콘
                     onPressed: () async {
                       // 댓글 전송 로직 추가
-                      print('댓글 작성2');
                       if (textController.text != "") {
-                        if (selectCommentMemberNickName != "" && textController.text.contains(selectCommentMemberNickName.toString())) {
-                          textController.text = textController.text.split(selectCommentMemberNickName.toString())[1];
+                        String commentText = textController.text;
+                        textController.text = "";
+                        if (selectCommentMemberNickName != "" && commentText.contains(selectCommentMemberNickName.toString())) {
+                          commentText = commentText.split(selectCommentMemberNickName.toString())[1];
                           selectCommentMemberNickName = "";
         
                           await commentProv.setComment(
                             widget.trackId,
-                            textController.text,
+                            commentText,
                             commentId,
                           );
                         } else {
                           await commentProv.setComment(
-                              widget.trackId, textController.text, null);
+                              widget.trackId, commentText, null);
                         }
                         commentId = null;
-                        textController.text = "";
-                        commentProv.notify();
+                        _getCommentInitFuture = commentProv.getComment(widget.trackId);
+                        setState(() {});
                       }
                     },
                   ),

@@ -25,7 +25,7 @@ class MemberProv with ChangeNotifier {
   Future<void> fnMemberInfoUpdate({memberNickName,memberInfo}) async {
     final url= '/api/setMemberInfoUpdate';
     try{
-      final String memberId = await Helpers.getMemberId();
+      final String loginMemberId = await Helpers.getMemberId();
       dynamic response = await Helpers.apiCall(
             url,
             method: 'POST',
@@ -33,7 +33,7 @@ class MemberProv with ChangeNotifier {
               'Content-Type': 'application/json',
             },
             body: {
-              'memberId' : memberId,
+              'loginMemberId' : loginMemberId,
               'memberNickName' : memberNickName,
               'memberInfo' : memberInfo
             }
@@ -111,6 +111,7 @@ class MemberProv with ChangeNotifier {
         List<Track> allTrackList = [];
 
         model = MemberModel.fromJson(response['memberDTO']);
+        print(model.memberInfo);
 
         for (var item in response['playListDTO']) {
           PlayListInfoModel playListInfoModel = PlayListInfoModel.fromJson(item);
@@ -128,9 +129,13 @@ class MemberProv with ChangeNotifier {
         }
 
         model.playListDTO = playList;
+        model.playListListCnt = response['playListListCnt'];
+        model.allTrackListCnt = response['allTrackListCnt'];
         model.popularTrackList = popularTrackList;
         model.allTrackList = allTrackList;
 
+        print(model.allTrackListCnt);
+        print(model.playListListCnt);
 
         print('$url - Successful');
         return true;
