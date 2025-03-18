@@ -12,7 +12,7 @@ class CustomCachedNetworkImage extends StatefulWidget {
   });
 
   final String? imagePath;
-  final double imageWidth;
+  final double? imageWidth;
   final double? imageHeight;
 
   @override
@@ -36,7 +36,7 @@ class _CustomCachedNetworkImageState extends State<CustomCachedNetworkImage> {
       },
       fadeInDuration: Duration(milliseconds: 500),  // 이미지가 로드될 때 페이드 인 효과
       fadeOutDuration: Duration(milliseconds: 500),  // 이미지가 사라질 때 페이드 아웃 효과
-      width: widget.imageWidth,  // 이미지의 세로 크기
+      width: widget.imageWidth ?? null,  // 이미지의 세로 크기
       height: widget.imageHeight ?? null,
       fit: BoxFit.cover,  // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
       imageBuilder: (context, imageProvider) {

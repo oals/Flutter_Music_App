@@ -10,7 +10,6 @@ import 'package:skrrskrr/screen/appScreen/search/search.dart';
 import 'package:skrrskrr/screen/home.dart';
 import 'package:skrrskrr/screen/appScreen/comn/login.dart';
 import 'package:skrrskrr/screen/modal/new_player.dart';
-import 'package:skrrskrr/screen/modal/player.dart';
 import 'package:skrrskrr/screen/appScreen/comn/more.dart';
 import 'package:skrrskrr/screen/appScreen/track/music_info.dart';
 import 'package:skrrskrr/screen/appScreen/track/my_like_track.dart';
@@ -347,13 +346,6 @@ class _AppScreenState extends State<AppScreen> {
                       isPlaying: isPlaying,
                     ),
 
-                    HLSStreamPage(
-                      isFullScreenFunc: isFullScreenFunc,
-                      playerHeight: _height,
-                      isFullScreen: isFullScreen,
-                      isPlayingFunc: isPlayingFunc,
-                      isPlaying: isPlaying,
-                    ),
 
                   ],
                 ),

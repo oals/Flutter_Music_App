@@ -40,7 +40,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => HomeProv()),
         ChangeNotifierProvider(create: (context) => SearchProv()),
-        ChangeNotifierProvider(create: (context) => AudioPlayerManager()),
+        ChangeNotifierProvider(create: (context) => PlayerProv()),
         ChangeNotifierProvider(create: (context) => MemberProv()),
         ChangeNotifierProvider(create: (context) => TrackProv()),
         ChangeNotifierProvider(create: (context) => PlayListProv()),

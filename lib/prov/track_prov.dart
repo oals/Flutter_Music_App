@@ -146,6 +146,68 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
+
+  Future<String> getLastListenTrack() async {
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getLastListenTrack?loginMemberId=${loginMemberId}';
+    try {
+
+      final response = await Helpers.apiCall(
+          url,
+          method: 'GET'
+      );
+
+      print(response);
+
+      if (response['status'] == '200') {
+        print('$url - Successful');
+        return response['lastListenTrackId'];
+      } else {
+        // 오류 처리
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      // 오류 처리
+      print('$url - Fail');
+      return '-1';
+    }
+  }
+
+
+  Future<bool> setLastListenTrackId(int trackId) async {
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/setLastListenTrackId';
+    try {
+      final response = await Helpers.apiCall(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: {
+            'loginMemberId' : loginMemberId,
+            'trackId' : trackId,
+        }
+      );
+
+      print(response);
+      if (response['status'] == '200') {
+        print('$url - Successful');
+        return true;
+      } else {
+        // 오류 처리
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      // 오류 처리
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
   Future<bool> setTrackLike(trackId) async {
     final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/setTrackLike';

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
@@ -35,101 +36,111 @@ class _TrackListItemState extends State<TrackListItem> {
   @override
   Widget build(BuildContext context) {
 
+    TrackProv trackProv = Provider.of<TrackProv>(context);
+
     return GestureDetector(
       onTap: (){
-        print('음원 실행');
+
       },
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      print('음원상세페이지 이동');
-                      GoRouter.of(context).push('/musicInfo/${widget.trackItem.trackId}');
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey,width: 2),
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0), // 원하는 둥글기 조정
-                        child: CustomCachedNetworkImage(
-                            imagePath: widget.trackItem.trackImagePath,
-                            imageWidth : 10.w,
-                            imageHeight : null
+              GestureDetector(
+                onTap: ()=> {
+                  print('음원 실행'),
+                  trackProv.setLastListenTrackId(widget.trackItem.trackId)
+                },
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: (){
+                        print('음원상세페이지 이동');
+                        GoRouter.of(context).push('/musicInfo/${widget.trackItem.trackId}');
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey,width: 2),
+                            borderRadius: BorderRadius.circular(10)
                         ),
-
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            '${widget.trackItem.trackNm}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0), // 원하는 둥글기 조정
+                          child: CustomCachedNetworkImage(
+                              imagePath: widget.trackItem.trackImagePath,
+                              imageWidth : 10.w,
+                              imageHeight : null
                           ),
 
-                          if(widget.trackItem.trackLikeStatus!)...[
-                            SizedBox(width: 3,),
-                            SvgPicture.asset(
-                              'assets/images/heart_red.svg',
-                              color: Color(0xffff0000),
-                              width: 15,
-                              height: 15,
-                            ),
-                          ]
-                        ],
-                      ),
-                      if(widget.trackItem.memberNickName != null)
-                        Text(
-                        '${widget.trackItem.memberNickName}',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
                         ),
                       ),
-                      Row(
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if(widget.trackItem.trackTime != null)
-                            Text(
-                              '${widget.trackItem.trackTime}',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
+                          Row(
+                            children: [
+                              Text(
+                                '${widget.trackItem.trackNm}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
+
+                              if(widget.trackItem.trackLikeStatus!)...[
+                                SizedBox(width: 3,),
+                                SvgPicture.asset(
+                                  'assets/images/heart_red.svg',
+                                  color: Color(0xffff0000),
+                                  width: 15,
+                                  height: 15,
+                                ),
+                              ]
+                            ],
+                          ),
+                          if(widget.trackItem.memberNickName != null)
+                            Text(
+                            '${widget.trackItem.memberNickName}',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
                             ),
-                          // SizedBox(width: 5,),
-                          // Text(
-                          //   Helpers.getCategory(widget.trackItem.trackCategoryId),
-                          //   style: TextStyle(
-                          //     color: Colors.grey,
-                          //     fontSize: 12,
-                          //   ),
-                          // ),
+                          ),
+                          Row(
+                            children: [
+                              if(widget.trackItem.trackTime != null)
+                                Text(
+                                  '${widget.trackItem.trackTime}',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              // SizedBox(width: 5,),
+                              // Text(
+                              //   Helpers.getCategory(widget.trackItem.trackCategoryId),
+                              //   style: TextStyle(
+                              //     color: Colors.grey,
+                              //     fontSize: 12,
+                              //   ),
+                              // ),
 
 
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
               GestureDetector(
                 onTap: () {

@@ -1,72 +1,122 @@
+
 import 'dart:async';
-import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/player/player.dart';
 
-class AudioPlayerManager extends ChangeNotifier {
-  Player model = Player();
-  final AudioPlayer audioPlayer = AudioPlayer();
-  final ValueNotifier<bool> isPlayingNotifier = ValueNotifier<bool>(false);
-  final ValueNotifier<Duration> positionNotifier = ValueNotifier<Duration>(Duration.zero);
-  Duration duration = Duration.zero;
+class PlayerProv extends ChangeNotifier {
+  PlayerModel playerModel = PlayerModel();
+  late AudioPlayer _audioPlayer;
 
-  Timer? _amplitudeTimer; // 타이머 변수 추가
+  void notify() {
+    notifyListeners();
+  }
 
-  // 진폭 값
-  double _currentAmplitude = 0.0;
+  // Future를 비동기적으로 처리하기 위한 메소드
+  Future<String> initLastTrack(Future<String> _getLastTrackInitFuture) async {
+    String lastTrackId = await _getLastTrackInitFuture; // 결과를 기다립니다
+    await initAudio(lastTrackId); // 작업 완료 후 audioInit 호출
+    return lastTrackId;
+  }
 
-  AudioPlayerManager() {
-    audioPlayer.onDurationChanged.listen((newDuration) {
-      duration = newDuration;
+  Future<void> initAudio(String trackId) async {
+    _audioPlayer = AudioPlayer();
+
+    String m3u8Url = dotenv.get("STREAM_URL") + '/${trackId}/playList.m3u8';
+
+    // AudioSource로 HLS URL 전달
+    final source = AudioSource.uri(Uri.parse(m3u8Url));
+
+    await _audioPlayer.setAudioSource(source);
+    // 재생 상태 변경 리스너
+    _audioPlayer.playbackEventStream.listen((event) {
+
+      // if(!playerModel.mounted)
+      //   return;
+
+      // 처리 상태를 확인하여 버퍼링 상태를 표시
+      playerModel.isBuffering = event.processingState == ProcessingState.buffering;
+
+      // 현재 재생 위치 업데이트
+      playerModel.currentPosition = _audioPlayer.position;
+
+      // 총 재생 시간 업데이트
+      playerModel.totalDuration = event.duration ?? Duration.zero;
+      notify();
     });
 
-    audioPlayer.onPositionChanged.listen((newPosition) {
-      positionNotifier.value = newPosition;
+    // setTimer();
+
+  }
+
+  void setTimer() async {
+    // 1초마다 setState를 호출하여 Slider를 업데이트
+    playerModel.timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      // if (!playerModel.mounted)
+      //   return; // 위젯이 여전히 트리에 있는지 확인
+
+      // 매초마다 현재 위치를 갱신
+      playerModel.currentPosition = _audioPlayer.position;
+      notify();
     });
   }
 
-
-  void audioPlay(String audioPath) async {
-    await audioPlayer.play(AssetSource(audioPath));
-    _startAmplitudeSimulation();
-    isPlayingNotifier.value = true;
-  }
-  void audioStop() async {
-    await audioPlayer.pause();
-    isPlayingNotifier.value = false;
-  }
-
-
-  void seekAudio(Duration newPosition) {
-    audioPlayer.seek(newPosition);
+  // 재생/일시정지 버튼
+  void togglePlayPause() async {
+    if (playerModel.isPlaying) {
+      playerModel.isPlaying = false;
+      await _audioPlayer.pause();
+    } else {
+      playerModel.isPlaying = true;
+      await _audioPlayer.play();
+    }
+    notify();
   }
 
-  // 현재 진폭 반환 메서드
-  double getCurrentAmplitude() {
-    return _currentAmplitude;
+
+  // 드래그 중일 때 크기 조정
+  void handleDragUpdate(DragUpdateDetails details) {
+    playerModel.dragOffset += details.delta;
+    if (playerModel.dragOffset.dy > 0) {
+      // 아래로 드래그 (플레이어 커지기)
+      playerModel.height = 80; // 작은 플레이어 크기
+    } else if (playerModel.dragOffset.dy < 0) {
+      // 위로 드래그 (플레이어 작아지기)
+      playerModel.height = 100.h; // 전체 화면 크기
+    }
+    notify();
   }
 
-  // 진폭 시뮬레이션
-  void _startAmplitudeSimulation() {
-    _amplitudeTimer = Timer.periodic(Duration(milliseconds: 100), (timer) {
-      if (!isPlayingNotifier.value) {
-        timer.cancel();
-        return;
-      }
+// 드래그가 끝났을 때 처리
+  bool handleDragEnd(DragEndDetails details) {
+    if (playerModel.height == 80) {
+      playerModel.fullScreen = false;
+    } else {
+      playerModel.fullScreen = true;
+    }
 
-      // 진폭 값을 랜덤으로 변경
-      _currentAmplitude = (0.5 + (0.5 * (0.5 - Random().nextDouble()))).clamp(0.0, 1.0);
-      notifyListeners(); // 상태 변경 알림
-    });
+    // 드래그 후 위치 초기화
+    playerModel.dragOffset = Offset.zero;
+    notify();
+    return playerModel.fullScreen;
   }
 
-  @override
-  void dispose() {
-    _amplitudeTimer?.cancel(); // 타이머 취소
-    audioPlayer.dispose();
-    isPlayingNotifier.dispose();
-    positionNotifier.dispose();
-    super.dispose();
+
+  // 슬라이더 터치가 끝났을 때 위치 조정
+  void onSliderChangeEnd(double value) {
+    final newPosition = Duration(seconds: value.toInt());
+    _audioPlayer.seek(newPosition);
+    notify();
   }
+
+  void setFullScreen() {
+    playerModel.height = 100.h; // 화면 전체 크기 확장
+    playerModel.fullScreen = true;
+    notify();
+  }
+
+
 }
