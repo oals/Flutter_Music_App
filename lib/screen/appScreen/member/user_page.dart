@@ -178,7 +178,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                       left: 0,
                       right: 0,
                       child: CustomAppbar(
-                        fnBackBtncallBack: () => {Navigator.pop(context)},
+                        fnBackBtncallBack: () => {GoRouter.of(context).pop()},
                         fnUpdtBtncallBack: () => {
                           setState(() {
                             isEdit = !isEdit;

@@ -9,7 +9,9 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
+import 'package:skrrskrr/screen/appScreen/comn/splash.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -70,7 +72,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       } else if (i == 6) {
                         print('로그아웃 클릭');
                         await authProv.logout();
-                        GoRouter.of(context).push('/splash');
+                        context.go('/splash');
                       }
                     },
                     child: Row(

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
@@ -82,7 +83,7 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                 child: Column(
                   children: [
                     CustomAppbar(
-                      fnBackBtncallBack: () => {Navigator.pop(context)},
+                      fnBackBtncallBack: () => {GoRouter.of(context).pop()},
                       fnUpdtBtncallBack:()=>{},
                       title: "관심 트랙",
                       isNotification : false,

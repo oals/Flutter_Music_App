@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/search/search_model.dart';
@@ -82,7 +83,7 @@ class _MoreScreenState extends State<MoreScreen> {
                   children: [
                     GestureDetector(
                         onTap: (){
-                          Navigator.pop(context);
+                          GoRouter.of(context).pop();
                         },
                         child: Icon(Icons.arrow_back_rounded,color: Colors.white,)),
                     SizedBox(width: 5,),

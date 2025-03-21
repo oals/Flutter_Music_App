@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
@@ -18,13 +19,9 @@ class PlayListScreen extends StatefulWidget {
   const PlayListScreen({
     super.key,
     required this.playListId,
-    
-    
   });
 
   final int playListId;
-  
-  
 
   @override
   State<PlayListScreen> createState() => _PlayListScreenState();
@@ -53,6 +50,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
     return checkMemberId == loginMemberId;
   }
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -73,7 +71,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
             }
 
             PlayListInfoModel playListModel = playListProv.modelPlayInfo;
-
             isAuth = getIsAuth(playListModel.memberId.toString());
 
             return SingleChildScrollView(
@@ -115,7 +112,9 @@ class _PlayListScreenState extends State<PlayListScreen> {
                             left: 0,
                             right: 0,
                             child: CustomAppbar(
-                              fnBackBtncallBack: () => {Navigator.pop(context)},
+                              fnBackBtncallBack: () => {
+                                GoRouter.of(context).pop()
+                              },
                               fnUpdtBtncallBack:()=>{
                                 setState(() {
                                   isEdit = !isEdit;

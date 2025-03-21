@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/follow/follow_model.dart';
@@ -71,7 +72,7 @@ class _FollowScreenState extends State<FollowScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CustomAppbar(
-                    fnBackBtncallBack: ()=>{Navigator.pop(context)},
+                    fnBackBtncallBack: ()=>{GoRouter.of(context).pop()},
                     fnUpdtBtncallBack:()=>{},
                       title: titleText,
                       isNotification: true,

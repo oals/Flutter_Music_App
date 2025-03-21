@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 
-class PlayerModel {
+class PlayerModel with ChangeNotifier{
   bool fullScreen = false;
   bool isPlaying = false;
   bool isBuffering = false;
@@ -15,5 +15,7 @@ class PlayerModel {
   bool mounted = false;
   Offset dragOffset = Offset.zero;
   ValueNotifier<Duration> positionNotifier = ValueNotifier<Duration>(Duration.zero);
+
+
 
 }

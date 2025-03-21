@@ -124,7 +124,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.pop(context);
+                                    GoRouter.of(context).pop();
                                   },
                                   child: Icon(
                                     Icons.arrow_back_rounded,

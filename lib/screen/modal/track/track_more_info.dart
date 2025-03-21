@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
@@ -199,7 +200,7 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
               print('좋아요 클릭');
               print(widget.track.trackId);
               await trackProv.setTrackLike(widget.track.trackId);
-              Navigator.pop(context);
+              GoRouter.of(context).pop();
             },
             child: Container(
               width: 94.w,
@@ -218,7 +219,7 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
             onTap: () async {
               print(widget.track.trackId);
               await trackProv.setLockTrack(widget.track.trackId,true);
-              Navigator.pop(context);
+              GoRouter.of(context).pop();
             },
             child: Container(
               width: 94.w,

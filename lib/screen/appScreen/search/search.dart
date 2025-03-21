@@ -106,8 +106,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             !isSearchMain ? Icons.arrow_back : Icons.search,
                             color: Colors.white,
                           ),
-                          onPressed: () =>
-                          {
+                          onPressed: () => {
                             if(!isSearchMain){
                               isSearchMain = !isSearchMain,
                               setState(() {})
@@ -170,6 +169,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 searchModel.searchText = _searchController.text;
                                 isSearchMain = false;
                                 isSearchHistory = false;
+                                FocusScope.of(context).unfocus();
                                 setState(() {});
                               },
                             )

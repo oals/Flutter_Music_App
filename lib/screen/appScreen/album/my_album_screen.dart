@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
@@ -103,7 +104,7 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomAppbar(
-                            fnBackBtncallBack: () => {Navigator.pop(context)},
+                            fnBackBtncallBack: () => {GoRouter.of(context).pop()},
                             fnUpdtBtncallBack:()=>{},
                             title: "내 앨범",
                             isNotification : false,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/screen/subScreen/upload/category_item.dart';
 
@@ -46,7 +47,7 @@ class _SelectCategoryState extends State<SelectCategory> {
             for(int i = 0; i< categoryList.length; i++)
               CategoryItem(title : categoryList[i],callBack: ()=>{
                   widget.callBack(categoryList[i],i),
-                  Navigator.pop(context),
+                  GoRouter.of(context).pop(),
                 },
               ),
           ],

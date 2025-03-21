@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:skrrskrr/model/comn/upload.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,6 +13,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:skrrskrr/prov/image_prov.dart';
 
 class Helpers {
 
@@ -51,6 +54,42 @@ class Helpers {
     return prefs.getString("memberId") ?? '';
   }
 
+  // static Future<void> pickImage(dynamic model, bool isMemberImage, BuildContext context) async {
+  //
+  //
+  //   Upload upload = Upload();
+  //   if (isMemberImage) {
+  //     upload.memberId = model.memberId;
+  //   } else {
+  //     upload.trackId = model.trackId;
+  //   }
+  //
+  //   FilePickerResult? result = await FilePicker.platform.pickFiles(
+  //     type: FileType.image, // 이미지 파일만 선택
+  //   );
+  //
+  //   if (result != null && result.files.isNotEmpty) {
+  //     _imageBytes = await Helpers.cropImage(result.files.first.path!);
+  //
+  //     FilePickerResult filePickerResult =
+  //     await Helpers.convertUint8ListToFilePickerResult(_imageBytes!, result.files.first.size);
+  //
+  //     upload.uploadImage = filePickerResult;
+  //     upload.uploadImageNm = result.files.first.name ?? "";
+  //
+  //     if(newImagePath != ""){
+  //       if (isMemberImage) {
+  //         String newImagePath = await Provider.of<ImageProv>(context).updateMemberImage(upload);
+  //         model.memberImagePath = newImagePath;
+  //       } else {
+  //         String newImagePath = await Provider.of<ImageProv>(context).updateTrackImage(upload);
+  //         model.trackImagePath = newImagePath;
+  //       }
+  //     }
+  //
+  //
+  //   }
+  // }
 
   static Future<void> setNotificationIsView(bool notificationIsView) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

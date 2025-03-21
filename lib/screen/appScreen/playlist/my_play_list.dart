@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_model.dart';
@@ -83,7 +84,7 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomAppbar(
-                            fnBackBtncallBack: () => {Navigator.pop(context)},
+                            fnBackBtncallBack: () => {GoRouter.of(context).pop()},
                             fnUpdtBtncallBack:()=>{},
                             title: "플레이리스트",
                             isNotification : false,

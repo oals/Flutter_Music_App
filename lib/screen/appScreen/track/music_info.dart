@@ -50,12 +50,17 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
 
   late TrackProv trackProv;
   late Future<bool> _getTrackInfoFuture;
+  late Future<bool> _getRecommendTrackFuture;
 
   @override
   void initState() {
     super.initState();
     _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getTrackInfo(widget.trackId);
     _loadMemberId();
+  }
+
+  void _setSecondApiParameter(int? trackId, int? trackCategoryId) {
+    _getRecommendTrackFuture = Provider.of<TrackProv>(context, listen: false).getRecommendTrackList(trackId,trackCategoryId!);
   }
 
   void _loadMemberId() async {
@@ -79,7 +84,6 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
       Upload upload = Upload();
       upload.trackId = trackInfoModel.trackId;
 
-
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.image, // 이미지 파일만 선택
       );
@@ -95,8 +99,6 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
         upload.uploadImageNm = result.files.first.name ?? "";
 
         String newImagePath = await imageProv.updateTrackImage(upload);
-
-
 
         if(newImagePath != ""){
           trackInfoModel.trackImagePath = newImagePath;
@@ -130,7 +132,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
 
 
               Track trackInfoModel = trackProv.trackInfoModel;
-
+              _setSecondApiParameter(trackInfoModel.trackId,trackInfoModel.trackCategoryId);
               isAuth = getIsAuth(trackInfoModel.memberId.toString());
 
               return Column(
@@ -199,7 +201,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                 left: 0,
                                 right : 0,
                                 child: CustomAppbar(
-                                    fnBackBtncallBack: ()=>{Navigator.pop(context)},
+                                    fnBackBtncallBack: ()=>{GoRouter.of(context).pop()},
                                     fnUpdtBtncallBack:()=>{
                                       setState(() {
                                         isEdit = !isEdit;
@@ -518,22 +520,36 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                   ),
                                   SizedBox(height: 10),
 
-                                  SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          for(int i = 0; i< trackInfoModel.recommendTrackList.length; i++)...[
-                                            TrackSquareItem(
-                                              track: trackInfoModel.recommendTrackList[i],
-                                              bgColor: Colors.lightBlueAccent,
-                                            ),
-                                            SizedBox(width: 15,),
 
-                                          ]
+                                  FutureBuilder<bool>(
+                                      future: _getRecommendTrackFuture,
+                                      // 비동기 메소드 호출
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                          return Center(child: CircularProgressIndicator());
+                                        } else if (snapshot.hasError) {
+                                          return Center(child: Text('오류 발생: ${snapshot.error}'));
+                                        } else if (!snapshot.hasData) {
+                                          return Center(child: Text('데이터가 없습니다.'));
+                                        }
+                                      return SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              for(int i = 0; i< trackInfoModel.recommendTrackList.length; i++)...[
+                                                TrackSquareItem(
+                                                  track: trackInfoModel.recommendTrackList[i],
+                                                  bgColor: Colors.lightBlueAccent,
+                                                ),
+                                                SizedBox(width: 15,),
 
-                                        ],
-                                      )
+                                              ]
+
+                                            ],
+                                          )
+                                      );
+                                    }
                                   ),
                                   SizedBox(height: 50),
                                 ],

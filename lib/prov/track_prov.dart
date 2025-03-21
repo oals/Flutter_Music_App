@@ -15,6 +15,7 @@ class TrackProv extends ChangeNotifier {
   Upload model = Upload();
   TrackList trackModel = TrackList();
   Track trackInfoModel = Track();
+  Track playTrackInfoModel = Track();
   bool isApiCall = false;
   int listIndex = 0;
 
@@ -396,6 +397,37 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
+
+  Future<bool> getPlayTrackInfo(trackId) async {
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getTrackInfo?trackId=${trackId}&loginMemberId=${loginMemberId}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == '200') {
+        // 성공적으로 데이터를 가져옴
+        playTrackInfoModel = Track();
+        playTrackInfoModel = Track.fromJson(response['trackInfo']);
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
+
   Future<bool> getTrackInfo(trackId) async {
     final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/getTrackInfo?trackId=${trackId}&loginMemberId=${loginMemberId}';
@@ -412,6 +444,34 @@ class TrackProv extends ChangeNotifier {
         // 성공적으로 데이터를 가져옴
         trackInfoModel = Track();
         trackInfoModel = Track.fromJson(response['trackInfo']);
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
+  Future<bool> getRecommendTrackList(trackId, int trackCategoryId) async {
+
+    final url = '/api/getRecommendTrack?trackId=${trackId}&trackCategoryId=${trackCategoryId}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == '200') {
+        // 성공적으로 데이터를 가져옴
+        trackInfoModel.recommendTrackList = [];
 
         for (var data in response['recommendTrackList']) {
           trackInfoModel.recommendTrackList.add(Track.fromJson(data));

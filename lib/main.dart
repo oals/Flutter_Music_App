@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/firebase_options.dart';
+import 'package:skrrskrr/model/player/player.dart';
+import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/category_prov.dart';
 import 'package:skrrskrr/prov/comment_prov.dart';
@@ -23,7 +25,8 @@ import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
-import 'package:skrrskrr/router/app_router.dart';
+import 'package:skrrskrr/router/app_screen.dart';
+import 'package:skrrskrr/router/app_router_config.dart';
 
 
 import 'package:skrrskrr/utils/permissions.dart';  
@@ -38,6 +41,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => AppProv()),
         ChangeNotifierProvider(create: (context) => HomeProv()),
         ChangeNotifierProvider(create: (context) => SearchProv()),
         ChangeNotifierProvider(create: (context) => PlayerProv()),
@@ -61,13 +65,18 @@ void main() async {
 
 
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
   Widget build(BuildContext context) {
     FcmNotifications.initializeNotification(context);  // Firebase 알림 초기화
-
+    print('메인 빌드');
     return ResponsiveSizer(  // 화면 크기 자동 조정
       builder: (context, orientation, screenType) {
         return MaterialApp.router(

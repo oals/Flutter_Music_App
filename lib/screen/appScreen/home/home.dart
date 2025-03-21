@@ -27,34 +27,12 @@ class HomeScreen extends StatefulWidget {
     super.key,
   });
 
-
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomeScreenStateState createState() => _HomeScreenStateState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Navigator(
-      onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(
-          builder: (context) =>
-              HomeScreenState(),
-        );
-      },
-    );
-  }
-}
 
-class HomeScreenState extends StatefulWidget {
-
-  HomeScreenState();
-
-  @override
-  State<HomeScreenState> createState() => _HomeScreenStateState();
-}
-
-class _HomeScreenStateState extends State<HomeScreenState> {
+class _HomeScreenStateState extends State<HomeScreen> {
 
   late Future<bool> _getHomeInitFuture;
 
@@ -71,10 +49,8 @@ class _HomeScreenStateState extends State<HomeScreenState> {
   Widget build(BuildContext context) {
 
     HomeProv homeProv = Provider.of<HomeProv>(context);
-
     print('홈 빌드2');
 
-    // 0xff200f2e
 
     return Scaffold(
 
@@ -298,6 +274,14 @@ class _HomeScreenStateState extends State<HomeScreenState> {
                                   SizedBox(
                                     height: 20,
                                   ),
+
+                                  GestureDetector(
+                                    onTap: (){
+                                      GoRouter.of(context).push('/playList/${53}');
+                                    },
+                                      child: Text('test',style: TextStyle(color: Colors.white),)
+                                  ),
+
 
                                   SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
@@ -93,7 +94,7 @@ class _NewPlayListScreenState extends State<NewPlayListScreen> {
               playListProv.setNewPlaylist(
                   textController.text, isAlbumPrivacy,false);
 
-              Navigator.pop(context); // 바텀 시트 닫기
+              GoRouter.of(context).pop(); // 바텀 시트 닫기
             },
             child: Text('생성',style: TextStyle(color: Colors.white),),
           ),

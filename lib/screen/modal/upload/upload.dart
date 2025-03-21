@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -448,7 +449,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   await trackProv.uploadTrack(uploadTrackList,title!,info!,isPrivacy,categoryCd);
                 }
                 Fluttertoast.showToast(msg: "업로드 되었습니다.");
-                Navigator.pop(context);
+                GoRouter.of(context).pop();
               },
               child: Center(
                 child: Container(

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/player/player.dart';
 import 'package:skrrskrr/model/track/track.dart';
+import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
@@ -17,31 +18,23 @@ import 'package:skrrskrr/utils/helpers.dart';
 class HLSStreamPage extends StatefulWidget {
   const HLSStreamPage({
     super.key,
-    required this.playerHeight,
-    required this.isFullScreen,
-    required this.isFullScreenFunc,
-    required this.isPlayingFunc,
-    required this.isPlaying,
   });
 
-  final Function isFullScreenFunc;
-  final Function isPlayingFunc;
-  final bool isPlaying;
-  final double playerHeight;
-  final bool isFullScreen;
 
   @override
   _HLSStreamPageState createState() => _HLSStreamPageState();
 }
 
-class _HLSStreamPageState extends State<HLSStreamPage> {
-  late AudioPlayer _audioPlayer;
+class _HLSStreamPageState extends State<HLSStreamPage>  {
   late PlayerProv playerProv;
   late TrackProv trackProv;
+  late AppProv appProv;
   late PlayerModel playerModel;
   late Future<String> _getLastTrackInitFuture;
   late Future<bool> _getTrackInfoFuture;
   bool isLoading = false;
+
+
 
   @override
   void initState() {
@@ -56,33 +49,29 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
     _getLastTrackInitFuture = Provider.of<TrackProv>(context, listen: false).getLastListenTrack();
 
     String lastTrackId = await playerProv.initLastTrack(_getLastTrackInitFuture);
-    _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getTrackInfo(lastTrackId);
+    _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getPlayTrackInfo(lastTrackId);
 
-    playerProv.setTimer();
     isLoading = true;
     setState(() {});
   }
 
   @override
   void dispose() {
-    _audioPlayer.dispose();  // 오디오 플레이어 해제
-    playerModel.positionNotifier.dispose();
-    playerModel.timer?.cancel(); // 타이머 해제
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    playerModel = playerProv.playerModel;
-    playerModel.height = widget.playerHeight; // 초기 크기
 
-    trackProv = Provider.of<TrackProv>(context);
+    appProv = Provider.of<AppProv>(context,listen: false);
+    playerModel = playerProv.playerModel;
+    trackProv = Provider.of<TrackProv>(context, listen: false);
 
     if(!isLoading){
       return CircularProgressIndicator();
     }
 
-    print('플레이어 빌드');
+    print('hlsStreamPage 빌드');
 
 
     return Scaffold(
@@ -99,20 +88,22 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                     return Center(child: Text('데이터가 없습니다.'));
                   }
 
-                  Track trackInfoMdoel = trackProv.trackInfoModel;
-                  print(trackInfoMdoel.toJson());
+                  Track trackInfoMdoel = trackProv.playTrackInfoModel;
 
                 return GestureDetector(
-                onPanUpdate: playerProv.handleDragUpdate,
+                onPanUpdate: (details) {
+                  playerProv.handleDragUpdate(details);
+
+                },
                 onPanEnd: (details) {
-                  bool callBackValue = playerProv.handleDragEnd(details);
-                  widget.isFullScreenFunc(callBackValue);
+                  bool callBackValue = playerProv.handleDragEnd();
+                  appProv.isFullScreenFunc(callBackValue);
                 },
                 onTap: () {
                  playerProv.setFullScreen();
-                 widget.isFullScreenFunc(true);
+                 appProv.isFullScreenFunc(true);
                 },
-                child: widget.isFullScreen
+                child: appProv.isFullScreen
                     ?  Container(
                   height: 100.h, // 화면 높이에 맞게 조정
                   decoration: BoxDecoration(
@@ -136,17 +127,10 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                                     child: Stack(
                                       children: [
                                         CustomCachedNetworkImage(
-                                            imagePath:  trackInfoMdoel.trackImagePath,
+                                            imagePath: trackInfoMdoel.trackImagePath,
                                             imageWidth: null,
                                             imageHeight: 85.h
                                         ),
-
-                                        // Image.asset(
-                                        //   'assets/images/category_hiphop.jpg',
-                                        //   width: double.infinity, // 이미지 너비를 화면에 맞게
-                                        //   height: 85.h,
-                                        //   fit: BoxFit.cover,
-                                        // ),
 
 
                                         Container(
@@ -173,8 +157,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                                     child: GestureDetector(
                                       onTap:(){
                                         playerProv.playerModel.fullScreen = false;
-                                        widget.isFullScreenFunc(false);
-                                        playerModel.height = 80;
+                                        appProv.isFullScreenFunc(false);
                                         setState(() {});
                                       },
                                       child: Padding(
@@ -211,8 +194,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                                                     onTap: () {
                                                       print('해당 곡 정보 페이지로 이동');
                                                       playerProv.playerModel.fullScreen = false;
-                                                      widget.isFullScreenFunc(false);
-                                                      playerModel.height = 80;
+                                                      appProv.isFullScreenFunc(false);
                                                     },
                                                     child: Text(
                                                       trackInfoMdoel.trackNm ?? "잠시 후 다시 시도해주세요.",
@@ -227,8 +209,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                                                     onTap: () async {
                                                       print('해당 유저 페이지로 이동');
                                                       playerProv.playerModel.fullScreen = false;
-                                                      widget.isFullScreenFunc(false);
-                                                      playerModel.height = 80;
+                                                      appProv.isFullScreenFunc(false);
 
                                                       GoRouter.of(context).push('/userPage/${trackInfoMdoel.memberId}');
                                                     },
@@ -390,11 +371,12 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(15.0),
                               // 원하는 둥글기 조정
-                              child: Image.asset(
-                                'assets/images/testImage.png',
-                                width: 45,
-                                height: 45,
+                              child:   CustomCachedNetworkImage(
+                                  imagePath: trackInfoMdoel.trackImagePath,
+                                  imageWidth: 14.w,
+                                  imageHeight: 14.h,
                               ),
+
                             ),
                             SizedBox(
                               width: 10,
@@ -404,14 +386,14 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'test',
+                                  trackInfoMdoel.trackNm ?? "null",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600),
                                 ),
                                 Text(
-                                  'test123',
+                                  trackInfoMdoel.memberNickName ?? "null",
                                   style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 14,

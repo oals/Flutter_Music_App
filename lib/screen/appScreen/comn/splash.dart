@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void _checkUser() {
     User? user = FirebaseAuth.instance.currentUser; // 현재 사용자 정보 가져오기
 
-    Timer(Duration(seconds: 3), () async {
+    Timer(Duration(seconds: 1), () async {
       if (user == null) {
         // 유저가 로그인 안 되어 있으면 Login 화면으로 이동
         GoRouter.of(context).push('/login');
@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
         if (isJwtAuth) {
           // 인증 성공
           await memberProv.getMemberInfo(user.email!);
-          GoRouter.of(context).pushReplacement('/');
+          GoRouter.of(context).push('/home/${false}');
         } else {
           // jwt 토큰이 만료된 경우
           final refresh_token = await storage.read(key: "refresh_token");
@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
           if (isRefreshJwtAuth){
             // 새 jwt 토큰 발급 완료
             await memberProv.getMemberInfo(user.email!);
-            GoRouter.of(context).pushReplacement('/');
+            GoRouter.of(context).push('/home/${false}');
           } else {
             // 인증 실패
             GoRouter.of(context).pushReplacement('/login');

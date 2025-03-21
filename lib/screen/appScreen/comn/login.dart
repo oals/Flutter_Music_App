@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           bool isCreateJwt = await authProv.fnGetJwtToken(user);
                           if(isCreateJwt) {
                             await memberProv.getMemberInfo(user.email!);
-                            GoRouter.of(context).push('/');
+                            GoRouter.of(context).push('/home/${false}');
                           } else {
                             Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요..');
                         }

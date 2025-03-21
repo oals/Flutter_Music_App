@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/custom_appbar_v2.dart';
@@ -28,7 +29,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomAppbar(
-                fnBackBtncallBack: () => {Navigator.pop(context)},
+                fnBackBtncallBack: () => {GoRouter.of(context).pop()},
                 fnUpdtBtncallBack: () => {},
                 title: "카테고리",
                 isNotification: true,
