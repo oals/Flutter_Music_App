@@ -42,8 +42,7 @@ class _TrackListItemState extends State<TrackListItem> {
 
     TrackProv trackProv = Provider.of<TrackProv>(context);
     AppProv appProv = Provider.of<AppProv>(context,listen: false);
-    PlayerProv playerProv = Provider.of
-    <PlayerProv>(context,listen: false);
+    PlayerProv playerProv = Provider.of<PlayerProv>(context,listen: false);
 
     return Column(
       children: [
@@ -52,12 +51,9 @@ class _TrackListItemState extends State<TrackListItem> {
           children: [
             GestureDetector(
               onTap: () async {
-                print('음원 실행');
                 await trackProv.setLastListenTrackId(widget.trackItem.trackId);
-                playerProv.audioPause();
+                await playerProv.audioPause();
                 appProv.reload();
-
-
               },
               child: Row(
                 children: [

@@ -13,10 +13,12 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/comn/upload.dart';
+import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
+import 'package:skrrskrr/screen/appScreen/comn/splash.dart';
 
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
 import 'package:skrrskrr/screen/modal/track/track_info_edit.dart';
@@ -54,6 +56,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
 
   @override
   void initState() {
+    print("MusicInfoScreen initstate");
     super.initState();
     _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getTrackInfo(widget.trackId);
     _loadMemberId();

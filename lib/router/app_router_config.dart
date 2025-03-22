@@ -32,7 +32,7 @@ Page commonPageBuilder(
     ) {
 
   final AppProv appProv = Provider.of<AppProv>(context);
-  appProv.testWidget = pageWidget;
+  appProv.appScreenWidget = pageWidget;
 
   return CustomTransitionPage(
     child: AppScreen(

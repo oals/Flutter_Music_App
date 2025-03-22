@@ -34,7 +34,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenStateState extends State<HomeScreen> {
 
-  late Future<bool> _getHomeInitFuture;
+  late Future<bool>? _getHomeInitFuture;
 
   @override
   void initState() {
@@ -69,7 +69,6 @@ class _HomeScreenStateState extends State<HomeScreen> {
                       child: SizedBox()
                   );
                 } else {
-
                   HomeModel homeModel = homeProv.model;
 
                   // 데이터가 성공적으로 로드되었을 때

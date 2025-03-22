@@ -10,15 +10,9 @@ class AppProv extends ChangeNotifier{
 
   ValueNotifier<bool> hlsNotifier = ValueNotifier<bool>(false);
   int currentIndex = 0;
-  int testValue = 0;
-
-
-  Widget testWidget = Container();
-
+  Widget appScreenWidget = Container();
   bool isFullScreen = false;
-  OverlayEntry? _overlayEntry = null;
-  final ValueNotifier<Widget> _childNotifier = ValueNotifier<Widget>(Container());
-
+  bool isPlayTrack = false;
 
   void notify() {
     notifyListeners();
@@ -26,6 +20,7 @@ class AppProv extends ChangeNotifier{
 
   void reload() {
     hlsNotifier.value = !hlsNotifier.value;
+    isPlayTrack = true;
   }
 
   void isFullScreenFunc(bool isFullScreenVal) {

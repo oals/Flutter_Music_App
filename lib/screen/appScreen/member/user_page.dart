@@ -45,6 +45,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
 
   @override
   void initState() {
+    print("UserPageScreen initstate");
     super.initState();
     _getUserInitFuture = Provider.of<MemberProv>(context, listen: false).getMemberPageInfo(widget.memberId);
     _loadMemberId();

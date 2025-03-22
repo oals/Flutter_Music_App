@@ -21,8 +21,6 @@ class _TrackLikeBtnState extends State<TrackLikeBtn> {
   Widget build(BuildContext context) {
     TrackProv trackProv = Provider.of<TrackProv>(context);
 
-    print('좋아요상태');
-    print(widget.trackInfoModel.trackLikeStatus);
 
     return Row(
       children: [

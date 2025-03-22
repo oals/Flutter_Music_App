@@ -52,6 +52,13 @@ class _HLSStreamPageState extends State<HLSStreamPage>  {
     _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getPlayTrackInfo(lastTrackId);
 
     isLoading = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (appProv.isPlayTrack) {
+        playerProv.togglePlayPause();
+      }
+    });
+
     setState(() {});
   }
 
@@ -71,7 +78,7 @@ class _HLSStreamPageState extends State<HLSStreamPage>  {
       return CircularProgressIndicator();
     }
 
-    print('hlsStreamPage 빌드');
+    // print('hlsStreamPage 빌드');
 
 
     return Scaffold(

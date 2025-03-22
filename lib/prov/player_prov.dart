@@ -55,11 +55,12 @@ class PlayerProv extends ChangeNotifier {
   }
 
 
-
-
-  void audioPause() {
-
+  Future<void> audioPause() async {
+    print('음원멈추기');
     _audioPlayer.pause();
+    playerModel.isPlaying = false;
+    stopTimer();
+    await _audioPlayer.pause();
   }
 
 

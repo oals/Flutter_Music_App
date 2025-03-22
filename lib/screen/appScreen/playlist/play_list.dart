@@ -37,6 +37,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
 
   @override
   void initState() {
+    print("PlayListScreen initstate");
     super.initState();
     _getPlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getPlayListInfo(widget.playListId);
     _loadMemberId();
@@ -49,7 +50,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
   bool getIsAuth(checkMemberId)  {
     return checkMemberId == loginMemberId;
   }
-
 
   @override
   Widget build(BuildContext context) {
