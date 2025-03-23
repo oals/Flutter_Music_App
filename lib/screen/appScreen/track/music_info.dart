@@ -81,7 +81,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
     trackProv = Provider.of<TrackProv>(context);
     ImageProv imageProv = Provider.of<ImageProv>(context);
     FollowProv followProv = Provider.of<FollowProv>(context);
-
+    // AppProv appProv = Provider.of<AppProv>(context,listen:false);
 
     Future<void> _pickImage(Track trackInfoModel) async {
       Upload upload = Upload();
@@ -342,6 +342,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                           ),
                                           GestureDetector(
                                             onTap: () {
+
                                               AppBottomModalRouter.fnModalRouter(context,0,
                                                   trackId: widget.trackId);
                                             },

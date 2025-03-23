@@ -81,11 +81,11 @@ class _CommentScreenState extends State<CommentScreen> {
                     // 데이터가 있을 때
                     List<CommentModel> commentModel = commentProv.commentModel;
 
-        
+
                     Future<void> fnRouter(memberId)  async{
                       GoRouter.of(context).push('/userPage/${memberId}');
                     }
-        
+
                     return SingleChildScrollView(
                       scrollDirection: Axis.vertical,
                       child: Container(
@@ -98,7 +98,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                   // 닉네임을 텍스트 필드에 추가
                                   selectCommentMemberNickName = '@${comment.memberNickName} ';
                                   commentId = comment.commentId;
-        
+
                                   textController.text =
                                   '@${comment.memberNickName} ';
                                   textController.selection =
@@ -131,14 +131,14 @@ class _CommentScreenState extends State<CommentScreen> {
 
                                             ),
                                           ),
-        
+
                                           SizedBox(width: 5),
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-        
+
                                                 GestureDetector(
                                                   onTap:(){
                                                     fnRouter(comment.memberId);
@@ -149,8 +149,8 @@ class _CommentScreenState extends State<CommentScreen> {
                                                         color: Colors.grey),
                                                   ),
                                                 ),
-        
-        
+
+
                                                 SizedBox(height: 3),
                                                 Text(
                                                   comment.commentText!,
@@ -202,7 +202,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                               GestureDetector(
                                                 onTap: () {
                                                   print("댓글 좋아요");
-        
+
                                                   commentProv.setCommentLike(comment.commentId);
                                                   setState(() {
                                                     comment.commentLikeStatus = !comment.commentLikeStatus!;
@@ -212,7 +212,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                                       comment.commentLikeCnt = comment.commentLikeCnt! - 1;
                                                     }
                                                   });
-        
+
                                                 },
                                                 child: SvgPicture.asset(
                                                   !comment.commentLikeStatus!
@@ -288,7 +288,7 @@ class _CommentScreenState extends State<CommentScreen> {
                         if (selectCommentMemberNickName != "" && commentText.contains(selectCommentMemberNickName.toString())) {
                           commentText = commentText.split(selectCommentMemberNickName.toString())[1];
                           selectCommentMemberNickName = "";
-        
+
                           await commentProv.setComment(
                             widget.trackId,
                             commentText,

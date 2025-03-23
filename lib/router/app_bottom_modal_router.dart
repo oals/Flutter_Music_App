@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
+import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/screen/modal/comment/child_comment.dart';
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
 import 'package:skrrskrr/screen/modal/playList/my_play_list_modal.dart';
@@ -12,9 +14,11 @@ import 'package:skrrskrr/screen/modal/upload/select_category.dart';
 
 // AppBottomRouter 클래스 정의
 class AppBottomModalRouter {
+
   static void fnModalRouter(
       BuildContext context,
-      int modalIndex, {
+      int modalIndex,
+      {
         String trackImagePath = "",
         int? trackId,
         int? commentId,
@@ -23,13 +27,15 @@ class AppBottomModalRouter {
         Function? callBack,
       }) async {
 
+    final appProv = Provider.of<AppProv>(context, listen: false);
+    appProv.isOpenBottomModal = true;
+
     final Map<int, Future<dynamic> Function()> modalWidgets = {
       0: () async {
         return CommentScreen(trackId: trackId);
       },
       1: () async {
         // 파일 선택 처리
-
         return Container(
           height: 100.h,
             child: UploadScreen(isAlbum: false,));
@@ -57,6 +63,7 @@ class AppBottomModalRouter {
       }
     };
 
+
     // Modal 위젯이 존재하면 showModalBottomSheet 호출
     if (modalWidgets.containsKey(modalIndex)) {
       dynamic modalFunction = modalWidgets[modalIndex];
@@ -65,13 +72,18 @@ class AppBottomModalRouter {
         Widget? modalContent = await modalFunction();
 
         if (modalContent != null) {
-          showModalBottomSheet(
+          await showModalBottomSheet(
             context: context,
             isScrollControlled: true,
             builder: (BuildContext context) {
               return modalContent;
             },
           );
+
+          if(modalIndex != 4 && modalIndex != 6 ) {
+            appProv.isOpenBottomModal = false;
+          }
+
         }
       }
     }

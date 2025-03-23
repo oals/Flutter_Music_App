@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
+import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/screen/appScreen/comn/splash.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
@@ -56,6 +57,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 padding: EdgeInsets.only(bottom: 10, top: 10),
                 child: GestureDetector(
                     onTap: () async {
+                      PlayerProv playerProv = Provider.of<PlayerProv>(context,listen: false); ;
                       String loginMemberId = await Helpers.getMemberId();
                       if (i == 0) {
                         GoRouter.of(context).push('/userPage/${loginMemberId}');
@@ -71,6 +73,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         GoRouter.of(context).push('/adminFollow/${loginMemberId}');
                       } else if (i == 6) {
                         print('로그아웃 클릭');
+                        await playerProv.audioPause();
                         await authProv.logout();
                         context.go('/splash');
                       }

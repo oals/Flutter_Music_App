@@ -45,39 +45,48 @@ class _AppScreenState extends State<AppScreen> {
     return OverlayEntry(
       builder: (context) {
         bool isHideAudioPlayer = appProv.isHideAudioPlayer(appProv.appScreenWidget);
-        return isHideAudioPlayer ? Container() : Stack(
-          children: [
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: appProv.isFullScreen ? 0 : 60,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                height: appProv.isFullScreen ? 100.h : 80,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: IndexedStack(
-                  alignment : AlignmentDirectional.center,
-                  index: 0,
-                  children: [
-                    ValueListenableBuilder<bool>(
-                      valueListenable: appProv.hlsNotifier,
-                      builder: (context, value, child) {
-                        return AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 700),
-                            child: HLSStreamPage(
-                              key: ValueKey<bool>(value),
-                            ) // 풀스크린 상태에서 페이지 변경
-                        );
-                      },
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
+
+        return isHideAudioPlayer
+            ? Container()
+            : IgnorePointer(
+              ignoring: appProv.isOpenBottomModal,
+              child: Opacity(
+                  opacity: appProv.isOpenBottomModal ? 0 : 1,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: appProv.isFullScreen ? 0 : 60,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          height: appProv.isFullScreen ? 100.h : 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: IndexedStack(
+                            alignment : AlignmentDirectional.center,
+                            index: 0,
+                            children: [
+                              ValueListenableBuilder<bool>(
+                                valueListenable: appProv.hlsNotifier,
+                                builder: (context, value, child) {
+                                  return AnimatedSwitcher(
+                                      duration: const Duration(milliseconds: 700),
+                                      child: HLSStreamPage(
+                                        key: ValueKey<bool>(value),
+                                      ) // 풀스크린 상태에서 페이지 변경
+                                  );
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                      ),
+            );
       },
     );
   }

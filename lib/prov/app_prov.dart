@@ -13,6 +13,7 @@ class AppProv extends ChangeNotifier{
   Widget appScreenWidget = Container();
   bool isFullScreen = false;
   bool isPlayTrack = false;
+  bool isOpenBottomModal = false;
 
   void notify() {
     notifyListeners();
@@ -29,7 +30,7 @@ class AppProv extends ChangeNotifier{
   }
 
   bool isHideAudioPlayer(Widget widget) {
-    return (widget is SplashScreen || widget is LoginScreen);
+    return  (widget is SplashScreen || widget is LoginScreen);
   }
 
   bool isShowBottomNav(Widget widget) {
