@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
-import 'package:skrrskrr/screen/subScreen/comn/custom_appbar_v2.dart';
+import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
 
 class CategoryScreen extends StatefulWidget {

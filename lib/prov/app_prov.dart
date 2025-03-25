@@ -1,10 +1,10 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:skrrskrr/router/app_screen.dart';
-import 'package:skrrskrr/screen/appScreen/comn/login.dart';
-import 'package:skrrskrr/screen/appScreen/comn/splash.dart';
-import 'package:skrrskrr/screen/appScreen/setting/setting.dart';
-import 'package:skrrskrr/screen/appScreen/home/home.dart';
+import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
+import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
+import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
+import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
 
 class AppProv extends ChangeNotifier{
 

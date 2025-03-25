@@ -11,7 +11,7 @@ import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 
-import 'package:skrrskrr/screen/appScreen/comn/login.dart';
+import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override

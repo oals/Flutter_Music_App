@@ -4,8 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/follow/follow_model.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
-import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
-import 'package:skrrskrr/screen/subScreen/comn/custom_appbar_v2.dart';
+import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/follow/follow_list.dart';
 
 

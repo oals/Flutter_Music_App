@@ -18,14 +18,14 @@ import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
-import 'package:skrrskrr/screen/appScreen/comn/splash.dart';
+import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
 import 'package:skrrskrr/screen/modal/track/track_info_edit.dart';
 import 'package:skrrskrr/screen/modal/track/track_like_btn.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
-import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';

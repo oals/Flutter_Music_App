@@ -9,9 +9,8 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/home/home_model.dart';
 import 'package:skrrskrr/prov/home_prov.dart';
 
-import 'package:skrrskrr/screen/appScreen/playlist/play_list.dart';
-import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
-import 'package:skrrskrr/screen/subScreen/comn/custom_appbar_v2.dart';
+import 'package:skrrskrr/screen/appScreen/playlist/play_list_screen.dart';
+import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/category/category_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/member/member_scroll_horizontal_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
@@ -19,7 +18,7 @@ import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dar
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/screen/modal/upload/upload.dart';
-import 'package:skrrskrr/screen/appScreen/member/user_page.dart';
+import 'package:skrrskrr/screen/appScreen/member/user_page_screen.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class HomeScreen extends StatefulWidget {

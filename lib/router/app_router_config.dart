@@ -5,22 +5,22 @@ import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/router/app_screen.dart';
 
 import 'package:skrrskrr/screen/appScreen/album/my_album_screen.dart';
-import 'package:skrrskrr/screen/appScreen/category/category.dart';
-import 'package:skrrskrr/screen/appScreen/comn/login.dart';
-import 'package:skrrskrr/screen/appScreen/comn/more.dart';
-import 'package:skrrskrr/screen/appScreen/comn/splash.dart';
-import 'package:skrrskrr/screen/appScreen/feed/Feed.dart';
-import 'package:skrrskrr/screen/appScreen/follow/follow.dart';
-import 'package:skrrskrr/screen/appScreen/home/home.dart';
-import 'package:skrrskrr/screen/appScreen/member/user_page.dart';
+import 'package:skrrskrr/screen/appScreen/category/category_screen.dart';
+import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
+import 'package:skrrskrr/screen/appScreen/comn/more_screen.dart';
+import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
+import 'package:skrrskrr/screen/appScreen/feed/feed_screen.dart';
+import 'package:skrrskrr/screen/appScreen/follow/follow_screen.dart';
+import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
+import 'package:skrrskrr/screen/appScreen/member/user_page_screen.dart';
 import 'package:skrrskrr/screen/appScreen/notification/notification_screen.dart';
-import 'package:skrrskrr/screen/appScreen/playlist/my_play_list.dart';
-import 'package:skrrskrr/screen/appScreen/playlist/play_list.dart';
-import 'package:skrrskrr/screen/appScreen/search/search.dart';
-import 'package:skrrskrr/screen/appScreen/setting/setting.dart';
-import 'package:skrrskrr/screen/appScreen/track/music_info.dart';
-import 'package:skrrskrr/screen/appScreen/track/my_like_track.dart';
-import 'package:skrrskrr/screen/appScreen/track/upload_track.dart';
+import 'package:skrrskrr/screen/appScreen/playlist/my_play_list_screen.dart';
+import 'package:skrrskrr/screen/appScreen/playlist/play_list_screen.dart';
+import 'package:skrrskrr/screen/appScreen/search/search_screen.dart';
+import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
+import 'package:skrrskrr/screen/appScreen/track/music_info_screen.dart';
+import 'package:skrrskrr/screen/appScreen/track/my_like_track_screen.dart';
+import 'package:skrrskrr/screen/appScreen/track/upload_track_screen.dart';
 
 
 

@@ -12,7 +12,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
-import 'package:skrrskrr/screen/appScreen/comn/splash.dart';
+import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class SettingScreen extends StatefulWidget {

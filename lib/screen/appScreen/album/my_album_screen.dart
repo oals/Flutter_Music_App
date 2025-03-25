@@ -5,7 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
-import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 
 class MyAlbumScreen extends StatefulWidget {

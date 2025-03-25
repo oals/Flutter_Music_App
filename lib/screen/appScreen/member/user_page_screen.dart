@@ -15,9 +15,9 @@ import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 
 import 'package:skrrskrr/screen/modal/track/title_info_edit.dart';
-import 'package:skrrskrr/screen/appScreen/playlist/play_list.dart';
+import 'package:skrrskrr/screen/appScreen/playlist/play_list_screen.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
-import 'package:skrrskrr/screen/subScreen/comn/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
