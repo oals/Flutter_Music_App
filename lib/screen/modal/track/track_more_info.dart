@@ -41,11 +41,11 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
 
   void _loadMemberId() async {
     loginMemberId = await Helpers.getMemberId();
-    isAuth = getIsAuth(widget.track.memberId);
+    isAuth = getIsAuth(widget.track.memberId.toString());
     setState(() {});
   }
 
-  bool getIsAuth(checkMemberId)  {
+  bool getIsAuth(String checkMemberId)  {
     return checkMemberId == loginMemberId;
   }
 

@@ -48,7 +48,7 @@ class _FollowScreenState extends State<FollowScreen>
 
   @override
   Widget build(BuildContext context) {
-    FollowProv followProv = Provider.of<FollowProv>(context);
+    followProv = Provider.of<FollowProv>(context);
 
     print('빌드1');
     return Scaffold(

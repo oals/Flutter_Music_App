@@ -20,6 +20,7 @@ class AppProv extends ChangeNotifier{
   }
 
   void reload() {
+    print('리로드');
     hlsNotifier.value = !hlsNotifier.value;
     isPlayTrack = true;
   }
@@ -38,7 +39,7 @@ class AppProv extends ChangeNotifier{
   }
 
   bool isShowAppbar(Widget widget) {
-    return isFullScreen || !(widget is HomeScreen || widget is SettingScreen);
+    return !(widget is HomeScreen || widget is SettingScreen);
   }
 
 

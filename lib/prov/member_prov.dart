@@ -52,7 +52,7 @@ class MemberProv with ChangeNotifier {
   }
 
 
-  Future<void> getMemberInfo(String memberEmail) async {
+  Future<bool> getMemberInfo(String memberEmail) async {
 
     final String? deviceToken = await FcmNotifications.getMyDeviceToken();
     final url= '/api/getMemberInfo?memberEmail=${memberEmail}&deviceToken=${deviceToken}';
@@ -66,6 +66,7 @@ class MemberProv with ChangeNotifier {
         model = MemberModel.fromJson(response['member']);
         await saveMemberData();
         print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
@@ -73,6 +74,8 @@ class MemberProv with ChangeNotifier {
     } catch (error) {
       // 오류 처리
       print('$url - Fail');
+      return false;
+
     }
   }
 
@@ -111,7 +114,6 @@ class MemberProv with ChangeNotifier {
         List<Track> allTrackList = [];
 
         model = MemberModel.fromJson(response['memberDTO']);
-        print(model.memberInfo);
 
         for (var item in response['playListDTO']) {
           PlayListInfoModel playListInfoModel = PlayListInfoModel.fromJson(item);
@@ -133,9 +135,6 @@ class MemberProv with ChangeNotifier {
         model.allTrackListCnt = response['allTrackListCnt'];
         model.popularTrackList = popularTrackList;
         model.allTrackList = allTrackList;
-
-        print(model.allTrackListCnt);
-        print(model.playListListCnt);
 
         print('$url - Successful');
         return true;

@@ -12,7 +12,9 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
+import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -25,10 +27,17 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  late Future<bool>? _getLastListenTrackInitFuture;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getLastListenTrackInitFuture = Provider.of<TrackProv>(context, listen: false).getLastListenTrackList();
+  }
 
   @override
   Widget build(BuildContext context) {
-
     AuthProv authProv = Provider.of<AuthProv>(context);
 
     List<String> cateogryList = [
@@ -51,26 +60,32 @@ class _SettingScreenState extends State<SettingScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
             for (int i = 0; i < 7; i++) ...[
               Container(
                 padding: EdgeInsets.only(bottom: 10, top: 10),
                 child: GestureDetector(
                     onTap: () async {
-                      PlayerProv playerProv = Provider.of<PlayerProv>(context,listen: false); ;
+                      PlayerProv playerProv =
+                          Provider.of<PlayerProv>(context, listen: false);
+                      ;
                       String loginMemberId = await Helpers.getMemberId();
                       if (i == 0) {
                         GoRouter.of(context).push('/userPage/${loginMemberId}');
                       } else if (i == 1) {
-                        GoRouter.of(context).push('/adminLikeTrack/${loginMemberId}');
+                        GoRouter.of(context)
+                            .push('/adminLikeTrack/${loginMemberId}');
                       } else if (i == 2) {
-                        GoRouter.of(context).push('/adminAlbum/${loginMemberId}');
+                        GoRouter.of(context)
+                            .push('/adminAlbum/${loginMemberId}');
                       } else if (i == 3) {
-                        GoRouter.of(context).push('/adminPlayList/${loginMemberId}');
+                        GoRouter.of(context)
+                            .push('/adminPlayList/${loginMemberId}');
                       } else if (i == 4) {
-                        GoRouter.of(context).push('/adminUploadTrack/${loginMemberId}');
+                        GoRouter.of(context)
+                            .push('/adminUploadTrack/${loginMemberId}');
                       } else if (i == 5) {
-                        GoRouter.of(context).push('/adminFollow/${loginMemberId}');
+                        GoRouter.of(context)
+                            .push('/adminFollow/${loginMemberId}');
                       } else if (i == 6) {
                         print('로그아웃 클릭');
                         await playerProv.audioPause();
@@ -139,7 +154,25 @@ class _SettingScreenState extends State<SettingScreen> {
             SizedBox(
               height: 10,
             ),
-            // TrackScrollHorizontalItem(),
+            FutureBuilder<bool>(
+                future: _getLastListenTrackInitFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
+
+
+
+                  return Container(
+                    child: TrackScrollHorizontalItem(
+                      trackList: [],
+                    ),
+                  );
+                },
+            ),
           ],
         ),
       ),

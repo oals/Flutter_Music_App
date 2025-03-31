@@ -11,7 +11,7 @@ class PlayListProv extends ChangeNotifier {
   PlaylistList playlistList = PlaylistList();
   PlayListInfoModel modelPlayInfo = PlayListInfoModel();
   bool isApiCall = false;
-  int listIndex = 0;
+  int offset = 0;
 
 
   void notify() {
@@ -22,7 +22,7 @@ class PlayListProv extends ChangeNotifier {
     playlistList = PlaylistList();
     modelPlayInfo = PlayListInfoModel();
     isApiCall = false;
-    listIndex = 0;
+    offset = 0;
   }
 
 
@@ -44,9 +44,11 @@ class PlayListProv extends ChangeNotifier {
   Future<void> loadMoreData() async {
     if (!isApiCall) {
       setApiCallStatus(true);
-      listIndex = listIndex + 20;
+      offset = offset + 20;
       await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
-      await getPlayList(0, listIndex, false);
+
+      await getPlayList(0, offset, false);
+
       setApiCallStatus(false);
     }
   }
@@ -114,10 +116,10 @@ class PlayListProv extends ChangeNotifier {
 
   }
 
-  Future<bool> getPlayList(int trackId,int listIndex,bool isAlbum) async {
+  Future<bool> getPlayList(int trackId,int offset,bool isAlbum) async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url= '/api/getPlayList?loginMemberId=${loginMemberId}&trackId=${trackId}&listIndex=${listIndex}&isAlbum=${isAlbum}';
+    final url= '/api/getPlayList?loginMemberId=${loginMemberId}&trackId=${trackId}&limit=${20}&offset=${offset}&isAlbum=${isAlbum}';
 
     try {
       final response = await Helpers.apiCall(
@@ -128,7 +130,7 @@ class PlayListProv extends ChangeNotifier {
       );
 
       if ((response['status'] == '200')) {
-        if(listIndex == 0 ){
+        if(offset == 0 ){
           playlistList = PlaylistList();
         }
         for (var item in response['playList']) {
@@ -148,10 +150,10 @@ class PlayListProv extends ChangeNotifier {
     }
   }
 
-  Future<bool> getPlayListInfo(int playListId) async {
+  Future<bool> getPlayListInfo(int playListId,int offset) async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url= '/api/getPlayListInfo?playListId=${playListId}&loginMemberId=${loginMemberId}';
+    final url= '/api/getPlayListInfo?playListId=${playListId}&loginMemberId=${loginMemberId}&limit=${20}&offset=${offset}';
 
     try {
       final response = await Helpers.apiCall(
@@ -162,8 +164,15 @@ class PlayListProv extends ChangeNotifier {
       );
 
       if ((response['status'] == '200')) {
-        modelPlayInfo = PlayListInfoModel();
-        modelPlayInfo = PlayListInfoModel.fromJson(response['playList']);
+        if(offset == 0 ){
+          playlistList = PlaylistList();
+        }
+
+        playlistList.playListInfoModel = PlayListInfoModel.fromJson(response['playList']);
+
+        playlistList.totalCount = response['totalCount'];
+
+
         print('$url - Successful');
         return true;
       } else {

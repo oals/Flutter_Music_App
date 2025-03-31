@@ -25,7 +25,6 @@ class HomeProv extends ChangeNotifier {
     final url= '/api/firstLoad?loginMemberId=${loginMemberId}';
 
     try {
-
       dynamic response = await Helpers.apiCall(url,method: 'GET');
 
       if (response['status'] == '200') {

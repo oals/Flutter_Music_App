@@ -9,6 +9,7 @@ import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 
 import 'package:skrrskrr/screen/subScreen/follow/follow_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
@@ -21,9 +22,7 @@ class SearchResultScreen extends StatefulWidget {
     required this.searchModel,
   });
 
-
   final SearchModel searchModel;
-  
 
   @override
   State<SearchResultScreen> createState() => _SearchResultScreenState();
@@ -37,7 +36,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   void dispose() {
     // TODO: implement dispose
     searchProv.clear();
-    // searchProv.listIndex = 0;
+    // searchProv.offset = 0;
     super.dispose();
   }
 
@@ -59,7 +58,9 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               searchProv.loadMoreData(3);
             }
           } else {
-            searchProv.resetApiCallStatus();
+            if (searchProv.isApiCall) {
+              searchProv.resetApiCallStatus();
+            }
           }
           return false;
         },
@@ -81,10 +82,12 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                     ),
                     if (widget.searchModel.memberListCnt! > 4)
                       GestureDetector(
-                        onTap: () {
-                          print('검색어 테스트');
-                          print(widget.searchModel.searchText);
-                          GoRouter.of(context).push('/more/${1}/${widget.searchModel.searchText}/${widget.searchModel.memberListCnt}');
+                        onTap: () async {
+                          GoRouter.of(context).push(
+                              '/more/${1}/'
+                                  '${widget.searchModel.searchText}/'
+                                  '${await Helpers.getMemberId()}/'
+                                  '${widget.searchModel.memberListCnt}');
 
                           },
                         child: Text(
@@ -126,8 +129,12 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                     ),
                     if (widget.searchModel.playListListCnt! > 8)
                       GestureDetector(
-                        onTap: () {
-                          GoRouter.of(context).push('/more/${2}/${widget.searchModel.searchText}/${widget.searchModel.playListListCnt}');
+                        onTap: () async {
+                          GoRouter.of(context).push(
+                                  '/more/${2}/'
+                                  '${widget.searchModel.searchText}/'
+                                  '${await Helpers.getMemberId()}/'
+                                  '${widget.searchModel.playListListCnt}');
                         },
                         child: Text(
                           'more',
@@ -149,7 +156,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: PlayListSquareItem(
-
                       playList: widget.searchModel.playListList,
                     ),
                   ),
@@ -188,12 +194,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   )
                 ],
               ],
-              if (searchProv.isApiCall)...[
-                SizedBox(height: 10,),
-                CircularProgressIndicator(
-                  color: Color(0xffff0000),
-                ),
-              ],
+              CustomProgressIndicator(isApiCall: searchProv.isApiCall),
             ],
           ),
         ),

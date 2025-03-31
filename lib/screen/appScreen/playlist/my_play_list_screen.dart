@@ -12,6 +12,7 @@ import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 
 class MyPlayListScreen extends StatefulWidget {
@@ -68,7 +69,9 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                     playListProv.loadMoreData();
                   }
                 } else {
-                  playListProv.resetApiCallStatus();
+                  if (playListProv.isApiCall){
+                    playListProv.resetApiCallStatus();
+                  }
                 }
                 return false;
               },
@@ -103,15 +106,9 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                         ],
                       ),
                     ),
-                    if (playListProv.isApiCall)...[
-                      SizedBox(height: 10,),
-                      CircularProgressIndicator(
-                        color: Color(0xffff0000),
-                      ),
-                    ],
-                    SizedBox(
-                      height: 90,
-                    ),
+
+                    CustomProgressIndicator(isApiCall: playListProv.isApiCall),
+
                   ],
                 ),
               ),

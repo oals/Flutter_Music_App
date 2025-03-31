@@ -14,7 +14,7 @@ class SearchProv extends ChangeNotifier {
   List<SearchHistoryModel> searchHistoryModel = [];
   List<String> recentListenTrackHistory = [];
   bool isApiCall = false;
-  int listIndex = 0;
+  int offset = 0;
 
   void notify() {
     notifyListeners();
@@ -25,15 +25,15 @@ class SearchProv extends ChangeNotifier {
     searchHistoryModel = [];
     recentListenTrackHistory = [];
     isApiCall = false;
-    listIndex = 0;
+    offset = 0;
   }
 
   Future<void> loadMoreData(int moreId) async {
     if (!isApiCall) {
       setApiCallStatus(true);
-      listIndex += 20;
+      offset += 20;
       await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
-      await searchMore(moreId, model.searchText!, listIndex);
+      await searchMore(moreId, model.searchText!, offset);
       setApiCallStatus(false);
     }
   }
@@ -57,7 +57,7 @@ class SearchProv extends ChangeNotifier {
   Future<bool> fnSearchTextHistory() async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url= '/api/getSearchTextHistory?loginMemberId=${loginMemberId}';
+    final url= '/api/getSearchTextHistory?loginMemberId=${loginMemberId}&limit=${30}';
 
     try {
       final response = await Helpers.apiCall(
@@ -125,14 +125,15 @@ class SearchProv extends ChangeNotifier {
 
 
 
-  Future<bool> searchMore(int moreId, String searchText,int listIndex) async {
+  Future<bool> searchMore(int moreId, String searchText,int offset) async {
 
     final String loginMemberId = await Helpers.getMemberId();
 
     final url= '/api/getSearchMore?'
         'loginMemberId=${loginMemberId}&'
         'moreId=${moreId}&searchText=${searchText}&'
-        'listIndex=${listIndex}';
+        'limit=${20}&'
+        'offset=${offset}';
 
     try {
       final response = await Helpers.apiCall(
@@ -143,7 +144,7 @@ class SearchProv extends ChangeNotifier {
       );
 
       if ((response['status'] == '200')) {
-        if (listIndex == 0) {
+        if (offset == 0) {
           model.trackList = [];
         }
 
@@ -167,10 +168,10 @@ class SearchProv extends ChangeNotifier {
 
 
 
-  Future<bool> search(String searchText,listIndex) async {
+  Future<bool> search(String searchText,offset) async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url= '/api/search?loginMemberId=${loginMemberId}&searchText=$searchText&listIndex=$listIndex';
+    final url= '/api/search?loginMemberId=${loginMemberId}&searchText=$searchText&offset=$offset';
 
     try {
       final response = await Helpers.apiCall(

@@ -77,10 +77,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         User? user = await _authService.signInWithGoogle();
                         if (user != null) {
-                          bool isCreateJwt = await authProv.fnGetJwtToken(user);
+                          bool isCreateJwt = await authProv.fnCreateJwtToken(user);
                           if(isCreateJwt) {
-                            await memberProv.getMemberInfo(user.email!);
-                            GoRouter.of(context).push('/home/${false}');
+                            bool isGetMemberInfo = await memberProv.getMemberInfo(user.email!);
+                            if (isGetMemberInfo) {
+                              GoRouter.of(context).push('/home/${false}');
+                            } else {
+                              Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요..');
+                            }
                           } else {
                             Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요..');
                         }

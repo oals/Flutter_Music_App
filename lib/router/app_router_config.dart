@@ -46,254 +46,258 @@ Page commonPageBuilder(
 }
 
 
-final router = GoRouter(
-  initialLocation: '/splash',
-  redirect: (BuildContext context, GoRouterState state) {
-    final location = state.matchedLocation;
-    print('네비게이션 이동 추적 : ' + location);
-    return location; // 리디렉션하지 않음
-  },
-  routes: [
+GoRouter router(GlobalKey<NavigatorState> navigatorKey) {
+  return GoRouter(
+    initialLocation: '/splash',
+    navigatorKey: navigatorKey,
+    redirect: (BuildContext context, GoRouterState state) {
+      final location = state.matchedLocation;
+      print('네비게이션 이동 추적 : ' + location);
+      return location; // 리디렉션하지 않음
+    },
+    routes: [
 
-    GoRoute(
-      path: '/splash',
-      pageBuilder: (context, state) {
+      GoRoute(
+        path: '/splash',
+        pageBuilder: (context, state) {
+          return commonPageBuilder(
+            context,
+            state,
+            SplashScreen(),
+            isShowAudioPlayer: true,
+          );
 
-        return commonPageBuilder(
-          context,
-          state,
-          SplashScreen(),
-          isShowAudioPlayer: true,
-        );
+        },
+      ),
 
-      },
-    ),
+      GoRoute(
+        path: '/home/:isShowAudioPlayer',
+        pageBuilder: (context, state) {
 
-    GoRoute(
-      path: '/home/:isShowAudioPlayer',
-      pageBuilder: (context, state) {
+          final String isShowAudioPlayerStr = state.pathParameters['isShowAudioPlayer'] ?? 'false';
+          final bool isShowAudioPlayer = isShowAudioPlayerStr.toLowerCase() == 'true';
 
-        final String isShowAudioPlayerStr = state.pathParameters['isShowAudioPlayer'] ?? 'false';
-        final bool isShowAudioPlayer = isShowAudioPlayerStr.toLowerCase() == 'true';
+          return commonPageBuilder(
+            context,
+            state,
+            HomeScreen(),
+            isShowAudioPlayer: isShowAudioPlayer,
+          );
+        },
+      ),
 
-        return commonPageBuilder(
-          context,
-          state,
-          HomeScreen(),
-          isShowAudioPlayer: isShowAudioPlayer,
-        );
-      },
-    ),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) {
 
-    GoRoute(
-      path: '/login',
-      pageBuilder: (context, state) {
+          return commonPageBuilder(
+            context,
+            state,
+            LoginScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
-        return commonPageBuilder(
-          context,
-          state,
-          LoginScreen(),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+      GoRoute(
+        path: '/feed',
+        pageBuilder: (context, state) {
 
-    GoRoute(
-      path: '/feed',
-      pageBuilder: (context, state) {
+          return commonPageBuilder(
+            context,
+            state,
+            FeedScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
-        return commonPageBuilder(
-          context,
-          state,
-          FeedScreen(),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+      GoRoute(
+        path: '/search',
+        pageBuilder: (context, state) {
 
-    GoRoute(
-      path: '/search',
-      pageBuilder: (context, state) {
+          return commonPageBuilder(
+            context,
+            state,
+            SearchScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
-        return commonPageBuilder(
-          context,
-          state,
-          SearchScreen(),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+      GoRoute(
+        path: '/setting',
+        pageBuilder: (context, state) {
 
-    GoRoute(
-      path: '/setting',
-      pageBuilder: (context, state) {
+          return commonPageBuilder(
+            context,
+            state,
+            SettingScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
-        return commonPageBuilder(
-          context,
-          state,
-          SettingScreen(),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+      GoRoute(
+        path: '/userPage/:memberId',
+        pageBuilder: (context, state) {
+          final memberId = int.parse(state.pathParameters['memberId']!);
 
-    GoRoute(
-      path: '/userPage/:memberId',
-      pageBuilder: (context, state) {
-        final memberId = int.parse(state.pathParameters['memberId']!);
+          return commonPageBuilder(
+            context,
+            state,
+            UserPageScreen(memberId: memberId),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
-        return commonPageBuilder(
-          context,
-          state,
-          UserPageScreen(memberId: memberId),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+      GoRoute(
+        path: '/musicInfo/:trackId',
+        pageBuilder: (context, state) {
+          final trackId = int.parse(state.pathParameters['trackId']!);
 
-    GoRoute(
-      path: '/musicInfo/:trackId',
-      pageBuilder: (context, state) {
-        final trackId = int.parse(state.pathParameters['trackId']!);
+          return commonPageBuilder(
+            context,
+            state,
+            MusicInfoScreen(trackId: trackId),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
-        return commonPageBuilder(
-          context,
-          state,
-          MusicInfoScreen(trackId: trackId),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+      GoRoute(
+        path: '/more/:moreId/:searchText/:memberId/:totalCount',
+        pageBuilder: (context, state) {
+          final moreId = int.parse(state.pathParameters['moreId']!);
+          final searchText = state.pathParameters['searchText']!;
+          final memberId = state.pathParameters['memberId']!;
+          final totalCount = int.parse(state.pathParameters['totalCount']!);
 
-    GoRoute(
-      path: '/more/:moreId/:searchText/:memberId/:totalCount',
-      pageBuilder: (context, state) {
-        final moreId = int.parse(state.pathParameters['moreId']!);
-        final searchText = state.pathParameters['searchText']!;
-        final memberId = state.pathParameters['memberId']!;
-        final totalCount = int.parse(state.pathParameters['totalCount']!);
-
-        return commonPageBuilder(
-          context,
-          state,
-          MoreScreen(
-              moreId: moreId,
-              searchText: searchText,
-              totalCount: totalCount,
-              memberId: memberId),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
-
-
-    GoRoute(
-      path: '/adminLikeTrack/:adminId',
-      pageBuilder: (context, state) {
-
-        return commonPageBuilder(
-          context,
-          state,
-          MyLikeTrackScreen(),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
-
-    GoRoute(
-      path: '/adminPlayList/:adminId',
-      pageBuilder: (context, state) {
-
-        return commonPageBuilder(
-          context,
-          state,
-          MyPlayListScreen(),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
-
-    GoRoute(
-      path: '/adminUploadTrack/:adminId',
-      pageBuilder: (context, state) {
-
-        return commonPageBuilder(
-          context,
-          state,
-          UploadTrackScreen(),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+          return commonPageBuilder(
+            context,
+            state,
+            MoreScreen(
+                moreId: moreId,
+                searchText: searchText,
+                totalCount: totalCount,
+                memberId: memberId),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
 
-    GoRoute(
-      path: '/adminFollow/:adminId',
-      pageBuilder: (context, state) {
+      GoRoute(
+        path: '/adminLikeTrack/:adminId',
+        pageBuilder: (context, state) {
 
-        return commonPageBuilder(
-          context,
-          state,
-          FollowScreen(),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+          return commonPageBuilder(
+            context,
+            state,
+            MyLikeTrackScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
-    GoRoute(
-      path: '/adminAlbum/:adminId',
-      pageBuilder: (context, state) {
-        final adminId = int.parse(state.pathParameters['adminId']!);
+      GoRoute(
+        path: '/adminPlayList/:adminId',
+        pageBuilder: (context, state) {
 
-        return commonPageBuilder(
-          context,
-          state,
-          MyAlbumScreen(adminId: adminId),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+          return commonPageBuilder(
+            context,
+            state,
+            MyPlayListScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
-    GoRoute(
-      path: '/playList/:playListId',
-      pageBuilder: (context, state) {
-        final playListId = int.parse(state.pathParameters['playListId']!);
+      GoRoute(
+        path: '/adminUploadTrack/:adminId',
+        pageBuilder: (context, state) {
 
-        return commonPageBuilder(
-          context,
-          state,
-          PlayListScreen(playListId: playListId),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+          return commonPageBuilder(
+            context,
+            state,
+            UploadTrackScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
 
-    GoRoute(
-      path: '/notification',
-      pageBuilder: (context, state) {
+      GoRoute(
+        path: '/adminFollow/:adminId',
+        pageBuilder: (context, state) {
 
-        return commonPageBuilder(
-          context,
-          state,
-          NotificationScreen(),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+          return commonPageBuilder(
+            context,
+            state,
+            FollowScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
-    GoRoute(
-      path: '/category/:categoryId',
-      pageBuilder: (context, state) {
+      GoRoute(
+        path: '/adminAlbum/:adminId',
+        pageBuilder: (context, state) {
+          final adminId = int.parse(state.pathParameters['adminId']!);
 
-        return commonPageBuilder(
-          context,
-          state,
-          CategoryScreen(),
-          isShowAudioPlayer: true,
-        );
-      },
-    ),
+          return commonPageBuilder(
+            context,
+            state,
+            MyAlbumScreen(adminId: adminId),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
-  ],
-);
+      GoRoute(
+        path: '/playList/:playListId',
+        pageBuilder: (context, state) {
+          final playListId = int.parse(state.pathParameters['playListId']!);
+
+          return commonPageBuilder(
+            context,
+            state,
+            PlayListScreen(playListId: playListId),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
+
+
+      GoRoute(
+        path: '/notification',
+        pageBuilder: (context, state) {
+
+          return commonPageBuilder(
+            context,
+            state,
+            NotificationScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/category/:categoryId',
+        pageBuilder: (context, state) {
+
+          return commonPageBuilder(
+            context,
+            state,
+            CategoryScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
+
+    ],
+  );
+
+}
+

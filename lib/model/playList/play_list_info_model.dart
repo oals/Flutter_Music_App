@@ -19,7 +19,7 @@ class PlayListInfoModel {
 
   bool? isInPlayList;
 
-  bool? playListLike;
+  bool? isPlayListLike;
 
   String? totalPlayTime;
 

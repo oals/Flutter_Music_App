@@ -6,6 +6,7 @@ import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 
 class MyAlbumScreen extends StatefulWidget {
@@ -25,7 +26,7 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
 
   late Future<bool> _getPlayListFuture;
   bool isApiCall = false;
-  int listIndex = 0;
+  int offset = 0;
 
   @override
   void initState() {
@@ -58,9 +59,9 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
     Future<void> _loadMoreData() async {
       if (!isApiCall) {
         _setApiCallStatus(true);
-        listIndex = listIndex + 20;
+        offset = offset + 20;
         await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
-        await playListProv.getPlayList(0, listIndex, true);
+        await playListProv.getPlayList(0, offset, true);
         _setApiCallStatus(false);
       }
     }
@@ -123,15 +124,8 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
                         ],
                       ),
                     ),
-                    if (isApiCall)...[
-                      SizedBox(height: 10,),
-                      CircularProgressIndicator(
-                        color: Color(0xffff0000),
-                      ),
-                    ],
-                    SizedBox(
-                      height: 90,
-                    ),
+
+                    CustomProgressIndicator(isApiCall: isApiCall),
                   ],
                 ),
               ),

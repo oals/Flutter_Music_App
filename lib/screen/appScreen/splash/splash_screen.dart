@@ -44,54 +44,25 @@ class _SplashScreenState extends State<SplashScreen> {
 
       Future<void> _jwtAuthing() async {
         final jwt_Token = await storage.read(key: "jwt_token");
+        print("파이어베이스 검증 후 jwt 토큰 검증 진행 api 호출 ");
+
         bool isJwtAuth = await authProv.fnJwtAuthing(jwt_Token);
         if (isJwtAuth) {
           // 인증 성공
           await memberProv.getMemberInfo(user.email!);
-          GoRouter.of(context).push('/home/${false}');
+          GoRouter.of(context).pushReplacement('/home/${false}');
         } else {
-          // jwt 토큰이 만료된 경우
-          final refresh_token = await storage.read(key: "refresh_token");
-          bool isRefreshJwtAuth = await authProv.fnRefreshJwtAuthing(refresh_token);
-          if (isRefreshJwtAuth){
-            // 새 jwt 토큰 발급 완료
-            await memberProv.getMemberInfo(user.email!);
-            GoRouter.of(context).push('/home/${false}');
-          } else {
-            // 인증 실패
-            GoRouter.of(context).pushReplacement('/login');
-          }
-        }
-      }
-
-      Future<void> _tryRefreshToken(User user) async {
-        try {
-          await user.getIdToken(true); // 강제로 토큰 갱신
-          bool isFireBaseAuth = await authProv.fnFireBaseAuthing(user);
-
-          if (isFireBaseAuth) {
-            _jwtAuthing();
-          } else {
-            // 인증 실패
-            GoRouter.of(context).pushReplacement('/login');
-          }
-        } catch (e) {
-          print("토큰 강제 갱신 실패");
           GoRouter.of(context).pushReplacement('/login');
+
         }
       }
-
 
       Future<void> _handleAuth(User user) async {
         bool isFireBaseAuth = await authProv.fnFireBaseAuthing(user);
         if (isFireBaseAuth) {
           _jwtAuthing();
-        } else {
-          // 인증 실패
-          await _tryRefreshToken(user);
         }
       }
-
 
       // 첫 번째 인증 시도
       await _handleAuth(user);

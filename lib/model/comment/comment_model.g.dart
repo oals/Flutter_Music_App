@@ -19,7 +19,7 @@ CommentModel _$CommentModelFromJson(Map<String, dynamic> json) => CommentModel()
   ..commentText = json['commentText'] as String?
   ..commentDate = json['commentDate'] as String?
   ..parentCommentId = (json['parentCommentId'] as num?)?.toInt()
-  ..childCommentActive = json['childCommentActive'] as bool?
+  ..isChildCommentActive = json['isChildCommentActive'] as bool?
   ..childComment = (json['childComment'] as List<dynamic>?)
       ?.map((e) => CommentModel.fromJson(e as Map<String, dynamic>))
       .toList();
@@ -38,6 +38,6 @@ Map<String, dynamic> _$CommentModelToJson(CommentModel instance) =>
       'commentText': instance.commentText,
       'commentDate': instance.commentDate,
       'parentCommentId': instance.parentCommentId,
-      'childCommentActive': instance.childCommentActive,
+      'childCommentActive': instance.isChildCommentActive,
       'childComment': instance.childComment,
     };

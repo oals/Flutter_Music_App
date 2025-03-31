@@ -29,7 +29,7 @@ class CommentModel {
 
   int? parentCommentId;
 
-  bool? childCommentActive;
+  bool? isChildCommentActive;
 
   List<CommentModel>? childComment = [];
 

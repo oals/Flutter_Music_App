@@ -13,7 +13,7 @@ class PlayListModel {
   String? memberNickName;
   bool? isPlayListPrivacy;
   bool? isInPlayList;
-  bool? playListLike;
+  bool? isPlayListLike;
   int? trackCnt;
 
   PlayListModel();

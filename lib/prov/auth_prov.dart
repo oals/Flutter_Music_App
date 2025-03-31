@@ -27,9 +27,9 @@ class AuthProv with ChangeNotifier{
   }
 
   // jwt 토큰 생성
-  Future<bool> fnGetJwtToken(User user) async {
+  Future<bool> fnCreateJwtToken(User user) async {
 
-    final url= '/auth/getJwtToken';
+    final url= '/auth/createJwtToken';
 
     try {
       final response = await Helpers.apiCall(

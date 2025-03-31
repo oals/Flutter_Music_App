@@ -12,9 +12,9 @@ class AuthService {
   );
 
   Future<User?> signInWithGoogle() async {
-    /// 로그인 팝업 생성
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-    ///로그인 된 계정에 대한 인증 토큰 가져오기
+      /// 로그인 팝업 생성
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      ///로그인 된 계정에 대한 인증 토큰 가져오기
     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
     ///Firebase Authentication에 로그인할 수 있는  자격증명 생성

@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:skrrskrr/fcm/auth_service.dart';
 import 'package:skrrskrr/model/comn/upload.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,7 +16,10 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+
+import '../main.dart';
 
 class Helpers {
 
@@ -156,6 +162,7 @@ class Helpers {
         Map<String, String>? headers,  // 요청 헤더 (optional)
         Map<String, dynamic>? body,    // 요청 바디 (optional)
         List<http.MultipartFile?>? fileList, // 파일 첨부 (optional)
+        bool isGetRefreshToken = false,
       }) async {
     try {
       print('공통 API 호출 : ' + url);
@@ -164,20 +171,26 @@ class Helpers {
       var request;
 
       final storage = FlutterSecureStorage();
-      String? jwtToken = await storage.read(key: "jwt_token");
-      // 기본 헤더에 accessToken 추가
-      if (jwtToken != null) {
-        headers ??= {};  // headers가 null인 경우 빈 맵으로 초기화
-        if(!url.startsWith("/auth/")){
-          headers['Authorization'] = 'Bearer $jwtToken';  // 액세스 토큰을 Authorization 헤더에 추가
+
+      if(isGetRefreshToken){
+        String? refreshToken = await storage.read(key: "refresh_token");
+          if (refreshToken != null) {
+            headers ??= {}; // headers가 null인 경우 빈 맵으로 초기화
+            headers['Refresh-Token'] = refreshToken; // 액세스 토큰을 Authorization 헤더에 추가
+          }
+        } else {
+          String? jwtToken = await storage.read(key: "jwt_token");
+          if (jwtToken != null) {
+            headers ??= {};  // headers가 null인 경우 빈 맵으로 초기화
+            if(!url.startsWith("/auth/")){
+              headers['Authorization'] = 'Bearer $jwtToken';  // 액세스 토큰을 Authorization 헤더에 추가
+            }
+          }
         }
-      }
 
       if (method == 'POST' || method == 'PUT') {
         // POST 요청 처리
         if (fileList != null && fileList.length != 0) {
-
-
           // 파일이 있는 경우 Multipart 요청 사용
           request = http.MultipartRequest(method, uri)
             ..headers.addAll(headers ?? {});
@@ -185,7 +198,6 @@ class Helpers {
           for (http.MultipartFile? fileItem in fileList) {
             request.files.add(fileItem);
           }
-
 
           // 바디 추가
           if (body != null) {
@@ -200,21 +212,21 @@ class Helpers {
             ..headers.addAll(headers ?? {})
             ..body = json.encode(body);
 
-
         }
         // POST 요청 보내기
         var response = await request.send();
         var httpResponse = await http.Response.fromStream(response);
+
         if (httpResponse.body.isEmpty) {
-          print('response 데이터 없음');
           return null; // 빈 본문 처리
         }
-        return await _processResponse(httpResponse);
+
+        return await _processResponse(httpResponse, url, method, headers, body, fileList);
 
       } else if (method == 'GET') {
         // GET 요청 처리
         var response = await http.get(uri, headers: headers);
-        return await _processResponse(response);
+        return await _processResponse(response, url, method, headers, body, fileList);
 
       } else {
         throw Exception('Unsupported HTTP method');
@@ -227,16 +239,53 @@ class Helpers {
   }
 
   // 응답 처리 (공통 처리)
-  static Future<dynamic> _processResponse(http.Response response) async {
+  static Future<dynamic> _processResponse(
+      http.Response response,
+      String url,
+      String method,
+      Map<String, String>? headers,
+      Map<String, dynamic>? body,
+      List<http.MultipartFile?>? fileList,) async {
+
     if (response.statusCode == 200) {
       // 성공적인 응답 처리
       final decodedBody = utf8.decode(response.bodyBytes);
       return json.decode(decodedBody);
+
+    } else if (response.statusCode == 401){
+      // Refresh 토큰을 사용하여 새로운 JWT 토큰을 얻어오는 로직
+      var refreshResponse = await _getRefreshToken();
+
+      if (refreshResponse['status'] != "200") {
+        AuthProv authProv = Provider.of<AuthProv>(navigatorKey.currentContext!, listen: false);
+        await authProv.logout();
+        GoRouter.of(navigatorKey.currentState!.context).push("/splash");
+        return null;
+      }
+
+      const storage = FlutterSecureStorage();
+      await storage.write(key: "jwt_token", value: refreshResponse['jwt_token']);  // JWT 토큰 저장
+      // 새로운 토큰을 사용하여 원래의 API 호출을 재시도
+      return await apiCall(url, method: method, headers: headers, body: body, fileList: fileList,isGetRefreshToken: false);
+
     } else {
-      // 오류 처리
       print('Failed request with status: ${response.statusCode}');
       return null;
     }
+  }
+
+  static Future<dynamic> _getRefreshToken() async {
+
+    var response = await Helpers.apiCall(
+        '/auth/refreshToken',
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json', // JSON 형식
+        },
+        isGetRefreshToken: true
+    );
+
+    return response;
   }
 
 

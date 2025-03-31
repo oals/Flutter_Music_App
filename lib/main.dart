@@ -29,7 +29,9 @@ import 'package:skrrskrr/router/app_screen.dart';
 import 'package:skrrskrr/router/app_router_config.dart';
 
 
-import 'package:skrrskrr/utils/permissions.dart';  
+import 'package:skrrskrr/utils/permissions.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,6 +66,7 @@ void main() async {
 }
 
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -80,7 +83,7 @@ class _MyAppState extends State<MyApp> {
     return ResponsiveSizer(  // 화면 크기 자동 조정
       builder: (context, orientation, screenType) {
         return MaterialApp.router(
-          routerConfig: router,
+          routerConfig: router(navigatorKey),
           title: 'go_router',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),

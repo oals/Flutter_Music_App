@@ -14,7 +14,7 @@ PlayListInfoModel _$PlayListInfoModelFromJson(Map<String, dynamic> json) =>
       ..isPlayListPrivacy = json['isPlayListPrivacy'] as bool?
       ..playListImagePath = json['playListImagePath'] as String?
       ..isInPlayList = json['isInPlayList'] as bool?
-      ..playListLike = json['playListLike'] as bool?
+      ..isPlayListLike = json['isPlayListLike'] as bool?
       ..totalPlayTime = json['totalPlayTime'] as String?
       ..trackCnt = (json['trackCnt'] as num?)?.toInt()
       ..playListTrackList = (json['playListTrackList'] as List<dynamic>?)
@@ -31,7 +31,7 @@ Map<String, dynamic> _$PlayListInfoModelToJson(PlayListInfoModel instance) =>
       'isPlayListPrivacy': instance.isPlayListPrivacy,
       'playListImagePath': instance.playListImagePath,
       'isInPlayList': instance.isInPlayList,
-      'playListLike': instance.playListLike,
+      'isPlayListLike': instance.isPlayListLike,
       'totalPlayTime': instance.totalPlayTime,
       'trackCnt': instance.trackCnt,
       'playListTrackList': instance.playListTrackList,

@@ -273,13 +273,6 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                     height: 20,
                                   ),
 
-                                  GestureDetector(
-                                    onTap: (){
-                                      GoRouter.of(context).push('/playList/${53}');
-                                    },
-                                      child: Text('test',style: TextStyle(color: Colors.white),)
-                                  ),
-
 
                                   SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,

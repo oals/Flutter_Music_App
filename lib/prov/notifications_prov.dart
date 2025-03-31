@@ -124,11 +124,11 @@ class NotificationsProv extends ChangeNotifier{
   }
 
 
-  Future<bool> getNotifications(listIndex) async {
+  Future<bool> getNotifications(offset) async {
 
     String loginMemberId = await Helpers.getMemberId();
 
-    final url= '/api/getNotifications?loginMemberId=${loginMemberId}&listIndex=${listIndex}';
+    final url= '/api/getNotifications?loginMemberId=${loginMemberId}&limit=${20}&offset=${offset}';
 
     try {
       final response = await Helpers.apiCall(

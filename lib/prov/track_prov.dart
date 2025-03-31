@@ -17,7 +17,7 @@ class TrackProv extends ChangeNotifier {
   Track trackInfoModel = Track();
   Track playTrackInfoModel = Track();
   bool isApiCall = false;
-  int listIndex = 0;
+  int offset = 0;
 
   void notify() {
     notifyListeners();
@@ -28,19 +28,19 @@ class TrackProv extends ChangeNotifier {
     trackModel = TrackList();
     trackInfoModel = Track();
     isApiCall = false;
-    listIndex = 0;
+    offset = 0;
   }
 
 
   Future<void> loadMoreData(String apiName) async {
     if (!isApiCall) {
       setApiCallStatus(true);
-      listIndex += 20;
+      offset += 20;
       await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
       if (apiName == 'UploadTrack') {
-        await getUploadTrack(listIndex);
+        await getUploadTrack(offset);
       } else if (apiName == 'LikeTrack'){
-        await getLikeTrack(listIndex);
+        await getLikeTrack(offset);
       }
       setApiCallStatus(false);
     }
@@ -115,9 +115,9 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
-  Future<bool> getLikeTrack(listIndex) async {
+  Future<bool> getLikeTrack(offset) async {
     final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getLikeTrack?loginMemberId=${loginMemberId}&listIndex=${listIndex}';
+    final url = '/api/getLikeTrack?loginMemberId=${loginMemberId}&offset=${offset}';
 
     try {
       final response = await Helpers.apiCall(
@@ -129,7 +129,7 @@ class TrackProv extends ChangeNotifier {
 
       if (response['status'] == "200") {
         // 성공적으로 데이터를 가져옴
-        if (listIndex == 0) {
+        if (offset == 0) {
           trackModel = TrackList();
         }
         for (var item in response['likeTrackList']) {
@@ -151,7 +151,7 @@ class TrackProv extends ChangeNotifier {
   Future<String> getLastListenTrack() async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getLastListenTrack?loginMemberId=${loginMemberId}';
+    final url = '/api/getLastListenTrackId?loginMemberId=${loginMemberId}';
     try {
 
       final response = await Helpers.apiCall(
@@ -159,7 +159,6 @@ class TrackProv extends ChangeNotifier {
           method: 'GET'
       );
 
-      print(response);
 
       if (response['status'] == '200') {
         print('$url - Successful');
@@ -175,6 +174,38 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
+
+  Future<bool> getLastListenTrackList() async {
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getLastListenTrackList?loginMemberId=${loginMemberId}&limit=${15}';
+    try {
+
+      final response = await Helpers.apiCall(
+          url,
+          method: 'GET'
+      );
+
+      print(response);
+
+      if (response['status'] == '200') {
+
+
+
+
+
+        print('$url - Successful');
+        return true;
+      } else {
+        // 오류 처리
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      // 오류 처리
+      print('$url - Fail');
+      return false;
+    }
+  }
 
   Future<bool> setLastListenTrackId(int trackId) async {
 
@@ -366,9 +397,9 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
-  Future<bool> getUploadTrack(int listIndex) async {
+  Future<bool> getUploadTrack(int offset) async {
     final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getUploadTrack?loginMemberId=${loginMemberId}&listIndex=${listIndex}';
+    final url = '/api/getUploadTrack?loginMemberId=${loginMemberId}&limit=${20}&offset=${offset}';
 
     try {
       final response = await Helpers.apiCall(
@@ -379,7 +410,7 @@ class TrackProv extends ChangeNotifier {
       );
 
       if (response['status'] == "200") {
-        if (listIndex == 0) {
+        if (offset == 0) {
           trackModel = TrackList();
         }
         for (var item in response['uploadTrackList']) {
@@ -459,7 +490,7 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getRecommendTrackList(trackId, int trackCategoryId) async {
 
-    final url = '/api/getRecommendTrack?trackId=${trackId}&trackCategoryId=${trackCategoryId}';
+    final url = '/api/getRecommendTrack?trackId=${trackId}&trackCategoryId=${trackCategoryId}&limit=${5}';
 
     try {
       final response = await Helpers.apiCall(

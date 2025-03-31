@@ -167,7 +167,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                                           color: Colors.grey),
                                                     ),
                                                     SizedBox(width: 5),
-                                                    if (comment.childCommentActive!)
+                                                    if (comment.isChildCommentActive!)
                                                       GestureDetector(
                                                         onTap: () {
                                                           AppBottomModalRouter.fnModalRouter(context,4,

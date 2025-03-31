@@ -67,12 +67,10 @@ class CommentProv extends ChangeNotifier {
         },
       );
 
-      print('123123123');
-      print(response['status']);
+
       if (response['status'] == '200') {
-        print('1231231234');
+
         print('$url - Successful');
-        print('1231231235');
         return true;;
       } else {
         // 오류 처리

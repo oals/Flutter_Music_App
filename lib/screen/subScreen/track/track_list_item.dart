@@ -52,8 +52,10 @@ class _TrackListItemState extends State<TrackListItem> {
             GestureDetector(
               onTap: () async {
                 await trackProv.setLastListenTrackId(widget.trackItem.trackId);
+
                 await playerProv.audioPause();
                 appProv.reload();
+
               },
               child: Row(
                 children: [
@@ -98,15 +100,16 @@ class _TrackListItemState extends State<TrackListItem> {
                               ),
                             ),
 
-                            if(widget.trackItem.trackLikeStatus!)...[
+                            if(widget.trackItem.trackLikeStatus != null
+                                && widget.trackItem.trackLikeStatus)...[
                               SizedBox(width: 3,),
                               SvgPicture.asset(
                                 'assets/images/heart_red.svg',
-                                color: Color(0xffff0000),
+                                color: Colors.red,
                                 width: 15,
                                 height: 15,
                               ),
-                            ]
+                            ],
                           ],
                         ),
                         if(widget.trackItem.memberNickName != null)
@@ -147,8 +150,6 @@ class _TrackListItemState extends State<TrackListItem> {
             ),
             GestureDetector(
               onTap: () {
-                print('123123');
-                print(widget.trackItem.trackId);
                 AppBottomModalRouter.fnModalRouter(context,3,
                   track : widget.trackItem,
                 );

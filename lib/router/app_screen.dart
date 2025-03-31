@@ -57,13 +57,14 @@ class _AppScreenState extends State<AppScreen> {
                       Positioned(
                         left: 0,
                         right: 0,
-                        bottom: appProv.isFullScreen ? 0 : 60,
+                        bottom: appProv.isFullScreen ? 0 : 6.4.h,
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
-                          height: appProv.isFullScreen ? 100.h : 80,
+                          height: appProv.isFullScreen ? 100.h : 10.h,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                           ),
+                          alignment: Alignment.topCenter,
                           child: IndexedStack(
                             alignment : AlignmentDirectional.center,
                             index: 0,
@@ -92,37 +93,35 @@ class _AppScreenState extends State<AppScreen> {
   }
 
 
+  void showOverlayIfNeeded() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!widget.isShowAudioPlayer && _overlayEntry != null) {
+        Overlay.of(context).insert(_overlayEntry!);
+        _overlayEntry = null;
+      }
+    });
+  }
+
+
   @override
   void didUpdateWidget(covariant AppScreen oldWidget) {
 
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.child is SplashScreen && widget.child is! HomeScreen) {
-      // 상태를 변경하여 child 위젯을 업데이트
+    if (oldWidget.child is SplashScreen && _childNotifier.value is! HomeScreen) {
       _childNotifier.value = HomeScreen();
     }
 
-    if (widget.child == appProv.appScreenWidget) {
+    if (widget.child == appProv.appScreenWidget ) {
       _childNotifier.value = widget.child;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!widget.isShowAudioPlayer && _overlayEntry != null) {
-          _overlayEntry = _createOverlay();
-          Overlay.of(context).insert(_overlayEntry!);
-          _overlayEntry = null;
-        }
-      });
+      showOverlayIfNeeded();
     }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!widget.isShowAudioPlayer && _overlayEntry != null) {
-          Overlay.of(context).insert(_overlayEntry!);
-          _overlayEntry = null;
-        }
-      });
+    showOverlayIfNeeded();
   }
 
 
@@ -154,7 +153,7 @@ class _AppScreenState extends State<AppScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: showBottomNav & !appProv.isFullScreen
+      bottomNavigationBar: showBottomNav
           ? CustomBottomNavigationBar(
               currentIndex: appProv.currentIndex,
               onTap: (index) {

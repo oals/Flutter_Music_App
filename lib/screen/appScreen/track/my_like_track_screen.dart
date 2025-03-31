@@ -10,6 +10,7 @@ import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
@@ -73,7 +74,9 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                       trackProv.loadMoreData("LikeTrack");
                     }
                   } else {
-                    trackProv.resetApiCallStatus();
+                    if (trackProv.isApiCall) {
+                      trackProv.resetApiCallStatus();
+                    }
                   }
                   return false;
                 },
@@ -109,15 +112,8 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                         );
                       }).toList(),
                     ),
-                    if (trackProv.isApiCall)...[
-                      SizedBox(height: 10,),
-                      CircularProgressIndicator(
-                        color: Color(0xffff0000),
-                      ),
-                    ],
-                    SizedBox(
-                      height: 80,
-                    ),
+
+                    CustomProgressIndicator(isApiCall: trackProv.isApiCall),
 
                   ],
                 ),

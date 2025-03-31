@@ -9,7 +9,8 @@ class MoreProv extends ChangeNotifier{
 
   SearchModel moreModel = SearchModel();
   bool isApiCall = false;
-  int listIndex = 0;
+  bool isLoading = false;
+  int offset = 0;
 
   void notify() {
     notifyListeners();
@@ -18,16 +19,18 @@ class MoreProv extends ChangeNotifier{
   void clear(){
     moreModel = SearchModel();
     isApiCall = false;
-    listIndex = 0;
+    offset = 0;
   }
 
   Future<void> loadMoreData(int moreId, String? searchText, String? memberId) async {
     if (!isApiCall) {
+      isLoading = true;
       setApiCallStatus(true);
-      listIndex += 20;
+      offset += 20;
       await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
-      await searchMore(moreId, searchText, memberId, listIndex);
+      await searchMore(moreId, searchText, memberId, offset);
       setApiCallStatus(false);
+      isLoading = false;
     }
   }
 
@@ -47,7 +50,7 @@ class MoreProv extends ChangeNotifier{
   }
 
 
-  Future<bool> searchMore(int moreId, String? searchText, String? memberId ,int listIndex) async {
+  Future<bool> searchMore(int moreId, String? searchText, String? memberId ,int offset) async {
 
     final String loginMemberId = await Helpers.getMemberId();
 
@@ -55,7 +58,8 @@ class MoreProv extends ChangeNotifier{
         'loginMemberId=${loginMemberId}&'
         'memberId=${memberId}&'
         'moreId=${moreId}&searchText=${searchText}&'
-        'listIndex=${listIndex}';
+        'limit=${20}&'
+        'offset=${offset}';
 
     try {
       final response = await Helpers.apiCall(
@@ -66,7 +70,7 @@ class MoreProv extends ChangeNotifier{
       );
 
       if ((response['status'] == '200')) {
-        if (listIndex == 0) {
+        if (offset == 0) {
           moreModel.trackList = [];
           moreModel.memberList = [];
           moreModel.playListList = [];
