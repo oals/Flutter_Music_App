@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
@@ -27,7 +28,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
 
 
     return Container(
-      padding: EdgeInsets.only(left: 15,right: 0),
+      padding: EdgeInsets.only(left: 10,right: 0),
       child: Wrap(
         spacing: 20.0, // 아이템 간의 가로 간격
         runSpacing: 20.0, // 줄 간격
@@ -35,7 +36,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
         children: widget.playList.map((item) {
 
           return Container(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.all(9),
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey,width: 2),
               borderRadius: BorderRadius.circular(10)
@@ -51,11 +52,14 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
-                        child: CustomCachedNetworkImage(imagePath: item.playListImagePath, imageWidth: 40.w, imageHeight: 20.h),
+                        child: CustomCachedNetworkImage(
+                            imagePath: item.playListImagePath,
+                            imageWidth: 39.w,
+                            imageHeight: 20.h),
                       ),
 
                       Container(
-                        width: 40.w,
+                        width: 39.w,
                         height: 20.h,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
@@ -85,7 +89,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
 
                   SizedBox(height: 10),
                   Container(
-                    width: 160,
+                    width: 39.w,
                     child: Row(
                       children: [
                         Text(
@@ -107,14 +111,71 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 3,),
+                  Container(
+                    width: 39.w,
+                    child: Row(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              item.trackCnt.toString() + " tracks",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
 
+                          ],
+                        ),
+                        SizedBox(width: 7,),
 
-                  Text(
-                    item.memberNickName ?? "",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w700,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              width: 15,
+                              height: 15,
+                              item.isPlayListLike! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
+                            ),
+                            SizedBox(width: 2,),
+                            Text(
+                              item.playListLikeCnt.toString(),
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 3,),
+                  Container(
+                    width: 39.w,
+                    child: Row(
+                      children: [
+                        ClipOval(
+                          child: CustomCachedNetworkImage(
+                            imagePath: item.memberImagePath,
+                            imageWidth: 4.5.w,
+                            imageHeight: null,
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+
+                        Text(
+                          item.memberNickName ?? "",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

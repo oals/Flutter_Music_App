@@ -207,19 +207,33 @@ class _PlayListScreenState extends State<PlayListScreen> {
                           ],
                         ),
                         SizedBox(height: 2),
-                        Text(
-                        playListList.playListInfoModel!.memberNickName!,
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                          ),
+
+                        Row(
+                          children: [
+                            ClipOval(
+                              child: CustomCachedNetworkImage(
+                                  imagePath: playListList.playListInfoModel!.memberImagePath,
+                                  imageWidth: 4.5.w,
+                                  imageHeight: null
+                              ),
+                            ),
+                            SizedBox(width: 3,),
+                            Text(
+                              playListList.playListInfoModel!.memberNickName!,
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
                         ),
+
                         SizedBox(height: 5),
                         Row(
                           children: [
                             Text(
-                              '${playListList.playListInfoModel!.trackCnt ?? '0'} 곡',
+                              '${playListList.playListInfoModel!.trackCnt ?? '0'} tracks',
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15,
@@ -330,8 +344,8 @@ class _PlayListScreenState extends State<PlayListScreen> {
                           ],
                         ),
                         SizedBox(height: 20),
-                        for (int i = 0; i < playListList.playListInfoModel!.playListTrackList!.length;
-                        i++) ...[
+
+                        for (int i = 0; i < playListList.playListInfoModel!.playListTrackList!.length; i++) ...[
                           TrackListItem(
                             trackItem:
                             playListList.playListInfoModel!.playListTrackList![i],

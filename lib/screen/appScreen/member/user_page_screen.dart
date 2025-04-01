@@ -18,6 +18,7 @@ import 'package:skrrskrr/screen/modal/track/title_info_edit.dart';
 import 'package:skrrskrr/screen/appScreen/playlist/play_list_screen.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
@@ -345,7 +346,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                     height: 5,
                                   ),
                                   Text(
-                                    '인기 있는 트랙',
+                                    'Popular tracks',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 19,
@@ -376,13 +377,13 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '앨범',
+                                        'Albums',
                                         style: GoogleFonts.roboto(
                                             color: Colors.white,
                                             fontSize: 19,
                                             fontWeight: FontWeight.w600),
                                       ),
-                                      if (memberModel.playListDTO!.length != 0)
+                                      if (memberModel.playListList!.length != 0)
                                         GestureDetector(
                                           onTap:(){
                                             GoRouter.of(context).push('/more/${4}/${null}/${memberModel.memberId}/${memberModel.playListListCnt}');
@@ -404,107 +405,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                     scrollDirection: Axis.horizontal,
                                     child: Row(
                                       children: [
-                                        for (int i = 0;
-                                            i < memberModel.playListDTO!.length;
-                                            i++) ...[
-                                          Container(
-                                            padding: EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.grey,
-                                                    width: 2),
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                GoRouter.of(context).push('/playList/${memberModel.playListDTO![i].playListId}');
-                                              },
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Stack(
-                                                    children: [
-                                                      ClipRRect(
-                                                        child:
-                                                        CustomCachedNetworkImage(
-                                                            imagePath: memberModel.playListDTO![i].playListImagePath,
-                                                            imageWidth : 40.w,
-                                                            imageHeight : 20.h
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        width: 40.w,
-                                                        height: 20.h,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          gradient:
-                                                              LinearGradient(
-                                                            begin: Alignment
-                                                                .bottomCenter,
-                                                            end: Alignment
-                                                                .topCenter,
-                                                            colors: [
-                                                              Colors.black
-                                                                  .withOpacity(
-                                                                      0.9),
-                                                              // 하단은 어두운 색
-                                                              Colors
-                                                                  .transparent,
-                                                              // 상단은 투명
-                                                            ],
-                                                            stops: [0, 1.0],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        top: 10,
-                                                        left: 10,
-                                                        right: 10,
-                                                        bottom: 10,
-                                                        child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(15.0),
-                                                          child: CustomCachedNetworkImage(
-                                                              imagePath: memberModel.playListDTO![i].playListImagePath,
-                                                              imageWidth : 20.w,
-                                                              imageHeight : 10.h
-                                                          ),
-
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 10),
-                                                  Container(
-                                                    width: 160,
-                                                    child: Text(
-                                                      memberModel
-                                                          .playListDTO![i]
-                                                          .playListNm!,
-                                                      style: TextStyle(
-                                                        fontSize: 17,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    memberModel.playListDTO![i]
-                                                        .memberNickName!,
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Colors.grey,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-
-                                          SizedBox(width: 20), // 간격 추가
+                                        for (int i = 0; i < memberModel.playListList.length; i++) ...[
+                                          PlayListSquareItem(playList: memberModel.playListList),
+                                          SizedBox(width: 20),
                                         ],
                                       ],
                                     ),
@@ -517,7 +420,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        '전체 트랙',
+                                        'All Tracks',
                                         style: GoogleFonts.roboto(
                                             color: Colors.white,
                                             fontSize: 19,
@@ -549,8 +452,6 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                         child: TrackListItem(
                                           trackItem:
                                               memberModel.allTrackList![i],
-
-
                                         ))
                                   ],
                                   SizedBox(

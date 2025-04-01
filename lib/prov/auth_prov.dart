@@ -88,41 +88,6 @@ class AuthProv with ChangeNotifier{
   }
 
 
-  // jwt refresh token 검증 및 발행
-  Future<bool> fnRefreshJwtAuthing(String? refreshJwtToken) async {
-
-    final url= '/auth/jwtAuthing';
-    final refresh_jwt_Token = refreshJwtToken;
-
-    try {
-      final response = await Helpers.apiCall(
-        url,
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $refresh_jwt_Token',
-        },
-
-      );
-
-      if(response['status'] == '200'){
-        String newJwtToken = response['new_jwt_token'];
-        final storage = FlutterSecureStorage();
-        await storage.write(key: "jwt_token", value: newJwtToken);
-        print('$url - Successful');
-        return true;
-
-      } else {
-        throw Exception('Failed to load data');
-      }
-      return false;
-    } catch (error) {
-      print('$url - Fail');
-      return false;
-    }
-  }
-
-
   // 파이어베이스 id Token 인증을 위한
   Future<bool> fnFireBaseAuthing(User user) async {
 

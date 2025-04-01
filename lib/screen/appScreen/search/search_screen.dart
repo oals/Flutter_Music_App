@@ -20,9 +20,12 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+
+  final FocusNode _focusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
-  bool isSearchHistory = true;
-  bool isSearchMain = true;
+  int? searchId = 0;
+
+
   late SearchModel searchModel;
 
   late List<String> recentListenTrackHistory;
@@ -92,47 +95,54 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: TextField(
                       controller: _searchController,
                       style: const TextStyle(color: Colors.white),
+                      focusNode: _focusNode,
                       decoration: InputDecoration(
                         filled: false,
-                        hintText: '검색어를 입력하세요',
+                        hintText: 'search',
                         hintStyle: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w500),
+                            color: Colors.grey, fontWeight: FontWeight.w500),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
                         prefixIcon: IconButton(
                           icon: Icon(
-                            !isSearchMain ? Icons.arrow_back : Icons.search,
+                            searchId != 0 ? Icons.arrow_back : Icons.search,
                             color: Colors.white,
                           ),
                           onPressed: () => {
-                            if(!isSearchMain){
-                              isSearchMain = !isSearchMain,
+                            _searchController.text = "",
+
+                            if(searchId != 0){
+                              FocusScope.of(context).requestFocus(_focusNode),
+                              if (searchId == 2) {
+                                searchId = 1,
+                              } else {
+                                searchId = 0,
+                                _focusNode.unfocus(),
+                              },
                               setState(() {})
                             }
                           },
                         ),
 
                         // 오른쪽 끝에 X 버튼 추가
-                        suffixIcon: isSearchHistory
-                            ? _searchController.text.isNotEmpty
+                        suffixIcon: searchId != 0 && _searchController.text.isNotEmpty
                             ? IconButton(
                           icon: const Icon(
                               Icons.close,
                               size: 17,
                               color: Colors.white
                           ),
-                          onPressed: () {_searchController.clear(); // 텍스트 필드 비우기
-                              setState(() {});
+                          onPressed: () {
+                            _searchController.clear(); // 텍스트 필드 비우기
+                            setState(() {});
                           },
-                        )
-                            : null
-                            : null, // 텍스트가 비어 있으면 X 버튼을 안 보이게 함
+                        ) : null, // 텍스트가 비어 있으면 X 버튼을 안 보이게 함
                       ),
+
                       onTap: () {
-                        isSearchMain = false;
-                        isSearchHistory = true;
+                        searchId = 1;
                         setState(() {});
                       },
 
@@ -141,8 +151,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         if (text != "") {
                           searchModel.searchText = text;
                           await searchProv.search(text, 0);
-                          isSearchMain = false;
-                          isSearchHistory = false;
+                          searchId = 2;
                           setState(() {});
                         }
                       },
@@ -151,29 +160,29 @@ class _SearchScreenState extends State<SearchScreen> {
 
                   const SizedBox(height: 15),
                   Container(
-                      width: 100.w,
-                      child: isSearchMain
-                      /// 검색 결과
-                          ? SearchMainScreen(
-                            recentListenTrackHistory: recentListenTrackHistory,
+                    width: 100.w,
+                    child: Column(
+                      children: [
+                        if(searchId == 0)
+                          SearchMainScreen(recentListenTrackHistory: recentListenTrackHistory,)
+
+                        else if (searchId == 1)
+                          SearchFindScreen(
                             onTap: (String searchHistory) async {
-                              isSearchMain = false;
-                              isSearchHistory = false;
+                              await searchProv.search(searchHistory, 0);
+                              _searchController.text = searchHistory;
+                              searchModel.searchText = _searchController.text;
+                              searchId = 2;
+                              _focusNode.unfocus();
+                              setState(() {});
                             },
                           )
-                          : isSearchHistory
-                          ? SearchFindScreen(
-                              onTap: (String searchHistory) async {
-                                await searchProv.search(searchHistory, 0);
-                                _searchController.text = searchHistory;
-                                searchModel.searchText = _searchController.text;
-                                isSearchMain = false;
-                                isSearchHistory = false;
-                                FocusScope.of(context).unfocus();
-                                setState(() {});
-                              },
-                            )
-                          : SearchResultScreen(searchModel: searchModel)),
+                        else
+                          SearchResultScreen(searchModel: searchModel)
+
+                      ],
+                    ),
+                  ),
                 ],
               );
             }

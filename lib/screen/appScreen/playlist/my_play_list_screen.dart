@@ -89,7 +89,7 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                           CustomAppbar(
                             fnBackBtncallBack: () => {GoRouter.of(context).pop()},
                             fnUpdtBtncallBack:()=>{},
-                            title: "플레이리스트",
+                            title: "PlayLists",
                             isNotification : false,
                             isEditBtn: false,
                             isAddPlayListBtn : true,

@@ -107,7 +107,7 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
                           CustomAppbar(
                             fnBackBtncallBack: () => {GoRouter.of(context).pop()},
                             fnUpdtBtncallBack:()=>{},
-                            title: "내 앨범",
+                            title: "Album",
                             isNotification : false,
                             isEditBtn: false,
                             isAddPlayListBtn : false,

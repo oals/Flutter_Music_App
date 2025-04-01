@@ -31,7 +31,12 @@ HomeModel _$HomeModelFromJson(Map<String, dynamic> json) => HomeModel(
           .toList()
       ..likedTrackList = (json['likedTrackList'] as List<dynamic>)
           .map((e) => Track.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..lastListenTrackList = (json['lastListenTrackList'] as List<dynamic>)
+          .map((e) => Track.fromJson(e as Map<String, dynamic>))
           .toList();
+
+
 
 Map<String, dynamic> _$HomeModelToJson(HomeModel instance) => <String, dynamic>{
       'topicIdx': instance.topicIdx,
@@ -44,4 +49,5 @@ Map<String, dynamic> _$HomeModelToJson(HomeModel instance) => <String, dynamic>{
       'popularPlayList': instance.popularPlayList,
       'followMemberTrackList': instance.followMemberTrackList,
       'likedTrackList': instance.likedTrackList,
+      'lastListenTrackList': instance.lastListenTrackList,
     };

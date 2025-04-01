@@ -11,10 +11,12 @@ class PlayListModel {
   int? playListId;
   int? memberId;
   String? memberNickName;
+  String? memberImagePath;
   bool? isPlayListPrivacy;
   bool? isInPlayList;
   bool? isPlayListLike;
   int? trackCnt;
+  int? playListLikeCnt;
 
   PlayListModel();
 

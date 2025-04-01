@@ -30,6 +30,7 @@ class Track {
   int? memberTrackid;
 
   String? memberNickName;
+  String? memberImagePath;
 
   int? playListId;
 

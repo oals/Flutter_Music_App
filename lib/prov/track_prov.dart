@@ -14,6 +14,7 @@ import 'package:skrrskrr/utils/helpers.dart';
 class TrackProv extends ChangeNotifier {
   Upload model = Upload();
   TrackList trackModel = TrackList();
+  TrackList lastListenTrackList = TrackList();
   Track trackInfoModel = Track();
   Track playTrackInfoModel = Track();
   bool isApiCall = false;
@@ -175,37 +176,38 @@ class TrackProv extends ChangeNotifier {
   }
 
 
-  Future<bool> getLastListenTrackList() async {
-
-    final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getLastListenTrackList?loginMemberId=${loginMemberId}&limit=${15}';
-    try {
-
-      final response = await Helpers.apiCall(
-          url,
-          method: 'GET'
-      );
-
-      print(response);
-
-      if (response['status'] == '200') {
-
-
-
-
-
-        print('$url - Successful');
-        return true;
-      } else {
-        // 오류 처리
-        throw Exception('Failed to load data');
-      }
-    } catch (error) {
-      // 오류 처리
-      print('$url - Fail');
-      return false;
-    }
-  }
+  // Future<bool> getLastListenTrackList() async {
+  //
+  //   final String loginMemberId = await Helpers.getMemberId();
+  //   final url = '/api/getLastListenTrackList?loginMemberId=${loginMemberId}&limit=${15}';
+  //   try {
+  //
+  //     final response = await Helpers.apiCall(
+  //         url,
+  //         method: 'GET'
+  //     );
+  //
+  //     if (response['status'] == '200') {
+  //
+  //       lastListenTrackList = TrackList();
+  //       for (var item in response['lastListenTrackList']) {
+  //         print(item);
+  //         lastListenTrackList.trackList.add(Track.fromJson(item));
+  //       }
+  //
+  //
+  //       print('$url - Successful');
+  //       return true;
+  //     } else {
+  //       // 오류 처리
+  //       throw Exception('Failed to load data');
+  //     }
+  //   } catch (error) {
+  //     // 오류 처리
+  //     print('$url - Fail');
+  //     return false;
+  //   }
+  // }
 
   Future<bool> setLastListenTrackId(int trackId) async {
 
@@ -490,7 +492,8 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getRecommendTrackList(trackId, int trackCategoryId) async {
 
-    final url = '/api/getRecommendTrack?trackId=${trackId}&trackCategoryId=${trackCategoryId}&limit=${5}';
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getRecommendTrack?loginMemberId=${loginMemberId}&trackId=${trackId}&trackCategoryId=${trackCategoryId}&limit=${5}';
 
     try {
       final response = await Helpers.apiCall(

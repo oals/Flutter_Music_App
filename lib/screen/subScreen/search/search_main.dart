@@ -10,15 +10,13 @@ class SearchMainScreen extends StatefulWidget {
   const SearchMainScreen({
     super.key,
     required this.recentListenTrackHistory,
-    required this.onTap,
+
     
     
   });
 
   final List<String> recentListenTrackHistory;
-  final Function onTap;
-  
-  
+
 
   @override
   State<SearchMainScreen> createState() => _SearchMainScreenState();
@@ -39,15 +37,15 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '최근 들은 트랙',
+                  'Recently Listened Track',
                   style: TextStyle(
                       color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
                 ),
-                Text(
-                  '더보기',
-                  style: TextStyle(
-                      color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800),
-                ),
+                // Text(
+                //   'more',
+                //   style: TextStyle(
+                //       color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800),
+                // ),
               ],
             ),
             SizedBox(
@@ -421,7 +419,7 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
               child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('전체',
+                Text('All',
                   style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 20),
                 ),
                 SizedBox(height: 20,),

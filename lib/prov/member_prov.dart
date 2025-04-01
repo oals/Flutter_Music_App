@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
+import 'package:skrrskrr/model/playList/play_list_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
@@ -62,6 +63,7 @@ class MemberProv with ChangeNotifier {
         url,
       );
 
+      print(response);
       if (response['status'] == '200') {
         model = MemberModel.fromJson(response['member']);
         await saveMemberData();
@@ -105,19 +107,19 @@ class MemberProv with ChangeNotifier {
       if (response['status'] == '200') {
 
         model = MemberModel();
-        model.playListDTO = [];
+        model.playListList = [];
         model.popularTrackList = [];
         model.allTrackList = [];
 
-        List<PlayListInfoModel> playList = [];
+        List<PlayListModel>  playListList = [];
         List<Track> popularTrackList = [];
         List<Track> allTrackList = [];
 
         model = MemberModel.fromJson(response['memberDTO']);
 
-        for (var item in response['playListDTO']) {
-          PlayListInfoModel playListInfoModel = PlayListInfoModel.fromJson(item);
-          playList.add(playListInfoModel);
+        for (var item in response['playListList']) {
+          PlayListModel playList = PlayListModel.fromJson(item);
+          playListList.add(playList);
         }
 
         for(var item in response['popularTrackList']) {
@@ -130,9 +132,10 @@ class MemberProv with ChangeNotifier {
           allTrackList.add(track);
         }
 
-        model.playListDTO = playList;
+
         model.playListListCnt = response['playListListCnt'];
         model.allTrackListCnt = response['allTrackListCnt'];
+        model.playListList = playListList;
         model.popularTrackList = popularTrackList;
         model.allTrackList = allTrackList;
 

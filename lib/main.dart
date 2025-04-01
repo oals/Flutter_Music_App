@@ -66,8 +66,6 @@ void main() async {
 }
 
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -83,7 +81,7 @@ class _MyAppState extends State<MyApp> {
     return ResponsiveSizer(  // 화면 크기 자동 조정
       builder: (context, orientation, screenType) {
         return MaterialApp.router(
-          routerConfig: router(navigatorKey),
+          routerConfig: router,
           title: 'go_router',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),

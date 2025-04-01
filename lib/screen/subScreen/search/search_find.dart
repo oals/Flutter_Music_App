@@ -33,63 +33,65 @@ class _SearchFindScreenState extends State<SearchFindScreen> {
     SearchProv searchProv = Provider.of<SearchProv>(context);
 
     return Container(
-      height: 67.h,
-      child: SingleChildScrollView(
-        child: FutureBuilder(
-          future : _getSearchTextHistoryFuture,
-          builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-          return Center(child: Text('오류 발생: ${snapshot.error}'));
-          }
+      height: 72.h,
+      child: Expanded(
+        child: SingleChildScrollView(
+          child: FutureBuilder(
+            future : _getSearchTextHistoryFuture,
+            builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+            return Center(child: Text('오류 발생: ${snapshot.error}'));
+            }
 
-          List<SearchHistoryModel> searchHistoryList = searchProv.searchHistoryModel;
+            List<SearchHistoryModel> searchHistoryList = searchProv.searchHistoryModel;
 
-          return Column(
-              children: [
-                for (int i = 0; i < searchHistoryList.length; i++) ...[
-                  GestureDetector(
-                    onTap: (){
-                      print('검색어 선택');
-                      widget.onTap(searchHistoryList[i].historyText);
-                    },
-                    child: Container(
-                      width: 90.w,
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey,
-                            width: 0.09,
+            return Column(
+                children: [
+                  for (int i = 0; i < searchHistoryList.length; i++) ...[
+                    GestureDetector(
+                      onTap: (){
+                        print('검색어 선택');
+                        widget.onTap(searchHistoryList[i].historyText);
+                      },
+                      child: Container(
+                        width: 90.w,
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 0.09,
+                            ),
                           ),
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            searchHistoryList[i].historyText.toString(),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          Text(
-                            searchHistoryList[i].historyDate.toString(),
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 13,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              searchHistoryList[i].historyText.toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700),
                             ),
-                          )
-                        ],
+                            Text(
+                              searchHistoryList[i].historyDate.toString(),
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 13,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ],
-              ],
-            );
-          }
+              );
+            }
+          ),
         ),
       ),
     );

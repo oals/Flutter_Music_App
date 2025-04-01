@@ -9,8 +9,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:skrrskrr/model/track/track.dart';
+import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
+import 'package:skrrskrr/prov/home_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
@@ -27,27 +30,32 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  late Future<bool>? _getLastListenTrackInitFuture;
+  late AuthProv authProv;
+  late HomeProv homeProv;
+  late List<Track> lastListenTrackList;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getLastListenTrackInitFuture = Provider.of<TrackProv>(context, listen: false).getLastListenTrackList();
+
   }
 
   @override
   Widget build(BuildContext context) {
-    AuthProv authProv = Provider.of<AuthProv>(context);
+    authProv = Provider.of<AuthProv>(context);
+    homeProv = Provider.of<HomeProv>(context);
+
+    lastListenTrackList = homeProv.model.lastListenTrackList;
 
     List<String> cateogryList = [
-      '내 정보',
-      '관심 트랙',
-      '앨범',
-      '플레이리스트',
-      '업로드한 트랙',
-      '팔로잉',
-      '로그아웃'
+      'My page',
+      'Liked Tracks',
+      'Albums',
+      'Playlists',
+      'Uploaded',
+      'Following',
+      'Logout'
     ];
 
     return Scaffold(
@@ -55,14 +63,14 @@ class _SettingScreenState extends State<SettingScreen> {
         padding: EdgeInsets.all(10),
         color: Color(0xff000000),
         width: 100.w,
-        height: 130.h,
+        height: 100.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             for (int i = 0; i < 7; i++) ...[
               Container(
-                padding: EdgeInsets.only(bottom: 10, top: 10),
+                padding: EdgeInsets.only(bottom: 8, top: 8),
                 child: GestureDetector(
                     onTap: () async {
                       PlayerProv playerProv =
@@ -128,51 +136,39 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
             ],
             SizedBox(
-              height: 25,
+              height: 20,
             ),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '최근 들은 곡',
+                    'Recently Listened Track',
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
                         fontWeight: FontWeight.w700),
                   ),
-                  Text(
-                    'more',
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w700),
-                  ),
+                  // Text(
+                  //   'more',
+                  //   style: TextStyle(
+                  //       fontSize: 14,
+                  //       color: Colors.grey,
+                  //       fontWeight: FontWeight.w700),
+                  // ),
                 ],
               ),
             ),
             SizedBox(
               height: 10,
             ),
-            FutureBuilder<bool>(
-                future: _getLastListenTrackInitFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-
-
-
-
-                  return Container(
-                    child: TrackScrollHorizontalItem(
-                      trackList: [],
-                    ),
-                  );
-                },
+            Container(
+              child: TrackScrollHorizontalItem(
+              trackList: lastListenTrackList,
+                bgColor: Colors.greenAccent,
+              ),
             ),
+
           ],
         ),
       ),

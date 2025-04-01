@@ -19,6 +19,7 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track()
   ..memberId = (json['memberId'] as num?)?.toInt()
   ..memberTrackid = (json['memberTrackid'] as num?)?.toInt()
   ..memberNickName = json['memberNickName'] as String?
+  ..memberImagePath = json['memberImagePath'] as String?
   ..playListId = (json['playListId'] as num?)?.toInt()
   ..trackCategoryId = (json['trackCategoryId'] as num?)?.toInt()
   ..categoryNm = json['categoryNm'] as String?
@@ -40,6 +41,7 @@ Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'memberId': instance.memberId,
       'memberTrackid': instance.memberTrackid,
       'memberNickName': instance.memberNickName,
+      'memberImagePath': instance.memberImagePath,
       'playListId': instance.playListId,
       'trackCategoryId': instance.trackCategoryId,
       'categoryNm': instance.categoryNm,

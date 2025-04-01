@@ -30,6 +30,7 @@ class PlayListInfoModel {
   int? memberId;
 
   String? memberNickName;
+  String? memberImagePath;
 
 
   PlayListInfoModel();

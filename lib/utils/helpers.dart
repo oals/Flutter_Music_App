@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:skrrskrr/fcm/auth_service.dart';
@@ -18,6 +19,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/router/app_router_config.dart';
 
 import '../main.dart';
 
@@ -112,18 +114,20 @@ class Helpers {
     if (trackCategoryId == 1) {
       return "K-pop";
     } else if (trackCategoryId == 2) {
-      return "힙합";
+      return "HipHop";
     } else if (trackCategoryId == 3) {
-      return "발라드";
+      return "Ballad";
     } else if (trackCategoryId == 4) {
-      return "락";
+      return "Rock";
     } else if (trackCategoryId == 5) {
-      return "디제잉";
+      return "Dj";
     } else if (trackCategoryId == 6) {
-      return "알엔비";
+      return "R&B";
     }
-    return "장르 없음";
+    return "All";
   }
+
+
 
 
   static Future<http.MultipartFile?> fnSetUploadAudioFile(Upload upload, serverFileNm) async {
@@ -264,7 +268,7 @@ class Helpers {
       }
 
       const storage = FlutterSecureStorage();
-      await storage.write(key: "jwt_token", value: refreshResponse['jwt_token']);  // JWT 토큰 저장
+      await storage.write(key: "jwt_token", value: refreshResponse['jwtToken']);  // JWT 토큰 저장
       // 새로운 토큰을 사용하여 원래의 API 호출을 재시도
       return await apiCall(url, method: method, headers: headers, body: body, fileList: fileList,isGetRefreshToken: false);
 

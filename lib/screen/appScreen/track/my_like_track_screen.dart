@@ -88,7 +88,7 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                     CustomAppbar(
                       fnBackBtncallBack: () => {GoRouter.of(context).pop()},
                       fnUpdtBtncallBack:()=>{},
-                      title: "관심 트랙",
+                      title: "Liked Track",
                       isNotification : false,
                       isEditBtn: false,
                       isAddPlayListBtn : false,
@@ -107,7 +107,6 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                       children: trackModel.trackList.map((item) {
                         return TrackSquareItem(
                           track: item,
-
                           bgColor: Colors.red,
                         );
                       }).toList(),

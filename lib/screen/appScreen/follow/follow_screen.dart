@@ -27,7 +27,7 @@ class _FollowScreenState extends State<FollowScreen>
   late FollowProv followProv;
   late Future<bool> _getFollowListInitFuture;
 
-  String titleText = "팔로잉";
+  String titleText = "Following";
 
   @override
   void initState() {

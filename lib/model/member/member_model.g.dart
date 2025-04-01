@@ -19,15 +19,15 @@ MemberModel _$MemberModelFromJson(Map<String, dynamic> json) => MemberModel()
   ..allTrackListCnt = (json['allTrackListCnt'] as num?)?.toInt()
   ..memberFollowerCnt = (json['memberFollowerCnt'] as num?)?.toInt()
   ..memberImagePath = json['memberImagePath'] as String?
-  ..popularTrackList = (json['popularTrackList'] as List<dynamic>?)
-      ?.map((e) => Track.fromJson(e as Map<String, dynamic>))
-      .toList()
-  ..playListDTO = (json['playListDTO'] as List<dynamic>?)
-      ?.map((e) => PlayListInfoModel.fromJson(e as Map<String, dynamic>))
-      .toList()
-  ..allTrackList = (json['allTrackList'] as List<dynamic>?)
-      ?.map((e) => Track.fromJson(e as Map<String, dynamic>))
-      .toList()
+  // ..popularTrackList = (json['popularTrackList'] as List<dynamic>?)
+  //     ?.map((e) => Track.fromJson(e as Map<String, dynamic>))
+  //     .toList()
+  // ..playListList = (json['playListList'] as List<dynamic>)
+  //     .map((e) => PlayListModel.fromJson(e as Map<String, dynamic>))
+  //     .toList()
+  // ..allTrackList = (json['allTrackList'] as List<dynamic>?)
+  //     ?.map((e) => Track.fromJson(e as Map<String, dynamic>))
+  //     .toList()
   ..isFollowedCd = (json['isFollowedCd'] as num?)?.toInt();
 
 Map<String, dynamic> _$MemberModelToJson(MemberModel instance) =>
@@ -44,8 +44,8 @@ Map<String, dynamic> _$MemberModelToJson(MemberModel instance) =>
       'allTrackListCnt': instance.allTrackListCnt,
       'memberFollowerCnt': instance.memberFollowerCnt,
       'memberImagePath': instance.memberImagePath,
-      'popularTrackList': instance.popularTrackList,
-      'playListDTO': instance.playListDTO,
-      'allTrackList': instance.allTrackList,
+      // 'popularTrackList': instance.popularTrackList,
+      // 'playListList': instance.playListList,
+      // 'allTrackList': instance.allTrackList,
       'isFollowedCd': instance.isFollowedCd,
     };

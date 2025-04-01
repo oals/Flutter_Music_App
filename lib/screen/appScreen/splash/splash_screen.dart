@@ -42,6 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
       MemberProv memberProv = Provider.of<MemberProv>(context, listen: false);
       final storage = FlutterSecureStorage();
 
+
       Future<void> _jwtAuthing() async {
         final jwt_Token = await storage.read(key: "jwt_token");
         print("파이어베이스 검증 후 jwt 토큰 검증 진행 api 호출 ");

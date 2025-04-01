@@ -164,13 +164,12 @@ class PlayListProv extends ChangeNotifier {
       );
 
       if ((response['status'] == '200')) {
-        if(offset == 0 ){
-          playlistList = PlaylistList();
-        }
+
+        playlistList.playListInfoModel = PlayListInfoModel();
 
         playlistList.playListInfoModel = PlayListInfoModel.fromJson(response['playList']);
 
-        playlistList.totalCount = response['totalCount'];
+        playlistList.totalCount = playlistList.playListInfoModel!.trackCnt;
 
 
         print('$url - Successful');

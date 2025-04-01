@@ -34,8 +34,13 @@ class HomeProv extends ChangeNotifier {
         model.popularPlayList = [];
         model.followMemberTrackList = [];
         model.likedTrackList = [];
+        model.lastListenTrackList = [];
 
+        for (var item in response['lastListenTrackList']) {
+          model.lastListenTrackList.add(Track.fromJson(item));
+        }
         for(var item in response['trendingTrackList']){
+          print(item);
           model.trendingTrackList.add(Track.fromJson(item));
         }
         for(var item in response['randomMemberList']){

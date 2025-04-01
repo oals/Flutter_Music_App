@@ -24,6 +24,8 @@ import 'package:skrrskrr/screen/appScreen/track/upload_track_screen.dart';
 
 
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 Page commonPageBuilder(
     BuildContext context,
     GoRouterState state,
@@ -46,8 +48,7 @@ Page commonPageBuilder(
 }
 
 
-GoRouter router(GlobalKey<NavigatorState> navigatorKey) {
-  return GoRouter(
+final router = GoRouter(
     initialLocation: '/splash',
     navigatorKey: navigatorKey,
     redirect: (BuildContext context, GoRouterState state) {
@@ -299,5 +300,5 @@ GoRouter router(GlobalKey<NavigatorState> navigatorKey) {
     ],
   );
 
-}
+
 

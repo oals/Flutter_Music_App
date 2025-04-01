@@ -74,7 +74,7 @@ class _TrackListItemState extends State<TrackListItem> {
                         borderRadius: BorderRadius.circular(10.0), // 원하는 둥글기 조정
                         child: CustomCachedNetworkImage(
                             imagePath: widget.trackItem.trackImagePath,
-                            imageWidth : 10.w,
+                            imageWidth : 15.w,
                             imageHeight : null
                         ),
 
@@ -89,59 +89,97 @@ class _TrackListItemState extends State<TrackListItem> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
+                        Text(
+                          '${widget.trackItem.trackNm}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 2,),
+                        Row(
+                          children: [
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/images/play.svg',
+                                  width: 12,
+                                  height: 12,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(width: 1,),
+                                Text(
+                                  '${widget.trackItem.trackPlayCnt}',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: 5,),
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  widget.trackItem.trackLikeStatus ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
+                                  width: 15,
+                                  height: 15,
+                                ),
+                                SizedBox(width: 1,),
+                                Text(
+                                  '${widget.trackItem.trackLikeCnt}',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                          ],
+                        ),
+                        SizedBox(height: 1,),
                         Row(
                           children: [
                             Text(
-                              '${widget.trackItem.trackNm}',
+                              '${widget.trackItem.trackTime}',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
+                                color: Colors.grey,
+                                fontSize: 12,
                               ),
                             ),
-
-                            if(widget.trackItem.trackLikeStatus != null
-                                && widget.trackItem.trackLikeStatus)...[
-                              SizedBox(width: 3,),
-                              SvgPicture.asset(
-                                'assets/images/heart_red.svg',
-                                color: Colors.red,
-                                width: 15,
-                                height: 15,
+                            SizedBox(width: 5,),
+                            Text(
+                              Helpers.getCategory(widget.trackItem.trackCategoryId),
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
                               ),
-                            ],
+                            ),
                           ],
                         ),
-                        if(widget.trackItem.memberNickName != null)
-                          Text(
-                          '${widget.trackItem.memberNickName}',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            if(widget.trackItem.trackTime != null)
-                              Text(
-                                '${widget.trackItem.trackTime}',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
+                        SizedBox(height: 5,),
+                          Row(
+                            children: [
+                              ClipOval(
+                                child: CustomCachedNetworkImage(
+                                  imagePath: widget.trackItem.memberImagePath,
+                                  imageWidth: 4.5.w,
+                                  imageHeight: null,
                                 ),
                               ),
-                            // SizedBox(width: 5,),
-                            // Text(
-                            //   Helpers.getCategory(widget.trackItem.trackCategoryId),
-                            //   style: TextStyle(
-                            //     color: Colors.grey,
-                            //     fontSize: 12,
-                            //   ),
-                            // ),
-
-
-                          ],
-                        ),
+                              SizedBox(width: 5,),
+                              Text(
+                                '${widget.trackItem.memberNickName}',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                   ),
@@ -150,7 +188,7 @@ class _TrackListItemState extends State<TrackListItem> {
             ),
             GestureDetector(
               onTap: () {
-                AppBottomModalRouter.fnModalRouter(context,3,
+               AppBottomModalRouter.fnModalRouter(context,3,
                   track : widget.trackItem,
                 );
               },

@@ -19,6 +19,7 @@ class HomeModel {
   List<PlayListModel> popularPlayList = [];
   List<Track> followMemberTrackList = [];
   List<Track> likedTrackList = [];
+  List<Track> lastListenTrackList = [];
 
   HomeModel({
     this.topicIdx,

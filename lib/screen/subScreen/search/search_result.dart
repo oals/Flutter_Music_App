@@ -73,10 +73,10 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '아티스트',
+                      'Users',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: Colors.white,
                       ),
                     ),
@@ -120,7 +120,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '플레이리스트',
+                      'PlayList',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 16,
@@ -169,7 +169,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      '트랙',
+                      'Track',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 16,
@@ -178,12 +178,8 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 8,
-                ),
-                for (int i = 0;
-                    i < widget.searchModel.trackList.length;
-                    i++) ...[
+
+                for (int i = 0; i < widget.searchModel.trackList.length; i++) ...[
                   SizedBox(
                     height: 16,
                   ),

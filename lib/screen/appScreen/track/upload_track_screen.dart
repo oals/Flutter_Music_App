@@ -91,8 +91,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                     CustomAppbar(
                       fnBackBtncallBack: () => {GoRouter.of(context).pop()},
                       fnUpdtBtncallBack:()=>{},
-
-                      title: "내 트랙",
+                      title: "Uploaded Tracks",
                       isNotification : false,
                       isEditBtn: false,
                       isAddPlayListBtn : false,
