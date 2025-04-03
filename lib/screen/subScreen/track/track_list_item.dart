@@ -90,12 +90,16 @@ class _TrackListItemState extends State<TrackListItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
 
-                        Text(
-                          '${widget.trackItem.trackNm}',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                        SizedBox(
+                          width: 57.w,
+                          child: Text(
+                            '${widget.trackItem.trackNm}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         SizedBox(height: 2,),

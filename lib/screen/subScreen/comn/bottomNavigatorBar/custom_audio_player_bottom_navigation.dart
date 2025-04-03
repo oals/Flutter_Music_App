@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class CustomBottomNavigationBar extends StatelessWidget {
+class CustomAudioPlayerBottomNavigation extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  CustomBottomNavigationBar({required this.currentIndex, required this.onTap,});
+  CustomAudioPlayerBottomNavigation({required this.currentIndex, required this.onTap,});
 
   @override
   Widget build(BuildContext context) {
@@ -15,18 +16,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
         color: Colors.black, // 배경색
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildNavItem(Icons.home, 'LoFi', 0,40.w),
-          _buildNavItem(Icons.feed, '', 1,20.w),
-          _buildNavItem(Icons.search, '', 2,20.w),
-          _buildNavItem(Icons.settings, '', 3,20.w),
+          _buildNavItem('assets/images/heart.svg', '', 0,20.w),
+          _buildNavItem('assets/images/comment.svg', '', 1,20.w),
+          _buildNavItem('assets/images/dotPoints.svg', '', 2,20.w),
+          _buildNavItem('assets/images/more.svg', '', 3,20.w),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, int index, double width) {
+  Widget _buildNavItem(String svgPath, String label, int index, double width) {
     final isSelected = currentIndex == index;
     return GestureDetector(
       onTap: () => onTap(index),
@@ -37,10 +38,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 30,
-                color: isSelected ? Colors.white : Colors.grey,
+
+              SvgPicture.asset(
+                  svgPath,
+                width: 23,
               ),
               SizedBox(
                 width: 10,

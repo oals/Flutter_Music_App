@@ -40,7 +40,6 @@ class HomeProv extends ChangeNotifier {
           model.lastListenTrackList.add(Track.fromJson(item));
         }
         for(var item in response['trendingTrackList']){
-          print(item);
           model.trendingTrackList.add(Track.fromJson(item));
         }
         for(var item in response['randomMemberList']){

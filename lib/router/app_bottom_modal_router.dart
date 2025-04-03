@@ -28,7 +28,9 @@ class AppBottomModalRouter {
       }) async {
 
     final appProv = Provider.of<AppProv>(context, listen: false);
-    appProv.isOpenBottomModal = true;
+    if (!appProv.isFullScreen){
+      appProv.isOpenBottomModal = true;
+    }
 
     final Map<int, Future<dynamic> Function()> modalWidgets = {
       0: () async {
@@ -81,7 +83,7 @@ class AppBottomModalRouter {
           );
 
           if(modalIndex != 4 && modalIndex != 6 ) {
-            appProv.isOpenBottomModal = false;
+              appProv.isOpenBottomModal = false;
           }
 
         }

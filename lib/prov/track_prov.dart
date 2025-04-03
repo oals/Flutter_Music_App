@@ -302,10 +302,11 @@ class TrackProv extends ChangeNotifier {
         fileList.add(await Helpers.fnSetUploadAudioFile(upload, "uploadFileList"));
       }
 
-      // 이미지 파일 추가
-      if (uploadTrackList[0].uploadImage != null) {
-        fileList.add(await Helpers.fnSetUploadImageFile(upload, "uploadImage"));
-      }
+    }
+
+    // 이미지 파일 추가
+    if (uploadTrackList[0].uploadImage != null) {
+      fileList.add(await Helpers.fnSetUploadImageFile(uploadTrackList[0], "uploadImage"));
     }
 
     return fileList;
@@ -314,6 +315,7 @@ class TrackProv extends ChangeNotifier {
 
   Future<void> uploadAlbum(List<Upload> uploadTrackList,
       String title, String info, bool isPrivacy, int categoryCd) async {
+
     final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/albumUpload';
     try {
@@ -329,17 +331,17 @@ class TrackProv extends ChangeNotifier {
           'loginMemberId': loginMemberId,
           'albumNm': title,
           'trackInfo': info,
-          'trackTime': model.trackTime ?? "00:00",
           'trackCategoryId': (categoryCd + 1).toString(),
           'trackPrivacy': isPrivacy.toString(),
         },
       );
 
       if (response['status'] == "200") {
-        print('Upload successful');
+
         trackModel = TrackList();
         await getUploadTrack(0);
         notify();
+        print('Upload successful');
       } else {
         throw Exception('Failed to load data');
       }
@@ -445,6 +447,7 @@ class TrackProv extends ChangeNotifier {
 
       if (response['status'] == '200') {
         // 성공적으로 데이터를 가져옴
+
         playTrackInfoModel = Track();
         playTrackInfoModel = Track.fromJson(response['trackInfo']);
 

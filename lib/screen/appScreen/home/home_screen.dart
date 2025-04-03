@@ -18,6 +18,7 @@ import 'package:skrrskrr/screen/subScreen/member/member_scroll_horizontal_item.d
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_scroll_paging_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/screen/modal/upload/upload.dart';
 import 'package:skrrskrr/screen/appScreen/member/user_page_screen.dart';
@@ -160,7 +161,6 @@ class _HomeScreenStateState extends State<HomeScreen> {
                               height: 13,
                             ),
 
-
                             Padding(
                               padding: const EdgeInsets.only(left: 10),
                               child: Column(
@@ -175,200 +175,27 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                     height: 15,
                                   ),
 
-                                  SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        for (var lastListenTrackList in lastListenTrackChunkedData)
-                                          Column(
-                                            children: [
-                                              for (var track in lastListenTrackList)
-                                                GestureDetector(
-                                                  onTap: () {},
-                                                  child: Container(
-                                                    margin: EdgeInsets.symmetric(vertical: 10), // 아이템 간의 간격
-                                                    child: Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        Container(
-                                                          padding: EdgeInsets.all(5),
-                                                          decoration: BoxDecoration(
-                                                            border: Border.all(color: Colors.grey, width: 2),
-                                                            borderRadius: BorderRadius.circular(10),
-                                                          ),
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                            children: [
-                                                              Stack(
-                                                                children: [
-                                                                  CustomCachedNetworkImage(
-                                                                    imagePath: track.trackImagePath,
-                                                                    imageWidth: 18.w,
-                                                                    imageHeight: 9.h,
-                                                                  ),
-                                                                  Container(
-                                                                    width: 18.w,
-                                                                    height: 9.h,
-                                                                    decoration: BoxDecoration(
-                                                                      gradient: LinearGradient(
-                                                                        begin: Alignment.bottomCenter,
-                                                                        end: Alignment.topCenter,
-                                                                        colors: [
-                                                                          Colors.greenAccent.withOpacity(0.9),
-                                                                          Colors.transparent,
-                                                                        ],
-                                                                        stops: [0, 1.0],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 13),
-                                                        Container(
-                                                          width: 60.w,
-                                                          padding: EdgeInsets.only(bottom: 10),
-                                                          decoration: BoxDecoration(
-                                                            border: Border(
-                                                              bottom: BorderSide(
-                                                                width: 1.2, // 선의 두께
-                                                                color: Colors.grey, // 선의 색상
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(
-                                                                track.trackNm ?? "null", // 아이템 제목
-                                                                style: TextStyle(
-                                                                  color: Colors.white,
-                                                                  fontWeight: FontWeight.w700,
-                                                                  fontSize: 18,
-                                                                  letterSpacing: -0.5,
-                                                                ),
-                                                              ),
-
-
-                                                              SizedBox(width: 5,),
-                                                              Row(
-                                                                children: [
-
-                                                                  Row(
-                                                                    children: [
-                                                                      SvgPicture.asset('assets/images/play.svg' ,
-                                                                        width: 12,
-                                                                        color: Colors.grey,
-                                                                      ),
-                                                                      SizedBox(width: 3,),
-                                                                      Text(
-                                                                        track.trackPlayCnt.toString(),
-                                                                        style: TextStyle(
-                                                                          color: Colors.grey,
-                                                                          fontWeight: FontWeight.w600,
-                                                                          fontSize: 14,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  SizedBox(width: 5,),
-                                                                  Row(
-                                                                    children: [
-                                                                      SvgPicture.asset(
-                                                                        track.trackLikeStatus!
-                                                                            ? 'assets/images/heart_red.svg'
-                                                                            : 'assets/images/heart.svg' ,
-                                                                        width: 15,
-                                                                      ),
-                                                                      SizedBox(width: 3,),
-                                                                      Text(
-                                                                        track.trackLikeCnt.toString(),
-                                                                        style: TextStyle(
-                                                                          color: Colors.grey,
-                                                                          fontWeight: FontWeight.w600,
-                                                                          fontSize: 14,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-
-
-                                                                ],
-                                                              ),
-                                                              SizedBox(width: 5,),
-                                                              Row(
-                                                                children: [
-                                                                  Text(
-                                                                    track.trackTime.toString(),
-                                                                    style: TextStyle(
-                                                                      color: Colors.grey,
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: 14,
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(width: 5,),
-                                                                  Text(
-                                                                    Helpers.getCategory(track.trackCategoryId),
-                                                                    style: TextStyle(
-                                                                      color: Colors.grey,
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: 14,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              SizedBox(width: 5,),
-                                                              Row(
-                                                                children: [
-                                                                  ClipOval(
-                                                                    child: CustomCachedNetworkImage(
-                                                                      imagePath: track.memberImagePath,
-                                                                      imageWidth: 4.5.w,
-                                                                      imageHeight: null,
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(width: 5,),
-                                                                  Text(
-                                                                    track.memberNickName ?? "null",
-                                                                    style: TextStyle(
-                                                                      color: Colors.grey,
-                                                                      fontWeight: FontWeight.w700,
-                                                                      fontSize: 14,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-
-
-
-
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 13),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                      ],
+                                  Container(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          for (var lastListenTrackList in lastListenTrackChunkedData)
+                                            Column(
+                                              children: [
+                                                for (var track in lastListenTrackList)
+                                                  TrackScrollPagingItem(track: track)
+                                              ],
+                                            ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-
-
                                 ],
                               ),
                             ),
 
-
-                            SizedBox(
-                              height: 20,
-                            ),
 
                             Padding(
                               padding: const EdgeInsets.only(left: 10),

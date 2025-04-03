@@ -109,8 +109,10 @@ class _UploadScreenState extends State<UploadScreen> {
 
         FilePickerResult filePickerResult = await Helpers.convertUint8ListToFilePickerResult(_imageBytes!,result.files.first.size);
 
+
         uploadTrackList[0].uploadImage = filePickerResult;
         uploadTrackList[0].uploadImageNm = result.files.first.name ?? "";
+
 
         setState(() {});
       }

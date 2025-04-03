@@ -40,7 +40,10 @@ class _CustomCachedNetworkImageState extends State<CustomCachedNetworkImage> {
       height: widget.imageHeight ?? null,
       fit: BoxFit.cover,  // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
       imageBuilder: (context, imageProvider) {
-        return Image(image: imageProvider);  // 이미지가 로드되면 표시
+        return Image(
+          image: imageProvider,
+          fit: BoxFit.cover,
+        );  // 이미지가 로드되면 표시
       },
     );
   }

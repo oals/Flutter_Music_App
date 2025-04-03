@@ -35,7 +35,7 @@ class AppProv extends ChangeNotifier{
   }
 
   bool isShowBottomNav(Widget widget) {
-    return !(widget is SplashScreen || widget is LoginScreen);
+    return !isFullScreen && !(widget is SplashScreen || widget is LoginScreen);
   }
 
   bool isShowAppbar(Widget widget) {

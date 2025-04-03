@@ -36,6 +36,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
         children: widget.playList.map((item) {
 
           return Container(
+            width: 44.w,
             padding: EdgeInsets.all(9),
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey,width: 2),
@@ -88,70 +89,85 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
                   ),
 
                   SizedBox(height: 10),
-                  Container(
-                    width: 39.w,
-                    child: Row(
-                      children: [
-                        Text(
-                          item.playListNm!,
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
+                  Row(
+                    children: [
+                      Text(
+                        item.playListNm!,
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
                         ),
-                        if (item.isPlayListPrivacy == true)...[
-                          SizedBox(width: 4,),
-                          Icon(
-                            Icons.lock,
-                            color: Colors.white,
-                            size: 13,
-                          ),
-                        ],
+                      ),
+                      if (item.isPlayListPrivacy == true)...[
+                        SizedBox(width: 4,),
+                        Icon(
+                          Icons.lock,
+                          color: Colors.white,
+                          size: 13,
+                        ),
                       ],
-                    ),
+                    ],
                   ),
                   SizedBox(height: 3,),
-                  Container(
-                    width: 39.w,
-                    child: Row(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              item.trackCnt.toString() + " tracks",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w700,
-                              ),
+                  Row(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            item.trackCnt.toString() + " tracks",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w700,
                             ),
+                          ),
 
-                          ],
-                        ),
-                        SizedBox(width: 7,),
+                        ],
+                      ),
 
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              width: 15,
-                              height: 15,
-                              item.isPlayListLike! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
+                    ],
+                  ),
+
+                  Row(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            item.totalPlayTime.toString(),
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w700,
                             ),
-                            SizedBox(width: 2,),
-                            Text(
-                              item.playListLikeCnt.toString(),
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w700,
-                              ),
+                          ),
+
+                        ],
+                      ),
+                      SizedBox(width: 7,),
+
+
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            width: 15,
+                            height: 15,
+                            item.isPlayListLike! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
+                          ),
+                          SizedBox(width: 2,),
+                          Text(
+                            item.playListLikeCnt.toString(),
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+
+                    ],
                   ),
                   SizedBox(height: 3,),
                   Container(

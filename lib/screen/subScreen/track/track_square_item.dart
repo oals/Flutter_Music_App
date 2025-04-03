@@ -32,7 +32,7 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
   Widget build(BuildContext context) {
 
     return Container(
-      width: 40.w,
+      width: 44.w,
       padding: EdgeInsets.only(left: 5,bottom: 10,right: 5),
       decoration: BoxDecoration(
           border: Border.all(color: Colors.grey,width: 2),
@@ -75,12 +75,16 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
             SizedBox(height: 10),
             Row(
               children: [
-                Text(
-                  widget.track.trackNm!,
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
+                SizedBox(
+                  width: 33.w,
+                  child: Text(
+                    '${widget.track.trackNm}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (widget.track.trackPrivacy == true)...[
@@ -126,6 +130,7 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
                           : 'assets/images/heart.svg',
                       width: 4.5.w,
                     ),
+                    SizedBox(width: 3,),
                     Text(
                       widget.track.trackLikeCnt.toString(),
                       style: TextStyle(

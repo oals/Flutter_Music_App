@@ -12,6 +12,7 @@ class PlayListModel {
   int? memberId;
   String? memberNickName;
   String? memberImagePath;
+  String? totalPlayTime;
   bool? isPlayListPrivacy;
   bool? isInPlayList;
   bool? isPlayListLike;

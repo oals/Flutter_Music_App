@@ -120,7 +120,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
             ),
           ),
           width: 100.w,
-          height: 195.h,
+          height: 260.h,
           child: FutureBuilder<bool>(
             future: _getUserInitFuture,
             // 비동기 함수 호출

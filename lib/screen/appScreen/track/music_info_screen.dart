@@ -81,7 +81,6 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
     trackProv = Provider.of<TrackProv>(context);
     ImageProv imageProv = Provider.of<ImageProv>(context);
     FollowProv followProv = Provider.of<FollowProv>(context);
-    // AppProv appProv = Provider.of<AppProv>(context,listen:false);
 
     Future<void> _pickImage(Track trackInfoModel) async {
       Upload upload = Upload();
@@ -120,7 +119,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
         child: Container(
           color: Color(0xff000000),
           width: 100.w,
-          height: 140.h,
+          height: 150.h,
           child: FutureBuilder<bool>(
             future: _getTrackInfoFuture,
             // 비동기 메소드 호출
@@ -239,13 +238,20 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              trackInfoModel.trackNm ?? "null",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 25,
-                                                  fontWeight: FontWeight.w800),
+
+                                            SizedBox(
+                                              width: 80.w,
+                                              child: Text(
+                                                trackInfoModel.trackNm ?? "null",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 25,
+                                                    fontWeight: FontWeight.w800),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+
                                             ),
+
                                             Row(
                                               children: [
                                                 Text(
@@ -514,9 +520,9 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                         ),
                                     ],
                                   ),
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 20),
                                   Text(
-                                    '추천',
+                                    'Recommended Track',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 20,
