@@ -38,6 +38,9 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
   late Future<bool> _getTrackInfoFuture;
   bool isLoading = false;
 
+
+
+
   @override
   void initState() {
     super.initState();
@@ -159,6 +162,26 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                                             ),
 
 
+                                            if(!playerModel.isPlaying)
+                                              GestureDetector(
+                                                onTap: playerProv.togglePlayPause,
+                                                child: Container(
+                                                  width: 100.w, // 이미지와 동일한 너비로 설정
+                                                  height: 100.h,
+                                                  decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      begin: Alignment.bottomCenter,
+                                                      end: Alignment.topCenter,
+                                                      colors: [
+                                                        Colors.transparent.withOpacity(0.5), // 하단은 어두운 색
+                                                        Colors.transparent, // 상단은 투명
+                                                      ],
+                                                      stops: [1, 1],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+
 
                                             Positioned(
                                               top : 12.h,
@@ -176,8 +199,11 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                                                         GestureDetector(
                                                           onTap: () {
                                                             print('해당 곡 정보 페이지로 이동');
+
                                                             playerProv.playerModel.fullScreen = false;
                                                             appProv.isFullScreenFunc(false);
+                                                            GoRouter.of(context).push('/musicInfo/${trackInfoMdoel.trackId}');
+
                                                           },
                                                           child: SizedBox(
                                                             width: 70.w,
@@ -290,29 +316,6 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                                                 },
                                               ),
                                             ),
-
-
-                                            if(!playerModel.isPlaying)
-                                              GestureDetector(
-                                                onTap: playerProv.togglePlayPause,
-                                                child: Container(
-                                                  width: 100.w, // 이미지와 동일한 너비로 설정
-                                                  height: 100.h,
-                                                  decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      begin: Alignment.bottomCenter,
-                                                      end: Alignment.topCenter,
-                                                      colors: [
-                                                        Colors.transparent.withOpacity(0.5), // 하단은 어두운 색
-                                                        Colors.transparent, // 상단은 투명
-                                                      ],
-                                                      stops: [1, 1],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-
-
                                             Positioned(
                                               top : 47.h,
                                               left : 40.w,

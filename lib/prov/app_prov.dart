@@ -13,7 +13,6 @@ class AppProv extends ChangeNotifier{
   Widget appScreenWidget = Container();
   bool isFullScreen = false;
   bool isPlayTrack = false;
-  bool isOpenBottomModal = false;
 
   void notify() {
     notifyListeners();

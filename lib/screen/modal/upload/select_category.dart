@@ -47,7 +47,7 @@ class _SelectCategoryState extends State<SelectCategory> {
             for(int i = 0; i< categoryList.length; i++)
               CategoryItem(title : categoryList[i],callBack: ()=>{
                   widget.callBack(categoryList[i],i),
-                  GoRouter.of(context).pop(),
+                  // GoRouter.of(context).pop(),
                 },
               ),
           ],

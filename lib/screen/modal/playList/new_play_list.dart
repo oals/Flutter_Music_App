@@ -31,7 +31,7 @@ class _NewPlayListScreenState extends State<NewPlayListScreen> {
 
     return Container(
       width: 100.w,
-      height: 75.h,
+      height: 100.h,
       color: Colors.black,
       padding: EdgeInsets.all(16),
       child: Column(

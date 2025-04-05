@@ -348,6 +348,8 @@ class _UploadScreenState extends State<UploadScreen> {
                 isOnTap : true,
                 callBack : ()=>{
 
+
+
                 AppBottomModalRouter.fnModalRouter(context,6, callBack:(categoryNm,categoryIdx)=>{
                   controller4.text = categoryNm,
                   categoryCd = categoryIdx

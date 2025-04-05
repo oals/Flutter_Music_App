@@ -48,53 +48,35 @@ class _AppScreenState extends State<AppScreen> {
       builder: (context) {
         bool isHideAudioPlayer = appProv.isHideAudioPlayer(appProv.appScreenWidget);
 
-
         return isHideAudioPlayer
             ? Container()
-            : IgnorePointer(
-              ignoring: appProv.isOpenBottomModal,
-              child: Opacity(
-                  opacity: appProv.isOpenBottomModal ? 0 : 1,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 5.4.h,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 700),
-                          height: appProv.isFullScreen ? 100.h : 10.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          alignment: Alignment.topCenter,
-                          child: IndexedStack(
-                            alignment : AlignmentDirectional.center,
-                            index: 0,
-                            children: [
-                              ValueListenableBuilder<bool>(
-                                valueListenable: appProv.hlsNotifier,
-                                builder: (context, value, child) {
-
-
-                                  return AnimatedSwitcher(
-                                      duration: const Duration(milliseconds: 700),
-                                      child: HLSStreamPage(
-                                        key: ValueKey<bool>(value),
-                                      )
-                                  );
-                                },
-                              )
-
-                            ],
-                          ),
-                        ),
-                      ),
-
-
-                    ],
+            : Stack(
+              children: [
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 5.4.h,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 440),
+                    height: appProv.isFullScreen ? 100.h : 10.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    alignment: Alignment.topCenter,
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable: appProv.hlsNotifier,
+                      builder: (context, value, child) {
+                        return AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 440),
+                            child: HLSStreamPage(
+                              key: ValueKey<bool>(value),
+                            )
+                        );
+                      },
+                    )
                   ),
-              ),
+                ),
+              ],
             );
       },
     );
@@ -133,6 +115,7 @@ class _AppScreenState extends State<AppScreen> {
   }
 
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -143,8 +126,7 @@ class _AppScreenState extends State<AppScreen> {
 
 
     return Scaffold(
-      appBar: !showAppbar
-          ? CustomAppbarV2(isNotification: true) : null,
+      appBar: !appProv.isFullScreen && !showAppbar ? CustomAppbarV2(isNotification: true) : null,
       body: Stack(
         children: [
           ValueListenableBuilder<Widget>(
@@ -160,6 +142,8 @@ class _AppScreenState extends State<AppScreen> {
               );
             },
           ),
+
+
         ],
       ),
         bottomNavigationBar: AnimatedSwitcher(
@@ -199,14 +183,13 @@ class _AppScreenState extends State<AppScreen> {
                 print('트랙 좋아요');
               } else if (index == 1) {
                 print('댓글 팝업');
-                AppBottomModalRouter.fnModalRouter(context, 0, trackId: 3);
+                AppBottomModalRouter.fnModalRouter(context, 0, trackId: 3,);
+
               } else if (index == 2) {
                 print("플리 팝업");
               } else if (index == 3) {
                 print("곡 상세정보");
                 // AppBottomModalRouter.fnModalRouter(context, 3, trackId: 3);
-
-
               }
 
             },

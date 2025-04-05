@@ -59,7 +59,7 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
 
     return Container(
       width: 100.w,
-      height: 75.h,
+      height: 100.h,
       decoration: BoxDecoration(
        color: Colors.black
       ),
