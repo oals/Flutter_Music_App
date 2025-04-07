@@ -16,7 +16,7 @@ import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/category_prov.dart';
 import 'package:skrrskrr/prov/comment_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
-import 'package:skrrskrr/prov/home_prov.dart';
+
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/more_prov.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
@@ -32,7 +32,6 @@ import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/utils/permissions.dart';
 
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "env/config.env");
@@ -44,7 +43,6 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AppProv()),
-        ChangeNotifierProvider(create: (context) => HomeProv()),
         ChangeNotifierProvider(create: (context) => SearchProv()),
         ChangeNotifierProvider(create: (context) => PlayerProv()),
         ChangeNotifierProvider(create: (context) => MemberProv()),
@@ -64,7 +62,6 @@ void main() async {
 
   Permissions.requestNotificationPermission();  // 알림 권한 요청
 }
-
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

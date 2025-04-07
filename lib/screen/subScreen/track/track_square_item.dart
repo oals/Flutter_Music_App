@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-import 'package:skrrskrr/model/playList/play_list_model.dart';
+
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
@@ -41,7 +41,7 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
       child: GestureDetector(
         onTap: () {
           print('음원상세 클릭');
-          GoRouter.of(context).push('/musicInfo/${widget.track.trackId}');
+          GoRouter.of(context).push('/musicInfo',extra: widget.track);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

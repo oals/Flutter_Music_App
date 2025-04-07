@@ -4,41 +4,36 @@ import 'package:provider/provider.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 
+
 class TrackLikeBtn extends StatefulWidget {
   const TrackLikeBtn({
     super.key,
-    required this.trackInfoModel,
+    required this.track,
   });
 
-  final dynamic trackInfoModel;
+  final Track track;
 
   @override
   State<TrackLikeBtn> createState() => _TrackLikeBtnState();
 }
 
 class _TrackLikeBtnState extends State<TrackLikeBtn> {
+  late TrackProv trackProv;
+
   @override
   Widget build(BuildContext context) {
-    TrackProv trackProv = Provider.of<TrackProv>(context);
-
+    trackProv = Provider.of<TrackProv>(context);
 
     return Row(
       children: [
         GestureDetector(
           onTap: (){
-            print('좋아요 클릭');
-            trackProv.setTrackLike(widget.trackInfoModel.trackId);
-            setState(() {
-              widget.trackInfoModel.trackLikeStatus = !widget.trackInfoModel.trackLikeStatus!;
-              if(widget.trackInfoModel.trackLikeStatus!){
-                widget.trackInfoModel.trackLikeCnt = widget.trackInfoModel.trackLikeCnt! + 1;
-              }else {
-                widget.trackInfoModel.trackLikeCnt = widget.trackInfoModel.trackLikeCnt! - 1;
-              }
-            });
+            trackProv.setTrackLike(widget.track.trackId);
+            trackProv.fnChngTrackLikeStatus(widget.track);
+            trackProv.notify();
           },
           child: SvgPicture.asset(
-            widget.trackInfoModel.trackLikeStatus!
+            widget.track.trackLikeStatus!
                 ? 'assets/images/heart_red.svg'
                 : 'assets/images/heart.svg' ,
             width: 27,
@@ -48,9 +43,9 @@ class _TrackLikeBtnState extends State<TrackLikeBtn> {
           width: 3,
         ),
         Text(
-          widget.trackInfoModel.trackLikeCnt.toString(),
+          widget.track.trackLikeCnt.toString(),
           style:
-          TextStyle(color: Colors.grey, fontSize: 15),
+          TextStyle(color: Colors.white, fontSize: 15),
         ),
       ],
     );

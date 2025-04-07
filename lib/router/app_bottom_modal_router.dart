@@ -29,14 +29,13 @@ class AppBottomModalRouter {
         Function? callBack,
       }) async {
 
-    final appProv = Provider.of<AppProv>(context, listen: false);
-    OverlayEntry? testOverlayEntry;
+    OverlayEntry? modalOverlayEntry;
     DraggableScrollableController draggableScrollableController = DraggableScrollableController();
 
     void _removeOverlay() {
-      if(testOverlayEntry != null){
-        testOverlayEntry?.remove();
-        testOverlayEntry = null;
+      if(modalOverlayEntry != null){
+        modalOverlayEntry?.remove();
+        modalOverlayEntry = null;
       }
     }
     final Map<int, Future<dynamic> Function()> modalWidgets = {
@@ -79,12 +78,12 @@ class AppBottomModalRouter {
       void _showOverlay(BuildContext context) async {
         Widget? modalContent = await modalFunction();
 
-        testOverlayEntry = OverlayEntry(
+        modalOverlayEntry = OverlayEntry(
           builder: (context) => Material(
             color: Colors.transparent,
             child: Listener(
               onPointerUp: (event) {
-                if (testOverlayEntry != null && draggableScrollableController.size <= 0.75) {
+                if (modalOverlayEntry != null && draggableScrollableController.size <= 0.75) {
                   _removeOverlay();
                 }
               },
@@ -108,8 +107,8 @@ class AppBottomModalRouter {
             ),
           );
 
-        if (!testOverlayEntry!.maintainState) {
-          Overlay.of(context).insert(testOverlayEntry!);
+        if (!modalOverlayEntry!.maintainState) {
+          Overlay.of(context).insert(modalOverlayEntry!);
         }
       }
       _showOverlay(context);

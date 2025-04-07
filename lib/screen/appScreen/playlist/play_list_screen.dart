@@ -1,18 +1,12 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-import 'package:skrrskrr/model/playList/play_list_model.dart';
-import 'package:skrrskrr/model/playList/playlist_list.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
-import 'package:skrrskrr/prov/more_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/modal/track/title_info_edit.dart';
-import 'package:skrrskrr/screen/modal/track/track_info_edit.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
@@ -21,10 +15,10 @@ import 'package:skrrskrr/utils/helpers.dart';
 class PlayListScreen extends StatefulWidget {
   const PlayListScreen({
     super.key,
-    required this.playListId,
+    required this.playList,
   });
 
-  final int playListId;
+  final PlayListInfoModel playList;
 
   @override
   State<PlayListScreen> createState() => _PlayListScreenState();
@@ -42,7 +36,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
   void initState() {
     print("PlayListScreen initstate");
     super.initState();
-    _getPlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getPlayListInfo(widget.playListId,0);
+    _getPlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getPlayListInfo(widget.playList.playListId!,0);
     _loadMemberId();
   }
 
@@ -50,9 +44,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
     loginMemberId = await Helpers.getMemberId();
   }
 
-  bool getIsAuth(checkMemberId)  {
-    return checkMemberId == loginMemberId;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,12 +64,13 @@ class _PlayListScreenState extends State<PlayListScreen> {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
 
-            PlaylistList playListList = playListProv.playlistList;
-            isAuth = getIsAuth(playListList.playListInfoModel?.memberId.toString());
+            //호출되어서 리빌드해도 이전 값을 가지게 됨
+            widget.playList.updateApiData(playListProv.playListInfoModel);
+            playListProv.playListInfoModel = PlayListInfoModel();
+            isAuth = Helpers.getIsAuth(widget.playList.memberId.toString(),loginMemberId!);
 
-            return NotificationListener <ScrollNotification>(
-                onNotification: (notification) {
-              if (playListList.totalCount! > playListList.playListInfoModel!.playListTrackList!.length) {
+            return NotificationListener <ScrollNotification>(onNotification: (notification) {
+              if (widget.playList.trackCnt! >  widget.playList.playListTrackList!.length) {
                 if (playListProv.shouldLoadMoreData(notification)) {
                   playListProv.loadMoreData();
                 }
@@ -89,16 +81,16 @@ class _PlayListScreenState extends State<PlayListScreen> {
               }
               return false;
             },
+
+
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // Stack을 화면 상단에 배치
+
                   Container(
                     child: Stack(
-                      // Stack이 자식 위젯이 화면을 벗어나도 클리핑하지 않도록 설정
                       children: [
-                        // 배경 이미지
-                        CustomCachedNetworkImage(imagePath: playListList.playListInfoModel!.playListImagePath, imageWidth: 100.w, imageHeight: 50.h),
+                        CustomCachedNetworkImage(imagePath: widget.playList.playListImagePath, imageWidth: 100.w, imageHeight: 50.h),
 
                         Container(
                           width: 100.w,
@@ -123,7 +115,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                           // bottom: 30,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: CustomCachedNetworkImage(imagePath: playListList.playListInfoModel?.playListImagePath, imageWidth: 100.w, imageHeight: 40.h),
+                            child: CustomCachedNetworkImage(imagePath: widget.playList.playListImagePath, imageWidth: 100.w, imageHeight: 40.h),
                           ),
                         ),
 
@@ -163,7 +155,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                         Row(
                           children: [
                             Text(
-                              playListList.playListInfoModel!.playListNm!,
+                              widget.playList.playListNm!,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 25,
@@ -182,14 +174,11 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                       return Dialog(
                                         backgroundColor: Colors.transparent,
                                         child: TitleInfoEditModal(
-                                          title: playListList.playListInfoModel!.playListNm!,
-                                          fncallBack:
-                                              (String? newTitle) async {
-                                            await playListProv
-                                                .setPlayListInfo(playListList.playListInfoModel!.playListId!, newTitle!);
-                                            setState(() {
-                                            playListList.playListInfoModel!.playListNm =newTitle;
-                                            });
+                                          title: widget.playList.playListNm!,
+                                          fnCallBack: (String? newTitle) async {
+                                            await playListProv.setPlayListInfo(widget.playList.playListId!, newTitle!);
+                                            widget.playList.playListNm = newTitle;
+                                            setState(() {});
                                           },
                                         ),
                                       );
@@ -212,14 +201,14 @@ class _PlayListScreenState extends State<PlayListScreen> {
                           children: [
                             ClipOval(
                               child: CustomCachedNetworkImage(
-                                  imagePath: playListList.playListInfoModel!.memberImagePath,
+                                  imagePath: widget.playList.memberImagePath,
                                   imageWidth: 4.5.w,
                                   imageHeight: null
                               ),
                             ),
                             SizedBox(width: 3,),
                             Text(
-                              playListList.playListInfoModel!.memberNickName!,
+                              widget.playList.memberNickName!,
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 14,
@@ -233,7 +222,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                         Row(
                           children: [
                             Text(
-                              '${playListList.playListInfoModel!.trackCnt ?? '0'} tracks',
+                              '${widget.playList.trackCnt ?? '0'} tracks',
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15,
@@ -250,7 +239,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                               ),
                             ),
                             Text(
-                              playListList.playListInfoModel!.totalPlayTime!,
+                              widget.playList.totalPlayTime!,
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15,
@@ -281,27 +270,29 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         print('플리 좋아요');
-                                        playListProv.setPlayListLike(playListList.playListInfoModel!.playListId!);
+                                        playListProv.setPlayListLike(widget.playList.playListId!);
+                                        print(widget.playList.isPlayListLike );
+                                        widget.playList.isPlayListLike = !widget.playList.isPlayListLike!;
 
-                                        setState(() {
-                                            playListList.playListInfoModel!.isPlayListLike = !playListList.playListInfoModel!.isPlayListLike!;
+                                        if (widget.playList.isPlayListLike!) {
+                                          widget.playList.playListLikeCnt = widget.playList.playListLikeCnt! + 1;
+                                        } else {
+                                          widget.playList.playListLikeCnt = widget.playList.playListLikeCnt! - 1;
+                                        }
 
-                                          if (playListList.playListInfoModel!.isPlayListLike!) {
-                                              playListList.playListInfoModel!.playListLikeCnt = playListList.playListInfoModel!.playListLikeCnt! + 1;
-                                          } else {
-                                              playListList.playListInfoModel!.playListLikeCnt = playListList.playListInfoModel!.playListLikeCnt! - 1;
-                                          }
-                                        });
+                                        print(widget.playList.isPlayListLike );
+
+                                        setState(() {});
                                       },
                                       child: SvgPicture.asset(
-                                            playListList.playListInfoModel!.isPlayListLike!
+                                        widget.playList.isPlayListLike!
                                             ? 'assets/images/heart_red.svg'
                                             : 'assets/images/heart.svg',
                                       ),
                                     ),
                                     SizedBox(width: 2),
                                     Text(
-                                          playListList.playListInfoModel!.playListLikeCnt
+                                      widget.playList.playListLikeCnt
                                           .toString(),
                                       style: TextStyle(
                                         color: Colors.white,
@@ -345,10 +336,9 @@ class _PlayListScreenState extends State<PlayListScreen> {
                         ),
                         SizedBox(height: 20),
 
-                        for (int i = 0; i < playListList.playListInfoModel!.playListTrackList!.length; i++) ...[
+                        for (int i = 0; i < widget.playList.playListTrackList!.length; i++) ...[
                           TrackListItem(
-                            trackItem:
-                            playListList.playListInfoModel!.playListTrackList![i],
+                            trackItem: widget.playList.playListTrackList![i],
                           ),
                           SizedBox(height: 5,),
                         ]

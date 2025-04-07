@@ -14,7 +14,6 @@ class FollowScreen extends StatefulWidget {
     
   });
 
-  
 
   @override
   State<FollowScreen> createState() => _FollowScreenState();
@@ -127,7 +126,6 @@ class _FollowScreenState extends State<FollowScreen>
                         // 팔로잉 목록
                         SingleChildScrollView(
                           child: FollowList(
-
                             setFollow: setFollow,
                             followList: followModel.followingList,
                             isFollowingItem: true,
@@ -137,7 +135,6 @@ class _FollowScreenState extends State<FollowScreen>
                         // 팔로워 목록
                         SingleChildScrollView(
                           child: FollowList(
-
                             setFollow: setFollow,
                             followList: followModel.followerList,
                             isFollowingItem: false,

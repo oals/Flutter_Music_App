@@ -177,6 +177,7 @@ class _MoreScreenState extends State<MoreScreen> {
                             ),
                             TrackListItem(
                               trackItem: searchMoreModel.trackList[i],
+
                             )
                           ],
                         ],

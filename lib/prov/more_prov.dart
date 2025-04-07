@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:skrrskrr/model/follow/follow_info_model.dart';
-import 'package:skrrskrr/model/playList/play_list_model.dart';
+import 'package:skrrskrr/model/playList/play_list_info_model.dart';
+
 import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/utils/helpers.dart';
@@ -83,7 +84,7 @@ class MoreProv extends ChangeNotifier{
           moreModel.totalCount = response['totalCount'];
         } else if (moreId == 2 || moreId == 4) {
           for (var item in response['playListList']) {
-            moreModel.playListList.add(PlayListModel.fromJson(item));
+            moreModel.playListList.add(PlayListInfoModel.fromJson(item));
           }
           moreModel.totalCount = response['totalCount'];
         } else if (moreId == 3 || moreId == 5) {

@@ -25,8 +25,7 @@ class TrackListItem extends StatefulWidget {
     
   });
 
-  final dynamic trackItem;
-  
+  final Track trackItem;
 
 
   @override
@@ -34,15 +33,17 @@ class TrackListItem extends StatefulWidget {
 }
 
 class _TrackListItemState extends State<TrackListItem> {
-
+  late TrackProv trackProv;
+  late AppProv appProv;
+  late PlayerProv playerProv;
   bool isImageLoad = false;
 
   @override
   Widget build(BuildContext context) {
 
-    TrackProv trackProv = Provider.of<TrackProv>(context);
-    AppProv appProv = Provider.of<AppProv>(context,listen: false);
-    PlayerProv playerProv = Provider.of<PlayerProv>(context,listen: false);
+    trackProv = Provider.of<TrackProv>(context);
+    appProv = Provider.of<AppProv>(context,listen: false);
+    playerProv = Provider.of<PlayerProv>(context,listen: false);
 
     return Column(
       children: [
@@ -51,18 +52,16 @@ class _TrackListItemState extends State<TrackListItem> {
           children: [
             GestureDetector(
               onTap: () async {
-                await trackProv.setLastListenTrackId(widget.trackItem.trackId);
-
+                await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
                 await playerProv.audioPause();
                 appProv.reload();
-
               },
               child: Row(
                 children: [
                   GestureDetector(
                     onTap: (){
                       print('음원상세페이지 이동');
-                      GoRouter.of(context).push('/musicInfo/${widget.trackItem.trackId}');
+                      GoRouter.of(context).push('/musicInfo',extra: widget.trackItem);
                     },
                     child: Container(
                       padding: EdgeInsets.all(5),
@@ -126,8 +125,9 @@ class _TrackListItemState extends State<TrackListItem> {
                             SizedBox(width: 5,),
                             Row(
                               children: [
+
                                 SvgPicture.asset(
-                                  widget.trackItem.trackLikeStatus ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
+                                  widget.trackItem.trackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
                                   width: 15,
                                   height: 15,
                                 ),
@@ -156,7 +156,7 @@ class _TrackListItemState extends State<TrackListItem> {
                             ),
                             SizedBox(width: 5,),
                             Text(
-                              Helpers.getCategory(widget.trackItem.trackCategoryId),
+                              Helpers.getCategory(widget.trackItem.trackCategoryId!),
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 12,
@@ -192,9 +192,7 @@ class _TrackListItemState extends State<TrackListItem> {
             ),
             GestureDetector(
               onTap: () {
-               AppBottomModalRouter.fnModalRouter(context,3,
-                  track : widget.trackItem,
-                );
+               AppBottomModalRouter.fnModalRouter(context,3, track : widget.trackItem,);
               },
               child: SvgPicture.asset(
                 'assets/images/ellipsis.svg',

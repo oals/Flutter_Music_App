@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
-import 'package:skrrskrr/model/playList/play_list_model.dart';
+import 'package:skrrskrr/model/playList/play_list_info_model.dart';
+
 import 'package:skrrskrr/model/track/track.dart';
 
 
@@ -16,7 +17,7 @@ class HomeModel {
 
   List<Track> trendingTrackList = [];
   List<MemberModel> randomMemberList = [];
-  List<PlayListModel> popularPlayList = [];
+  List<PlayListInfoModel> popularPlayList = [];
   List<Track> followMemberTrackList = [];
   List<Track> likedTrackList = [];
   List<Track> lastListenTrackList = [];

@@ -41,12 +41,8 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
 
   void _loadMemberId() async {
     loginMemberId = await Helpers.getMemberId();
-    isAuth = getIsAuth(widget.track.memberId.toString());
+    isAuth = Helpers.getIsAuth(widget.track.memberId.toString(), loginMemberId!);
     setState(() {});
-  }
-
-  bool getIsAuth(String checkMemberId)  {
-    return checkMemberId == loginMemberId;
   }
 
 
@@ -55,7 +51,6 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
 
     PlayListProv playListProv = Provider.of<PlayListProv>(context);
     TrackProv trackProv = Provider.of<TrackProv>(context);
-
 
     return Container(
       width: 100.w,
@@ -141,7 +136,6 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
                         width: 16,
                         height: 16,
                         widget.track.trackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
-                        color: Colors.red,
                       ),
                       SizedBox(
                         width: 2,
@@ -180,8 +174,6 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
                 playListProv.setPlayListTrack(playListId, widget.track.trackId!);
               }
 
-
-
             },
             child: Container(
               width: 94.w,
@@ -198,9 +190,9 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
           GestureDetector(
             onTap: () async {
               print('좋아요 클릭');
-              print(widget.track.trackId);
               await trackProv.setTrackLike(widget.track.trackId);
-              GoRouter.of(context).pop();
+              trackProv.fnChngTrackLikeStatus(widget.track);
+              trackProv.notify();
             },
             child: Container(
               width: 94.w,
@@ -219,7 +211,6 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
             onTap: () async {
               print(widget.track.trackId);
               await trackProv.setLockTrack(widget.track.trackId,true);
-              GoRouter.of(context).pop();
             },
             child: Container(
               width: 94.w,

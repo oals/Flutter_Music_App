@@ -56,9 +56,6 @@ class _UserPageScreenState extends State<UserPageScreen> {
     loginMemberId = await Helpers.getMemberId();
   }
 
-  bool getIsAuth(checkMemberId)  {
-    return checkMemberId == loginMemberId;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +127,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
               } else {
                 MemberModel memberModel = memberProv.model;
 
-                isAuth = getIsAuth(memberModel.memberId.toString());
+                isAuth = Helpers.getIsAuth(memberModel.memberId.toString(),loginMemberId!);
 
                 return Stack(
                   children: [
@@ -230,10 +227,8 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                               backgroundColor:
                                                   Colors.transparent,
                                               child: TitleInfoEditModal(
-                                                  title: memberModel
-                                                      .memberNickName!,
-                                                  fncallBack:
-                                                      (String? newTitle) {
+                                                  title: memberModel.memberNickName!,
+                                                  fnCallBack: (String? newTitle) {
                                                     setNewTitle(1, newTitle!);
                                                   }),
                                             );
@@ -297,7 +292,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                                                 title: memberModel
                                                                         .memberInfo ??
                                                                     "",
-                                                                fncallBack:
+                                                                fnCallBack:
                                                                     (String?
                                                                         newTitle) {
                                                                   setNewTitle(2,

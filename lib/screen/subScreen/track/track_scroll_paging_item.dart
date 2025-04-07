@@ -21,7 +21,7 @@ class TrackScrollPagingItem extends StatefulWidget {
 class _TrackScrollPagingItemState extends State<TrackScrollPagingItem> {
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return Container(
       margin: EdgeInsets.symmetric(vertical: 10), // 아이템 간의 간격
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -37,7 +37,7 @@ class _TrackScrollPagingItemState extends State<TrackScrollPagingItem> {
               children: [
                 GestureDetector(
                   onTap : (){
-                    GoRouter.of(context).push('/musicInfo/${widget.track.trackId}');
+                    GoRouter.of(context).push('/musicInfo',extra: widget.track);
                   },
                   child: Stack(
                     children: [
@@ -83,13 +83,17 @@ class _TrackScrollPagingItemState extends State<TrackScrollPagingItem> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  widget.track.trackNm ?? "null", // 아이템 제목
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    letterSpacing: -0.5,
+                SizedBox(
+                  width: 70.w,
+                  child: Text(
+                    widget.track.trackNm ?? "null", // 아이템 제목
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                      letterSpacing: -0.5,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
 

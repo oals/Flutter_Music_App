@@ -6,13 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-import 'package:skrrskrr/model/playList/play_list_model.dart';
+
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class MemberProv with ChangeNotifier {
 
   MemberModel model = MemberModel();
+  List<MemberModel> memberModelList = [];
 
   void notify() {
     notifyListeners();
@@ -52,6 +53,40 @@ class MemberProv with ChangeNotifier {
     }
   }
 
+
+
+  Future<bool> getHomeInitMember() async {
+
+    final loginMemberId = await Helpers.getMemberId();
+    final url= '/api/getHomeInitMember?loginMemberId=${loginMemberId}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+      );
+
+      print(response);
+      if (response['status'] == '200') {
+
+        memberModelList = [];
+
+        for (var item in response['randomMemberList']){
+          memberModelList.add(MemberModel.fromJson(item));
+        }
+
+        print('$url - Successful');
+        return true;
+      } else {
+        // 오류 처리
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      // 오류 처리
+      print('$url - Fail');
+      return false;
+
+    }
+  }
 
   Future<bool> getMemberInfo(String memberEmail) async {
 
@@ -111,14 +146,14 @@ class MemberProv with ChangeNotifier {
         model.popularTrackList = [];
         model.allTrackList = [];
 
-        List<PlayListModel>  playListList = [];
+        List<PlayListInfoModel>  playListList = [];
         List<Track> popularTrackList = [];
         List<Track> allTrackList = [];
 
         model = MemberModel.fromJson(response['memberDTO']);
 
         for (var item in response['playListList']) {
-          PlayListModel playList = PlayListModel.fromJson(item);
+          PlayListInfoModel playList = PlayListInfoModel.fromJson(item);
           playListList.add(playList);
         }
 

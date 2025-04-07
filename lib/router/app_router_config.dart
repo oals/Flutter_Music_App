@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:skrrskrr/model/playList/play_list_info_model.dart';
+import 'package:skrrskrr/model/track/track.dart';
+
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/router/app_screen.dart';
 
@@ -154,14 +159,14 @@ final router = GoRouter(
       ),
 
       GoRoute(
-        path: '/musicInfo/:trackId',
+        path: '/musicInfo',
         pageBuilder: (context, state) {
-          final trackId = int.parse(state.pathParameters['trackId']!);
+          final Track track = state.extra as Track;
 
           return commonPageBuilder(
             context,
             state,
-            MusicInfoScreen(trackId: trackId),
+            MusicInfoScreen(track: track),
             isShowAudioPlayer: true,
           );
         },
@@ -257,14 +262,14 @@ final router = GoRouter(
       ),
 
       GoRoute(
-        path: '/playList/:playListId',
+        path: '/playList',
         pageBuilder: (context, state) {
-          final playListId = int.parse(state.pathParameters['playListId']!);
+          final PlayListInfoModel playList = state.extra as PlayListInfoModel;
 
           return commonPageBuilder(
             context,
             state,
-            PlayListScreen(playListId: playListId),
+            PlayListScreen(playList: playList),
             isShowAudioPlayer: true,
           );
         },

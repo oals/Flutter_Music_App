@@ -13,7 +13,7 @@ import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
-import 'package:skrrskrr/prov/home_prov.dart';
+
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
@@ -31,8 +31,8 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   late AuthProv authProv;
-  late HomeProv homeProv;
-  late List<Track> lastListenTrackList;
+  late TrackProv trackProv;
+  List<Track> lastListenTrackList = [];
 
   @override
   void initState() {
@@ -44,9 +44,16 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     authProv = Provider.of<AuthProv>(context);
-    homeProv = Provider.of<HomeProv>(context);
+    trackProv = Provider.of<TrackProv>(context);
 
-    lastListenTrackList = homeProv.model.lastListenTrackList;
+    TrackList trackModel = trackProv.trackModel;
+
+    trackModel.trackList.forEach((item){
+      if(item.trackListCd.contains(1)){
+        lastListenTrackList.add(item);
+      }
+    });
+
 
     List<String> cateogryList = [
       'My page',

@@ -16,13 +16,15 @@ import 'package:skrrskrr/model/comn/upload.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
 import 'package:skrrskrr/screen/modal/track/track_info_edit.dart';
-import 'package:skrrskrr/screen/modal/track/track_like_btn.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_comment_btn.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_like_btn.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
@@ -33,11 +35,10 @@ import 'package:skrrskrr/utils/helpers.dart';
 class MusicInfoScreen extends StatefulWidget {
   const MusicInfoScreen({
     super.key,
-    required this.trackId,
+    required this.track,
   });
 
-  final int? trackId;
-
+  final Track track;
 
   @override
   State<MusicInfoScreen> createState() => _MusicInfoScreenState();
@@ -51,6 +52,8 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
   Uint8List? _imageBytes = null; // 선택된 이미지의 바이트 데이터
 
   late TrackProv trackProv;
+  late AppProv appProv;
+  late PlayerProv playerProv;
   late Future<bool> _getTrackInfoFuture;
   late Future<bool> _getRecommendTrackFuture;
 
@@ -58,20 +61,13 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
   void initState() {
     print("MusicInfoScreen initstate");
     super.initState();
-    _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getTrackInfo(widget.trackId);
+    _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getTrackInfo(widget.track.trackId);
+    _getRecommendTrackFuture = Provider.of<TrackProv>(context, listen: false).getRecommendTrackList(widget.track.trackId,widget.track.trackCategoryId!);
     _loadMemberId();
-  }
-
-  void _setSecondApiParameter(int? trackId, int? trackCategoryId) {
-    _getRecommendTrackFuture = Provider.of<TrackProv>(context, listen: false).getRecommendTrackList(trackId,trackCategoryId!);
   }
 
   void _loadMemberId() async {
     loginMemberId = await Helpers.getMemberId();
-  }
-
-  bool getIsAuth(checkMemberId)  {
-    return checkMemberId == loginMemberId;
   }
 
 
@@ -79,12 +75,16 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
   Widget build(BuildContext context) {
 
     trackProv = Provider.of<TrackProv>(context);
+    appProv = Provider.of<AppProv>(context,listen: false);
+    playerProv = Provider.of<PlayerProv>(context,listen: false);
+
     ImageProv imageProv = Provider.of<ImageProv>(context);
     FollowProv followProv = Provider.of<FollowProv>(context);
 
+
     Future<void> _pickImage(Track trackInfoModel) async {
       Upload upload = Upload();
-      upload.trackId = trackInfoModel.trackId;
+      upload.trackId = widget.track.trackId;
 
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.image, // 이미지 파일만 선택
@@ -103,14 +103,11 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
         String newImagePath = await imageProv.updateTrackImage(upload);
 
         if(newImagePath != ""){
-          trackInfoModel.trackImagePath = newImagePath;
+          widget.track.trackImagePath = newImagePath;
         }
         setState(() {});
       }
     }
-
-
-
 
 
 
@@ -122,7 +119,6 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
           height: 150.h,
           child: FutureBuilder<bool>(
             future: _getTrackInfoFuture,
-            // 비동기 메소드 호출
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
@@ -132,10 +128,9 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                 return Center(child: Text('데이터가 없습니다.'));
               }
 
-
-              Track trackInfoModel = trackProv.trackInfoModel;
-              _setSecondApiParameter(trackInfoModel.trackId,trackInfoModel.trackCategoryId);
-              isAuth = getIsAuth(trackInfoModel.memberId.toString());
+              widget.track.updateApiData(trackProv.trackInfoModel);
+              trackProv.trackInfoModel = Track();
+              isAuth = Helpers.getIsAuth(widget.track.memberId.toString(), loginMemberId!);
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,11 +147,11 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     if (isAuth) {
-                                      _pickImage(trackInfoModel);
+                                      _pickImage(widget.track);
                                     }
                                   },
                                   child: CustomCachedNetworkImage(
-                                      imagePath: trackInfoModel.trackImagePath,
+                                      imagePath: widget.track.trackImagePath,
                                       imageWidth : 100.w,
                                       imageHeight : 50.h
                                   ),
@@ -184,7 +179,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                       if(isEdit)...[
                                         GestureDetector(
                                           onTap:() => {
-                                            _pickImage(trackInfoModel)
+                                            _pickImage(widget.track)
                                           },
                                           child: Text(
                                             '이미지 변경',
@@ -242,7 +237,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                             SizedBox(
                                               width: 80.w,
                                               child: Text(
-                                                trackInfoModel.trackNm ?? "null",
+                                                widget.track.trackNm ?? "null",
                                                 style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 25,
@@ -255,7 +250,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                             Row(
                                               children: [
                                                 Text(
-                                                  trackInfoModel.memberNickName ??
+                                                  widget.track.memberNickName ??
                                                       "null",
                                                   style: TextStyle(
                                                       color: Colors.grey,
@@ -275,7 +270,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                                   height: 10,
                                                 ),
                                                 Text(
-                                                  ' ${trackInfoModel.trackPlayCnt} plays ',
+                                                  ' ${widget.track.trackPlayCnt} plays ',
                                                   style: TextStyle(
                                                       color: Colors.grey),
                                                 ),
@@ -285,12 +280,10 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                               height: 5,
                                             ),
                                             Text(
-                                              trackInfoModel.trackCategoryId ==
-                                                      null
-                                                  ? " null"
+                                              widget.track.trackCategoryId == null
+                                                  ? "null"
                                                   : Helpers.getCategory(
-                                                      trackInfoModel
-                                                          .trackCategoryId!),
+                                                  widget.track.trackCategoryId!),
                                               style:
                                                   TextStyle(color: Colors.grey),
                                             ),
@@ -298,7 +291,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                               height: 5,
                                             ),
                                             Text(
-                                              trackInfoModel.trackTime ?? "null",
+                                              widget.track.trackTime ?? "null",
                                               style:
                                                   TextStyle(color: Colors.grey),
                                             ),
@@ -306,7 +299,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                               height: 5,
                                             ),
                                             Text(
-                                              trackInfoModel.trackUploadDate ??
+                                              widget.track.trackUploadDate ??
                                                   "null",
                                               style:
                                                   TextStyle(color: Colors.grey),
@@ -316,19 +309,27 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                             ),
                                           ],
                                         ),
-                                        Container(
-                                          margin: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: Colors.white, // 테두리 색상
-                                              width: 3.0, // 테두리 두께
+
+                                        GestureDetector(
+                                          onTap: () async {
+                                            await trackProv.setLastListenTrackId(widget.track.trackId!);
+                                            await playerProv.audioPause();
+                                            appProv.reload();
+                                          },
+                                          child: Container(
+                                            margin: EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.white, // 테두리 색상
+                                                width: 3.0, // 테두리 두께
+                                              ),
+                                              shape: BoxShape.circle, // 원형으로 설정
                                             ),
-                                            shape: BoxShape.circle, // 원형으로 설정
-                                          ),
-                                          child: SvgPicture.asset(
-                                            'assets/images/play_circle.svg',
-                                            width: 4.5.w,
-                                            height: 4.5.h,
+                                            child: SvgPicture.asset(
+                                              'assets/images/play_circle.svg',
+                                              width: 4.5.w,
+                                              height: 4.5.h,
+                                            ),
                                           ),
                                         )
                                       ],
@@ -341,36 +342,9 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                     children: [
                                       Row(
                                         children: [
-                                          TrackLikeBtn(
-                                              trackInfoModel: trackInfoModel),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-
-                                              AppBottomModalRouter.fnModalRouter(context,0,
-                                                  trackId: widget.trackId);
-                                            },
-                                            child: Row(
-                                              children: [
-                                                SvgPicture.asset(
-                                                  'assets/images/message.svg',
-                                                  color: Colors.white,
-                                                ),
-                                                SizedBox(
-                                                  width: 3,
-                                                ),
-                                                Text(
-                                                  trackInfoModel.commentsCnt
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 15),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
+                                          TrackLikeBtn(track: widget.track),
+                                          SizedBox(width: 10,),
+                                          TrackCommentBtn( track : widget.track),
                                         ],
                                       ),
                                       if(isEdit)...[
@@ -390,9 +364,9 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                                   Colors.transparent,
                                                   child: TrackInfoEdit(
                                                     trackInfo:
-                                                    trackInfoModel.trackInfo!,
+                                                    widget.track.trackInfo!,
                                                     onSave: (String? trackInfo) async {
-                                                      trackInfoModel.trackInfo = trackInfo;
+                                                      widget.track.trackInfo = trackInfo;
 
                                                       bool isUpdate = await trackProv.setTrackInfo(trackInfo);
                                                       if(isUpdate) {
@@ -435,7 +409,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                           width: 90.w,
                                           padding: EdgeInsets.all(10),
                                           child: Text(
-                                            trackInfoModel.trackInfo ?? "정보 없음",
+                                            widget.track.trackInfo ?? "정보 없음",
                                             style: TextStyle(color: Colors.white),
                                           ),
                                         ),
@@ -463,7 +437,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          GoRouter.of(context).push('/userPage/${trackInfoModel.memberId}');
+                                          GoRouter.of(context).push('/userPage/${widget.track.memberId}');
                                         },
                                         child: Column(
                                           children: [
@@ -477,7 +451,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                             ),
                                             SizedBox(height: 8),
                                             Text(
-                                              trackInfoModel.memberNickName ??
+                                              widget.track.memberNickName ??
                                                   "null",
                                               style: TextStyle(
                                                   color: Colors.white,
@@ -493,7 +467,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                         ElevatedButton(
                                           style: ButtonStyle(
                                             backgroundColor:
-                                                trackInfoModel.followMember ==
+                                                widget.track.followMember ==
                                                         true
                                                     ? WidgetStateProperty.all(
                                                         Colors.white)
@@ -504,13 +478,13 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                             print('버튼 클릭');
 
                                             await followProv.setFollow(
-                                                trackInfoModel.memberId,
+                                                widget.track.memberId,
                                                 loginMemberId);
 
                                             setState(() {});
                                           },
                                           child: Text(
-                                            trackInfoModel.followMember == true
+                                            widget.track.followMember == true
                                                 ? '언팔로우'
                                                 : '팔로우',
                                             style: TextStyle(
@@ -533,7 +507,6 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
 
                                   FutureBuilder<bool>(
                                       future: _getRecommendTrackFuture,
-                                      // 비동기 메소드 호출
                                       builder: (context, snapshot) {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
                                           return Center(child: CircularProgressIndicator());
@@ -542,25 +515,26 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                         } else if (!snapshot.hasData) {
                                           return Center(child: Text('데이터가 없습니다.'));
                                         }
-                                      return SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              for(int i = 0; i< trackInfoModel.recommendTrackList.length; i++)...[
-                                                TrackSquareItem(
-                                                  track: trackInfoModel.recommendTrackList[i],
-                                                  bgColor: Colors.lightBlueAccent,
-                                                ),
-                                                SizedBox(width: 15,),
+                                        return SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  for(int i = 0; i< widget.track.recommendTrackList.length; i++)...[
+                                                    TrackSquareItem(
+                                                      track: widget.track.recommendTrackList[i],
+                                                      bgColor: Colors.lightBlueAccent,
+                                                    ),
+                                                    SizedBox(width: 15,),
 
-                                              ]
+                                                  ]
 
-                                            ],
-                                          )
-                                      );
-                                    }
-                                  ),
+                                                ],
+                                              )
+                                          );
+                                   }
+                                 ),
+
                                   SizedBox(height: 50),
                                 ],
                               ),

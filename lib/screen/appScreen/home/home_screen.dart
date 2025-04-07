@@ -8,7 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/home/home_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/prov/home_prov.dart';
+import 'package:skrrskrr/model/track/track_list.dart';
+
+import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/prov/play_list.prov.dart';
+import 'package:skrrskrr/prov/track_prov.dart';
 
 import 'package:skrrskrr/screen/appScreen/playlist/play_list_screen.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
@@ -36,18 +40,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenStateState extends State<HomeScreen> {
 
-  late Future<bool>? _getHomeInitFuture;
+  late Future<bool>? _getHomeInitTrackFuture;
+  late Future<bool>? _getHomeInitPlayListFuture;
+  late Future<bool>? _getHomeInitMemberFuture;
   List<List> lastListenTrackChunkedData = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getHomeInitFuture = Provider.of<HomeProv>(context, listen: false).firstLoad();
+    _getHomeInitTrackFuture = Provider.of<TrackProv>(context, listen: false).getHomeInitTrack();
+    _getHomeInitPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getHomeInitPlayList();
+    _getHomeInitMemberFuture = Provider.of<MemberProv>(context, listen: false).getHomeInitMember();
   }
 
 
-  void test (List<Track> lastListenTrackList) {
+  List<List> chunkLastListenTrackList (List<Track> lastListenTrackList) {
+    lastListenTrackChunkedData = [];
 
     for (int i = 0; i < lastListenTrackList.length; i += 3) {
       lastListenTrackChunkedData.add(lastListenTrackList.sublist(i,
@@ -55,16 +64,17 @@ class _HomeScreenStateState extends State<HomeScreen> {
               ? lastListenTrackList.length
               : (i + 3)));
     }
-
+    return lastListenTrackChunkedData;
   }
 
 
   @override
   Widget build(BuildContext context) {
 
-    HomeProv homeProv = Provider.of<HomeProv>(context);
+    TrackProv trackProv = Provider.of<TrackProv>(context,listen: false);
+    MemberProv memberProv = Provider.of<MemberProv>(context,listen: false);
+    PlayListProv playListProv = Provider.of<PlayListProv>(context,listen: false);
     print('홈 빌드2');
-
 
     return Scaffold(
 
@@ -73,80 +83,80 @@ class _HomeScreenStateState extends State<HomeScreen> {
         height: 100.h,
         color: Colors.black,
         child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-          child: FutureBuilder<bool>(
-              future: _getHomeInitFuture, // 비동기 함수 호출
-              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                      child: SizedBox()
-                  );
-                } else {
-                  HomeModel homeModel = homeProv.model;
+              SizedBox(height: 10,),
 
-                  test(homeModel.lastListenTrackList);
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Category',
+                      style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 20),
+                    ),
+                    SizedBox(height: 13,),
+                    Row(
+                      children: [
+                        GestureDetector(
+                            onTap: (){
+                              GoRouter.of(context).push('/category/${1}');
+                            },
+                            child: CategorySquareItem(imageWidth: 30, imagePath: 'assets/images/testImage3.png', imageText: "Month", imageSubText: "Beat")),
+                        SizedBox(width: 10,),
+                        CategorySquareItem(imageWidth: 30, imagePath:   'assets/images/testImage4.png', imageText: "Month", imageSubText: "Ballad"),
+                        SizedBox(width: 10,),
+                        CategorySquareItem(imageWidth: 30, imagePath:   'assets/images/testImage5.png', imageText: "Month", imageSubText: "Rock"),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CategorySquareItem(imageWidth: 46, imagePath:   'assets/images/testImage5.png', imageText: "Month", imageSubText: "Hip-Hop"),
+                        SizedBox(width: 10,),
+                        CategorySquareItem(imageWidth: 46, imagePath:   'assets/images/testImage6.png', imageText: "Month", imageSubText: "K-Pop"),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage7.png', imageText: "Month", imageSubText: "Beat"),
+                        SizedBox(width: 4,),
+                        CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage8.png', imageText: "Month", imageSubText: "Rock"),
+                        SizedBox(width: 4,),
+                        CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage9.png', imageText: "Month", imageSubText: "Rock"),
+                        SizedBox(width: 4,),
+                        CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage10.png', imageText: "Month", imageSubText: "Rock"),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
 
-                  // 데이터가 성공적으로 로드되었을 때
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+              FutureBuilder<bool>(
+                  future: _getHomeInitTrackFuture,
+                  builder: (context, snapshot){
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else {
 
-                      SizedBox(height: 10,),
+                      TrackList trackModel = trackProv.trackModel;
+                      List<Track> lastListenTrackList = trackModel.trackList.where((item) => item.trackListCd.contains(1)).toList();
+                      List<Track> recommendedTrackList = trackModel.trackList.where((item) => item.trackListCd.contains(2)).toList();
+                      List<Track> followTrackList = trackModel.trackList.where((item) => item.trackListCd.contains(3)).toList();
+                      List<Track> likeTrackList = trackModel.trackList.where((item) => item.trackListCd.contains(4)).toList();
 
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Category',
-                              style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 20),
-                            ),
-                            SizedBox(height: 13,),
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: (){
-                                    GoRouter.of(context).push('/category/${1}');
-                                  },
-                                    child: CategorySquareItem(imageWidth: 30, imagePath: 'assets/images/testImage3.png', imageText: "Month", imageSubText: "Beat")),
-                                SizedBox(width: 10,),
-                                CategorySquareItem(imageWidth: 30, imagePath:   'assets/images/testImage4.png', imageText: "Month", imageSubText: "Ballad"),
-                                SizedBox(width: 10,),
-                                CategorySquareItem(imageWidth: 30, imagePath:   'assets/images/testImage5.png', imageText: "Month", imageSubText: "Rock"),
-                              ],
-                            ),
-                            SizedBox(height: 10,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CategorySquareItem(imageWidth: 46, imagePath:   'assets/images/testImage5.png', imageText: "Month", imageSubText: "Hip-Hop"),
-                                SizedBox(width: 10,),
-                                CategorySquareItem(imageWidth: 46, imagePath:   'assets/images/testImage6.png', imageText: "Month", imageSubText: "K-Pop"),
-                              ],
-                            ),
-                            SizedBox(height: 10,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage7.png', imageText: "Month", imageSubText: "Beat"),
-                                SizedBox(width: 4,),
-                                CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage8.png', imageText: "Month", imageSubText: "Rock"),
-                                SizedBox(width: 4,),
-                                CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage9.png', imageText: "Month", imageSubText: "Rock"),
-                                SizedBox(width: 4,),
-                                CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage10.png', imageText: "Month", imageSubText: "Rock"),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
 
-                      Container(
+                      return Container(
                         width: 100.w,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+
                             /// 플레이 리스트 영역
                             SizedBox(
                               height: 30,
@@ -154,7 +164,9 @@ class _HomeScreenStateState extends State<HomeScreen> {
 
                             Text(
                               '앨범',
-                              style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 20),
+                              style: TextStyle(color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 20),
                             ),
 
                             SizedBox(
@@ -168,7 +180,9 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                 children: [
                                   Text(
                                     'Recently Listened Track',
-                                    style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 20),
+                                    style: TextStyle(color: Colors.white,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 20),
                                   ),
 
                                   SizedBox(
@@ -179,13 +193,16 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
                                         children: [
-                                          for (var lastListenTrackList in lastListenTrackChunkedData)
+                                          for (var lastListenTrackList in chunkLastListenTrackList(
+                                              lastListenTrackList))
                                             Column(
                                               children: [
-                                                for (var track in lastListenTrackList)
-                                                  TrackScrollPagingItem(track: track)
+                                                for (Track track in lastListenTrackList)
+                                                  TrackScrollPagingItem(
+                                                      track: track)
                                               ],
                                             ),
                                         ],
@@ -198,10 +215,13 @@ class _HomeScreenStateState extends State<HomeScreen> {
 
 
                             Padding(
-                              padding: const EdgeInsets.only(left: 10),
+                              padding: const EdgeInsets.only(
+                                  top: 10, left: 10, bottom: 10),
                               child: Text(
                                 'Recommended Playlist',
-                                style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 20),
+                                style: TextStyle(color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 20),
                               ),
                             ),
 
@@ -209,9 +229,18 @@ class _HomeScreenStateState extends State<HomeScreen> {
                               height: 13,
                             ),
 
-                            PlayListSquareItem(
-                              playList: homeModel.popularPlayList,
-                            ),
+                            FutureBuilder<bool>(
+                              future: _getHomeInitPlayListFuture,
+                                builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return CircularProgressIndicator();
+                                    } else {
+                                      return PlayListSquareItem(
+                                        playList: playListProv.playlistList.playList,
+                                      );
+                                    }
+                                }
+                              ),
 
                             SizedBox(
                               height: 20,
@@ -233,24 +262,23 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                     height: 20,
                                   ),
 
-                                  for(int i = 0; i < homeModel.followMemberTrackList.length; i++)...[
+                                  for(int i = 0; i <
+                                      followTrackList.length; i++)...[
                                     Column(
                                       children: [
                                         TrackListItem(
-                                          trackItem: homeModel.followMemberTrackList[i],
+                                          trackItem: followTrackList[i],
                                         ),
                                       ],
                                     ),
                                     SizedBox(
-                                      height: 20,
+                                      height: 10,
                                     ),
                                   ],
-
 
                                 ],
                               ),
                             ),
-
 
 
                             Container(
@@ -271,7 +299,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
 
                                   Container(
                                     child: TrackScrollHorizontalItem(
-                                      trackList: homeModel.trendingTrackList,
+                                      trackList: recommendedTrackList,
                                       bgColor: Colors.blueAccent,
                                     ),
                                   ),
@@ -299,11 +327,9 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                     height: 20,
                                   ),
 
-                                  Container(
-                                    child: TrackScrollHorizontalItem(
-                                      trackList: homeModel.likedTrackList,
-                                      bgColor: Colors.redAccent,
-                                    ),
+                                  TrackScrollHorizontalItem(
+                                    trackList: likeTrackList,
+                                    bgColor: Colors.redAccent,
                                   ),
 
                                   SizedBox(
@@ -312,7 +338,6 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                 ],
                               ),
                             ),
-
 
 
                             Container(
@@ -330,9 +355,18 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                   SizedBox(
                                     height: 20,
                                   ),
-                                  MemberScrollHorizontalItem(
-                                    memberList: homeModel.randomMemberList,
-
+                                  FutureBuilder<bool>(
+                                      future: _getHomeInitMemberFuture,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                          return CircularProgressIndicator();
+                                        } else {
+                                          return MemberScrollHorizontalItem(
+                                            memberList: memberProv
+                                                .memberModelList,
+                                          );
+                                        }
+                                      }
                                   ),
 
                                 ],
@@ -343,11 +377,12 @@ class _HomeScreenStateState extends State<HomeScreen> {
                             SizedBox(height: 120,),
                           ],
                         ),
-                      ),
-                    ],
-                  );
-                }
-              }),
+                      );
+                    }
+                  }
+              ),
+            ],
+          ),
         ),
       ),
     );

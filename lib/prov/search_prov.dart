@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:skrrskrr/model/follow/follow_info_model.dart';
-import 'package:skrrskrr/model/playList/play_list_model.dart';
+import 'package:skrrskrr/model/playList/play_list_info_model.dart';
+
 import 'package:skrrskrr/model/search/search_history_model.dart';
 import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
@@ -196,7 +197,7 @@ class SearchProv extends ChangeNotifier {
         model.memberListCnt = response['memberListCnt'];
 
         for (var item in response['playListList']) {
-          model.playListList.add(PlayListModel.fromJson(item));
+          model.playListList.add(PlayListInfoModel.fromJson(item));
         }
         model.playListListCnt = response['playListListCnt'];
 

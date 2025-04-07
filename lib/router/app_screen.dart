@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
+import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/appScreen/feed/feed_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_screen.dart';
@@ -51,33 +53,45 @@ class _AppScreenState extends State<AppScreen> {
         return isHideAudioPlayer
             ? Container()
             : Stack(
-              children: [
-                Positioned(
+          children: [
+            ValueListenableBuilder<bool>(
+              valueListenable: appProv.hlsNotifier,
+              builder: (context, value, child) {
+
+                return AnimatedPositioned(
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.easeInOut,
                   left: 0,
                   right: 0,
-                  bottom: 5.4.h,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 440),
-                    height: appProv.isFullScreen ? 100.h : 10.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                  bottom: !appProv.isFullScreen ? 5.5.h : 0, // 위치를 애니메이션으로 변경
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 700),
+                    opacity: appProv.isFullScreen ? 1.0 : 0.85,  // 투명도 애니메이션 적용
+                    curve: Curves.easeInOut,
+                    child:  AnimatedContainer(
+                      duration: const Duration(milliseconds: 700),
+                      height: appProv.isFullScreen ? 100.h : 10.h,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        height: appProv.isFullScreen ? 100.h : 10.h,
+                        alignment: Alignment.topCenter,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 700),
+                          child: HLSStreamPage(
+                            key: ValueKey<bool>(value),
+                          ),
+                        ),
+                      ),
                     ),
-                    alignment: Alignment.topCenter,
-                    child: ValueListenableBuilder<bool>(
-                      valueListenable: appProv.hlsNotifier,
-                      builder: (context, value, child) {
-                        return AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 440),
-                            child: HLSStreamPage(
-                              key: ValueKey<bool>(value),
-                            )
-                        );
-                      },
-                    )
                   ),
-                ),
-              ],
-            );
+                );
+              },
+            ),
+          ],
+        );
       },
     );
   }
@@ -115,7 +129,6 @@ class _AppScreenState extends State<AppScreen> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
 
@@ -124,9 +137,9 @@ class _AppScreenState extends State<AppScreen> {
     bool showAppbar = appProv.isShowAppbar(appProv.appScreenWidget);
     bool showBottomNav = appProv.isShowBottomNav(appProv.appScreenWidget);
 
-
     return Scaffold(
-      appBar: !appProv.isFullScreen && !showAppbar ? CustomAppbarV2(isNotification: true) : null,
+      appBar: !showAppbar ? CustomAppbarV2(isNotification: true) : null,
+
       body: Stack(
         children: [
           ValueListenableBuilder<Widget>(
@@ -142,8 +155,6 @@ class _AppScreenState extends State<AppScreen> {
               );
             },
           ),
-
-
         ],
       ),
         bottomNavigationBar: AnimatedSwitcher(
@@ -154,7 +165,7 @@ class _AppScreenState extends State<AppScreen> {
               child: child,
             );
           },
-          child: showBottomNav ? CustomBottomNavigationBar(
+          child: showBottomNav && !appProv.isFullScreen ? CustomBottomNavigationBar(
             currentIndex: appProv.currentIndex,
             onTap: (index) {
               appProv.currentIndex = index;
@@ -172,26 +183,6 @@ class _AppScreenState extends State<AppScreen> {
                 context.go('/setting');
               }
               appProv.notify();
-            },
-          ) :
-          appProv.isFullScreen ? CustomAudioPlayerBottomNavigation(
-            currentIndex: appProv.currentIndex,
-            onTap: (index) {
-              appProv.currentIndex = index;
-              // 화면 전환 로직
-              if (index == 0) {
-                print('트랙 좋아요');
-              } else if (index == 1) {
-                print('댓글 팝업');
-                AppBottomModalRouter.fnModalRouter(context, 0, trackId: 3,);
-
-              } else if (index == 2) {
-                print("플리 팝업");
-              } else if (index == 3) {
-                print("곡 상세정보");
-                // AppBottomModalRouter.fnModalRouter(context, 3, trackId: 3);
-              }
-
             },
           ) : SizedBox(),
         ),

@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-import 'package:skrrskrr/model/playList/play_list_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
 
 part 'member_model.g.dart'; // 생성될 파일
@@ -19,7 +18,7 @@ class MemberModel {
   String? memberImagePath;
 
   List<Track>? popularTrackList = [];
-  List<PlayListModel> playListList = [];
+  List<PlayListInfoModel> playListList = [];
   int? playListListCnt;
   List<Track>? allTrackList = [];
   int? allTrackListCnt;

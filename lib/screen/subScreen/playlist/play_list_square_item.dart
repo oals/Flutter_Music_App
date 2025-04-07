@@ -1,21 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-import 'package:skrrskrr/model/playList/play_list_model.dart';
+
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
 
 class PlayListSquareItem extends StatefulWidget {
   const PlayListSquareItem({
     super.key,
-    
     required this.playList,
   });
 
   
-  final List<PlayListModel> playList;
+  final List<PlayListInfoModel> playList;
 
   @override
   State<PlayListSquareItem> createState() => _PlayListSquareItemState();
@@ -24,7 +25,6 @@ class PlayListSquareItem extends StatefulWidget {
 class _PlayListSquareItemState extends State<PlayListSquareItem> {
   @override
   Widget build(BuildContext context) {
-
 
 
     return Container(
@@ -44,7 +44,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
             ),
             child: GestureDetector(
               onTap: () {
-                GoRouter.of(context).push('/playList/${item.playListId}');
+                GoRouter.of(context).push('/playList',extra: item);
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

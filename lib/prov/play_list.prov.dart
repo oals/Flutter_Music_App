@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'dart:convert';
 
-import 'package:skrrskrr/model/playList/play_list_model.dart';
+
 import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class PlayListProv extends ChangeNotifier {
-
   PlaylistList playlistList = PlaylistList();
-  PlayListInfoModel modelPlayInfo = PlayListInfoModel();
+  PlayListInfoModel playListInfoModel = PlayListInfoModel();
+
   bool isApiCall = false;
   int offset = 0;
 
@@ -20,7 +20,7 @@ class PlayListProv extends ChangeNotifier {
 
   void clear() {
     playlistList = PlaylistList();
-    modelPlayInfo = PlayListInfoModel();
+    playListInfoModel = PlayListInfoModel();
     isApiCall = false;
     offset = 0;
   }
@@ -116,6 +116,43 @@ class PlayListProv extends ChangeNotifier {
 
   }
 
+  Future<bool> getHomeInitPlayList() async {
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url= '/api/getHomeInitPlayList?loginMemberId=${loginMemberId}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if ((response['status'] == '200')) {
+
+        playlistList = PlaylistList();
+
+        for(var item in response['popularPlayList']){
+          playlistList.playList.add(PlayListInfoModel.fromJson(item));
+        }
+
+
+
+        print('$url - Successful');
+        return true;
+      } else {
+        // 오류 처리
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      // 오류 처리
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
   Future<bool> getPlayList(int trackId,int offset,bool isAlbum) async {
 
     final String loginMemberId = await Helpers.getMemberId();
@@ -134,7 +171,7 @@ class PlayListProv extends ChangeNotifier {
           playlistList = PlaylistList();
         }
         for (var item in response['playList']) {
-          playlistList.playList.add(PlayListModel.fromJson(item));
+          playlistList.playList.add(PlayListInfoModel.fromJson(item));
         }
         playlistList.totalCount = response['totalCount'];
         print('$url - Successful');
@@ -165,12 +202,8 @@ class PlayListProv extends ChangeNotifier {
 
       if ((response['status'] == '200')) {
 
-        playlistList.playListInfoModel = PlayListInfoModel();
-
-        playlistList.playListInfoModel = PlayListInfoModel.fromJson(response['playList']);
-
-        playlistList.totalCount = playlistList.playListInfoModel!.trackCnt;
-
+        playListInfoModel = PlayListInfoModel();
+        playListInfoModel = PlayListInfoModel.fromJson(response['playList']);
 
         print('$url - Successful');
         return true;

@@ -56,6 +56,9 @@ class Helpers {
     }
   }
 
+  static bool getIsAuth(String checkMemberId, String loginMemberId)  {
+    return checkMemberId == loginMemberId;
+  }
 
   static Future<String> getMemberId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

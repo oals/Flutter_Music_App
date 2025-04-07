@@ -24,7 +24,7 @@ HomeModel _$HomeModelFromJson(Map<String, dynamic> json) => HomeModel(
           .map((e) => MemberModel.fromJson(e as Map<String, dynamic>))
           .toList()
       ..popularPlayList = (json['popularPlayList'] as List<dynamic>)
-          .map((e) => PlayListModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => PlayListInfoModel.fromJson(e as Map<String, dynamic>))
           .toList()
       ..followMemberTrackList = (json['followMemberTrackList'] as List<dynamic>)
           .map((e) => Track.fromJson(e as Map<String, dynamic>))

@@ -36,7 +36,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   void dispose() {
     // TODO: implement dispose
     searchProv.clear();
-    // searchProv.offset = 0;
     super.dispose();
   }
 
@@ -183,11 +182,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   SizedBox(
                     height: 16,
                   ),
-                  TrackListItem(
-                    trackItem: widget.searchModel.trackList[i],
-                    
-
-                  )
+                  TrackListItem(trackItem: widget.searchModel.trackList[i],)
                 ],
               ],
               CustomProgressIndicator(isApiCall: searchProv.isApiCall),

@@ -30,13 +30,30 @@ class PlayListInfoModel {
   int? memberId;
 
   String? memberNickName;
-  String? memberImagePath;
 
+  String? memberImagePath;
 
   PlayListInfoModel();
 
   factory PlayListInfoModel.fromJson(Map<String, dynamic> json) => _$PlayListInfoModelFromJson(json);
   Map<String, dynamic> toJson() => _$PlayListInfoModelToJson(this);
+
+
+  void updateApiData(PlayListInfoModel updatedPlayList) {
+    playListId = updatedPlayList.playListId ?? playListId;
+    playListNm = updatedPlayList.playListNm ?? playListNm;
+    playListLikeCnt = updatedPlayList.playListLikeCnt ?? playListLikeCnt;
+    isPlayListPrivacy = updatedPlayList.isPlayListPrivacy ?? isPlayListPrivacy;
+    playListImagePath = updatedPlayList.playListImagePath ?? playListImagePath;
+    isInPlayList = updatedPlayList.isInPlayList ?? isInPlayList;
+    isPlayListLike = updatedPlayList.isPlayListLike ?? isPlayListLike;
+    totalPlayTime = updatedPlayList.totalPlayTime ?? totalPlayTime;
+    trackCnt = updatedPlayList.trackCnt ?? trackCnt;
+    playListTrackList = updatedPlayList.playListTrackList ?? playListTrackList;
+    memberId = updatedPlayList.memberId ?? memberId;
+    memberNickName = updatedPlayList.memberNickName ?? memberNickName;
+    memberImagePath = updatedPlayList.memberImagePath ?? memberImagePath;
+  }
 
 
 }
