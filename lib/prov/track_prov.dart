@@ -5,67 +5,42 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/model/comn/upload.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:skrrskrr/prov/more_prov.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class TrackProv extends ChangeNotifier {
   Upload model = Upload();
+
   TrackList trackModel = TrackList();
+
   Track trackInfoModel = Track();
 
   TrackList lastListenTrackList = TrackList();
   Track playTrackInfoModel = Track();
-
-
-  bool isApiCall = false;
-  int offset = 0;
   String lastTrackId = "";
 
   void notify() {
     notifyListeners();
   }
 
-  void clear() {
-    model = Upload();
-    trackModel = TrackList();
-    trackInfoModel = Track();
-    isApiCall = false;
-    offset = 0;
-  }
-
-
-
-  Future<void> loadMoreData(String apiName) async {
-    if (!isApiCall) {
-      setApiCallStatus(true);
-      offset += 20;
-      await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
-      if (apiName == 'UploadTrack') {
-        await getUploadTrack(offset);
-      } else if (apiName == 'LikeTrack'){
-        await getLikeTrack(offset);
+  void addUniqueTracksToList({
+    required List<Track> sourceList, // 필터링할 원본 리스트
+    required Set<Track> targetSet,  // 중복 체크용 Set
+    required List<Track> targetList, // 데이터가 추가될 리스트
+    required int trackCd, // 필터링 조건 함수
+  }) {
+    sourceList.where((item) => item.trackListCd.contains(trackCd)).forEach((item) {
+      if (!targetSet.contains(item)) {
+        targetList.add(item); // 중복되지 않은 항목만 추가
+        targetSet.add(item);  // Set에도 추가
       }
-      setApiCallStatus(false);
-    }
-  }
-
-  bool shouldLoadMoreData(ScrollNotification notification) {
-    return notification is ScrollUpdateNotification &&
-        notification.metrics.pixels == notification.metrics.maxScrollExtent;
-  }
-
-  void setApiCallStatus(bool status) {
-    isApiCall = status;
-    notify();
-  }
-
-  void resetApiCallStatus() {
-    isApiCall = false;
-    notify();
+    });
   }
 
 
@@ -77,12 +52,50 @@ class TrackProv extends ChangeNotifier {
       int duplicateIndex = trackModel.trackList.indexWhere((existingTrack) => existingTrack.trackId == track.trackId);
 
       if (duplicateIndex == -1) {
-        trackModel.trackList.add(track);
+        if(track.trackId.toString() == playTrackInfoModel.trackId.toString()){
+          playTrackInfoModel.trackListCd.add(trackListCd);
+          trackModel.trackList.add(playTrackInfoModel);
+        } else {
+          trackModel.trackList.add(track);
+        }
       } else {
         trackModel.trackList[duplicateIndex].trackListCd.add(trackListCd);
+
+        Track existingTrack = trackModel.trackList.removeAt(duplicateIndex);
+        trackModel.trackList.add(existingTrack);
+
       }
     }
   }
+
+  void initTrackToModel(List<int> trackCdList){
+
+    try{
+
+      for (int trackCd in trackCdList) {
+        List<dynamic> trackListCopy = List.from(trackModel.trackList);
+
+        for (var item in trackListCopy) {
+          int duplicateIndex = item.trackListCd.indexWhere((trackListItemCd) => trackListItemCd == trackCd);
+
+          if (duplicateIndex != -1) {
+            if (item.trackListCd.length == 1) {
+              trackModel.trackList.remove(item); // 복사본에서 순회 후 삭제
+            } else {
+              item.trackListCd.removeAt(duplicateIndex);
+            }
+          }
+        }
+
+      }
+    } catch (e, stacktrace) {
+      print('오류 발생: $e');
+      print('스택 트레이스: $stacktrace');
+    }
+
+  }
+
+
 
 
   Future<bool> getHomeInitTrack() async {
@@ -99,19 +112,143 @@ class TrackProv extends ChangeNotifier {
       );
 
       if (response['status'] == "200") {
-
-        trackModel = TrackList();
+        initTrackToModel([1,2,3,4]);
 
         addTracksToModel(response['lastListenTrackList'], 1);
         addTracksToModel(response['trendingTrackList'], 2);
         addTracksToModel(response['followMemberTrackList'], 3);
         addTracksToModel(response['likedTrackList'], 4);
 
+        print('$url - Successful');
+
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+  Future<bool> getPlayListTrackList(int playListId) async {
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getPlayListTrackList?loginMemberId=${loginMemberId}&playListId=${playListId}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == "200") {
+
+        // trackModel = TrackList(); // 5만 초기화하게
+        initTrackToModel([5]);
+        addTracksToModel(response['playListTrackList'], 5);
 
 
         print('$url - Successful');
 
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
 
+
+  Future<bool> getSearchTrack(String searchText, int offset) async {
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getSearchTrack?loginMemberId=${loginMemberId}&searchText=$searchText&limit=${20}&offset=$offset';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == "200") {
+        // 성공적으로 데이터를 가져옴
+        if (offset == 0) {
+          initTrackToModel([6]);
+        }
+
+        addTracksToModel(response['searchTrackList'], 6);
+
+        trackModel.searchTrackTotalCount = response['totalCount'];
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+  Future<bool> getMemberPageTrack(int memberId, int offset) async {
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getMemberPageTrack?memberId=${memberId}&loginMemberId=${loginMemberId}&limit=${20}&offset=${offset}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == "200") {
+        // 성공적으로 데이터를 가져옴
+        if (offset == 0) {
+          initTrackToModel([8]);
+        }
+
+        addTracksToModel(response['allTrackList'], 8 );
+
+        trackModel.allTrackTotalCount = response['allTrackListCnt'];
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
+  Future<bool> getMemberPagePopularTrack(int memberId) async {
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getMemberPagePopularTrack?memberId=${memberId}&loginMemberId=${loginMemberId}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == "200") {
+        // 성공적으로 데이터를 가져옴
+        initTrackToModel([7]);
+
+        addTracksToModel(response['popularTrackList'], 7);
+
+        print('$url - Successful');
         return true;
       } else {
         throw Exception('Failed to load data');
@@ -179,7 +316,7 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getLikeTrack(offset) async {
     final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getLikeTrack?loginMemberId=${loginMemberId}&offset=${offset}';
+    final url = '/api/getLikeTrack?loginMemberId=${loginMemberId}&limit=${20}&offset=${offset}';
 
     try {
       final response = await Helpers.apiCall(
@@ -192,12 +329,13 @@ class TrackProv extends ChangeNotifier {
       if (response['status'] == "200") {
         // 성공적으로 데이터를 가져옴
         if (offset == 0) {
-          trackModel = TrackList();
+          initTrackToModel([9]);
         }
-        for (var item in response['likeTrackList']) {
-          trackModel.trackList.add(Track.fromJson(item));
-        }
-        trackModel.totalCount = response['totalCount'];
+
+        addTracksToModel(response['likeTrackList'], 9 );
+
+        trackModel.likeTrackTotalCount = response['totalCount'];
+
         print('$url - Successful');
         return true;
       } else {
@@ -461,13 +599,16 @@ class TrackProv extends ChangeNotifier {
       );
 
       if (response['status'] == "200") {
+
         if (offset == 0) {
-          trackModel = TrackList();
+          initTrackToModel([10]);
         }
-        for (var item in response['uploadTrackList']) {
-          trackModel.trackList.add(Track.fromJson(item));
-        }
-        trackModel.totalCount = response['totalCount'];
+
+        addTracksToModel(response['uploadTrackList'], 10 );
+
+        trackModel.uploadTrackTotalCount = response['totalCount'];
+
+
         print('$url - Successful');
         return true;
       } else {

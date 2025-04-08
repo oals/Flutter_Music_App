@@ -69,7 +69,7 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
     return Scaffold(
       body: Container(
         height: 100.h,
-        color: Color(0xff1c1c1c),
+        color: Colors.black,
         child: FutureBuilder<bool>(
           future: _getPlayListFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {

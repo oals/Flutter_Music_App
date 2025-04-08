@@ -87,11 +87,8 @@ class MoreProv extends ChangeNotifier{
             moreModel.playListList.add(PlayListInfoModel.fromJson(item));
           }
           moreModel.totalCount = response['totalCount'];
-        } else if (moreId == 3 || moreId == 5) {
-          for (var item in response['trackList']) {
-            moreModel.trackList.add(Track.fromJson(item));
-          }
         }
+
 
         moreModel.status = response['status'];
         print('$url - Successful');

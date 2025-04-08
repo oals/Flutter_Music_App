@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:skrrskrr/model/follow/follow_info_model.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 
 import 'package:skrrskrr/model/search/search_history_model.dart';
 import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
+import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 
@@ -93,35 +95,6 @@ class SearchProv extends ChangeNotifier {
   Future<bool> fnSearchRecentListenTrack() async {
 
     return true;
-
-    // final String loginMemberId = await Helpers.getMemberId();
-    // final url= '/api/getSearchInit?memberId=${memberId}';
-    //
-    // try {
-    //   final response = await Helpers.apiCall(
-    //     url,
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //   );
-    //
-    //   if (response['status'] == '200') {
-    //     recentListenTrackHistory = [];
-    //
-    //     for (var item in response['popularTrackHistory']) {
-    //       recentListenTrackHistory.add(item);
-    //     }
-    //
-    //     print('$url - Successful');
-    //     return true;
-    //   } else {
-    //     throw Exception('Failed to load data');
-    //   }
-    // } catch (error) {
-    //   print('$url - Fail');
-    //   return false;
-    // }
-
   }
 
 
@@ -169,10 +142,10 @@ class SearchProv extends ChangeNotifier {
 
 
 
-  Future<bool> search(String searchText,offset) async {
+  Future<bool> setSearchHistory(String searchText,offset) async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url= '/api/search?loginMemberId=${loginMemberId}&searchText=$searchText&offset=$offset';
+    final url= '/api/setSearchHistory?loginMemberId=${loginMemberId}&searchText=$searchText&offset=$offset';
 
     try {
       final response = await Helpers.apiCall(
@@ -183,26 +156,8 @@ class SearchProv extends ChangeNotifier {
       );
 
       if (response['status'] == '200') {
-        model.trackList = [];
-        model.memberList = [];
-        model.playListList = [];
 
-        for (var item in response['trackList']) {
-          model.trackList.add(Track.fromJson(item));
-        }
 
-        for (var item in response['memberList']) {
-          model.memberList.add(FollowInfoModel.fromJson(item));
-        }
-        model.memberListCnt = response['memberListCnt'];
-
-        for (var item in response['playListList']) {
-          model.playListList.add(PlayListInfoModel.fromJson(item));
-        }
-        model.playListListCnt = response['playListListCnt'];
-
-        model.status = response['status'];
-        model.totalCount = response['totalCount'];
         print('$url - Successful');
         return true;
       } else {

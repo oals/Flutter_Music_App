@@ -108,9 +108,8 @@ class FcmNotifications{
           ),
         );
 
-
-        Provider.of<NotificationsProv>(context, listen: false).setNotificationsIsView(true);
         print("Foreground 메시지 수신: ${{message.notification!.body!}}");
+        Provider.of<NotificationsProv>(context, listen: false).setNotificationsIsView(true);
       }
     });
 

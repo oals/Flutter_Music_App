@@ -1,27 +1,21 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
-import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
-import 'package:skrrskrr/utils/helpers.dart';
 
 class UploadTrackScreen extends StatefulWidget {
   const UploadTrackScreen({
     super.key,
-
   });
-
 
   @override
   State<UploadTrackScreen> createState() => _UploadTrackScreenState();
@@ -31,6 +25,8 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
 
   late Future<bool> _getUploadInitFuture;
   late TrackProv trackProv;
+  late ComnLoadProv comnLoadProv;
+  List<Track> uploadTrackList = [];
 
   @override
   void initState() {
@@ -42,7 +38,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
   @override
   void dispose() {
     // TODO: implement dispose
-    trackProv.clear();
+    comnLoadProv.clear();
     super.dispose();
   }
 
@@ -51,10 +47,11 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
   Widget build(BuildContext context) {
 
     trackProv = Provider.of<TrackProv>(context);
+    comnLoadProv = Provider.of<ComnLoadProv>(context);
 
     return Scaffold(
       body: Container(
-        color: Color(0XFF1C1C1C),
+        color: Colors.black,
         width: 100.w,
         height: 100.h,
         child: FutureBuilder<bool>(
@@ -70,15 +67,26 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
 
             TrackList trackModel = trackProv.trackModel;
 
+            Set<Track> uploadTrackSet = uploadTrackList.toSet();
+            List<Track> list = trackProv.trackModel.trackList;
+
+            trackProv.addUniqueTracksToList(
+              sourceList: list,
+              targetSet: uploadTrackSet,
+              targetList: uploadTrackList,
+              trackCd: 10,
+            );
+
+
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if (trackModel.totalCount! > trackModel.trackList.length) {
-                  if (trackProv.shouldLoadMoreData(notification)) {
-                    trackProv.loadMoreData("UploadTrack");
+                if (trackModel.uploadTrackTotalCount! > uploadTrackList.length) {
+                  if (comnLoadProv.shouldLoadMoreData(notification)) {
+                    comnLoadProv.loadMoreData(trackProv, "UploadTrack", uploadTrackList.length);
                   }
                 } else {
-                  if(trackProv.isApiCall){
-                    trackProv.resetApiCallStatus();
+                  if(comnLoadProv.isApiCall){
+                    comnLoadProv.resetApiCallStatus();
                   }
                 }
                 return false;
@@ -105,7 +113,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                       spacing: 30.0,
                       runSpacing: 20.0,
                       alignment: WrapAlignment.spaceBetween,
-                      children: trackModel.trackList.map((item) {
+                      children: uploadTrackList.map((item) {
                         return TrackSquareItem(
                           track: item,
                           bgColor: Colors.purpleAccent,
@@ -116,7 +124,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
 
                     SizedBox(height: 5),
 
-                    CustomProgressIndicator(isApiCall: trackProv.isApiCall),
+                    CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
 
                   ],
                 ),

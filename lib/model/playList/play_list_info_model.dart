@@ -49,7 +49,6 @@ class PlayListInfoModel {
     isPlayListLike = updatedPlayList.isPlayListLike ?? isPlayListLike;
     totalPlayTime = updatedPlayList.totalPlayTime ?? totalPlayTime;
     trackCnt = updatedPlayList.trackCnt ?? trackCnt;
-    playListTrackList = updatedPlayList.playListTrackList ?? playListTrackList;
     memberId = updatedPlayList.memberId ?? memberId;
     memberNickName = updatedPlayList.memberNickName ?? memberNickName;
     memberImagePath = updatedPlayList.memberImagePath ?? memberImagePath;

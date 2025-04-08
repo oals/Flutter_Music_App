@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
+import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
@@ -18,7 +19,6 @@ import 'package:skrrskrr/utils/helpers.dart';
 class MyLikeTrackScreen extends StatefulWidget {
   const MyLikeTrackScreen({
     super.key,
-
   });
 
 
@@ -29,6 +29,8 @@ class MyLikeTrackScreen extends StatefulWidget {
 class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
   late TrackProv trackProv;
   late Future<bool> _getLikeTrackInitFuture;
+  late ComnLoadProv comnLoadProv;
+  List<Track> likeTrackList = [];
 
   @override
   void initState() {
@@ -40,7 +42,7 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
   @override
   void dispose() {
     // TODO: implement dispose
-    trackProv.clear();
+    comnLoadProv.clear();
     super.dispose();
   }
 
@@ -48,10 +50,11 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
   @override
   Widget build(BuildContext context) {
     trackProv = Provider.of<TrackProv>(context);
+    comnLoadProv = Provider.of<ComnLoadProv>(context);
 
     return Scaffold(
       body: Container(
-        color: Color(0xff1c1c1c),
+        color: Colors.black,
         height: 100.h,
         child: FutureBuilder<bool>(
           future: _getLikeTrackInitFuture, // 비동기 메소드 호출
@@ -66,16 +69,27 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
 
             TrackList trackModel = trackProv.trackModel;
 
+            Set<Track> likeTrackSet = likeTrackList.toSet();
+            List<Track> list = trackProv.trackModel.trackList;
+
+            trackProv.addUniqueTracksToList(
+              sourceList: list,
+              targetSet: likeTrackSet,
+              targetList: likeTrackList,
+              trackCd: 9,
+            );
+
+
 
             return NotificationListener<ScrollNotification>(
                 onNotification: (notification) {
-                  if (trackModel.totalCount! > trackModel.trackList.length) {
-                    if (trackProv.shouldLoadMoreData(notification)) {
-                      trackProv.loadMoreData("LikeTrack");
+                  if (trackModel.likeTrackTotalCount! > likeTrackList.length) {
+                    if (comnLoadProv.shouldLoadMoreData(notification)) {
+                      comnLoadProv.loadMoreData(trackProv, "LikeTrack", likeTrackList.length);
                     }
                   } else {
-                    if (trackProv.isApiCall) {
-                      trackProv.resetApiCallStatus();
+                    if (comnLoadProv.isApiCall) {
+                      comnLoadProv.resetApiCallStatus();
                     }
                   }
                   return false;
@@ -104,7 +118,7 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                       spacing: 30.0,
                       runSpacing: 20.0,
                       alignment: WrapAlignment.spaceBetween,
-                      children: trackModel.trackList.map((item) {
+                      children: likeTrackList.map((item) {
                         return TrackSquareItem(
                           track: item,
                           bgColor: Colors.red,
@@ -112,7 +126,7 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                       }).toList(),
                     ),
 
-                    CustomProgressIndicator(isApiCall: trackProv.isApiCall),
+                    CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
 
                   ],
                 ),

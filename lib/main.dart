@@ -15,6 +15,7 @@ import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/category_prov.dart';
 import 'package:skrrskrr/prov/comment_prov.dart';
+import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 
 import 'package:skrrskrr/prov/image_prov.dart';
@@ -55,6 +56,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => CategoryProv()),
         ChangeNotifierProvider(create: (context) => AuthProv()),
         ChangeNotifierProvider(create: (context) => MoreProv()),
+        ChangeNotifierProvider(create: (context) => ComnLoadProv()),
       ],
       child: const MyApp(),
     ),

@@ -50,7 +50,7 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
     return Scaffold(
       body: Container(
         height: 100.h,
-        color: Color(0xff1c1c1c),
+        color: Colors.black,
         child: FutureBuilder<bool>(
           future: _getPlayListInitFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {

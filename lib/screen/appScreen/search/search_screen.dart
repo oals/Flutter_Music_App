@@ -25,8 +25,9 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   int? searchId = 0;
 
-
   late SearchModel searchModel;
+
+  String searchText = "";
 
   late List<String> recentListenTrackHistory;
   late Future<bool> _getSearchInitFuture;
@@ -63,13 +64,13 @@ class _SearchScreenState extends State<SearchScreen> {
                 return Center(child: Text('오류 발생: ${snapshot.error}'));
               }
 
-              searchModel = searchProv.model;
+
               recentListenTrackHistory = searchProv.recentListenTrackHistory;
 
               return Column(
                 children: [
                   SizedBox(
-                    height: 41,
+                    height: 5.h,
                   ),
 
                   Container(
@@ -149,8 +150,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       // 검색
                       onSubmitted: (text) async {
                         if (text != "") {
-                          searchModel.searchText = text;
-                          await searchProv.search(text, 0);
+                          searchText = text;
+                          await searchProv.setSearchHistory(text, 0);
                           searchId = 2;
                           setState(() {});
                         }
@@ -169,16 +170,16 @@ class _SearchScreenState extends State<SearchScreen> {
                         else if (searchId == 1)
                           SearchFindScreen(
                             onTap: (String searchHistory) async {
-                              await searchProv.search(searchHistory, 0);
+                              await searchProv.setSearchHistory(searchHistory, 0);
                               _searchController.text = searchHistory;
-                              searchModel.searchText = _searchController.text;
+                              searchText = _searchController.text;
                               searchId = 2;
                               _focusNode.unfocus();
                               setState(() {});
                             },
                           )
                         else
-                          SearchResultScreen(searchModel: searchModel)
+                          SearchResultScreen(searchText: searchText)
 
                       ],
                     ),

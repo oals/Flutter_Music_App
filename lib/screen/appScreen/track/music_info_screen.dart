@@ -129,7 +129,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
               }
 
               widget.track.updateApiData(trackProv.trackInfoModel);
-              trackProv.trackInfoModel = Track();
+              trackProv.trackInfoModel = widget.track;
               isAuth = Helpers.getIsAuth(widget.track.memberId.toString(), loginMemberId!);
 
               return Column(

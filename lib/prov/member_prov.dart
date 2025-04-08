@@ -4,7 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
+import 'package:skrrskrr/model/follow/follow_info_model.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
+import 'package:skrrskrr/model/member/member_model_list.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 
 import 'package:skrrskrr/model/track/track.dart';
@@ -14,6 +16,8 @@ class MemberProv with ChangeNotifier {
 
   MemberModel model = MemberModel();
   List<MemberModel> memberModelList = [];
+  MemberModelList searchMemberModelList = MemberModelList();
+
 
   void notify() {
     notifyListeners();
@@ -88,6 +92,41 @@ class MemberProv with ChangeNotifier {
     }
   }
 
+  Future<bool> getSearchMember(String searchText, int offset, int limit) async {
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getSearchMember?loginMemberId=${loginMemberId}&searchText=$searchText&limit=${limit}&offset=$offset';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == "200") {
+        // 성공적으로 데이터를 가져옴
+        if (offset == 0) {
+          searchMemberModelList = MemberModelList();
+        }
+        for (var item in response['memberList']) {
+          searchMemberModelList.memberList.add(FollowInfoModel.fromJson(item));
+        }
+
+        searchMemberModelList.memberListCnt = response['memberListCnt'];
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
   Future<bool> getMemberInfo(String memberEmail) async {
 
     final String? deviceToken = await FcmNotifications.getMyDeviceToken();
@@ -143,12 +182,8 @@ class MemberProv with ChangeNotifier {
 
         model = MemberModel();
         model.playListList = [];
-        model.popularTrackList = [];
-        model.allTrackList = [];
 
         List<PlayListInfoModel>  playListList = [];
-        List<Track> popularTrackList = [];
-        List<Track> allTrackList = [];
 
         model = MemberModel.fromJson(response['memberDTO']);
 
@@ -157,22 +192,8 @@ class MemberProv with ChangeNotifier {
           playListList.add(playList);
         }
 
-        for(var item in response['popularTrackList']) {
-          Track track = Track.fromJson(item);
-          popularTrackList.add(track);
-        }
-
-        for(var item in response['allTrackList']) {
-          Track track = Track.fromJson(item);
-          allTrackList.add(track);
-        }
-
-
         model.playListListCnt = response['playListListCnt'];
-        model.allTrackListCnt = response['allTrackListCnt'];
         model.playListList = playListList;
-        model.popularTrackList = popularTrackList;
-        model.allTrackList = allTrackList;
 
         print('$url - Successful');
         return true;

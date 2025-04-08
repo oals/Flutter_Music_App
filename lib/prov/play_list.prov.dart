@@ -53,6 +53,39 @@ class PlayListProv extends ChangeNotifier {
     }
   }
 
+  Future<bool> getSearchPlayList(String searchText, int offset, int limit) async {
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getSearchPlayList?loginMemberId=${loginMemberId}&searchText=$searchText&limit=${limit}&offset=$offset';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == "200") {
+        // 성공적으로 데이터를 가져옴
+        if (offset == 0) {
+          playlistList = PlaylistList();
+        }
+        for (var item in response['playListList']) {
+          playlistList.playList.add(PlayListInfoModel.fromJson(item));
+        }
+        playlistList.totalCount = response['playListListCnt'];
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
 
   Future<bool> setPlayListLike(int playListId) async {
     final String loginMemberId = await Helpers.getMemberId();

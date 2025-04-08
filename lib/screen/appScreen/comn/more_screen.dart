@@ -78,12 +78,31 @@ class _MoreScreenState extends State<MoreScreen> {
             int moreTotalCount = 0;
       
             if(widget.moreId == 1){
+
+
               moreTotalCount = searchMoreModel.memberList.length;
+
+
+              /// seachPlayList
+              /// searchMemberList
+              /// myPage-playlist
+
+
             } else if (widget.moreId == 2 || widget.moreId == 4) {
+
+
+
+
               moreTotalCount = searchMoreModel.playListList.length;
-            } else if (widget.moreId == 3 || widget.moreId == 5) {
-              moreTotalCount = searchMoreModel.trackList.length;
+
             }
+
+
+            /// 3 5 는  검색 트랙하고 내정보 트랙임
+            // else if (widget.moreId == 3 || widget.moreId == 5) {
+            //
+            //   moreTotalCount = searchMoreModel.trackList.length;
+            // }
 
 
             return NotificationListener <ScrollNotification>(

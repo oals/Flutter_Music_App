@@ -13,6 +13,8 @@ import 'package:skrrskrr/screen/appScreen/album/my_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/category/category_screen.dart';
 import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
 import 'package:skrrskrr/screen/appScreen/comn/more_screen.dart';
+import 'package:skrrskrr/screen/appScreen/search/search_member_screen.dart';
+import 'package:skrrskrr/screen/appScreen/search/search_play_list_screen.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 import 'package:skrrskrr/screen/appScreen/feed/feed_screen.dart';
 import 'package:skrrskrr/screen/appScreen/follow/follow_screen.dart';
@@ -171,6 +173,36 @@ final router = GoRouter(
           );
         },
       ),
+
+
+      GoRoute(
+        path: '/searchMember/:searchText',
+        pageBuilder: (context, state) {
+          final searchText = state.pathParameters['searchText']!;
+
+          return commonPageBuilder(
+            context,
+            state,
+            SearchMemberScreen(searchText: searchText),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/SearchPlayList/:searchText',
+        pageBuilder: (context, state) {
+          final searchText = state.pathParameters['searchText']!;
+
+          return commonPageBuilder(
+            context,
+            state,
+            SearchPlayListScreen(searchText: searchText),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
+
 
       GoRoute(
         path: '/more/:moreId/:searchText/:memberId/:totalCount',

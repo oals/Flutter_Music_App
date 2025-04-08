@@ -11,9 +11,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/player/player.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
+import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
+import 'package:skrrskrr/prov/search_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
+import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/bottomNavigatorBar/custom_audio_player_bottom_navigation.dart';
 import 'package:skrrskrr/screen/subScreen/comn/slider/circular_slider_track_shape.dart';
@@ -44,6 +48,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
   @override
   void initState() {
     super.initState();
+    print('오디오플레이어');
     _initializePlayer();
   }
 
@@ -54,7 +59,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
     trackProv = Provider.of<TrackProv>(context, listen: false);
 
     _getLastTrackInitFuture = Provider.of<TrackProv>(context, listen: false).getLastListenTrack();
-
+    print('트랙 새로 가져오기');
     trackProv.lastTrackId = await playerProv.initLastTrack(_getLastTrackInitFuture);
     _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getPlayTrackInfo(trackProv.lastTrackId);
 
@@ -78,6 +83,9 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
   Widget build(BuildContext context) {
 
     appProv = Provider.of<AppProv>(context,listen: false);
+    SearchProv searchProv = Provider.of<SearchProv>(context,listen: false);
+    MemberProv memberProv = Provider.of<MemberProv>(context,listen: false);
+    PlayListProv playListProv = Provider.of<PlayListProv>(context,listen: false);
     playerModel = playerProv.playerModel;
 
     if(!isLoading){
@@ -96,7 +104,22 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
               return Center(child: Text('데이터가 없습니다.'));
             }
 
-            Track trackInfoModel = trackProv.playTrackInfoModel;
+
+            Track trackInfoModel;
+            // String navigatorPath = GoRouter.of(navigatorKey.currentState!.context).routerDelegate.currentConfiguration.last.route.path;
+
+
+            int index = trackProv.trackModel.trackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
+              /// trackProv.trackList == 현재 내가 보고있는 화면의 트랙들
+            if(index == -1) {
+              print('트랙 리스트에 트랙 없음');
+              trackInfoModel = trackProv.playTrackInfoModel;
+            } else {
+              print('트랙 리스트에 트랙 존재');
+              trackInfoModel = trackProv.trackModel.trackList[index];
+            }
+
+
 
             return GestureDetector(
               onPanUpdate: (details) {

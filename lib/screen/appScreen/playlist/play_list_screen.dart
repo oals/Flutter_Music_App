@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
+import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
+import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/modal/track/title_info_edit.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
@@ -31,12 +33,19 @@ class _PlayListScreenState extends State<PlayListScreen> {
 
   late PlayListProv playListProv;
   late Future<bool> _getPlayListInitFuture;
+  late Future<bool> _getPlayListTrackInitFuture;
+
 
   @override
   void initState() {
     print("PlayListScreen initstate");
     super.initState();
     _getPlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getPlayListInfo(widget.playList.playListId!,0);
+    _getPlayListTrackInitFuture = Provider.of<TrackProv>(context, listen: false).getPlayListTrackList(widget.playList.playListId!);
+
+
+
+
     _loadMemberId();
   }
 
@@ -49,6 +58,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
   Widget build(BuildContext context) {
 
     playListProv = Provider.of<PlayListProv>(context);
+    TrackProv trackProv = Provider.of<TrackProv>(context);
 
     return Scaffold(
       body: Container(
@@ -66,24 +76,11 @@ class _PlayListScreenState extends State<PlayListScreen> {
 
             //호출되어서 리빌드해도 이전 값을 가지게 됨
             widget.playList.updateApiData(playListProv.playListInfoModel);
-            playListProv.playListInfoModel = PlayListInfoModel();
+            playListProv.playListInfoModel = widget.playList;
             isAuth = Helpers.getIsAuth(widget.playList.memberId.toString(),loginMemberId!);
 
-            return NotificationListener <ScrollNotification>(onNotification: (notification) {
-              if (widget.playList.trackCnt! >  widget.playList.playListTrackList!.length) {
-                if (playListProv.shouldLoadMoreData(notification)) {
-                  playListProv.loadMoreData();
-                }
-              } else {
-                if (playListProv.isApiCall) {
-                  playListProv.resetApiCallStatus();
-                }
-              }
-              return false;
-            },
 
-
-            child: SingleChildScrollView(
+            return SingleChildScrollView(
               child: Column(
                 children: [
 
@@ -336,12 +333,48 @@ class _PlayListScreenState extends State<PlayListScreen> {
                         ),
                         SizedBox(height: 20),
 
-                        for (int i = 0; i < widget.playList.playListTrackList!.length; i++) ...[
-                          TrackListItem(
-                            trackItem: widget.playList.playListTrackList![i],
-                          ),
-                          SizedBox(height: 5,),
-                        ]
+
+
+
+                        FutureBuilder<bool>(
+                            future: _getPlayListTrackInitFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return Center(child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(child: Text('Error: ${snapshot.error}'));
+                              } else {
+
+                                List<Track> trackList = trackProv.trackModel.trackList.where((item) => item.trackListCd.contains(5)).toList();
+
+                                return  NotificationListener <ScrollNotification>(onNotification: (notification) {
+                                  if (widget.playList.trackCnt! >  trackList.length) {
+                                    if (playListProv.shouldLoadMoreData(notification)) {
+                                      playListProv.loadMoreData();
+                                    }
+                                  } else {
+                                    if (playListProv.isApiCall) {
+                                      playListProv.resetApiCallStatus();
+                                    }
+                                  }
+                                  return false;
+                                },
+
+                                child: Column(
+                                  children: [
+
+                                    for(int i = 0; i < trackList.length; i++)...[
+                                      TrackListItem(
+                                        trackItem: trackList[i],
+                                      ),
+                                      SizedBox(height: 5,),
+                                    ]
+                                  ],
+                                ),
+                                                      );
+                             }}
+                           ),
+
                       ],
                     ),
                   ),
@@ -350,7 +383,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
 
                 ],
               ),
-            ),
             );
           },
         ),
