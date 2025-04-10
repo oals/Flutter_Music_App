@@ -10,10 +10,6 @@ class PlayListProv extends ChangeNotifier {
   PlaylistList playlistList = PlaylistList();
   PlayListInfoModel playListInfoModel = PlayListInfoModel();
 
-  bool isApiCall = false;
-  int offset = 0;
-
-
   void notify() {
     notifyListeners();
   }
@@ -21,37 +17,57 @@ class PlayListProv extends ChangeNotifier {
   void clear() {
     playlistList = PlaylistList();
     playListInfoModel = PlayListInfoModel();
-    isApiCall = false;
-    offset = 0;
   }
 
-
-  bool shouldLoadMoreData(ScrollNotification notification) {
-    return notification is ScrollUpdateNotification &&
-        notification.metrics.pixels == notification.metrics.maxScrollExtent;
+  List<PlayListInfoModel> playListFilter(String playListCd) {
+    return playlistList.playList.where((item) => item.playListCd.contains(playListCd)).toList();
   }
 
-  void setApiCallStatus(bool status) {
-    isApiCall = status;
-    notify();
-  }
+  void addPlayListsToModel(List<dynamic> playLists, String playListCd) {
+    for (var item in playLists) {
+      PlayListInfoModel playListInfoModel = PlayListInfoModel.fromJson(item);
+      playListInfoModel.playListCd.add(playListCd);
 
-  void resetApiCallStatus() {
-    isApiCall = false;
-    notify();
-  }
+      int duplicateIndex = playlistList.playList.indexWhere((existingPlayList) => existingPlayList.playListId == playListInfoModel.playListId);
 
-  Future<void> loadMoreData() async {
-    if (!isApiCall) {
-      setApiCallStatus(true);
-      offset = offset + 20;
-      await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
+      if (duplicateIndex == -1) {
+        playlistList.playList.add(playListInfoModel);
+      } else {
 
-      await getPlayList(0, offset, false);
-
-      setApiCallStatus(false);
+        PlayListInfoModel existingPlayList = playlistList.playList.removeAt(duplicateIndex);
+        existingPlayList.playListCd.add(playListCd);
+        playlistList.playList.add(existingPlayList); // 기존 데이터가 존재 할 때 새 데이터로 교체
+      }
     }
   }
+
+  void initPlayListToModel(List<String> playListCdList){
+
+    try{
+
+      for (String playListCd in playListCdList) {
+        List<dynamic> playListCopy = List.from(playlistList.playList);
+
+        for (var item in playListCopy) {
+          int duplicateIndex = item.playListCd.indexWhere((playListItemCd) => playListItemCd.toString() == playListCd);
+
+          if (duplicateIndex != -1) {
+            if (item.playListCd.length == 1) {
+              playlistList.playList.remove(item); // 복사본에서 순회 후 삭제
+            } else {
+              item.playListCd.removeAt(duplicateIndex);
+            }
+          }
+        }
+
+      }
+    } catch (e, stacktrace) {
+      print('오류 발생: $e');
+      print('스택 트레이스: $stacktrace');
+    }
+  }
+
+
 
   Future<bool> getSearchPlayList(String searchText, int offset, int limit) async {
     final String loginMemberId = await Helpers.getMemberId();
@@ -67,13 +83,14 @@ class PlayListProv extends ChangeNotifier {
 
       if (response['status'] == "200") {
         // 성공적으로 데이터를 가져옴
+
         if (offset == 0) {
-          playlistList = PlaylistList();
+          initPlayListToModel(["SearchPlayList"]);
         }
-        for (var item in response['playListList']) {
-          playlistList.playList.add(PlayListInfoModel.fromJson(item));
-        }
-        playlistList.totalCount = response['playListListCnt'];
+
+        addPlayListsToModel(response['playListList'], "SearchPlayList");
+
+        playlistList.searchPlayListTotalCount = response['playListListCnt'];
 
         print('$url - Successful');
         return true;
@@ -85,6 +102,42 @@ class PlayListProv extends ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> getMemberPagePlayList(int memberId, int offset, int limit) async {
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getMemberPagePlayList?loginMemberId=${loginMemberId}&memberId=${memberId}&limit=${limit}&offset=$offset';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == "200") {
+
+        if (offset == 0) {
+          initPlayListToModel(["MemberPagePlayList"]);
+        }
+
+        addPlayListsToModel(response['playListList'], "MemberPagePlayList");
+
+        playlistList.memberPagePlayListTotalCount = response['playListListCnt'];
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
+
 
 
   Future<bool> setPlayListLike(int playListId) async {
@@ -164,13 +217,8 @@ class PlayListProv extends ChangeNotifier {
 
       if ((response['status'] == '200')) {
 
-        playlistList = PlaylistList();
-
-        for(var item in response['popularPlayList']){
-          playlistList.playList.add(PlayListInfoModel.fromJson(item));
-        }
-
-
+        initPlayListToModel(["HomeInitPlayList"]);
+        addPlayListsToModel(response['popularPlayList'], "HomeInitPlayList");
 
         print('$url - Successful');
         return true;
@@ -200,13 +248,16 @@ class PlayListProv extends ChangeNotifier {
       );
 
       if ((response['status'] == '200')) {
-        if(offset == 0 ){
-          playlistList = PlaylistList();
+
+        if (offset == 0) {
+          initPlayListToModel(["PlayLists"]);
         }
-        for (var item in response['playList']) {
-          playlistList.playList.add(PlayListInfoModel.fromJson(item));
-        }
-        playlistList.totalCount = response['totalCount'];
+
+        addPlayListsToModel(response['playList'], "PlayLists");
+
+        playlistList.myPlayListTotalCount = response['totalCount'];
+
+
         print('$url - Successful');
         return true;
       } else {

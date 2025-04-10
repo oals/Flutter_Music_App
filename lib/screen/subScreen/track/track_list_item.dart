@@ -36,7 +36,6 @@ class _TrackListItemState extends State<TrackListItem> {
   late TrackProv trackProv;
   late AppProv appProv;
   late PlayerProv playerProv;
-  bool isImageLoad = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,25 +44,22 @@ class _TrackListItemState extends State<TrackListItem> {
     appProv = Provider.of<AppProv>(context,listen: false);
     playerProv = Provider.of<PlayerProv>(context,listen: false);
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return GestureDetector(
+      onTap: () async {
+        await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
+        await playerProv.audioPause();
+        appProv.reload();
+      },
+      child: Container(
+        color: Colors.transparent,
+        child: Column(
           children: [
-            GestureDetector(
-              onTap: () async {
-                await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
-                await playerProv.audioPause();
-                appProv.reload();
-              },
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      print('음원상세페이지 이동');
-                      GoRouter.of(context).push('/musicInfo',extra: widget.trackItem);
-                    },
-                    child: Container(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey,width: 2),
@@ -79,139 +75,145 @@ class _TrackListItemState extends State<TrackListItem> {
 
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
 
-                        SizedBox(
-                          width: 57.w,
-                          child: Text(
-                            '${widget.trackItem.trackNm}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
+                          SizedBox(
+                            width: 57.w,
+                            child: GestureDetector(
+                              onTap: (){
+                                print('음원상세페이지 이동');
+                                GoRouter.of(context).push('/musicInfo',extra: widget.trackItem);
+                              },
+                              child: Text(
+                                '${widget.trackItem.trackNm}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        SizedBox(height: 2,),
-                        Row(
-                          children: [
-                            Row(
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/images/play.svg',
-                                  width: 12,
-                                  height: 12,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(width: 1,),
-                                Text(
-                                  '${widget.trackItem.trackPlayCnt}',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: 5,),
-                            Row(
-                              children: [
-
-                                SvgPicture.asset(
-                                  widget.trackItem.trackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                SizedBox(width: 1,),
-                                Text(
-                                  '${widget.trackItem.trackLikeCnt}',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                          ],
-                        ),
-                        SizedBox(height: 1,),
-                        Row(
-                          children: [
-                            Text(
-                              '${widget.trackItem.trackTime}',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                              ),
-                            ),
-                            SizedBox(width: 5,),
-                            Text(
-                              Helpers.getCategory(widget.trackItem.trackCategoryId!),
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5,),
+                          SizedBox(height: 2,),
                           Row(
                             children: [
-                              ClipOval(
-                                child: CustomCachedNetworkImage(
-                                  imagePath: widget.trackItem.memberImagePath,
-                                  imageWidth: 4.5.w,
-                                  imageHeight: null,
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/images/play.svg',
+                                    width: 12,
+                                    height: 12,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(width: 1,),
+                                  Text(
+                                    '${widget.trackItem.trackPlayCnt}',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 5,),
+                              Row(
+                                children: [
+
+                                  SvgPicture.asset(
+                                    widget.trackItem.trackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                  SizedBox(width: 1,),
+                                  Text(
+                                    '${widget.trackItem.trackLikeCnt}',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                            ],
+                          ),
+                          SizedBox(height: 1,),
+                          Row(
+                            children: [
+                              Text(
+                                '${widget.trackItem.trackTime}',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
                                 ),
                               ),
                               SizedBox(width: 5,),
                               Text(
-                                '${widget.trackItem.memberNickName}',
+                                Helpers.getCategory(widget.trackItem.trackCategoryId!),
                                 style: TextStyle(
                                   color: Colors.grey,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                 ),
                               ),
                             ],
                           ),
-                      ],
+                          SizedBox(height: 5,),
+                            Row(
+                              children: [
+                                ClipOval(
+                                  child: CustomCachedNetworkImage(
+                                    imagePath: widget.trackItem.memberImagePath,
+                                    imageWidth: 4.5.w,
+                                    imageHeight: null,
+                                  ),
+                                ),
+                                SizedBox(width: 5,),
+                                Text(
+                                  '${widget.trackItem.memberNickName}',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
                     ),
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () {
+                   AppBottomModalRouter.fnModalRouter(context,3, track : widget.trackItem,);
+                  },
+                  child: SvgPicture.asset(
+                    'assets/images/ellipsis.svg',
+                    color: Colors.grey,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            GestureDetector(
-              onTap: () {
-               AppBottomModalRouter.fnModalRouter(context,3, track : widget.trackItem,);
-              },
-              child: SvgPicture.asset(
-                'assets/images/ellipsis.svg',
-                color: Colors.grey,
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey,
+                    width: 0.09,
+                  ),
+                ),
               ),
             ),
           ],
         ),
-        Container(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.grey,
-                width: 0.09,
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

@@ -16,8 +16,6 @@ class SearchProv extends ChangeNotifier {
 
   List<SearchHistoryModel> searchHistoryModel = [];
   List<String> recentListenTrackHistory = [];
-  bool isApiCall = false;
-  int offset = 0;
 
   void notify() {
     notifyListeners();
@@ -27,33 +25,6 @@ class SearchProv extends ChangeNotifier {
     model = SearchModel();
     searchHistoryModel = [];
     recentListenTrackHistory = [];
-    isApiCall = false;
-    offset = 0;
-  }
-
-  Future<void> loadMoreData(int moreId) async {
-    if (!isApiCall) {
-      setApiCallStatus(true);
-      offset += 20;
-      await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
-      await searchMore(moreId, model.searchText!, offset);
-      setApiCallStatus(false);
-    }
-  }
-
-  bool shouldLoadMoreData(ScrollNotification notification) {
-    return notification is ScrollUpdateNotification &&
-        notification.metrics.pixels == notification.metrics.maxScrollExtent;
-  }
-
-  void setApiCallStatus(bool status) {
-    isApiCall = status;
-    notify();
-  }
-
-  void resetApiCallStatus() {
-    isApiCall = false;
-    notify();
   }
 
 
@@ -96,50 +67,6 @@ class SearchProv extends ChangeNotifier {
 
     return true;
   }
-
-
-
-  Future<bool> searchMore(int moreId, String searchText,int offset) async {
-
-    final String loginMemberId = await Helpers.getMemberId();
-
-    final url= '/api/getSearchMore?'
-        'loginMemberId=${loginMemberId}&'
-        'moreId=${moreId}&searchText=${searchText}&'
-        'limit=${20}&'
-        'offset=${offset}';
-
-    try {
-      final response = await Helpers.apiCall(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if ((response['status'] == '200')) {
-        if (offset == 0) {
-          model.trackList = [];
-        }
-
-        if (moreId == 3) {
-          for (var item in response['trackList']) {
-            model.trackList.add(Track.fromJson(item));
-          }
-        }
-
-        model.status = response['status'];
-        print('$url - Successful');
-        return true;
-      } else {
-        throw Exception('Failed to load data');
-      }
-    } catch (error) {
-      print('$url - Fail');
-      return false;
-    }
-  }
-
 
 
   Future<bool> setSearchHistory(String searchText,offset) async {

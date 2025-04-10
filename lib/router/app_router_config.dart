@@ -12,7 +12,7 @@ import 'package:skrrskrr/router/app_screen.dart';
 import 'package:skrrskrr/screen/appScreen/album/my_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/category/category_screen.dart';
 import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
-import 'package:skrrskrr/screen/appScreen/comn/more_screen.dart';
+import 'package:skrrskrr/screen/appScreen/playlist/member_play_list_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_member_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_play_list_screen.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
@@ -205,21 +205,14 @@ final router = GoRouter(
 
 
       GoRoute(
-        path: '/more/:moreId/:searchText/:memberId/:totalCount',
+        path: '/memberPlayList/:memberId',
         pageBuilder: (context, state) {
-          final moreId = int.parse(state.pathParameters['moreId']!);
-          final searchText = state.pathParameters['searchText']!;
-          final memberId = state.pathParameters['memberId']!;
-          final totalCount = int.parse(state.pathParameters['totalCount']!);
+          final memberId = int.parse(state.pathParameters['memberId']!);
 
           return commonPageBuilder(
             context,
             state,
-            MoreScreen(
-                moreId: moreId,
-                searchText: searchText,
-                totalCount: totalCount,
-                memberId: memberId),
+            MemberPlayListScreen(memberId: memberId,),
             isShowAudioPlayer: true,
           );
         },

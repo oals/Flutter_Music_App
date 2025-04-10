@@ -6,8 +6,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 
 import 'package:skrrskrr/model/playList/playlist_list.dart';
+import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
@@ -27,11 +29,13 @@ class MyPlayListScreen extends StatefulWidget {
 
 class _MyPlayListScreenState extends State<MyPlayListScreen> {
   late PlayListProv playListProv;
+  late ComnLoadProv comnLoadProv;
   late Future<bool> _getPlayListInitFuture;
 
   @override
   void initState() {
     // TODO: implement initState
+    print("MyPlayListScreen initstate");
     super.initState();
     _getPlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getPlayList(0, 0, false);
   }
@@ -39,12 +43,13 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
   @override
   void dispose() {
     // TODO: implement dispose
-    playListProv.clear();
+    comnLoadProv.clear();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    comnLoadProv = Provider.of<ComnLoadProv>(context);
     playListProv = Provider.of<PlayListProv>(context);
 
     return Scaffold(
@@ -60,17 +65,18 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
               return Center(child: Text('오류 발생: ${snapshot.error}'));
             }
 
-            PlaylistList playListModel = playListProv.playlistList;
+            PlaylistList playListList = playListProv.playlistList;
+            List<PlayListInfoModel> playLists = playListProv.playListFilter("PlayLists");
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if (playListModel.totalCount! > playListModel.playList.length) {
-                  if (playListProv.shouldLoadMoreData(notification)) {
-                    playListProv.loadMoreData();
+                if (playListList.myPlayListTotalCount! > playLists.length) {
+                  if (comnLoadProv.shouldLoadMoreData(notification)) {
+                    comnLoadProv.loadMoreData(playListProv, "PlayLists", playLists.length, trackId: 0 , isAlbum: false);
                   }
                 } else {
-                  if (playListProv.isApiCall){
-                    playListProv.resetApiCallStatus();
+                  if (comnLoadProv.isApiCall){
+                    comnLoadProv.resetApiCallStatus();
                   }
                 }
                 return false;
@@ -101,13 +107,13 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                           ),
 
                           PlayListSquareItem(
-                            playList: playListModel.playList,
+                            playList: playLists,
                           ),
                         ],
                       ),
                     ),
 
-                    CustomProgressIndicator(isApiCall: playListProv.isApiCall),
+                    CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
 
                   ],
                 ),

@@ -66,7 +66,6 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
             }
 
             TrackList trackModel = trackProv.trackModel;
-
             Set<Track> uploadTrackSet = uploadTrackList.toSet();
             List<Track> list = trackProv.trackModel.trackList;
 
@@ -74,9 +73,10 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
               sourceList: list,
               targetSet: uploadTrackSet,
               targetList: uploadTrackList,
-              trackCd: 10,
+              trackCd: "UploadTrackList",
             );
 
+            // uploadTrackList.sort((a, b) => b.trackId!.compareTo(a.trackId!));
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {

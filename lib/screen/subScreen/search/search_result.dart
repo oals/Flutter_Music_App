@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/member/member_model_list.dart';
+import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
@@ -48,6 +49,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   late Future<bool>? _getSearchMemberFuture;
 
   List<Track> searchTrackList = [];
+  List<PlayListInfoModel> searchPlayList = [];
 
   @override
   void initState() {
@@ -178,11 +180,13 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                     } else if (!snapshot.hasData) {
                       return Center(child: Text('데이터가 없습니다.'));
                     } else {
-                      PlaylistList playLists = playListProv.playlistList;
 
-                    return Column(
+                      PlaylistList playListList = playListProv.playlistList;
+                      List<PlayListInfoModel> searchPlayList = playListProv.playListFilter("SearchPlayList").take(8).toList();
+
+                      return Column(
                       children: [
-                        if (playLists.playList.length != 0) ...[
+                        if (searchPlayList.length != 0) ...[
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -194,7 +198,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                   color: Colors.white,
                                 ),
                               ),
-                              if (playLists.totalCount! > 8)
+                              if (playListList.searchPlayListTotalCount! > 8)
                                 GestureDetector(
                                   onTap: () async {
                                     GoRouter.of(context).push('/searchPlayList/${widget.searchText}');
@@ -219,7 +223,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: PlayListSquareItem(
-                                playList: playLists.playList.getRange(0, playLists.playList.length > 8 ? 8 : playLists.playList.length).toList(),
+                                playList: searchPlayList,
                               ),
                             ),
                           ),
@@ -253,7 +257,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                       sourceList: list,
                       targetSet: searchTrackSet,
                       targetList: searchTrackList,
-                      trackCd: 6,
+                      trackCd: "SearchTrackList",
                     );
 
 

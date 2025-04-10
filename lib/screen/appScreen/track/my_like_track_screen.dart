@@ -76,10 +76,8 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
               sourceList: list,
               targetSet: likeTrackSet,
               targetList: likeTrackList,
-              trackCd: 9,
+              trackCd: "MyLikeTrackList",
             );
-
-
 
             return NotificationListener<ScrollNotification>(
                 onNotification: (notification) {

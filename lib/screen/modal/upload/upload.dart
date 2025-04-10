@@ -453,7 +453,10 @@ class _UploadScreenState extends State<UploadScreen> {
                   await trackProv.uploadTrack(uploadTrackList,title!,info!,isPrivacy,categoryCd);
                 }
                 Fluttertoast.showToast(msg: "업로드 되었습니다.");
-                GoRouter.of(context).pop();
+
+                // GoRouter.of(context).pop();
+
+
               },
               child: Center(
                 child: Container(

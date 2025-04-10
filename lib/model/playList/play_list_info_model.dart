@@ -33,6 +33,9 @@ class PlayListInfoModel {
 
   String? memberImagePath;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<String> playListCd = [];
+
   PlayListInfoModel();
 
   factory PlayListInfoModel.fromJson(Map<String, dynamic> json) => _$PlayListInfoModelFromJson(json);

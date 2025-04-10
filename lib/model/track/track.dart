@@ -45,7 +45,7 @@ class Track {
   int? commentsCnt;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  List<int> trackListCd = [];
+  List<String> trackListCd = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Track> recommendTrackList = [];

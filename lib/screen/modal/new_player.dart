@@ -21,7 +21,6 @@ import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/bottomNavigatorBar/custom_audio_player_bottom_navigation.dart';
 import 'package:skrrskrr/screen/subScreen/comn/slider/circular_slider_track_shape.dart';
-import 'package:skrrskrr/screen/subScreen/comn/slider/gradient_slider_track_shape.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 
@@ -58,7 +57,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
     playerProv = Provider.of<PlayerProv>(context, listen: false);
     trackProv = Provider.of<TrackProv>(context, listen: false);
 
-    _getLastTrackInitFuture = Provider.of<TrackProv>(context, listen: false).getLastListenTrack();
+    _getLastTrackInitFuture = Provider.of<TrackProv>(context, listen: false).getLastListenTrackId();
     print('트랙 새로 가져오기');
     trackProv.lastTrackId = await playerProv.initLastTrack(_getLastTrackInitFuture);
     _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getPlayTrackInfo(trackProv.lastTrackId);
@@ -104,10 +103,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
               return Center(child: Text('데이터가 없습니다.'));
             }
 
-
             Track trackInfoModel;
-            // String navigatorPath = GoRouter.of(navigatorKey.currentState!.context).routerDelegate.currentConfiguration.last.route.path;
-
 
             int index = trackProv.trackModel.trackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
               /// trackProv.trackList == 현재 내가 보고있는 화면의 트랙들

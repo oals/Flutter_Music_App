@@ -99,7 +99,8 @@ class AppBottomModalRouter {
                     builder: (BuildContext context, scrollController) {
                       return SingleChildScrollView(
                           controller: scrollController,
-                          child: modalContent!);
+                          child: modalContent!
+                      );
                     },
                   ),
                 ),

@@ -4,8 +4,8 @@ class PlaylistList {
   
   List<PlayListInfoModel> playList = [];
 
-  PlayListInfoModel? playListInfoModel;
-  
-  int? totalCount = 0;
-  
+  int? searchPlayListTotalCount = 0;
+  int? memberPagePlayListTotalCount = 0;
+  int? myPlayListTotalCount = 0;
+
 }

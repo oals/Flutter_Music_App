@@ -27,8 +27,8 @@ class _TrackLikeBtnState extends State<TrackLikeBtn> {
     return Row(
       children: [
         GestureDetector(
-          onTap: (){
-            trackProv.setTrackLike(widget.track.trackId);
+          onTap: () async {
+            await trackProv.setTrackLike(widget.track.trackId);
             trackProv.fnChngTrackLikeStatus(widget.track);
             trackProv.notify();
           },

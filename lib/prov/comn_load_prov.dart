@@ -16,7 +16,7 @@ class ComnLoadProv extends ChangeNotifier{
   }
 
 
-  Future<void> loadMoreData(dynamic provider,String apiName, int offset, {searchText,memberId}) async {
+  Future<void> loadMoreData(dynamic provider,String apiName, int offset, {searchText,memberId, playListId, isAlbum, trackId}) async {
     if (!isApiCall) {
       setApiCallStatus(true);
       await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
@@ -32,6 +32,12 @@ class ComnLoadProv extends ChangeNotifier{
         await provider.getSearchMember(searchText,offset,20);
       } else if (apiName == 'SearchPlayList') {
         await provider.getSearchPlayList(searchText,offset,20);
+      } else if (apiName == 'MemberPagePlayList') {
+        await provider.getMemberPagePlayList(memberId,offset,20);
+      } else if (apiName == 'PlayListTrackList') {
+        await provider.getPlayListTrackList(playListId,offset);
+      } else if (apiName == "PlayLists") {
+        await provider.getPlayList(trackId, offset, isAlbum);
       }
       setApiCallStatus(false);
     }

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
+import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
@@ -23,10 +25,9 @@ class MyAlbumScreen extends StatefulWidget {
 
 class _MyAlbumScreenState extends State<MyAlbumScreen> {
   late PlaylistList playListModel;
-
+  late PlayListProv playListProv;
+  late ComnLoadProv comnLoadProv;
   late Future<bool> _getPlayListFuture;
-  bool isApiCall = false;
-  int offset = 0;
 
   @override
   void initState() {
@@ -35,36 +36,21 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
     _getPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getPlayList(0, 0, true);
   }
 
-  bool _shouldLoadMoreData(ScrollNotification notification) {
-    return notification is ScrollUpdateNotification &&
-        notification.metrics.pixels == notification.metrics.maxScrollExtent;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    comnLoadProv.clear();
+    super.dispose();
   }
 
-  void _setApiCallStatus(bool status) {
-    setState(() {
-      isApiCall = status;
-    });
-  }
 
-  void _resetApiCallStatus() {
-    setState(() {
-      isApiCall = false;
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    PlayListProv playListProv = Provider.of<PlayListProv>(context);
-
-    Future<void> _loadMoreData() async {
-      if (!isApiCall) {
-        _setApiCallStatus(true);
-        offset = offset + 20;
-        await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
-        await playListProv.getPlayList(0, offset, true);
-        _setApiCallStatus(false);
-      }
-    }
+    playListProv = Provider.of<PlayListProv>(context);
+    comnLoadProv = Provider.of<ComnLoadProv>(context);
 
     return Scaffold(
       body: Container(
@@ -81,16 +67,19 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
               return Center(child: Text('데이터가 없습니다.'));
             }
 
-            playListModel = playListProv.playlistList;
+            PlaylistList playListList = playListProv.playlistList;
+            List<PlayListInfoModel> AlbumList = playListProv.playListFilter("PlayLists");
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if (playListModel.totalCount! > playListModel.playList.length) {
-                  if (_shouldLoadMoreData(notification)) {
-                    _loadMoreData();
+                if (playListList.myPlayListTotalCount! > AlbumList.length) {
+                  if (comnLoadProv.shouldLoadMoreData(notification)) {
+                    comnLoadProv.loadMoreData(playListProv, "PlayLists", AlbumList.length, trackId: 0 , isAlbum: true);
                   }
                 } else {
-                  _resetApiCallStatus();
+                  if (comnLoadProv.isApiCall){
+                    comnLoadProv.resetApiCallStatus();
+                  }
                 }
                 return false;
               },
@@ -119,13 +108,15 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
                           ),
 
                           PlayListSquareItem(
-                            playList: playListModel.playList,
+                            playList: AlbumList,
                           ),
                         ],
                       ),
                     ),
 
-                    CustomProgressIndicator(isApiCall: isApiCall),
+                    Center(
+                        child: CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
+                    ),
                   ],
                 ),
               ),

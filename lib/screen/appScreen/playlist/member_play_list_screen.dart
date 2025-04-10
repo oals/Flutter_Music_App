@@ -9,29 +9,31 @@ import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 
-class SearchPlayListScreen extends StatefulWidget {
-  const SearchPlayListScreen({
+class MemberPlayListScreen extends StatefulWidget {
+  const MemberPlayListScreen({
     super.key,
-    required this.searchText,
+    required this.memberId,
   });
 
-  final String searchText;
+  final int memberId;
 
   @override
-  State<SearchPlayListScreen> createState() => _SearchPlayListScreenState();
+  State<MemberPlayListScreen> createState() => _MemberPlayListScreenState();
 }
 
-class _SearchPlayListScreenState extends State<SearchPlayListScreen> {
+class _MemberPlayListScreenState extends State<MemberPlayListScreen> {
+
+
   late PlayListProv playListProv;
   late ComnLoadProv comnLoadProv;
-  late Future<bool>? _getSearchPlayListFuture;
-  List<PlayListInfoModel> searchPlayList = [];
+  late Future<bool>? _getSearchMemberFuture;
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getSearchPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getSearchPlayList(widget.searchText,0,20);
+    _getSearchMemberFuture = Provider.of<PlayListProv>(context, listen: false).getMemberPagePlayList(widget.memberId,0, 20);
   }
 
   @override
@@ -47,13 +49,12 @@ class _SearchPlayListScreenState extends State<SearchPlayListScreen> {
     playListProv = Provider.of<PlayListProv>(context);
     comnLoadProv = Provider.of<ComnLoadProv>(context);
 
-
     return Container(
       width: 100.w,
       height: 100.h,
       color: Colors.black,
       child: FutureBuilder<bool>(
-          future: _getSearchPlayListFuture, // 비동기 메소드 호출
+          future: _getSearchMemberFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -65,13 +66,14 @@ class _SearchPlayListScreenState extends State<SearchPlayListScreen> {
 
 
               PlaylistList playListList = playListProv.playlistList;
-              List<PlayListInfoModel> searchPlayList = playListProv.playListFilter("SearchPlayList");
+              List<PlayListInfoModel> memberPlayList = playListProv.playListFilter("MemberPagePlayList");
 
               return NotificationListener <ScrollNotification>(
                 onNotification: (notification) {
-                  if (playListList.searchPlayListTotalCount! > searchPlayList.length) {
+
+                  if (playListList.memberPagePlayListTotalCount! > memberPlayList.length) {
                     if (comnLoadProv.shouldLoadMoreData(notification)) {
-                      comnLoadProv.loadMoreData(playListProv, "SearchPlayList", searchPlayList.length , searchText: widget.searchText);
+                      comnLoadProv.loadMoreData(playListProv, "MemberPagePlayList", memberPlayList.length , memberId: widget.memberId);
                     }
                   } else {
                     if (comnLoadProv.isApiCall) {
@@ -108,19 +110,16 @@ class _SearchPlayListScreenState extends State<SearchPlayListScreen> {
                           ),
                         ),
 
-                        if (searchPlayList.length != 0) ...[
+                        if (memberPlayList.length != 0) ...[
+
                           SizedBox(
                             height: 8,
                           ),
-                          Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                PlayListSquareItem(
-                                  playList: searchPlayList,
-                                ),
-                              ],
-                            ),
+                          PlayListSquareItem(
+                            playList: memberPlayList,
+                          ),
+                          SizedBox(
+                            height: 8,
                           ),
                           CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
 

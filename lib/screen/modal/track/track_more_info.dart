@@ -143,6 +143,20 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
                       Text(widget.track.trackLikeCnt.toString(),style: TextStyle(color: Colors.white),),
                     ],
                   ),
+
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        width: 16,
+                        height: 16,
+                        'assets/images/heart_red.svg',
+                      ),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      Text(widget.track.commentsCnt.toString(),style: TextStyle(color: Colors.white),),
+                    ],
+                  ),
                   SizedBox(height: 3,),
                   Text(widget.track.trackTime.toString(),style: TextStyle(color: Colors.white),),
                   SizedBox(height: 3,),

@@ -49,7 +49,7 @@ class _SettingScreenState extends State<SettingScreen> {
     TrackList trackModel = trackProv.trackModel;
 
     trackModel.trackList.forEach((item){
-      if(item.trackListCd.contains(1)){
+      if(item.trackListCd.contains("LastListenTrackList")){
         lastListenTrackList.add(item);
       }
     });

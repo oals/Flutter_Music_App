@@ -11,29 +11,54 @@ import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/model/comn/upload.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:skrrskrr/prov/more_prov.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class TrackProv extends ChangeNotifier {
   Upload model = Upload();
 
   TrackList trackModel = TrackList();
-
   Track trackInfoModel = Track();
 
   TrackList lastListenTrackList = TrackList();
   Track playTrackInfoModel = Track();
   String lastTrackId = "";
 
+  bool isLastListenTrackLoaded = false;
+  bool isRecommendTrackLoaded = false;
+  bool isFollowMemberTrackLoaded = false;
+  bool isLikeTrackLoaded = false;
+
+
   void notify() {
     notifyListeners();
+  }
+
+  void updateTrackState(bool Function() updateState) {
+    updateState();
+    notify();
+  }
+
+  List<List> chunkLastListenTrackList (List<Track> lastListenTrackList) {
+    List<List> lastListenTrackChunkedData = [];
+
+    for (int i = 0; i < lastListenTrackList.length; i += 3) {
+      lastListenTrackChunkedData.add(lastListenTrackList.sublist(i,
+          (i + 3) > lastListenTrackList.length
+              ? lastListenTrackList.length
+              : (i + 3)));
+    }
+    return lastListenTrackChunkedData;
+  }
+
+  List<Track> trackListFilter(String trackCd) {
+    return trackModel.trackList.where((item) => item.trackListCd.contains(trackCd)).toList();
   }
 
   void addUniqueTracksToList({
     required List<Track> sourceList, // 필터링할 원본 리스트
     required Set<Track> targetSet,  // 중복 체크용 Set
     required List<Track> targetList, // 데이터가 추가될 리스트
-    required int trackCd, // 필터링 조건 함수
+    required String trackCd, // 필터링 조건 함수
   }) {
     sourceList.where((item) => item.trackListCd.contains(trackCd)).forEach((item) {
       if (!targetSet.contains(item)) {
@@ -44,7 +69,7 @@ class TrackProv extends ChangeNotifier {
   }
 
 
-  void addTracksToModel(List<dynamic> trackList, int trackListCd) {
+  void addTracksToModel(List<dynamic> trackList, String trackListCd) {
     for (var item in trackList) {
       Track track = Track.fromJson(item);
       track.trackListCd.add(trackListCd);
@@ -59,20 +84,19 @@ class TrackProv extends ChangeNotifier {
           trackModel.trackList.add(track);
         }
       } else {
-        trackModel.trackList[duplicateIndex].trackListCd.add(trackListCd);
 
         Track existingTrack = trackModel.trackList.removeAt(duplicateIndex);
-        trackModel.trackList.add(existingTrack);
-
+        existingTrack.trackListCd.add(trackListCd);
+        trackModel.trackList.add(existingTrack); // 기존 데이터가 존재 할 때 새 데이터로 교체
       }
     }
   }
 
-  void initTrackToModel(List<int> trackCdList){
+  void initTrackToModel(List<String> trackCdList){
 
     try{
 
-      for (int trackCd in trackCdList) {
+      for (String trackCd in trackCdList) {
         List<dynamic> trackListCopy = List.from(trackModel.trackList);
 
         for (var item in trackListCopy) {
@@ -112,12 +136,19 @@ class TrackProv extends ChangeNotifier {
       );
 
       if (response['status'] == "200") {
-        initTrackToModel([1,2,3,4]);
+        initTrackToModel(
+            [
+              "LastListenTrackList",
+              "TrendingTrackList",
+              "FollowMemberTrackList",
+              "LikedTrackList"
+            ]);
 
-        addTracksToModel(response['lastListenTrackList'], 1);
-        addTracksToModel(response['trendingTrackList'], 2);
-        addTracksToModel(response['followMemberTrackList'], 3);
-        addTracksToModel(response['likedTrackList'], 4);
+
+        addTracksToModel(response['lastListenTrackList'], "LastListenTrackList");
+        addTracksToModel(response['trendingTrackList'], "TrendingTrackList");
+        addTracksToModel(response['followMemberTrackList'], "FollowMemberTrackList");
+        addTracksToModel(response['likedTrackList'], "LikedTrackList");
 
         print('$url - Successful');
 
@@ -131,10 +162,10 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
-  Future<bool> getPlayListTrackList(int playListId) async {
+  Future<bool> getPlayListTrackList(int playListId, int offset) async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getPlayListTrackList?loginMemberId=${loginMemberId}&playListId=${playListId}';
+    final url = '/api/getPlayListTrackList?loginMemberId=${loginMemberId}&playListId=${playListId}&limit=${20}&offset=${offset}';
 
     try {
       final response = await Helpers.apiCall(
@@ -146,9 +177,11 @@ class TrackProv extends ChangeNotifier {
 
       if (response['status'] == "200") {
 
-        // trackModel = TrackList(); // 5만 초기화하게
-        initTrackToModel([5]);
-        addTracksToModel(response['playListTrackList'], 5);
+        if (offset == 0){
+          initTrackToModel(["PlayListTrackList"]);
+        }
+
+        addTracksToModel(response['playListTrackList'], "PlayListTrackList");
 
 
         print('$url - Successful');
@@ -179,10 +212,10 @@ class TrackProv extends ChangeNotifier {
       if (response['status'] == "200") {
         // 성공적으로 데이터를 가져옴
         if (offset == 0) {
-          initTrackToModel([6]);
+          initTrackToModel(["SearchTrackList"]);
         }
 
-        addTracksToModel(response['searchTrackList'], 6);
+        addTracksToModel(response['searchTrackList'], "SearchTrackList");
 
         trackModel.searchTrackTotalCount = response['totalCount'];
         print('$url - Successful');
@@ -211,10 +244,10 @@ class TrackProv extends ChangeNotifier {
       if (response['status'] == "200") {
         // 성공적으로 데이터를 가져옴
         if (offset == 0) {
-          initTrackToModel([8]);
+          initTrackToModel(["MemberPageTrackList"]);
         }
 
-        addTracksToModel(response['allTrackList'], 8 );
+        addTracksToModel(response['allTrackList'], "MemberPageTrackList");
 
         trackModel.allTrackTotalCount = response['allTrackListCnt'];
 
@@ -244,9 +277,9 @@ class TrackProv extends ChangeNotifier {
 
       if (response['status'] == "200") {
         // 성공적으로 데이터를 가져옴
-        initTrackToModel([7]);
+        initTrackToModel(["MemberPagePopularTrackList"]);
 
-        addTracksToModel(response['popularTrackList'], 7);
+        addTracksToModel(response['popularTrackList'], "MemberPagePopularTrackList");
 
         print('$url - Successful');
         return true;
@@ -329,10 +362,10 @@ class TrackProv extends ChangeNotifier {
       if (response['status'] == "200") {
         // 성공적으로 데이터를 가져옴
         if (offset == 0) {
-          initTrackToModel([9]);
+          initTrackToModel(["MyLikeTrackList"]);
         }
 
-        addTracksToModel(response['likeTrackList'], 9 );
+        addTracksToModel(response['likeTrackList'], "MyLikeTrackList" );
 
         trackModel.likeTrackTotalCount = response['totalCount'];
 
@@ -348,7 +381,7 @@ class TrackProv extends ChangeNotifier {
   }
 
 
-  Future<String> getLastListenTrack() async {
+  Future<String> getLastListenTrackId() async {
 
     final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/getLastListenTrackId?loginMemberId=${loginMemberId}';
@@ -385,12 +418,6 @@ class TrackProv extends ChangeNotifier {
       track.trackLikeCnt = track.trackLikeCnt! - 1;
     }
 
-    // if (track.trackId == playTrackInfoModel.trackId) {
-    //   playTrackInfoModel.trackLikeStatus = track.trackLikeStatus!;
-    //   playTrackInfoModel.trackLikeCnt = track.trackLikeCnt;
-    //   trackInfoModel.trackLikeStatus = track.trackLikeStatus;
-    //   trackInfoModel.trackLikeCnt = track.trackLikeCnt;
-    // }
   }
 
 
@@ -601,10 +628,10 @@ class TrackProv extends ChangeNotifier {
       if (response['status'] == "200") {
 
         if (offset == 0) {
-          initTrackToModel([10]);
+          initTrackToModel(["UploadTrackList"]);
         }
 
-        addTracksToModel(response['uploadTrackList'], 10 );
+        addTracksToModel(response['uploadTrackList'], "UploadTrackList" );
 
         trackModel.uploadTrackTotalCount = response['totalCount'];
 
@@ -682,6 +709,72 @@ class TrackProv extends ChangeNotifier {
 
 
 
+  Future<bool> getFollowMemberTrack() async {
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getFollowMemberTrackList?loginMemberId=${loginMemberId}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == '200') {
+
+        initTrackToModel(["FollowMemberTrackList",]);
+
+        addTracksToModel(response['followMemberTrackList'], "FollowMemberTrackList");
+
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
+  Future<bool> getLastListenTrack() async {
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getLastListenTrackList?loginMemberId=${loginMemberId}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == '200') {
+
+        initTrackToModel(["LastListenTrackList",]);
+
+        addTracksToModel(response['lastListenTrackList'], "LastListenTrackList");
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
+
+
+
   Future<bool> getRecommendTrackList(trackId, int trackCategoryId) async {
 
     final String loginMemberId = await Helpers.getMemberId();
@@ -697,11 +790,10 @@ class TrackProv extends ChangeNotifier {
 
       if (response['status'] == '200') {
         // 성공적으로 데이터를 가져옴
-        trackInfoModel.recommendTrackList = [];
 
-        for (var data in response['recommendTrackList']) {
-          trackInfoModel.recommendTrackList.add(Track.fromJson(data));
-        }
+        initTrackToModel(["RecommendTrackList",]);
+
+        addTracksToModel(response['recommendTrackList'], "RecommendTrackList");
 
         print('$url - Successful');
         return true;

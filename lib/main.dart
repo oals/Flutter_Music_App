@@ -19,7 +19,6 @@ import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 
 import 'package:skrrskrr/prov/image_prov.dart';
-import 'package:skrrskrr/prov/more_prov.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
@@ -55,7 +54,6 @@ void main() async {
         ChangeNotifierProvider(create: (context) => NotificationsProv()),
         ChangeNotifierProvider(create: (context) => CategoryProv()),
         ChangeNotifierProvider(create: (context) => AuthProv()),
-        ChangeNotifierProvider(create: (context) => MoreProv()),
         ChangeNotifierProvider(create: (context) => ComnLoadProv()),
       ],
       child: const MyApp(),

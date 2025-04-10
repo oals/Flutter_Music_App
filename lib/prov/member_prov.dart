@@ -69,7 +69,7 @@ class MemberProv with ChangeNotifier {
         url,
       );
 
-      print(response);
+
       if (response['status'] == '200') {
 
         memberModelList = [];
@@ -181,19 +181,7 @@ class MemberProv with ChangeNotifier {
       if (response['status'] == '200') {
 
         model = MemberModel();
-        model.playListList = [];
-
-        List<PlayListInfoModel>  playListList = [];
-
         model = MemberModel.fromJson(response['memberDTO']);
-
-        for (var item in response['playListList']) {
-          PlayListInfoModel playList = PlayListInfoModel.fromJson(item);
-          playListList.add(playList);
-        }
-
-        model.playListListCnt = response['playListListCnt'];
-        model.playListList = playListList;
 
         print('$url - Successful');
         return true;
