@@ -19,7 +19,6 @@ class AppProv extends ChangeNotifier{
   }
 
   void reload() {
-    print('리로드');
     hlsNotifier.value = !hlsNotifier.value;
     isPlayTrack = true;
   }

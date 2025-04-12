@@ -26,10 +26,8 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-      height: 68.h,
+    return Expanded(
       child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -52,7 +50,7 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
               height: 20,
             ),
             // TrackListItem(trackItem: [],  fnRouter: widget.fnRouter),
-
+        
             Column(
               children: [
                 Row(
@@ -60,7 +58,7 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                   children: [
                     Row(
                       children: [
-
+        
                         ClipRRect(
                           borderRadius: BorderRadius.circular(15.0),
                           // 원하는 둥글기 조정
@@ -70,7 +68,7 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                             height: 50,
                           ),
                         ),
-
+        
                         SizedBox(
                           width: 10,
                         ),
@@ -99,8 +97,8 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                             ),
                               Row(
                                 children: [
-
-
+        
+        
                                   Text(
                                     '오민규',
                                     style: TextStyle(
@@ -109,17 +107,17 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                                         fontWeight: FontWeight.w700
                                     ),
                                   ),
-                                 
+        
                                 ],
                               ),
-
+        
                           ],
                         ),
                       ],
                     ),
                     GestureDetector(
                       onTap: () {
-
+        
                       },
                       child: SvgPicture.asset(
                         'assets/images/ellipsis.svg',
@@ -148,7 +146,7 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                   children: [
                     Row(
                       children: [
-
+        
                         ClipRRect(
                           borderRadius: BorderRadius.circular(15.0),
                           // 원하는 둥글기 조정
@@ -158,7 +156,7 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                             height: 50,
                           ),
                         ),
-
+        
                         SizedBox(
                           width: 10,
                         ),
@@ -187,8 +185,8 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                             ),
                             Row(
                               children: [
-
-
+        
+        
                                 Text(
                                   '오민규',
                                   style: TextStyle(
@@ -197,17 +195,17 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                                     fontWeight: FontWeight.w700
                                   ),
                                 ),
-
+        
                               ],
                             ),
-
+        
                           ],
                         ),
                       ],
                     ),
                     GestureDetector(
                       onTap: () {
-
+        
                       },
                       child: SvgPicture.asset(
                         'assets/images/ellipsis.svg',
@@ -236,7 +234,7 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                   children: [
                     Row(
                       children: [
-
+        
                         ClipRRect(
                           borderRadius: BorderRadius.circular(15.0),
                           // 원하는 둥글기 조정
@@ -246,7 +244,7 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                             height: 50,
                           ),
                         ),
-
+        
                         SizedBox(
                           width: 10,
                         ),
@@ -275,8 +273,8 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                             ),
                             Row(
                               children: [
-
-
+        
+        
                                 Text(
                                   '오민규',
                                   style: TextStyle(
@@ -285,17 +283,17 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                                       fontWeight: FontWeight.w700
                                   ),
                                 ),
-
+        
                               ],
                             ),
-
+        
                           ],
                         ),
                       ],
                     ),
                     GestureDetector(
                       onTap: () {
-
+        
                       },
                       child: SvgPicture.asset(
                         'assets/images/ellipsis.svg',
@@ -324,7 +322,7 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                   children: [
                     Row(
                       children: [
-
+        
                         ClipRRect(
                           borderRadius: BorderRadius.circular(15.0),
                           // 원하는 둥글기 조정
@@ -334,7 +332,7 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                             height: 50,
                           ),
                         ),
-
+        
                         SizedBox(
                           width: 10,
                         ),
@@ -363,8 +361,8 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                             ),
                             Row(
                               children: [
-
-
+        
+        
                                 Text(
                                   '오민규',
                                   style: TextStyle(
@@ -373,17 +371,17 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                                       fontWeight: FontWeight.w700
                                   ),
                                 ),
-
+        
                               ],
                             ),
-
+        
                           ],
                         ),
                       ],
                     ),
                     GestureDetector(
                       onTap: () {
-
+        
                       },
                       child: SvgPicture.asset(
                         'assets/images/ellipsis.svg',
@@ -405,16 +403,16 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                 ),
               ],
             ),
-
-
+        
+        
             /** 테스트 코드 */
-
-
-
+        
+        
+        
             SizedBox(
               height: 15,
             ),
-
+        
             Container(
               child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,11 +435,11 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CategorySquareItem(imageWidth: 46, imagePath:   'assets/images/testImage6.png', imageText: "", imageSubText: "Hip-Hop"),
-
+        
                     SizedBox(width: 10,),
-
+        
                     CategorySquareItem(imageWidth: 46, imagePath:   'assets/images/testImage7.png', imageText: "", imageSubText: "K-Pop"),
-
+        
                   ],
                 ),
                 SizedBox(height: 10,),
@@ -460,10 +458,11 @@ class _SearchMainScreenState extends State<SearchMainScreen> {
               ],
             ),
             ),
+        
 
-
-
-
+            SizedBox(height: 12.h,)
+        
+        
           ],
         ),
       ),

@@ -137,7 +137,6 @@ class MemberProv with ChangeNotifier {
         url,
       );
 
-      print(response);
       if (response['status'] == '200') {
         model = MemberModel.fromJson(response['member']);
         await saveMemberData();

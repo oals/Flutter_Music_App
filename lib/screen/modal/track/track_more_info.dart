@@ -205,7 +205,7 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
             onTap: () async {
               print('좋아요 클릭');
               await trackProv.setTrackLike(widget.track.trackId);
-              trackProv.fnChngTrackLikeStatus(widget.track);
+              trackProv.fnUpdateTrackLikeStatus(widget.track);
               trackProv.notify();
             },
             child: Container(

@@ -183,12 +183,17 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
                         ),
                         SizedBox(width: 5,),
 
-                        Text(
-                          item.memberNickName ?? "",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w700,
+                        GestureDetector(
+                          onTap: (){
+                            GoRouter.of(context).push('/userPage/${item.memberId}');
+                          },
+                          child: Text(
+                            item.memberNickName ?? "",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ],

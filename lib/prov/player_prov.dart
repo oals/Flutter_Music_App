@@ -6,12 +6,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/player/player.dart';
+import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/modal/new_player.dart';
 
 class PlayerProv extends ChangeNotifier {
   PlayerModel playerModel = PlayerModel();
   late AudioPlayer _audioPlayer;
-
 
   void notify() {
     notifyListeners();
@@ -22,12 +22,24 @@ class PlayerProv extends ChangeNotifier {
   }
 
 
-  // Future를 비동기적으로 처리하기 위한 메소드
-  Future<String> initLastTrack(Future<String> _getLastTrackInitFuture) async {
-    String lastTrackId = await _getLastTrackInitFuture; // 결과를 기다립니다
-    await initAudio(lastTrackId); // 작업 완료 후 audioInit 호출
-    return lastTrackId;
+  Future<bool> setAudioPlayer(TrackProv trackProv) async{
+
+    try {
+
+      await trackProv.getLastListenTrackId();
+
+      await trackProv.getPlayTrackInfo();
+
+      await initAudio(trackProv.lastTrackId);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
+
+
 
   Future<void> initAudio(String trackId) async {
     _audioPlayer = AudioPlayer();

@@ -26,9 +26,6 @@ class _SearchScreenState extends State<SearchScreen> {
   int? searchId = 0;
 
   late SearchModel searchModel;
-
-  String searchText = "";
-
   late List<String> recentListenTrackHistory;
   late Future<bool> _getSearchInitFuture;
 
@@ -50,10 +47,10 @@ class _SearchScreenState extends State<SearchScreen> {
     SearchProv searchProv = Provider.of<SearchProv>(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Container(
         padding: const EdgeInsets.all(10),
         width: 100.w,
-        height: 130.h,
         color: Color(0xff000000),
         child: FutureBuilder(
             future: _getSearchInitFuture, // 비동기 메소드 호출
@@ -68,6 +65,7 @@ class _SearchScreenState extends State<SearchScreen> {
               recentListenTrackHistory = searchProv.recentListenTrackHistory;
 
               return Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(
                     height: 5.h,
@@ -150,7 +148,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       // 검색
                       onSubmitted: (text) async {
                         if (text != "") {
-                          searchText = text;
+                          _searchController.text = text;
                           await searchProv.setSearchHistory(text, 0);
                           searchId = 2;
                           setState(() {});
@@ -160,30 +158,24 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
 
                   const SizedBox(height: 15),
-                  Container(
-                    width: 100.w,
-                    child: Column(
-                      children: [
-                        if(searchId == 0)
-                          SearchMainScreen(recentListenTrackHistory: recentListenTrackHistory,)
 
-                        else if (searchId == 1)
-                          SearchFindScreen(
-                            onTap: (String searchHistory) async {
-                              await searchProv.setSearchHistory(searchHistory, 0);
-                              _searchController.text = searchHistory;
-                              searchText = _searchController.text;
-                              searchId = 2;
-                              _focusNode.unfocus();
-                              setState(() {});
-                            },
-                          )
-                        else
-                          SearchResultScreen(searchText: searchText)
+                  if(searchId == 0)
+                    SearchMainScreen(recentListenTrackHistory: recentListenTrackHistory,)
 
-                      ],
-                    ),
-                  ),
+                  else if (searchId == 1)
+                    SearchFindScreen(
+                      onTap: (String searchHistory) async {
+                        _focusNode.unfocus();
+                        await searchProv.setSearchHistory(searchHistory, 0);
+                        _searchController.text = searchHistory;
+                        searchId = 2;
+                        setState(() {});
+                      },
+                    )
+
+                  else
+                    SearchResultScreen(searchText: _searchController.text),
+
                 ],
               );
             }

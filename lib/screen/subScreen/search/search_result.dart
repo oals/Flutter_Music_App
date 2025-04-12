@@ -84,8 +84,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
       await followProv.setFollow(followerId, followingId);
     }
 
-    return Container(
-      height: 79.h,
+    return Expanded(
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
           if (trackProv.trackModel.searchTrackTotalCount! > searchTrackList.length) {

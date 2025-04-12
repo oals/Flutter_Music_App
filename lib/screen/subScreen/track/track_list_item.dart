@@ -13,6 +13,7 @@ import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/screen/subScreen/comn/track_bar_graph_animation.dart';
 
 import 'package:skrrskrr/utils/helpers.dart';
 
@@ -42,13 +43,29 @@ class _TrackListItemState extends State<TrackListItem> {
 
     trackProv = Provider.of<TrackProv>(context);
     appProv = Provider.of<AppProv>(context,listen: false);
-    playerProv = Provider.of<PlayerProv>(context,listen: false);
+    playerProv = Provider.of<PlayerProv>(context);
 
     return GestureDetector(
       onTap: () async {
-        await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
-        await playerProv.audioPause();
-        appProv.reload();
+
+        if (!widget.trackItem.isPlaying) {
+          widget.trackItem.isPlaying = true;
+
+          await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
+          await playerProv.audioPause();
+          await playerProv.setAudioPlayer(trackProv);
+
+          appProv.reload();
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (appProv.isPlayTrack) {
+                playerProv.togglePlayPause();
+            }
+          });
+
+        } else {
+          GoRouter.of(context).push('/musicInfo', extra: widget.trackItem);
+        }
       },
       child: Container(
         color: Colors.transparent,
@@ -59,21 +76,49 @@ class _TrackListItemState extends State<TrackListItem> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey,width: 2),
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0), // 원하는 둥글기 조정
-                        child: CustomCachedNetworkImage(
-                            imagePath: widget.trackItem.trackImagePath,
-                            imageWidth : 15.w,
-                            imageHeight : null
+
+                    Stack(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey,width: 2),
+                              borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0), // 원하는 둥글기 조정
+                            child: CustomCachedNetworkImage(
+                                imagePath: widget.trackItem.trackImagePath,
+                                imageWidth : 15.w,
+                                imageHeight : null
+                            ),
+
+                          ),
                         ),
 
-                      ),
+                        if(widget.trackItem.isPlaying)...[
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Container(
+                              color: Colors.black.withOpacity(0.5),
+                              width: 15.w,
+                              height: 15.w,
+                            ),
+                          ),
+
+                            Positioned(
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              child: TrackBarGraphAnimation(isPlaying: playerProv.playerModel.isPlaying),
+                            ),
+                        ],
+
+                      ],
                     ),
                     SizedBox(
                       width: 10,
@@ -142,7 +187,6 @@ class _TrackListItemState extends State<TrackListItem> {
                                   ),
                                 ],
                               ),
-
                             ],
                           ),
                           SizedBox(height: 1,),
@@ -176,11 +220,16 @@ class _TrackListItemState extends State<TrackListItem> {
                                   ),
                                 ),
                                 SizedBox(width: 5,),
-                                Text(
-                                  '${widget.trackItem.memberNickName}',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14,
+                                GestureDetector(
+                                  onTap: (){
+                                    GoRouter.of(context).push('/userPage/${widget.trackItem.memberId}');
+                                  },
+                                  child: Text(
+                                    '${widget.trackItem.memberNickName}',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
                               ],

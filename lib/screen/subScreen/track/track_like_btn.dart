@@ -29,7 +29,7 @@ class _TrackLikeBtnState extends State<TrackLikeBtn> {
         GestureDetector(
           onTap: () async {
             await trackProv.setTrackLike(widget.track.trackId);
-            trackProv.fnChngTrackLikeStatus(widget.track);
+            trackProv.fnUpdateTrackLikeStatus(widget.track);
             trackProv.notify();
           },
           child: SvgPicture.asset(

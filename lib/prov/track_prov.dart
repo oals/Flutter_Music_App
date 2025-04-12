@@ -11,6 +11,7 @@ import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/model/comn/upload.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class TrackProv extends ChangeNotifier {
@@ -119,48 +120,6 @@ class TrackProv extends ChangeNotifier {
 
   }
 
-
-
-
-  Future<bool> getHomeInitTrack() async {
-
-    final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getHomeInitTrack?loginMemberId=${loginMemberId}';
-
-    try {
-      final response = await Helpers.apiCall(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response['status'] == "200") {
-        initTrackToModel(
-            [
-              "LastListenTrackList",
-              "TrendingTrackList",
-              "FollowMemberTrackList",
-              "LikedTrackList"
-            ]);
-
-
-        addTracksToModel(response['lastListenTrackList'], "LastListenTrackList");
-        addTracksToModel(response['trendingTrackList'], "TrendingTrackList");
-        addTracksToModel(response['followMemberTrackList'], "FollowMemberTrackList");
-        addTracksToModel(response['likedTrackList'], "LikedTrackList");
-
-        print('$url - Successful');
-
-        return true;
-      } else {
-        throw Exception('Failed to load data');
-      }
-    } catch (error) {
-      print('$url - Fail');
-      return false;
-    }
-  }
 
   Future<bool> getPlayListTrackList(int playListId, int offset) async {
 
@@ -381,7 +340,8 @@ class TrackProv extends ChangeNotifier {
   }
 
 
-  Future<String> getLastListenTrackId() async {
+
+  Future<bool> getLastListenTrackId() async {
 
     final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/getLastListenTrackId?loginMemberId=${loginMemberId}';
@@ -393,9 +353,11 @@ class TrackProv extends ChangeNotifier {
       );
 
       if (response['status'] == '200') {
-        print('$url - Successful');
 
-        return response['lastListenTrackId'];
+        lastTrackId = response['lastListenTrackId'];
+
+        print('$url - Successful');
+        return true;
       } else {
         // 오류 처리
         throw Exception('Failed to load data');
@@ -403,21 +365,25 @@ class TrackProv extends ChangeNotifier {
     } catch (error) {
       // 오류 처리
       print('$url - Fail');
-      return '-1';
+      return false;
     }
   }
 
 
-  void fnChngTrackLikeStatus(Track track){
+  void fnUpdateTrackLikeStatus(Track track){
 
     track.trackLikeStatus = !track.trackLikeStatus!;
 
-    if(track.trackLikeStatus!) {
+    if (track.trackLikeStatus!) {
       track.trackLikeCnt = track.trackLikeCnt! + 1;
     } else {
       track.trackLikeCnt = track.trackLikeCnt! - 1;
     }
 
+    if (track.trackId == playTrackInfoModel.trackId) {
+      playTrackInfoModel.trackLikeStatus = track.trackLikeStatus;
+      playTrackInfoModel.trackLikeCnt = track.trackLikeCnt;
+    }
   }
 
 
@@ -438,8 +404,14 @@ class TrackProv extends ChangeNotifier {
         }
       );
 
-      print(response);
+
       if (response['status'] == '200') {
+
+        int trackId = playTrackInfoModel.trackId!;
+        int index = trackModel.trackList.indexWhere((item)=> item.trackId == trackId);
+        trackModel.trackList[index].isPlaying = false;
+        notify();
+
         print('$url - Successful');
         return true;
       } else {
@@ -648,9 +620,9 @@ class TrackProv extends ChangeNotifier {
   }
 
 
-  Future<bool> getPlayTrackInfo(trackId) async {
+  Future<bool> getPlayTrackInfo() async {
     final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getTrackInfo?trackId=${trackId}&loginMemberId=${loginMemberId}';
+    final url = '/api/getTrackInfo?trackId=${lastTrackId}&loginMemberId=${loginMemberId}';
 
     try {
       final response = await Helpers.apiCall(
@@ -665,6 +637,7 @@ class TrackProv extends ChangeNotifier {
 
         playTrackInfoModel = Track();
         playTrackInfoModel = Track.fromJson(response['trackInfo']);
+        playTrackInfoModel.isPlaying = true;
 
         print('$url - Successful');
         return true;

@@ -48,17 +48,14 @@ class _AppScreenState extends State<AppScreen> {
   OverlayEntry? _createOverlay() {
     return OverlayEntry(
       builder: (context) {
+
         bool isHideAudioPlayer = appProv.isHideAudioPlayer(appProv.appScreenWidget);
 
         return isHideAudioPlayer
             ? Container()
             : Stack(
           children: [
-            ValueListenableBuilder<bool>(
-              valueListenable: appProv.hlsNotifier,
-              builder: (context, value, child) {
-
-                return AnimatedPositioned(
+            AnimatedPositioned(
                   duration: const Duration(milliseconds: 700),
                   curve: Curves.easeInOut,
                   left: 0,
@@ -80,16 +77,14 @@ class _AppScreenState extends State<AppScreen> {
                         alignment: Alignment.topCenter,
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 700),
-                          child: HLSStreamPage(
-                            key: ValueKey<bool>(value),
-                          ),
+                          child: HLSStreamPage(),
                         ),
                       ),
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+
+
           ],
         );
       },

@@ -50,6 +50,9 @@ class Track {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Track> recommendTrackList = [];
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool isPlaying = false;
+
   Track();
 
   factory Track.fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);
@@ -75,6 +78,7 @@ class Track {
     trackLikeStatus = updatedTrack.trackLikeStatus ?? trackLikeStatus;
     followMember = updatedTrack.followMember ?? followMember;
     commentsCnt = updatedTrack.commentsCnt ?? commentsCnt;
+    isPlaying = updatedTrack.isPlaying;
   }
 
 }
