@@ -112,6 +112,7 @@ class Helpers {
     return prefs.getBool("notificationIsView") ?? false;
   }
 
+
   static String getCategory(int trackCategoryId){
 
     if (trackCategoryId == 1) {

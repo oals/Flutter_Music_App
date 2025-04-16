@@ -355,8 +355,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
                           SizedBox(height: 20),
 
 
-
-
                           FutureBuilder<bool>(
                               future: _getPlayListTrackInitFuture,
                               builder: (context, snapshot) {
@@ -373,6 +371,10 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                       for(int i = 0; i < trackList.length; i++)...[
                                         TrackListItem(
                                           trackItem: trackList[i],
+                                          callBack: () async {
+                                                List<int> trackIdList = trackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                                await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                              },
                                         ),
                                         SizedBox(height: 5,),
                                       ]

@@ -413,6 +413,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                           child: TrackListItem(
                                             trackItem:
                                             popularTrackList[i],
+                                            callBack: (){
+
+                                            },
                                           ),
                                         ),
                                       );
@@ -523,7 +526,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                     children: [
                                       for (int i = 0; i < allTrackList.length; i++) ...[
                                         Container(padding: EdgeInsets.only(bottom: 10),
-                                            child: TrackListItem(trackItem: allTrackList[i])
+                                            child: TrackListItem(trackItem: allTrackList[i], callBack: (){
+
+                                            },)
                                         ),
                                       ],
                                       CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),

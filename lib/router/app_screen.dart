@@ -35,7 +35,6 @@ class _AppScreenState extends State<AppScreen> {
 
   late AppProv appProv;
   OverlayEntry? _overlayEntry = null;
-
   final ValueNotifier<Widget> _childNotifier = ValueNotifier<Widget>(Container());
 
   @override
@@ -83,8 +82,6 @@ class _AppScreenState extends State<AppScreen> {
                     ),
                   ),
                 ),
-
-
           ],
         );
       },

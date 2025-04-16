@@ -20,8 +20,8 @@ class TrackProv extends ChangeNotifier {
   TrackList trackModel = TrackList();
   Track trackInfoModel = Track();
 
-  TrackList lastListenTrackList = TrackList();
   Track playTrackInfoModel = Track();
+  List<Track> audioPlayerTrackList = [];
   String lastTrackId = "";
 
   bool isLastListenTrackLoaded = false;
@@ -70,6 +70,25 @@ class TrackProv extends ChangeNotifier {
   }
 
 
+  void addAudioPlayerTracksToModel(List<dynamic> trackList, String trackListCd) {
+
+    for (var item in trackList) {
+      Track track = Track.fromJson(item);
+      track.trackListCd.add(trackListCd);
+
+      int duplicateIndex = trackModel.trackList.indexWhere((existingTrack) => existingTrack.trackId == track.trackId);
+
+      if(duplicateIndex == -1) {
+        //포함되어잇지 않을때
+        audioPlayerTrackList.add(track);
+        trackModel.trackList.add(track);
+      } else {
+        audioPlayerTrackList.add(trackModel.trackList[duplicateIndex]);
+      }
+    }
+
+  }
+
   void addTracksToModel(List<dynamic> trackList, String trackListCd) {
     for (var item in trackList) {
       Track track = Track.fromJson(item);
@@ -78,14 +97,13 @@ class TrackProv extends ChangeNotifier {
       int duplicateIndex = trackModel.trackList.indexWhere((existingTrack) => existingTrack.trackId == track.trackId);
 
       if (duplicateIndex == -1) {
-        if(track.trackId.toString() == playTrackInfoModel.trackId.toString()){
-          playTrackInfoModel.trackListCd.add(trackListCd);
-          trackModel.trackList.add(playTrackInfoModel);
-        } else {
+        // if(track.trackId.toString() == playTrackInfoModel.trackId.toString()){
+        //   playTrackInfoModel.trackListCd.add(trackListCd);
+        //   trackModel.trackList.add(playTrackInfoModel);
+        // } else {
           trackModel.trackList.add(track);
-        }
+        // }
       } else {
-
         Track existingTrack = trackModel.trackList.removeAt(duplicateIndex);
         existingTrack.trackListCd.add(trackListCd);
         trackModel.trackList.add(existingTrack); // 기존 데이터가 존재 할 때 새 데이터로 교체
@@ -356,6 +374,9 @@ class TrackProv extends ChangeNotifier {
 
         lastTrackId = response['lastListenTrackId'];
 
+
+
+
         print('$url - Successful');
         return true;
       } else {
@@ -380,10 +401,10 @@ class TrackProv extends ChangeNotifier {
       track.trackLikeCnt = track.trackLikeCnt! - 1;
     }
 
-    if (track.trackId == playTrackInfoModel.trackId) {
-      playTrackInfoModel.trackLikeStatus = track.trackLikeStatus;
-      playTrackInfoModel.trackLikeCnt = track.trackLikeCnt;
-    }
+    // if (track.trackId == playTrackInfoModel.trackId) {
+    //   playTrackInfoModel.trackLikeStatus = track.trackLikeStatus;
+    //   playTrackInfoModel.trackLikeCnt = track.trackLikeCnt;
+    // }
   }
 
 
@@ -407,11 +428,9 @@ class TrackProv extends ChangeNotifier {
 
       if (response['status'] == '200') {
 
-        int trackId = playTrackInfoModel.trackId!;
-        int index = trackModel.trackList.indexWhere((item)=> item.trackId == trackId);
+        int index = trackModel.trackList.indexWhere((item) => item.trackId.toString() == lastTrackId);
         trackModel.trackList[index].isPlaying = false;
-        notify();
-
+        // notify();
         print('$url - Successful');
         return true;
       } else {
@@ -425,6 +444,40 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
+
+  Future<bool> setAudioPlayerTrackIdList(List<int> audioPlayerTrackIdList) async {
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/setAudioPlayerTrackIdList';
+    try {
+      final response = await Helpers.apiCall(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: {
+            'loginMemberId' : loginMemberId,
+            'trackIdList' : audioPlayerTrackIdList,
+          }
+      );
+
+
+      if (response['status'] == '200') {
+
+
+        print('$url - Successful');
+        return true;
+      } else {
+        // 오류 처리
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      // 오류 처리
+      print('$url - Fail');
+      return false;
+    }
+  }
 
   Future<bool> setTrackLike(trackId) async {
     final String loginMemberId = await Helpers.getMemberId();
@@ -620,9 +673,12 @@ class TrackProv extends ChangeNotifier {
   }
 
 
-  Future<bool> getPlayTrackInfo() async {
+  Future<bool> getAudioPlayerTrackList() async {
+
+    await getLastListenTrackId();
+
     final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getTrackInfo?trackId=${lastTrackId}&loginMemberId=${loginMemberId}';
+    final url = '/api/getAudioPlayerTrackList?loginMemberId=$loginMemberId';
 
     try {
       final response = await Helpers.apiCall(
@@ -632,12 +688,12 @@ class TrackProv extends ChangeNotifier {
         },
       );
 
+
       if (response['status'] == '200') {
         // 성공적으로 데이터를 가져옴
 
-        playTrackInfoModel = Track();
-        playTrackInfoModel = Track.fromJson(response['trackInfo']);
-        playTrackInfoModel.isPlaying = true;
+        audioPlayerTrackList = [];
+        addAudioPlayerTracksToModel(response['audioPlayerTrackList'], "AudioPlayerTrackList");
 
         print('$url - Successful');
         return true;

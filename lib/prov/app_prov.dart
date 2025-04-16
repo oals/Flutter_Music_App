@@ -8,19 +8,13 @@ import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
 
 class AppProv extends ChangeNotifier{
 
-  ValueNotifier<bool> hlsNotifier = ValueNotifier<bool>(false);
+
   int currentIndex = 0;
   Widget appScreenWidget = Container();
   bool isFullScreen = false;
-  bool isPlayTrack = false;
 
   void notify() {
     notifyListeners();
-  }
-
-  void reload() {
-    hlsNotifier.value = !hlsNotifier.value;
-    isPlayTrack = true;
   }
 
   void isFullScreenFunc(bool isFullScreenVal) {

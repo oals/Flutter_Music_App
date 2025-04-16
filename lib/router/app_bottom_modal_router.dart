@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
+import 'package:skrrskrr/screen/modal/audio_player_track_list_modal.dart';
 import 'package:skrrskrr/screen/modal/comment/child_comment.dart';
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
 import 'package:skrrskrr/screen/modal/playList/my_play_list_modal.dart';
@@ -64,6 +65,9 @@ class AppBottomModalRouter {
           _removeOverlay();
           },
         );
+      },
+      7: () async {
+        return AudioPlayerTrackListModal();
       }
     };
 
@@ -73,6 +77,8 @@ class AppBottomModalRouter {
       var maxSize = 0.9;
       if(modalIndex == 1 || modalIndex == 5) {
         maxSize = 1.0;
+      } else if (modalIndex == 7) {
+        maxSize = 0.95;
       }
 
       void _showOverlay(BuildContext context) async {

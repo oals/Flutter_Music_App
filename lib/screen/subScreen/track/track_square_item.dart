@@ -33,22 +33,19 @@ class TrackSquareItem extends StatefulWidget {
 class _TrackSquareItemState extends State<TrackSquareItem> {
 
   late TrackProv trackProv;
-  late AppProv appProv;
   late PlayerProv playerProv;
 
   @override
   Widget build(BuildContext context) {
 
     trackProv = Provider.of<TrackProv>(context);
-    appProv = Provider.of<AppProv>(context,listen: false);
     playerProv = Provider.of<PlayerProv>(context,listen: false);
 
 
     return GestureDetector(
-      onTap: ()async {
+      onTap: () async {
         await trackProv.setLastListenTrackId(widget.track.trackId!);
-        await playerProv.audioPause();
-        appProv.reload();
+        await playerProv.setAudioPlayer(trackProv);
       },
       child: Container(
         width: 44.w,

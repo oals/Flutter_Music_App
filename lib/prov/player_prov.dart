@@ -1,6 +1,7 @@
 
 import 'dart:async';
 
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:just_audio/just_audio.dart';
@@ -11,8 +12,15 @@ import 'package:skrrskrr/screen/modal/new_player.dart';
 
 class PlayerProv extends ChangeNotifier {
   PlayerModel playerModel = PlayerModel();
-  late AudioPlayer _audioPlayer;
+  late AudioPlayer _audioPlayer= AudioPlayer();
+  ValueNotifier<bool> audioPlayerNotifier = ValueNotifier<bool>(false);
 
+  late SwiperController swiperController;
+  int currentPage = 0;
+
+  bool isAudioInit = false;
+  bool isSetEventListener = false;
+  bool isCompletedHandled = false;
   void notify() {
     notifyListeners();
   }
@@ -21,16 +29,29 @@ class PlayerProv extends ChangeNotifier {
     playerModel = PlayerModel();
   }
 
+  void audioPlayerClear() {
+    playerModel.isBuffering = false;
+    playerModel.currentPosition = Duration.zero;
+    playerModel.totalDuration = Duration.zero;
+    playerModel.dragOffset = Offset.zero;
+  }
+
 
   Future<bool> setAudioPlayer(TrackProv trackProv) async{
 
     try {
 
-      await trackProv.getLastListenTrackId();
+      await audioPause();
 
-      await trackProv.getPlayTrackInfo();
+      // await trackProv.getLastListenTrackId();
 
-      await initAudio(trackProv.lastTrackId);
+      // await trackProv.getAudioPlayerTrackList();
+
+      audioPlayerUiReload();
+
+      // await initAudio(trackProv);
+      // togglePlayPause(true);
+      // isAudioInit = true;
 
       return true;
     } catch (e) {
@@ -40,18 +61,26 @@ class PlayerProv extends ChangeNotifier {
   }
 
 
+  Future<void> initAudio(TrackProv trackProv, int trackId) async {
 
-  Future<void> initAudio(String trackId) async {
-    _audioPlayer = AudioPlayer();
+    print("initAudio");
 
     String m3u8Url = dotenv.get("STREAM_URL") + '/${trackId}/playList.m3u8';
 
-    // AudioSource로 HLS URL 전달
     final source = AudioSource.uri(Uri.parse(m3u8Url));
 
     await _audioPlayer.setAudioSource(source);
-    // 재생 상태 변경 리스너
-    _audioPlayer.playbackEventStream.listen((event) {
+
+    setAudioEventListener(trackProv);
+
+  }
+
+  void setAudioEventListener(TrackProv trackProv){
+
+    if(isSetEventListener)
+      return;
+
+    _audioPlayer.playbackEventStream.listen((event) async {
 
       // 처리 상태를 확인하여 버퍼링 상태를 표시
       playerModel.isBuffering = event.processingState == ProcessingState.buffering;
@@ -61,11 +90,27 @@ class PlayerProv extends ChangeNotifier {
 
       // 총 재생 시간 업데이트
       playerModel.totalDuration = event.duration ?? Duration.zero;
+
+      if (event.processingState == ProcessingState.completed && !isCompletedHandled) {
+        isCompletedHandled = true;
+
+
+
+
+
+        isCompletedHandled = false;
+      }
+
+      isSetEventListener = true;
       notify();
+
     });
 
   }
 
+  void audioPlayerUiReload() {
+    audioPlayerNotifier.value = !audioPlayerNotifier.value;
+  }
 
   Future<void> audioPause() async {
     _audioPlayer.pause();
@@ -90,8 +135,8 @@ class PlayerProv extends ChangeNotifier {
   }
 
   // 재생/일시정지 버튼
-  void togglePlayPause() async {
-    if (playerModel.isPlaying) {
+  void togglePlayPause(bool isPlaying) async {
+    if (isPlaying) {
       playerModel.isPlaying = false;
       stopTimer();
       await _audioPlayer.pause();
@@ -102,6 +147,7 @@ class PlayerProv extends ChangeNotifier {
     }
     notify();
   }
+
 
 
   // 드래그 중일 때 크기 조정

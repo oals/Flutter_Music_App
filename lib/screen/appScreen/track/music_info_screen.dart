@@ -52,7 +52,6 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
   Uint8List? _imageBytes = null; // 선택된 이미지의 바이트 데이터
 
   late TrackProv trackProv;
-  late AppProv appProv;
   late PlayerProv playerProv;
   late Future<bool> _getTrackInfoFuture;
   late Future<bool> _getRecommendTrackFuture;
@@ -75,7 +74,6 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
   Widget build(BuildContext context) {
 
     trackProv = Provider.of<TrackProv>(context);
-    appProv = Provider.of<AppProv>(context,listen: false);
     playerProv = Provider.of<PlayerProv>(context,listen: false);
 
     ImageProv imageProv = Provider.of<ImageProv>(context);
@@ -313,8 +311,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                         GestureDetector(
                                           onTap: () async {
                                             await trackProv.setLastListenTrackId(widget.track.trackId!);
-                                            await playerProv.audioPause();
-                                            appProv.reload();
+                                            await playerProv.setAudioPlayer(trackProv);
                                           },
                                           child: Container(
                                             margin: EdgeInsets.all(5),

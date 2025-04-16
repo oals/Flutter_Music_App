@@ -1,32 +1,27 @@
-import 'dart:typed_data';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/prov/app_prov.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/track_bar_graph_animation.dart';
-
 import 'package:skrrskrr/utils/helpers.dart';
-
-import '../../../model/player/player.dart';
 
 class TrackListItem extends StatefulWidget {
   const TrackListItem({
     super.key,
     required this.trackItem,
-    
+    required this.callBack,
   });
 
   final Track trackItem;
+  final Function callBack;
 
 
   @override
@@ -35,14 +30,12 @@ class TrackListItem extends StatefulWidget {
 
 class _TrackListItemState extends State<TrackListItem> {
   late TrackProv trackProv;
-  late AppProv appProv;
   late PlayerProv playerProv;
 
   @override
   Widget build(BuildContext context) {
 
     trackProv = Provider.of<TrackProv>(context);
-    appProv = Provider.of<AppProv>(context,listen: false);
     playerProv = Provider.of<PlayerProv>(context);
 
     return GestureDetector(
@@ -50,18 +43,20 @@ class _TrackListItemState extends State<TrackListItem> {
 
         if (!widget.trackItem.isPlaying) {
           widget.trackItem.isPlaying = true;
-
           await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
-          await playerProv.audioPause();
-          await playerProv.setAudioPlayer(trackProv);
+          await widget.callBack();
+          await trackProv.getAudioPlayerTrackList();
 
-          appProv.reload();
+          int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
+          playerProv.currentPage = index;
+          if (index != -1) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              playerProv.swiperController.move(index, animation: true);
+            });
+          }
 
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (appProv.isPlayTrack) {
-                playerProv.togglePlayPause();
-            }
-          });
+          trackProv.notify();
+          playerProv.notify();
 
         } else {
           GoRouter.of(context).push('/musicInfo', extra: widget.trackItem);

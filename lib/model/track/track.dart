@@ -78,7 +78,6 @@ class Track {
     trackLikeStatus = updatedTrack.trackLikeStatus ?? trackLikeStatus;
     followMember = updatedTrack.followMember ?? followMember;
     commentsCnt = updatedTrack.commentsCnt ?? commentsCnt;
-    isPlaying = updatedTrack.isPlaying;
   }
 
 }

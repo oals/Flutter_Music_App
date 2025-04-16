@@ -281,7 +281,10 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                           SizedBox(
                             height: 16,
                           ),
-                          TrackListItem(trackItem: searchTrackList[i],)
+                          TrackListItem(trackItem: searchTrackList[i], callBack: () async {
+                            List<int> trackIdList = searchTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                          },)
                         ],
                       ],
                       CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),

@@ -37,6 +37,7 @@ dependencies:
   flutter_secure_storage : ^9.2.4
   flutter_vlc_player: ^7.4.2
   just_audio: ^0.9.46
+  card_swiper: ^2.0.4
 
 
 

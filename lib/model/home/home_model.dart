@@ -14,14 +14,6 @@ class HomeModel {
   List<String>? topicCategoryList;
   List<String>? topicList;
 
-
-  List<Track> trendingTrackList = [];
-  List<MemberModel> randomMemberList = [];
-  List<PlayListInfoModel> popularPlayList = [];
-  List<Track> followMemberTrackList = [];
-  List<Track> likedTrackList = [];
-  List<Track> lastListenTrackList = [];
-
   HomeModel({
     this.topicIdx,
     this.homeCategory,

@@ -68,6 +68,8 @@ class _HomeScreenStateState extends State<HomeScreen> {
       likeTrackList = trackProv.trackListFilter("MyLikeTrackList");
       trackProv.updateTrackState(() => trackProv.isLikeTrackLoaded = true);
 
+
+
       print("모든 API 작업 완료!");
     } catch (error) {
       print("오류 발생: $error");
@@ -193,11 +195,16 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      for (var lastListenTrackList in trackProv.chunkLastListenTrackList(lastListenTrackList))
+                                      for (var listItem in trackProv.chunkLastListenTrackList(lastListenTrackList))
                                         Column(
                                           children: [
-                                            for (Track track in lastListenTrackList)...[
-                                              TrackListItem(trackItem: track),
+                                            for (Track track in listItem)...[
+                                              TrackListItem(trackItem: track, callBack: () async {
+
+                                                  List<int> trackIdList = lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                                  await trackProv.setAudioPlayerTrackIdList(trackIdList);
+
+                                              },),
                                               SizedBox(height: 10,),
                                             ],
                                           ],
@@ -273,6 +280,11 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                   children: [
                                     TrackListItem(
                                       trackItem: followTrackList[i],
+                                      callBack: () async {
+
+                                        List<int> trackIdList = followTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                        await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                      },
                                     ),
                                   ],
                                 ),
