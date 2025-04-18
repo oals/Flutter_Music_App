@@ -54,14 +54,14 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
   late TrackProv trackProv;
   late PlayerProv playerProv;
   late Future<bool> _getTrackInfoFuture;
-  late Future<bool> _getRecommendTrackFuture;
+  late Future<bool> _getRecommendCategoryTrackFuture;
 
   @override
   void initState() {
     print("MusicInfoScreen initstate");
     super.initState();
     _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getTrackInfo(widget.track.trackId);
-    _getRecommendTrackFuture = Provider.of<TrackProv>(context, listen: false).getRecommendTrackList(widget.track.trackId,widget.track.trackCategoryId!);
+    _getRecommendCategoryTrackFuture = Provider.of<TrackProv>(context, listen: false).getRecommendCategoryTrack(widget.track.trackId,widget.track.trackCategoryId);
     _loadMemberId();
   }
 
@@ -151,7 +151,8 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                   child: CustomCachedNetworkImage(
                                       imagePath: widget.track.trackImagePath,
                                       imageWidth : 100.w,
-                                      imageHeight : 50.h
+                                      imageHeight : 50.h,
+                                    isBoxFit: true,
                                   ),
 
                                 ),
@@ -503,7 +504,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
 
 
                                   FutureBuilder<bool>(
-                                      future: _getRecommendTrackFuture,
+                                      future: _getRecommendCategoryTrackFuture,
                                       builder: (context, snapshot) {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
                                           return Center(child: CircularProgressIndicator());
@@ -512,23 +513,10 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                         } else if (!snapshot.hasData) {
                                           return Center(child: Text('데이터가 없습니다.'));
                                         }
-                                        return SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  for(int i = 0; i< widget.track.recommendTrackList.length; i++)...[
-                                                    TrackSquareItem(
-                                                      track: widget.track.recommendTrackList[i],
-                                                      bgColor: Colors.lightBlueAccent,
-                                                    ),
-                                                    SizedBox(width: 15,),
 
-                                                  ]
+                                        List<Track> recommendTrackList = trackProv.trackListFilter("RecommendCategoryTrackList");
 
-                                                ],
-                                              )
-                                          );
+                                        return TrackScrollHorizontalItem(trackList: recommendTrackList);
                                    }
                                  ),
 

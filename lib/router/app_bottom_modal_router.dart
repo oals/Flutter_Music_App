@@ -51,7 +51,7 @@ class AppBottomModalRouter {
         return NewPlayListScreen();
       },
       3: () async {
-        return TrackMoreInfoScreen(track: track!, fnBottomModal: fnBottomModal);
+        return TrackMoreInfoScreen(track: track!);
       },
       4: () async {
         return ChildCommentScreen(trackId: trackId, commentId: commentId);
@@ -68,6 +68,15 @@ class AppBottomModalRouter {
       },
       7: () async {
         return AudioPlayerTrackListModal();
+      },
+      8: () async {
+        return MyPlayListModalScreen(
+          trackId: trackId!,
+          callBack : (int? playListId) {
+            callBack!(playListId);
+            _removeOverlay();
+          }
+        );
       }
     };
 
@@ -77,7 +86,7 @@ class AppBottomModalRouter {
       var maxSize = 0.9;
       if(modalIndex == 1 || modalIndex == 5) {
         maxSize = 1.0;
-      } else if (modalIndex == 7) {
+      } else if (modalIndex == 7 ) {
         maxSize = 0.95;
       }
 
@@ -122,20 +131,4 @@ class AppBottomModalRouter {
     }
   }
 
-  // fnBottomModal을 추가했는데, 이를 필요에 맞게 사용
-  static Future<int?> fnBottomModal(BuildContext context, int modalIndex, {int? trackId}) async {
-    if (modalIndex == 0) {
-      final result = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.zero,
-            content: MyPlayListModalScreen(trackId: trackId!),
-          );
-        },
-      );
-      return result;
-    }
-    return null;
-  }
 }

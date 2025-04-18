@@ -10,7 +10,7 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track()
   ..trackId = (json['trackId'] as num?)?.toInt()
   ..trackNm = json['trackNm'] as String?
   ..trackTime = json['trackTime'] as String?
-  ..trackPrivacy = json['trackPrivacy'] as bool?
+  ..isTrackPrivacy = json['isTrackPrivacy'] as bool?
   ..trackInfo = json['trackInfo'] as String?
   ..trackImagePath = json['trackImagePath'] as String?
   ..trackPlayCnt = (json['trackPlayCnt'] as num?)?.toInt()
@@ -32,7 +32,7 @@ Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'trackId': instance.trackId,
       'trackNm': instance.trackNm,
       'trackTime': instance.trackTime,
-      'trackPrivacy': instance.trackPrivacy,
+      'isTrackPrivacy': instance.isTrackPrivacy,
       'trackInfo': instance.trackInfo,
       'trackImagePath': instance.trackImagePath,
       'trackPlayCnt': instance.trackPlayCnt,

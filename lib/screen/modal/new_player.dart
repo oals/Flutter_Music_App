@@ -47,7 +47,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
 
   @override
   Widget build(BuildContext context) {
-    trackProv = Provider.of<TrackProv>(context,);
+    trackProv = Provider.of<TrackProv>(context);
 
     return Scaffold(
         body: FutureBuilder<bool>(
@@ -70,6 +70,9 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                   isInit = true;
                 }
 
+
+                print('오디오빌드');
+
                 return Swiper(
                   index: playerProv.currentPage,
                   controller: playerProv.swiperController,
@@ -85,21 +88,26 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                   itemCount: trackProv.audioPlayerTrackList.length, // 슬라이드 개수
                   onIndexChanged: (index) async {
 
-                    trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
-                    trackProv.audioPlayerTrackList[index].isPlaying = true;
-                    playerProv.currentPage = index;
+                    if(playerProv.page != -1 ){
+                      if(playerProv.page == index){
+                        playerProv.page = -1;
+                        playerProv.audioPlayerClear();
+                        await playerProv.audioPause();
+                      }
+                    } else {
+                      playerProv.audioPlayerClear();
+                      await playerProv.audioPause();
+                      trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
+                      trackProv.audioPlayerTrackList[index].isPlaying = true;
+                    }
 
-                    trackProv.notify();
-                    playerProv.audioPause();
-                    playerProv.audioPlayerClear();
-                    playerProv.notify();
+                    if(playerProv.page == -1){
+                      playerProv.currentPage = index;
+                      Future.delayed(Duration(seconds: 1)).then((value) async {
+                        // await playerProv.initAudio(trackProv, trackProv.audioPlayerTrackList[playerProv.currentPage].trackId!);
+                      });
+                    }
 
-
-                    Future.delayed(Duration(seconds: 1)).then((value) async {
-                      await playerProv.initAudio(trackProv, trackProv.audioPlayerTrackList[playerProv.currentPage].trackId!);
-                    });
-
-                    print('현재 페이지: $index');
                   },
                   itemBuilder: (BuildContext ctx, int index) {
                     return AudioPlayerItem(audioPlayerTrackItem : trackProv.audioPlayerTrackList[index]);

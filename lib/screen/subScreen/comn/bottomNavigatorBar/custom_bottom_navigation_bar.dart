@@ -17,10 +17,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(Icons.home, 'LoFi', 0,40.w),
-          _buildNavItem(Icons.feed, '', 1,20.w),
-          _buildNavItem(Icons.search, '', 2,20.w),
-          _buildNavItem(Icons.settings, '', 3,20.w),
+          _buildNavItem(Icons.home, 'LoFi', 0,33.w),
+          // _buildNavItem(Icons.feed, '', 1,20.w),
+          _buildNavItem(Icons.search, '', 2,33.w),
+          _buildNavItem(Icons.settings, '', 3,33.w),
         ],
       ),
     );

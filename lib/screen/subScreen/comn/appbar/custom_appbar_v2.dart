@@ -70,7 +70,8 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
                 CustomCachedNetworkImage(
                     imagePath:memberImagePath,
                     imageWidth : 9.w,
-                    imageHeight : 4.5.h
+                    imageHeight : 4.5.h,
+                  isBoxFit: true,
                 ),
                 SizedBox(
                   width: 10,

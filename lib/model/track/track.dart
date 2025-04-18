@@ -13,7 +13,7 @@ class Track {
 
   String? trackTime;
 
-  bool? trackPrivacy;
+  bool? isTrackPrivacy;
 
   String? trackInfo;
 
@@ -48,9 +48,6 @@ class Track {
   List<String> trackListCd = [];
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Track> recommendTrackList = [];
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
   bool isPlaying = false;
 
   Track();
@@ -62,7 +59,7 @@ class Track {
     trackId = updatedTrack.trackId ?? trackId;
     trackNm = updatedTrack.trackNm ?? trackNm;
     trackTime = updatedTrack.trackTime ?? trackTime;
-    trackPrivacy = updatedTrack.trackPrivacy ?? trackPrivacy;
+    isTrackPrivacy = updatedTrack.isTrackPrivacy ?? isTrackPrivacy;
     trackInfo = updatedTrack.trackInfo ?? trackInfo;
     trackImagePath = updatedTrack.trackImagePath ?? trackImagePath;
     trackPlayCnt = updatedTrack.trackPlayCnt ?? trackPlayCnt;

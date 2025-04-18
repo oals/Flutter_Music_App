@@ -55,7 +55,8 @@ class _FollowItemState extends State<FollowItem> {
                   child: CustomCachedNetworkImage(
                     imagePath: widget.filteredFollowItem!.followImagePath,
                     imageWidth : 13.w,
-                    imageHeight : null
+                    imageHeight : null,
+                    isBoxFit: true,
                   ),
                 ),
 

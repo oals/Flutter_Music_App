@@ -7,7 +7,8 @@ import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class PlayListProv extends ChangeNotifier {
-  PlaylistList playlistList = PlaylistList();
+  PlaylistList playlists = PlaylistList();
+  PlaylistList albums = PlaylistList();
   PlayListInfoModel playListInfoModel = PlayListInfoModel();
 
   void notify() {
@@ -15,58 +16,9 @@ class PlayListProv extends ChangeNotifier {
   }
 
   void clear() {
-    playlistList = PlaylistList();
+    playlists = PlaylistList();
     playListInfoModel = PlayListInfoModel();
   }
-
-  List<PlayListInfoModel> playListFilter(String playListCd) {
-    return playlistList.playList.where((item) => item.playListCd.contains(playListCd)).toList();
-  }
-
-  void addPlayListsToModel(List<dynamic> playLists, String playListCd) {
-    for (var item in playLists) {
-      PlayListInfoModel playListInfoModel = PlayListInfoModel.fromJson(item);
-      playListInfoModel.playListCd.add(playListCd);
-
-      int duplicateIndex = playlistList.playList.indexWhere((existingPlayList) => existingPlayList.playListId == playListInfoModel.playListId);
-
-      if (duplicateIndex == -1) {
-        playlistList.playList.add(playListInfoModel);
-      } else {
-
-        PlayListInfoModel existingPlayList = playlistList.playList.removeAt(duplicateIndex);
-        existingPlayList.playListCd.add(playListCd);
-        playlistList.playList.add(existingPlayList); // 기존 데이터가 존재 할 때 새 데이터로 교체
-      }
-    }
-  }
-
-  void initPlayListToModel(List<String> playListCdList){
-
-    try{
-
-      for (String playListCd in playListCdList) {
-        List<dynamic> playListCopy = List.from(playlistList.playList);
-
-        for (var item in playListCopy) {
-          int duplicateIndex = item.playListCd.indexWhere((playListItemCd) => playListItemCd.toString() == playListCd);
-
-          if (duplicateIndex != -1) {
-            if (item.playListCd.length == 1) {
-              playlistList.playList.remove(item); // 복사본에서 순회 후 삭제
-            } else {
-              item.playListCd.removeAt(duplicateIndex);
-            }
-          }
-        }
-
-      }
-    } catch (e, stacktrace) {
-      print('오류 발생: $e');
-      print('스택 트레이스: $stacktrace');
-    }
-  }
-
 
 
   Future<bool> getSearchPlayList(String searchText, int offset, int limit) async {
@@ -84,13 +36,15 @@ class PlayListProv extends ChangeNotifier {
       if (response['status'] == "200") {
         // 성공적으로 데이터를 가져옴
 
-        if (offset == 0) {
-          initPlayListToModel(["SearchPlayList"]);
+        if (offset == 0){
+          playlists = PlaylistList();
         }
 
-        addPlayListsToModel(response['playListList'], "SearchPlayList");
+        for(var item in response['playListList']){
+          playlists.playList.add(PlayListInfoModel.fromJson(item));
+        }
 
-        playlistList.searchPlayListTotalCount = response['playListListCnt'];
+        playlists.searchPlayListTotalCount = response['playListListCnt'];
 
         print('$url - Successful');
         return true;
@@ -118,12 +72,14 @@ class PlayListProv extends ChangeNotifier {
       if (response['status'] == "200") {
 
         if (offset == 0) {
-          initPlayListToModel(["MemberPagePlayList"]);
+          playlists = PlaylistList();
         }
 
-        addPlayListsToModel(response['playListList'], "MemberPagePlayList");
+        for(var item in response['playListList']){
+          playlists.playList.add(PlayListInfoModel.fromJson(item));
+        }
 
-        playlistList.memberPagePlayListTotalCount = response['playListListCnt'];
+        playlists.memberPagePlayListTotalCount = response['playListListCnt'];
 
         print('$url - Successful');
         return true;
@@ -137,6 +93,40 @@ class PlayListProv extends ChangeNotifier {
   }
 
 
+  Future<bool> getMemberPageAlbum(int memberId, int offset, int limit) async {
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getMemberPageAlbums?loginMemberId=${loginMemberId}&memberId=${memberId}&limit=${limit}&offset=$offset';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == "200") {
+
+        if (offset == 0) {
+          albums = PlaylistList();
+        }
+
+        for(var item in response['playListList']){
+          albums.playList.add(PlayListInfoModel.fromJson(item));
+        }
+
+        albums.memberPagePlayListTotalCount = response['playListListCnt'];
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
 
 
 
@@ -202,10 +192,10 @@ class PlayListProv extends ChangeNotifier {
 
   }
 
-  Future<bool> getHomeInitPlayList() async {
+  Future<bool> getRecommendPlayList() async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url= '/api/getHomeInitPlayList?loginMemberId=${loginMemberId}';
+    final url= '/api/getRecommendPlayList?loginMemberId=${loginMemberId}';
 
     try {
       final response = await Helpers.apiCall(
@@ -217,8 +207,11 @@ class PlayListProv extends ChangeNotifier {
 
       if ((response['status'] == '200')) {
 
-        initPlayListToModel(["HomeInitPlayList"]);
-        addPlayListsToModel(response['popularPlayList'], "HomeInitPlayList");
+        playlists = PlaylistList();
+
+        for(var item in response['recommendPlayList']){
+          playlists.playList.add(PlayListInfoModel.fromJson(item));
+        }
 
         print('$url - Successful');
         return true;
@@ -232,6 +225,43 @@ class PlayListProv extends ChangeNotifier {
       return false;
     }
   }
+
+
+  Future<bool> getRecommendAlbum() async {
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url= '/api/getRecommendAlbum?loginMemberId=${loginMemberId}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if ((response['status'] == '200')) {
+
+        albums = PlaylistList();
+
+        for(var item in response['recommendAlbum']){
+          albums.playList.add(PlayListInfoModel.fromJson(item));
+        }
+
+        print('$url - Successful');
+        return true;
+      } else {
+        // 오류 처리
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      // 오류 처리
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+
 
 
   Future<bool> getPlayList(int trackId,int offset,bool isAlbum) async {
@@ -249,13 +279,15 @@ class PlayListProv extends ChangeNotifier {
 
       if ((response['status'] == '200')) {
 
-        if (offset == 0) {
-          initPlayListToModel(["PlayLists"]);
+        if (offset == 0){
+          playlists = PlaylistList();
         }
 
-        addPlayListsToModel(response['playList'], "PlayLists");
+        for (var item in response['playList']) {
+          playlists.playList.add(PlayListInfoModel.fromJson(item));
+        }
 
-        playlistList.myPlayListTotalCount = response['totalCount'];
+        playlists.myPlayListTotalCount = response['totalCount'];
 
 
         print('$url - Successful');
@@ -271,10 +303,10 @@ class PlayListProv extends ChangeNotifier {
     }
   }
 
-  Future<bool> getPlayListInfo(int playListId,int offset) async {
+  Future<bool> getPlayListInfo(int playListId) async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url= '/api/getPlayListInfo?playListId=${playListId}&loginMemberId=${loginMemberId}&limit=${20}&offset=${offset}';
+    final url= '/api/getPlayListInfo?playListId=${playListId}&loginMemberId=${loginMemberId}';
 
     try {
       final response = await Helpers.apiCall(
@@ -355,7 +387,7 @@ class PlayListProv extends ChangeNotifier {
           );
 
       if ((response['status'] == '200')) {
-        playlistList = PlaylistList();
+        playlists = PlaylistList();
         await getPlayList(0, 0,false);
         notify();
         print('$url - Successful');

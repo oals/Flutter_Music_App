@@ -93,7 +93,6 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                   return false;
                 },
 
-
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -111,18 +110,36 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                       height: 20,
                     ),
 
+                    for (Track track in likeTrackList)...[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0,right: 8),
+                        child: TrackListItem(trackItem: track,
+                          isAudioPlayer: false,
+                          callBack: () async {
 
-                    Wrap(
-                      spacing: 30.0,
-                      runSpacing: 20.0,
-                      alignment: WrapAlignment.spaceBetween,
-                      children: likeTrackList.map((item) {
-                        return TrackSquareItem(
-                          track: item,
-                          bgColor: Colors.red,
-                        );
-                      }).toList(),
-                    ),
+
+                            List<int> trackIdList = likeTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+
+
+
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                    ],
+
+                    // Wrap(
+                    //   spacing: 30.0,
+                    //   runSpacing: 20.0,
+                    //   alignment: WrapAlignment.spaceBetween,
+                    //   children: likeTrackList.map((item) {
+                    //     return TrackSquareItem(
+                    //       track: item,
+                    //       bgColor: Colors.red,
+                    //     );
+                    //   }).toList(),
+                    // ),
 
                     CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
 

@@ -8,6 +8,7 @@ import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/play_lists_list_item.dart';
 
 class SearchPlayListScreen extends StatefulWidget {
   const SearchPlayListScreen({
@@ -64,8 +65,8 @@ class _SearchPlayListScreenState extends State<SearchPlayListScreen> {
             } else {
 
 
-              PlaylistList playListList = playListProv.playlistList;
-              List<PlayListInfoModel> searchPlayList = playListProv.playListFilter("SearchPlayList");
+              PlaylistList playListList = playListProv.playlists;
+              List<PlayListInfoModel> searchPlayList = playListList.playList;
 
               return NotificationListener <ScrollNotification>(
                 onNotification: (notification) {
@@ -81,53 +82,53 @@ class _SearchPlayListScreenState extends State<SearchPlayListScreen> {
                   return false;
                 },
                 child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 50,),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                  onTap: (){
-                                    GoRouter.of(context).pop();
-                                  },
-                                  child: Icon(Icons.arrow_back_rounded,color: Colors.white,)),
-                              SizedBox(width: 5,),
-                              Text(
-                                'PlayLists' ,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 50,),
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                                onTap: (){
+                                  GoRouter.of(context).pop();
+                                },
+                                child: Icon(Icons.arrow_back_rounded,color: Colors.white,)),
+                            SizedBox(width: 5,),
+                            Text(
+                              'PlayLists' ,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                color: Colors.white,
                               ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      if (searchPlayList.length != 0) ...[
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for(int i = 0 ; i < searchPlayList.length; i++)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 15, bottom: 5.0),
+                                  child: PlayListsListItem(playList: searchPlayList[i],isAlbum: false),
+                                ),
+
                             ],
                           ),
                         ),
-
-                        if (searchPlayList.length != 0) ...[
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                PlayListSquareItem(
-                                  playList: searchPlayList,
-                                ),
-                              ],
-                            ),
-                          ),
-                          CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
+                        CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
 
 
-                        ],
                       ],
-                    ),
+                    ],
                   ),
                 ),
               );

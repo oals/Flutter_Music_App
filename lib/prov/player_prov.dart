@@ -14,9 +14,11 @@ class PlayerProv extends ChangeNotifier {
   PlayerModel playerModel = PlayerModel();
   late AudioPlayer _audioPlayer= AudioPlayer();
   ValueNotifier<bool> audioPlayerNotifier = ValueNotifier<bool>(false);
+  String audioPlayerTrackListCd = '';
 
   late SwiperController swiperController;
   int currentPage = 0;
+  int page = -1;
 
   bool isAudioInit = false;
   bool isSetEventListener = false;

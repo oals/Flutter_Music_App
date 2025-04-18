@@ -10,6 +10,7 @@ import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
+import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
@@ -17,11 +18,9 @@ class TrackMoreInfoScreen extends StatefulWidget {
   const TrackMoreInfoScreen({
     super.key,
     required this.track,
-    required this.fnBottomModal,
   });
 
   final Track track;
-  final Function fnBottomModal;
 
   @override
   State<TrackMoreInfoScreen> createState() => _TrackMoreInfoScreenState();
@@ -86,7 +85,8 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
                     child: CustomCachedNetworkImage(
                         imagePath:widget.track.trackImagePath,
                         imageWidth : 33.w,
-                        imageHeight : 16.h
+                        imageHeight : 16.h,
+                      isBoxFit: true,
                     ),
                   ),
                 ),
@@ -144,19 +144,15 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
                     ],
                   ),
 
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        width: 16,
-                        height: 16,
-                        'assets/images/heart_red.svg',
-                      ),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      Text(widget.track.commentsCnt.toString(),style: TextStyle(color: Colors.white),),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Icon(Icons.insert_comment_outlined,color: Colors.white,),
+                  //     SizedBox(
+                  //       width: 2,
+                  //     ),
+                  //     Text(widget.track.commentsCnt.toString(),style: TextStyle(color: Colors.white),),
+                  //   ],
+                  // ),
                   SizedBox(height: 3,),
                   Text(widget.track.trackTime.toString(),style: TextStyle(color: Colors.white),),
                   SizedBox(height: 3,),
@@ -176,30 +172,6 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
             color: Colors.grey,
           ),
           SizedBox(height: 7),
-          GestureDetector(
-            onTap: () async {
-              print('플리에 추가 버튼 클릭');
-              int? playListId = await widget.fnBottomModal(context,0, trackId : widget.track.trackId);
-
-              print("음원 선택 아이디 : ${widget.track.trackId}");
-              print('플리 선택 아이디 : ${playListId}');
-
-              if(playListId != null) {
-                playListProv.setPlayListTrack(playListId, widget.track.trackId!);
-              }
-
-            },
-            child: Container(
-              width: 94.w,
-              padding: EdgeInsets.all(10),
-              child: Text(
-                "플레이리스트에 추가",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-              ),
-            ),
-          ),
-
 
           GestureDetector(
             onTap: () async {
@@ -211,27 +183,104 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
             child: Container(
               width: 94.w,
               padding: EdgeInsets.all(10),
-              child: Text(
-                widget.track.trackLikeStatus! ? "관심 트랙에서 삭제" :"관심 트랙에 추가",
-                style:
-                TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    widget.track.trackLikeStatus!
+                        ? 'assets/images/heart_red.svg'
+                        : 'assets/images/heart.svg',
+                  ),
+                  SizedBox(width: 5,),
+                  Text(
+                    'Liked',
+                    style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                  ),
+                ],
               ),
             ),
 
           ),
-
-        if(isAuth)
           GestureDetector(
             onTap: () async {
-              print(widget.track.trackId);
-              await trackProv.setLockTrack(widget.track.trackId,true);
+              print('플리에 추가 버튼 클릭');
+
+              AppBottomModalRouter.fnModalRouter(
+                context,
+                8,
+                trackId: widget.track.trackId,
+              callBack: (int? playListId){
+                if(playListId != null) {
+                  playListProv.setPlayListTrack(playListId, widget.track.trackId!);
+                }
+              });
+
             },
             child: Container(
               width: 94.w,
               padding: EdgeInsets.all(10),
-              child: Text(
-                "트랙 비공개로 변경",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              child: Row(
+                children: [
+                  Icon(Icons.playlist_add,
+                    color: Colors.white,
+                  ),
+                  SizedBox(width: 5,),
+                  Text(
+                    "Add to playlist",
+                    style:
+                        TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          GestureDetector(
+            onTap: () async {
+              print('플리에 추가 버튼 클릭');
+
+            },
+            child: Container(
+              width: 94.w,
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Icon(Icons.account_circle,
+                    color: Colors.white,
+                  ),
+                  SizedBox(width: 5,),
+                  Text(
+                    "Go to profile",
+                    style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+
+        if(isAuth)
+          GestureDetector(
+            onTap: () async {
+              await trackProv.setLockTrack(widget.track.trackId,!widget.track.isTrackPrivacy!);
+              widget.track.isTrackPrivacy = !widget.track.isTrackPrivacy!;
+              trackProv.notify();
+            },
+            child: Container(
+              width: 94.w,
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Icon(Icons.lock_reset_outlined,color: Colors.white,size: 23,),
+
+                  SizedBox(width: 5,),
+
+                  Text(
+                    widget.track.isTrackPrivacy! ? 'Set to Public' : "Set to Private",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                  ),
+                ],
               ),
             ),
           ),

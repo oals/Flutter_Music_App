@@ -42,10 +42,7 @@ class _MemberScrollHorizontalItemState
           for (int i = 0; i < widget.memberList.length; i++) ...[
             Container(
               padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey,width: 2),
-                  borderRadius: BorderRadius.circular(10)
-              ),
+           
               child: Column(
                 children: [
                   GestureDetector(
@@ -53,10 +50,13 @@ class _MemberScrollHorizontalItemState
                       print('이동');
                       GoRouter.of(context).push('/userPage/${widget.memberList[i].memberId}');
                     },
-                    child: CustomCachedNetworkImage(
-                        imagePath:widget.memberList![i].memberImagePath,
-                        imageWidth : 30.w,
-                        imageHeight : 10.h
+                    child: ClipOval(
+                      child: CustomCachedNetworkImage(
+                          imagePath:widget.memberList![i].memberImagePath,
+                          imageWidth : 25.w,
+                          imageHeight : 12.5.h,
+                        isBoxFit: true,
+                      ),
                     ),
 
                   ),
@@ -65,18 +65,22 @@ class _MemberScrollHorizontalItemState
                     children: [
                       Text(
                         widget.memberList[i].memberNickName,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      if (widget.memberList![i].isFollowedCd == 2 ||
-                          widget.memberList![i].isFollowedCd == 3)
-                        Text(
-                          widget.memberList![i].isFollowedCd == 2
-                              ? '나를 팔로우합니다'
-                              : widget.memberList![i].isFollowedCd == 3
-                                  ? '나를 팔로우합니다'
-                                  : '',
-                          style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                            color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700
                         ),
+                      ),
+                      // if (widget.memberList![i].isFollowedCd == 2 ||
+                      //     widget.memberList![i].isFollowedCd == 3)
+                      //   Text(
+                      //     widget.memberList![i].isFollowedCd == 2
+                      //         ? '나를 팔로우합니다'
+                      //         : widget.memberList![i].isFollowedCd == 3
+                      //             ? '나를 팔로우합니다'
+                      //             : '',
+                      //     style: TextStyle(color: Colors.white),
+                      //   ),
                     ],
                   ),
                   SizedBox(

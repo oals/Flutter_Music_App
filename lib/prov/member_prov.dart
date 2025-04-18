@@ -59,10 +59,10 @@ class MemberProv with ChangeNotifier {
 
 
 
-  Future<bool> getHomeInitMember() async {
+  Future<bool> getRecommendMember() async {
 
     final loginMemberId = await Helpers.getMemberId();
-    final url= '/api/getHomeInitMember?loginMemberId=${loginMemberId}';
+    final url= '/api/getRecommendMember?loginMemberId=${loginMemberId}';
 
     try {
       final response = await Helpers.apiCall(

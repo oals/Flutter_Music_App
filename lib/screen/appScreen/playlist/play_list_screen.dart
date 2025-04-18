@@ -44,7 +44,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
   void initState() {
     print("PlayListScreen initstate");
     super.initState();
-    _getPlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getPlayListInfo(widget.playList.playListId!,0);
+    _getPlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getPlayListInfo(widget.playList.playListId!);
     _getPlayListTrackInitFuture = Provider.of<TrackProv>(context, listen: false).getPlayListTrackList(widget.playList.playListId!,0);
     _loadMemberId();
   }
@@ -87,7 +87,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
             playListProv.playListInfoModel = widget.playList;
             isAuth = Helpers.getIsAuth(widget.playList.memberId.toString(),loginMemberId!);
 
-
             return NotificationListener <ScrollNotification>(onNotification: (notification) {
 
               if (widget.playList.trackCnt! >  trackList.length) {
@@ -108,7 +107,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                     Container(
                       child: Stack(
                         children: [
-                          CustomCachedNetworkImage(imagePath: widget.playList.playListImagePath, imageWidth: 100.w, imageHeight: 50.h),
+                          CustomCachedNetworkImage(imagePath: widget.playList.playListImagePath, imageWidth: 100.w, imageHeight: 50.h,isBoxFit: true,),
 
                           Container(
                             width: 100.w,
@@ -133,7 +132,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                             // bottom: 30,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: CustomCachedNetworkImage(imagePath: widget.playList.playListImagePath, imageWidth: 100.w, imageHeight: 40.h),
+                              child: CustomCachedNetworkImage(imagePath: widget.playList.playListImagePath, imageWidth: 100.w, imageHeight: 40.h,isBoxFit: true,),
                             ),
                           ),
 
@@ -221,7 +220,8 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                 child: CustomCachedNetworkImage(
                                     imagePath: widget.playList.memberImagePath,
                                     imageWidth: 4.5.w,
-                                    imageHeight: null
+                                    imageHeight: null,
+                                  isBoxFit: true,
                                 ),
                               ),
                               SizedBox(width: 3,),
@@ -371,6 +371,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                       for(int i = 0; i < trackList.length; i++)...[
                                         TrackListItem(
                                           trackItem: trackList[i],
+                                          isAudioPlayer: false,
                                           callBack: () async {
                                                 List<int> trackIdList = trackList.map((item) => int.parse(item.trackId.toString())).toList();
                                                 await trackProv.setAudioPlayerTrackIdList(trackIdList);

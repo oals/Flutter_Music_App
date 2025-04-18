@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 
@@ -15,12 +17,9 @@ class TrackScrollHorizontalItem extends StatefulWidget {
   const TrackScrollHorizontalItem({
     super.key,
     required this.trackList,
-    required this.bgColor
-    
   });
+  final List<Track> trackList;
 
-  final dynamic trackList;
-  final Color bgColor;
 
 
   @override
@@ -30,21 +29,40 @@ class TrackScrollHorizontalItem extends StatefulWidget {
 class _TrackScrollHorizontalItemState extends State<TrackScrollHorizontalItem> {
 
   bool isImageLoad = false;
+  late TrackProv trackProv;
 
   @override
   Widget build(BuildContext context) {
+
+    trackProv = Provider.of<TrackProv>(context,listen: false);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          for (int i = 0; i < widget.trackList.length; i++) ...[
-            TrackSquareItem(
-              track: widget.trackList[i],
-              bgColor: widget.bgColor,
-            ),
-            SizedBox(width: 15,),
-          ],
+
+          Wrap(
+            spacing: 5.0, // 아이템 간의 가로 간격
+            runSpacing: 20.0, // 줄 간격
+            alignment: WrapAlignment.spaceBetween,
+            children: widget.trackList.map((item) {
+              return Row(
+                children: [
+                  TrackSquareItem(
+                    trackItem: item,
+                    callBack: () async {
+
+                      List<int> trackIdList = widget.trackList.map((item) => int.parse(item.trackId.toString())).toList();
+                      await trackProv.setAudioPlayerTrackIdList(trackIdList);
+
+                    },
+                  ),
+                  SizedBox(width: 3,),
+                ],
+              );
+            }).toList(),
+          ),
+
         ],
       ),
     );

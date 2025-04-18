@@ -26,7 +26,9 @@ import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart'
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/play_lists_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class UserPageScreen extends StatefulWidget {
@@ -53,6 +55,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
   late Future<bool> _getUserInitFuture;
   late Future<bool> _getUserTrackFuture;
   late Future<bool> _getUserPlayListFuture;
+  late Future<bool> _getUserAlbumFuture;
   late Future<bool> _getUserPopularTrackFuture;
   late ComnLoadProv comnLoadProv;
   late PlayListProv playListProv;
@@ -67,6 +70,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
     _getUserInitFuture = Provider.of<MemberProv>(context, listen: false).getMemberPageInfo(widget.memberId);
     _getUserTrackFuture = Provider.of<TrackProv>(context, listen: false).getMemberPageTrack(widget.memberId, 0);
     _getUserPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getMemberPagePlayList(widget.memberId,0,7);
+    _getUserAlbumFuture = Provider.of<PlayListProv>(context, listen: false).getMemberPageAlbum(widget.memberId,0,7);
     _getUserPopularTrackFuture = Provider.of<TrackProv>(context, listen: false).getMemberPagePopularTrack(widget.memberId);
     _loadMemberId();
   }
@@ -173,7 +177,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
                               CustomCachedNetworkImage(
                                   imagePath: memberModel.memberImagePath,
                                   imageWidth: 100.w,
-                                  imageHeight: 50.h),
+                                  imageHeight: 50.h,
+                                  isBoxFit: true,
+                              ),
                               Container(
                                 width: 100.w,
                                 height: 58.h,
@@ -376,7 +382,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                       ),
 
                       Container(
-                        padding: EdgeInsets.all(5),
+                        padding: EdgeInsets.all(10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -404,22 +410,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
 
                                   popularTrackList = trackProv.trackListFilter("MemberPagePopularTrackList");
                                   return Column(
-                                    children: List.generate(
-                                        popularTrackList.length, (i) {
-                                      return GestureDetector(
-                                        child: Container(
-                                          padding: EdgeInsets.only(
-                                              bottom: 10),
-                                          child: TrackListItem(
-                                            trackItem:
-                                            popularTrackList[i],
-                                            callBack: (){
-
-                                            },
-                                          ),
-                                        ),
-                                      );
-                                    }),
+                                    children: [
+                                      TrackScrollHorizontalItem(trackList: popularTrackList)
+                                    ]
                                   );
                                 }
                               }
@@ -436,8 +429,8 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                   return CircularProgressIndicator();
                                 } else {
 
-                                  PlaylistList playListList = playListProv.playlistList;
-                                  List<PlayListInfoModel> memberPlayList = playListProv.playListFilter("MemberPagePlayList").take(7).toList();
+                                  PlaylistList playListList = playListProv.playlists;
+                                  List<PlayListInfoModel> memberPlayList = playListProv.playlists.playList;
 
                                   return Column(
                                     children: [
@@ -446,13 +439,13 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
                                           Text(
-                                            'Albums',
+                                            'Playlists',
                                             style: GoogleFonts.roboto(
                                                 color: Colors.white,
                                                 fontSize: 19,
                                                 fontWeight: FontWeight.w600),
                                           ),
-                                          if (playListList.memberPagePlayListTotalCount != 0)
+                                          if (playListList.memberPagePlayListTotalCount != 6)
                                             GestureDetector(
                                               onTap: () {
                                                 GoRouter.of(context).push('/memberPlayList/${memberModel.memberId}');
@@ -475,7 +468,8 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                         scrollDirection: Axis.horizontal,
                                         child: Row(
                                           children: [
-                                            PlayListSquareItem(playList: memberPlayList),
+                                            for(int i = 0; i < memberPlayList.length; i++)
+                                              PlayListsListItem(playList: memberPlayList[i],isAlbum: false),
                                             SizedBox(width: 20),
                                           ],
                                         ),
@@ -484,6 +478,69 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                   );
                                 }
                               }
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            FutureBuilder<bool>(
+                                future: _getUserAlbumFuture,
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else {
+
+                                    PlaylistList playListList = playListProv.albums;
+                                    List<PlayListInfoModel> memberPlayList = playListProv.albums.playList;
+
+                                    return Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              'Albums',
+                                              style: GoogleFonts.roboto(
+                                                  color: Colors.white,
+                                                  fontSize: 19,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            if (playListList.memberPagePlayListTotalCount != 6)
+                                              GestureDetector(
+                                                onTap: () {
+                                                  GoRouter.of(context).push('/memberAlbums/${memberModel.memberId}');
+                                                },
+                                                child: Text(
+                                                  'more',
+                                                  style: GoogleFonts.roboto(
+                                                      color: Colors.grey,
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w600),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+
+                                        SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            children: [
+                                              for(int i = 0; i < memberPlayList.length; i++)
+                                                PlayListsListItem(
+                                                    playList: memberPlayList[i],
+                                                    isAlbum: true
+                                                ),
+                                              SizedBox(width: 20),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                }
                             ),
                             SizedBox(
                               height: 20,
@@ -526,7 +583,10 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                     children: [
                                       for (int i = 0; i < allTrackList.length; i++) ...[
                                         Container(padding: EdgeInsets.only(bottom: 10),
-                                            child: TrackListItem(trackItem: allTrackList[i], callBack: (){
+                                            child: TrackListItem(
+                                              trackItem: allTrackList[i],
+                                              isAudioPlayer: false,
+                                              callBack: (){
 
                                             },)
                                         ),

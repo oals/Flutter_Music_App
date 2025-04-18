@@ -9,12 +9,13 @@ class CustomCachedNetworkImage extends StatefulWidget {
     required this.imagePath,
     required this.imageWidth,
     required this.imageHeight,
+    required this.isBoxFit,
   });
 
   final String? imagePath;
   final double? imageWidth;
   final double? imageHeight;
-
+  final bool isBoxFit;
   @override
   State<CustomCachedNetworkImage> createState() => _CustomCachedNetworkImageState();
 }
@@ -42,7 +43,7 @@ class _CustomCachedNetworkImageState extends State<CustomCachedNetworkImage> {
       imageBuilder: (context, imageProvider) {
         return Image(
           image: imageProvider,
-          fit: BoxFit.cover,
+          fit: widget.isBoxFit ? BoxFit.cover : null,
         );  // 이미지가 로드되면 표시
       },
     );

@@ -10,6 +10,7 @@ import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 
 class UploadTrackScreen extends StatefulWidget {
@@ -76,8 +77,6 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
               trackCd: "UploadTrackList",
             );
 
-            // uploadTrackList.sort((a, b) => b.trackId!.compareTo(a.trackId!));
-
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (trackModel.uploadTrackTotalCount! > uploadTrackList.length) {
@@ -108,18 +107,33 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                     ),
                     SizedBox(height: 25,),
 
+                    for (Track track in uploadTrackList)...[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0,right: 8),
+                        child: TrackListItem(trackItem: track,
+                          isAudioPlayer: false,
+                          callBack: () async {
 
-                    Wrap(
-                      spacing: 30.0,
-                      runSpacing: 20.0,
-                      alignment: WrapAlignment.spaceBetween,
-                      children: uploadTrackList.map((item) {
-                        return TrackSquareItem(
-                          track: item,
-                          bgColor: Colors.purpleAccent,
-                        );
-                      }).toList(),
-                    ),
+                            List<int> trackIdList = uploadTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                    ],
+
+                    // Wrap(
+                    //   spacing: 30.0,
+                    //   runSpacing: 20.0,
+                    //   alignment: WrapAlignment.spaceBetween,
+                    //   children: uploadTrackList.map((item) {
+                    //     return TrackSquareItem(
+                    //       track: item,
+                    //       bgColor: Colors.purpleAccent,
+                    //     );
+                    //   }).toList(),
+                    // ),
 
 
                     SizedBox(height: 5),

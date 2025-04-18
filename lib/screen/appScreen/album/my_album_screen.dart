@@ -10,6 +10,7 @@ import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/play_lists_list_item.dart';
 
 class MyAlbumScreen extends StatefulWidget {
   const MyAlbumScreen({
@@ -39,12 +40,9 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
   @override
   void dispose() {
     // TODO: implement dispose
-
     comnLoadProv.clear();
     super.dispose();
   }
-
-
 
 
   @override
@@ -67,8 +65,8 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
               return Center(child: Text('데이터가 없습니다.'));
             }
 
-            PlaylistList playListList = playListProv.playlistList;
-            List<PlayListInfoModel> AlbumList = playListProv.playListFilter("PlayLists");
+            PlaylistList playListList = playListProv.playlists;
+            List<PlayListInfoModel> AlbumList = playListProv.playlists.playList;
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
@@ -107,9 +105,11 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
                             height: 20,
                           ),
 
-                          PlayListSquareItem(
-                            playList: AlbumList,
-                          ),
+                          for(int i = 0; i < AlbumList.length; i++)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15,bottom: 5),
+                              child: PlayListsListItem(playList: AlbumList[i],isAlbum: false),
+                            )
                         ],
                       ),
                     ),

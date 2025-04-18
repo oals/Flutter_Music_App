@@ -12,6 +12,7 @@ import 'package:skrrskrr/router/app_screen.dart';
 import 'package:skrrskrr/screen/appScreen/album/my_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/category/category_screen.dart';
 import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
+import 'package:skrrskrr/screen/appScreen/playlist/member_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/playlist/member_play_list_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_member_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_play_list_screen.dart';
@@ -213,6 +214,21 @@ final router = GoRouter(
             context,
             state,
             MemberPlayListScreen(memberId: memberId,),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
+
+
+      GoRoute(
+        path: '/memberAlbums/:memberId',
+        pageBuilder: (context, state) {
+          final memberId = int.parse(state.pathParameters['memberId']!);
+
+          return commonPageBuilder(
+            context,
+            state,
+            MemberAlbumScreen(memberId: memberId,),
             isShowAudioPlayer: true,
           );
         },

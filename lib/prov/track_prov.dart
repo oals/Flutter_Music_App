@@ -24,32 +24,10 @@ class TrackProv extends ChangeNotifier {
   List<Track> audioPlayerTrackList = [];
   String lastTrackId = "";
 
-  bool isLastListenTrackLoaded = false;
-  bool isRecommendTrackLoaded = false;
-  bool isFollowMemberTrackLoaded = false;
-  bool isLikeTrackLoaded = false;
-
-
   void notify() {
     notifyListeners();
   }
 
-  void updateTrackState(bool Function() updateState) {
-    updateState();
-    notify();
-  }
-
-  List<List> chunkLastListenTrackList (List<Track> lastListenTrackList) {
-    List<List> lastListenTrackChunkedData = [];
-
-    for (int i = 0; i < lastListenTrackList.length; i += 3) {
-      lastListenTrackChunkedData.add(lastListenTrackList.sublist(i,
-          (i + 3) > lastListenTrackList.length
-              ? lastListenTrackList.length
-              : (i + 3)));
-    }
-    return lastListenTrackChunkedData;
-  }
 
   List<Track> trackListFilter(String trackCd) {
     return trackModel.trackList.where((item) => item.trackListCd.contains(trackCd)).toList();
@@ -79,7 +57,6 @@ class TrackProv extends ChangeNotifier {
       int duplicateIndex = trackModel.trackList.indexWhere((existingTrack) => existingTrack.trackId == track.trackId);
 
       if(duplicateIndex == -1) {
-        //포함되어잇지 않을때
         audioPlayerTrackList.add(track);
         trackModel.trackList.add(track);
       } else {
@@ -97,24 +74,18 @@ class TrackProv extends ChangeNotifier {
       int duplicateIndex = trackModel.trackList.indexWhere((existingTrack) => existingTrack.trackId == track.trackId);
 
       if (duplicateIndex == -1) {
-        // if(track.trackId.toString() == playTrackInfoModel.trackId.toString()){
-        //   playTrackInfoModel.trackListCd.add(trackListCd);
-        //   trackModel.trackList.add(playTrackInfoModel);
-        // } else {
-          trackModel.trackList.add(track);
-        // }
+        trackModel.trackList.add(track);
       } else {
         Track existingTrack = trackModel.trackList.removeAt(duplicateIndex);
         existingTrack.trackListCd.add(trackListCd);
-        trackModel.trackList.add(existingTrack); // 기존 데이터가 존재 할 때 새 데이터로 교체
+        trackModel.trackList.add(existingTrack);
       }
     }
   }
 
   void initTrackToModel(List<String> trackCdList){
 
-    try{
-
+    try {
       for (String trackCd in trackCdList) {
         List<dynamic> trackListCopy = List.from(trackModel.trackList);
 
@@ -308,7 +279,7 @@ class TrackProv extends ChangeNotifier {
             'Content-Type': 'application/json',
           }, body: {
             'trackId': trackId,
-            'trackPrivacy': isTrackPrivacy,
+            'isTrackPrivacy': isTrackPrivacy,
           });
 
       if (response['status'] == "200") {
@@ -342,6 +313,7 @@ class TrackProv extends ChangeNotifier {
           initTrackToModel(["MyLikeTrackList"]);
         }
 
+        print(response['likeTrackList']);
         addTracksToModel(response['likeTrackList'], "MyLikeTrackList" );
 
         trackModel.likeTrackTotalCount = response['totalCount'];
@@ -401,10 +373,7 @@ class TrackProv extends ChangeNotifier {
       track.trackLikeCnt = track.trackLikeCnt! - 1;
     }
 
-    // if (track.trackId == playTrackInfoModel.trackId) {
-    //   playTrackInfoModel.trackLikeStatus = track.trackLikeStatus;
-    //   playTrackInfoModel.trackLikeCnt = track.trackLikeCnt;
-    // }
+    notify();
   }
 
 
@@ -509,23 +478,6 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
-  void getUploadTrackTime() async {
-    final AudioPlayer audioPlayer = AudioPlayer();
-    String? filePath = model.uploadFile?.files.single.path!;
-
-    // 파일을 로드하고 길이를 가져옴
-    await audioPlayer.setSourceUrl(filePath!); // URL을 사용하여 재생
-    Duration? duration = await audioPlayer.getDuration();
-
-    // 길이를 출력
-    if (duration != null) {
-      model.trackTime =
-          '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
-    } else {
-      print("Duration을 가져오는 데 실패했습니다.");
-    }
-  }
-
 
   Future<List<http.MultipartFile?>> fnSetUploadFileList(List<Upload> uploadTrackList) async {
 
@@ -569,7 +521,7 @@ class TrackProv extends ChangeNotifier {
           'albumNm': title,
           'trackInfo': info,
           'trackCategoryId': (categoryCd + 1).toString(),
-          'trackPrivacy': isPrivacy.toString(),
+          'isTrackPrivacy': isPrivacy.toString(),
         },
       );
 
@@ -620,7 +572,7 @@ class TrackProv extends ChangeNotifier {
           'trackInfo': info,
           'trackTime': model.trackTime ?? "00:00",
           'trackCategoryId': (categoryCd + 1).toString(),
-          'trackPrivacy': isPrivacy.toString(),
+          'isTrackPrivacy': isPrivacy.toString(),
         },
       );
 
@@ -738,36 +690,36 @@ class TrackProv extends ChangeNotifier {
 
 
 
-  Future<bool> getFollowMemberTrack() async {
-
-    final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getFollowMemberTrackList?loginMemberId=${loginMemberId}';
-
-    try {
-      final response = await Helpers.apiCall(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response['status'] == '200') {
-
-        initTrackToModel(["FollowMemberTrackList",]);
-
-        addTracksToModel(response['followMemberTrackList'], "FollowMemberTrackList");
-
-
-        print('$url - Successful');
-        return true;
-      } else {
-        throw Exception('Failed to load data');
-      }
-    } catch (error) {
-      print('$url - Fail');
-      return false;
-    }
-  }
+  // Future<bool> getFollowMemberTrack() async {
+  //
+  //   final String loginMemberId = await Helpers.getMemberId();
+  //   final url = '/api/getFollowMemberTrackList?loginMemberId=${loginMemberId}';
+  //
+  //   try {
+  //     final response = await Helpers.apiCall(
+  //       url,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     );
+  //
+  //     if (response['status'] == '200') {
+  //
+  //       initTrackToModel(["FollowMemberTrackList",]);
+  //
+  //       addTracksToModel(response['followMemberTrackList'], "FollowMemberTrackList");
+  //
+  //
+  //       print('$url - Successful');
+  //       return true;
+  //     } else {
+  //       throw Exception('Failed to load data');
+  //     }
+  //   } catch (error) {
+  //     print('$url - Fail');
+  //     return false;
+  //   }
+  // }
 
 
   Future<bool> getLastListenTrack() async {
@@ -803,11 +755,10 @@ class TrackProv extends ChangeNotifier {
 
 
 
-
-  Future<bool> getRecommendTrackList(trackId, int trackCategoryId) async {
+  Future<bool> getRecommendTrackList() async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getRecommendTrack?loginMemberId=${loginMemberId}&trackId=${trackId}&trackCategoryId=${trackCategoryId}&limit=${5}';
+    final url = '/api/getRecommendTrack?loginMemberId=${loginMemberId}';
 
     try {
       final response = await Helpers.apiCall(
@@ -821,8 +772,37 @@ class TrackProv extends ChangeNotifier {
         // 성공적으로 데이터를 가져옴
 
         initTrackToModel(["RecommendTrackList",]);
-
         addTracksToModel(response['recommendTrackList'], "RecommendTrackList");
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+  Future<bool> getRecommendCategoryTrack(trackId,trackCategoryId) async {
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/getRecommendCategoryTrack?loginMemberId=${loginMemberId}&trackId=${trackId}&trackCategoryId=${trackCategoryId}';
+
+    try {
+      final response = await Helpers.apiCall(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response['status'] == '200') {
+        // 성공적으로 데이터를 가져옴
+
+        initTrackToModel(["RecommendCategoryTrackList",]);
+        addTracksToModel(response['recommendCategoryTrackList'], "RecommendCategoryTrackList");
 
         print('$url - Successful');
         return true;

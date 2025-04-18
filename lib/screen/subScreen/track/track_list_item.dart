@@ -18,10 +18,12 @@ class TrackListItem extends StatefulWidget {
     super.key,
     required this.trackItem,
     required this.callBack,
+    required this.isAudioPlayer,
   });
 
   final Track trackItem;
   final Function callBack;
+  final bool isAudioPlayer;
 
 
   @override
@@ -44,13 +46,18 @@ class _TrackListItemState extends State<TrackListItem> {
         if (!widget.trackItem.isPlaying) {
           widget.trackItem.isPlaying = true;
           await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
+
           await widget.callBack();
+
+          trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
           await trackProv.getAudioPlayerTrackList();
 
           int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
-          playerProv.currentPage = index;
           if (index != -1) {
+            trackProv.audioPlayerTrackList[index].isPlaying = true;
+
             WidgetsBinding.instance.addPostFrameCallback((_) async {
+              playerProv.page = index;
               playerProv.swiperController.move(index, animation: true);
             });
           }
@@ -68,6 +75,7 @@ class _TrackListItemState extends State<TrackListItem> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
               children: [
                 Row(
                   children: [
@@ -85,11 +93,19 @@ class _TrackListItemState extends State<TrackListItem> {
                             child: CustomCachedNetworkImage(
                                 imagePath: widget.trackItem.trackImagePath,
                                 imageWidth : 15.w,
-                                imageHeight : null
+                                imageHeight : null,
+                                isBoxFit: true,
                             ),
 
                           ),
                         ),
+
+                        if(widget.trackItem.isTrackPrivacy!)
+                          Positioned(
+                            top: 10,
+                            right: 6,
+                            child: Icon(Icons.lock,color: Colors.white,size: 15,),
+                          ),
 
                         if(widget.trackItem.isPlaying)...[
                           Positioned(
@@ -212,12 +228,15 @@ class _TrackListItemState extends State<TrackListItem> {
                                     imagePath: widget.trackItem.memberImagePath,
                                     imageWidth: 4.5.w,
                                     imageHeight: null,
+                                    isBoxFit: true,
                                   ),
                                 ),
                                 SizedBox(width: 5,),
                                 GestureDetector(
                                   onTap: (){
-                                    GoRouter.of(context).push('/userPage/${widget.trackItem.memberId}');
+                                    if (!widget.isAudioPlayer) {
+                                      GoRouter.of(context).push('/userPage/${widget.trackItem.memberId}');
+                                    }
                                   },
                                   child: Text(
                                     '${widget.trackItem.memberNickName}',
@@ -234,7 +253,9 @@ class _TrackListItemState extends State<TrackListItem> {
                     ),
                   ],
                 ),
-                GestureDetector(
+
+                if(!widget.isAudioPlayer)
+                  GestureDetector(
                   onTap: () {
                    AppBottomModalRouter.fnModalRouter(context,3, track : widget.trackItem,);
                   },
@@ -243,6 +264,8 @@ class _TrackListItemState extends State<TrackListItem> {
                     color: Colors.grey,
                   ),
                 ),
+
+
               ],
             ),
             Container(

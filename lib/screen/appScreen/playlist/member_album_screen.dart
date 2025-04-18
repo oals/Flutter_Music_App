@@ -10,8 +10,8 @@ import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indica
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_lists_list_item.dart';
 
-class MemberPlayListScreen extends StatefulWidget {
-  const MemberPlayListScreen({
+class MemberAlbumScreen extends StatefulWidget {
+  const MemberAlbumScreen({
     super.key,
     required this.memberId,
   });
@@ -19,22 +19,22 @@ class MemberPlayListScreen extends StatefulWidget {
   final int memberId;
 
   @override
-  State<MemberPlayListScreen> createState() => _MemberPlayListScreenState();
+  State<MemberAlbumScreen> createState() => _MemberAlbumScreenScreenState();
 }
 
-class _MemberPlayListScreenState extends State<MemberPlayListScreen> {
+class _MemberAlbumScreenScreenState extends State<MemberAlbumScreen> {
 
 
   late PlayListProv playListProv;
   late ComnLoadProv comnLoadProv;
-  late Future<bool>? _getMemberPlayListFuture;
+  late Future<bool>? _getMemberAlbumFuture;
 
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getMemberPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getMemberPagePlayList(widget.memberId,0, 20);
+    _getMemberAlbumFuture = Provider.of<PlayListProv>(context, listen: false).getMemberPageAlbum(widget.memberId,0, 20);
   }
 
   @override
@@ -55,7 +55,7 @@ class _MemberPlayListScreenState extends State<MemberPlayListScreen> {
       height: 100.h,
       color: Colors.black,
       child: FutureBuilder<bool>(
-          future: _getMemberPlayListFuture, // 비동기 메소드 호출
+          future: _getMemberAlbumFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -66,15 +66,15 @@ class _MemberPlayListScreenState extends State<MemberPlayListScreen> {
             } else {
 
 
-              PlaylistList playListList = playListProv.playlists;
-              List<PlayListInfoModel> memberPlayList = playListProv.playlists.playList;
+              PlaylistList playListList = playListProv.albums;
+              List<PlayListInfoModel> memberAlbums = playListProv.albums.playList;
 
               return NotificationListener <ScrollNotification>(
                 onNotification: (notification) {
 
-                  if (playListList.memberPagePlayListTotalCount! > memberPlayList.length) {
+                  if (playListList.memberPagePlayListTotalCount! > memberAlbums.length) {
                     if (comnLoadProv.shouldLoadMoreData(notification)) {
-                      comnLoadProv.loadMoreData(playListProv, "MemberPagePlayList", memberPlayList.length , memberId: widget.memberId);
+                      comnLoadProv.loadMoreData(playListProv, "MemberPagePlayList", memberAlbums.length , memberId: widget.memberId);
                     }
                   } else {
                     if (comnLoadProv.isApiCall) {
@@ -109,23 +109,22 @@ class _MemberPlayListScreenState extends State<MemberPlayListScreen> {
                         ),
                       ),
 
-                      if (memberPlayList.length != 0) ...[
+                      if (memberAlbums.length != 0) ...[
 
                         SizedBox(
                           height: 8,
                         ),
 
-                        for(int i = 0; i < memberPlayList.length; i++)
+                        for(int i = 0; i < memberAlbums.length; i++)
                           Padding(
                             padding: const EdgeInsets.only(left: 15,bottom: 5),
-                            child: PlayListsListItem(playList: memberPlayList[i],isAlbum: false),
+                            child: PlayListsListItem(playList: memberAlbums[i],isAlbum: false),
                           ),
 
                         SizedBox(
                           height: 8,
                         ),
                         CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
-
 
                       ],
                     ],

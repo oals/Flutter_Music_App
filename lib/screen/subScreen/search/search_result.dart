@@ -180,8 +180,8 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                       return Center(child: Text('데이터가 없습니다.'));
                     } else {
 
-                      PlaylistList playListList = playListProv.playlistList;
-                      List<PlayListInfoModel> searchPlayList = playListProv.playListFilter("SearchPlayList").take(8).toList();
+                      PlaylistList playListList = playListProv.playlists;
+                      List<PlayListInfoModel> searchPlayList = playListList.playList;
 
                       return Column(
                       children: [
@@ -223,6 +223,8 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                               scrollDirection: Axis.horizontal,
                               child: PlayListSquareItem(
                                 playList: searchPlayList,
+                                isHome: false,
+                                isAlbum : false,
                               ),
                             ),
                           ),
@@ -281,7 +283,10 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                           SizedBox(
                             height: 16,
                           ),
-                          TrackListItem(trackItem: searchTrackList[i], callBack: () async {
+                          TrackListItem(
+                            trackItem: searchTrackList[i],
+                            isAudioPlayer: false,
+                            callBack: () async {
                             List<int> trackIdList = searchTrackList.map((item) => int.parse(item.trackId.toString())).toList();
                             await trackProv.setAudioPlayerTrackIdList(trackIdList);
                           },)

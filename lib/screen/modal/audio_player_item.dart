@@ -24,10 +24,7 @@ class AudioPlayerItem extends StatefulWidget {
   State<AudioPlayerItem> createState() => _AudioPlayerItemState();
 }
 
-class _AudioPlayerItemState extends State<AudioPlayerItem> with AutomaticKeepAliveClientMixin {
-
-  @override
-  bool get wantKeepAlive => true; // 상태를 유지하도록 설정
+class _AudioPlayerItemState extends State<AudioPlayerItem> {
 
   late TrackProv trackProv;
   late AppProv appProv;
@@ -42,8 +39,6 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> with AutomaticKeepAli
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     appProv = Provider.of<AppProv>(context);
     playerProv = Provider.of<PlayerProv>(context, listen: false);
     trackProv = Provider.of<TrackProv>(context, listen: false);
@@ -63,16 +58,6 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> with AutomaticKeepAli
       child: ValueListenableBuilder<bool>(
           valueListenable: playerProv.audioPlayerNotifier,
           builder: (context, value, child) {
-
-
-            // int index = trackProv.trackModel.trackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
-            //
-            // if (index == -1) {
-            //   trackInfoModel = trackProv.playTrackInfoModel;
-            // } else {
-            //   trackProv.trackModel.trackList[index].updateApiData(trackProv.playTrackInfoModel);
-            //   trackInfoModel = trackProv.trackModel.trackList[index];
-            // }
 
             return GestureDetector(
               onPanUpdate: (details) {
@@ -120,6 +105,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> with AutomaticKeepAli
                                             .trackImagePath,
                                         imageWidth: 100.w,
                                         imageHeight: 93.h,
+                                        isBoxFit: true,
                                       ),
                                     ),
                                   ),
@@ -515,6 +501,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> with AutomaticKeepAli
                                           .trackImagePath,
                                       imageWidth: 14.w,
                                       imageHeight: 14.h,
+                                      isBoxFit: true,
                                     ),
 
                                   ),

@@ -16,6 +16,7 @@ import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/play_lists_list_item.dart';
 
 class MyPlayListScreen extends StatefulWidget {
   const MyPlayListScreen({
@@ -65,8 +66,8 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
               return Center(child: Text('오류 발생: ${snapshot.error}'));
             }
 
-            PlaylistList playListList = playListProv.playlistList;
-            List<PlayListInfoModel> playLists = playListProv.playListFilter("PlayLists");
+            PlaylistList playListList = playListProv.playlists;
+            List<PlayListInfoModel> playLists = playListList.playList;
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
@@ -106,9 +107,11 @@ class _MyPlayListScreenState extends State<MyPlayListScreen> {
                             height: 20,
                           ),
 
-                          PlayListSquareItem(
-                            playList: playLists,
-                          ),
+                          for(int i = 0; i < playLists.length; i++)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15,bottom: 5),
+                              child: PlayListsListItem(playList: playLists[i],isAlbum: false,),
+                            )
                         ],
                       ),
                     ),

@@ -125,7 +125,8 @@ class _CommentScreenState extends State<CommentScreen> {
                                               child: CustomCachedNetworkImage(
                                                   imagePath:comment.memberImagePath,
                                                   imageWidth : 8.w,
-                                                  imageHeight : null
+                                                  imageHeight : null,
+                                                isBoxFit: true,
                                               ),
 
 

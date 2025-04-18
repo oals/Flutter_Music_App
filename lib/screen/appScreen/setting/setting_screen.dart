@@ -32,28 +32,19 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   late AuthProv authProv;
   late TrackProv trackProv;
-  List<Track> lastListenTrackList = [];
+  late Future<bool>? _getLastListenTrackFuture;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    _getLastListenTrackFuture = Provider.of<TrackProv>(context, listen: false).getLastListenTrack();
   }
 
   @override
   Widget build(BuildContext context) {
     authProv = Provider.of<AuthProv>(context);
     trackProv = Provider.of<TrackProv>(context);
-
-    TrackList trackModel = trackProv.trackModel;
-
-    trackModel.trackList.forEach((item){
-      if(item.trackListCd.contains("LastListenTrackList")){
-        lastListenTrackList.add(item);
-      }
-    });
-
 
     List<String> cateogryList = [
       'My page',
@@ -169,11 +160,25 @@ class _SettingScreenState extends State<SettingScreen> {
             SizedBox(
               height: 10,
             ),
-            Container(
-              child: TrackScrollHorizontalItem(
-              trackList: lastListenTrackList,
-                bgColor: Colors.greenAccent,
-              ),
+            FutureBuilder<bool>(
+                future: _getLastListenTrackFuture, // 비동기 메소드 호출
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('오류 발생: ${snapshot.error}'));
+                  } else if (!snapshot.hasData) {
+                    return Center(child: Text('데이터가 없습니다.'));
+                  }
+
+                  List<Track> lastListenTrackList = trackProv.trackListFilter("LastListenTrackList");
+
+
+                return Container(
+                  child: TrackScrollHorizontalItem(
+                  trackList: lastListenTrackList),
+                );
+              }
             ),
 
           ],
