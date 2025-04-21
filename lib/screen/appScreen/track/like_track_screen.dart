@@ -16,17 +16,19 @@ import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
-class MyLikeTrackScreen extends StatefulWidget {
-  const MyLikeTrackScreen({
+import '../../../prov/player_prov.dart';
+
+class LikeTrackScreen extends StatefulWidget {
+  const LikeTrackScreen({
     super.key,
   });
 
 
   @override
-  State<MyLikeTrackScreen> createState() => _MyLikeTrackScreenState();
+  State<LikeTrackScreen> createState() => _LikeTrackScreenState();
 }
 
-class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
+class _LikeTrackScreenState extends State<LikeTrackScreen> {
   late TrackProv trackProv;
   late Future<bool> _getLikeTrackInitFuture;
   late ComnLoadProv comnLoadProv;
@@ -102,9 +104,7 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                       title: "Liked Track",
                       isNotification : false,
                       isEditBtn: false,
-                      isAddPlayListBtn : false,
                       isAddTrackBtn : false,
-                      isAddAlbumBtn : false,
                     ),
                     SizedBox(
                       height: 20,
@@ -115,6 +115,9 @@ class _MyLikeTrackScreenState extends State<MyLikeTrackScreen> {
                         padding: const EdgeInsets.only(left: 8.0,right: 8),
                         child: TrackListItem(trackItem: track,
                           isAudioPlayer: false,
+                          initAudioCallBack: (PlayerProv playerProv) {
+
+                          },
                           callBack: () async {
 
 

@@ -48,10 +48,9 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
           widget.trackItem.isPlaying = true;
           await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
 
-          await widget.callBack();
-
           trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
-          await trackProv.getAudioPlayerTrackList();
+
+          await widget.callBack(); /// 새 오디오 플레이리스트 저장
 
           int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
           if (index != -1) {
@@ -67,7 +66,7 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
           playerProv.notify();
 
         } else {
-          GoRouter.of(context).push('/musicInfo', extra: widget.trackItem);
+          GoRouter.of(context).push('/trackInfo', extra: widget.trackItem);
         }
 
       },
@@ -140,7 +139,7 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
               child: GestureDetector(
                 onTap: () {
                   print('음원상세 클릭');
-                  GoRouter.of(context).push('/musicInfo',extra: widget.trackItem);
+                  GoRouter.of(context).push('/trackInfo',extra: widget.trackItem);
                 },
                 child: Text(
                   '${widget.trackItem.trackNm}',
@@ -156,7 +155,7 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
 
             GestureDetector(
               onTap: () {
-                GoRouter.of(context).push('/userPage/${widget.trackItem.memberId}');
+                GoRouter.of(context).push('/memberPage/${widget.trackItem.memberId}');
                 },
               child: Text(
                 widget.trackItem.memberNickName ?? "",
@@ -167,106 +166,6 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
                 ),
               ),
             ),
-
-
-            //
-            //
-            // Row(
-            //   children: [
-            //
-            //     Row(
-            //       children: [
-            //         SvgPicture.asset(
-            //           'assets/images/play.svg',
-            //           width: 3.w,
-            //           color: Colors.grey,
-            //         ),
-            //         SizedBox(width: 3,),
-            //         Text(
-            //           widget.track.trackPlayCnt.toString(),
-            //           style: TextStyle(
-            //             fontSize: 17,
-            //             color: Colors.white,
-            //             fontWeight: FontWeight.w700,
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //
-            //     SizedBox(width: 5,),
-            //     Row(
-            //       children: [
-            //         SvgPicture.asset(
-            //           widget.track.trackLikeStatus == true
-            //               ? 'assets/images/heart_red.svg'
-            //               : 'assets/images/heart.svg',
-            //           width: 4.5.w,
-            //         ),
-            //         SizedBox(width: 3,),
-            //         Text(
-            //           widget.track.trackLikeCnt.toString(),
-            //           style: TextStyle(
-            //             fontSize: 17,
-            //             color: Colors.white,
-            //             fontWeight: FontWeight.w700,
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //
-            //
-            //
-            //     ],
-            // ),
-            //
-            // Row(
-            //   children: [
-            //     Text(
-            //       widget.track.trackTime.toString(),
-            //       style: TextStyle(
-            //         color: Colors.grey,
-            //         fontSize: 14,
-            //       ),
-            //     ),
-            //     SizedBox(width: 5,),
-            //     Text(
-            //       Helpers.getCategory(widget.track.trackCategoryId!),
-            //       style: TextStyle(
-            //         color: Colors.grey,
-            //         fontSize: 14,
-            //       ),
-            //     ),
-            //
-            //   ],
-            // ),
-            //
-            // Row(
-            //     children: [
-            //       ClipOval(
-            //         child: CustomCachedNetworkImage(
-            //           imagePath: widget.track.memberImagePath,
-            //           imageWidth: 4.5.w,
-            //           imageHeight: null,
-            //           isBoxFit: true,
-            //         ),
-            //       ),
-            //       SizedBox(width: 5,),
-            //       GestureDetector(
-            //         onTap: () {
-            //           GoRouter.of(context).push('/userPage/${widget.track.memberId}');
-            //         },
-            //         child: Text(
-            //           widget.track.memberNickName ?? "",
-            //           style: TextStyle(
-            //             fontSize: 15,
-            //             color: Colors.grey,
-            //             fontWeight: FontWeight.w700,
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-
 
 
           ],

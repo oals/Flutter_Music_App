@@ -48,7 +48,7 @@ class _MemberScrollHorizontalItemState
                   GestureDetector(
                     onTap: () async {
                       print('이동');
-                      GoRouter.of(context).push('/userPage/${widget.memberList[i].memberId}');
+                      GoRouter.of(context).push('/memberPage/${widget.memberList[i].memberId}');
                     },
                     child: ClipOval(
                       child: CustomCachedNetworkImage(

@@ -26,6 +26,7 @@ class AppBottomModalRouter {
         int? trackId,
         int? commentId,
         Track? track,
+        int? categoryId,
         bool? isAlbum,
         Function? callBack,
       }) async {
@@ -60,9 +61,13 @@ class AppBottomModalRouter {
         return UploadScreen(isAlbum : isAlbum!);
       },
       6: () async {
-        return SelectCategory(callBack: (String categoryNm, int index) {
-          callBack!(categoryNm, index);
-          _removeOverlay();
+        return SelectCategory(
+            categoryId : categoryId,
+          callBack: (int categoryIdList) {
+
+            callBack!(categoryIdList);
+
+            _removeOverlay();
           },
         );
       },
@@ -77,7 +82,7 @@ class AppBottomModalRouter {
             _removeOverlay();
           }
         );
-      }
+      },
     };
 
     if (modalWidgets.containsKey(modalIndex)) {
@@ -127,6 +132,7 @@ class AppBottomModalRouter {
           Overlay.of(context).insert(modalOverlayEntry!);
         }
       }
+
       _showOverlay(context);
     }
   }

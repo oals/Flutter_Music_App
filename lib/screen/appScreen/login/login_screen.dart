@@ -81,6 +81,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           if(isCreateJwt) {
                             bool isGetMemberInfo = await memberProv.getMemberInfo(user.email!);
                             if (isGetMemberInfo) {
+
+                              /** 유저 관심 음악 카테고리 설정 */
+
+
+
+
+
+
                               GoRouter.of(context).push('/home/${false}');
                             } else {
                               Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요..');

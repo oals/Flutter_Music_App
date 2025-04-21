@@ -6,6 +6,7 @@ class PlaylistList {
 
   int? searchPlayListTotalCount = 0;
   int? memberPagePlayListTotalCount = 0;
+  int? memberPageAlbumTotalCount = 0;
   int? myPlayListTotalCount = 0;
 
 }

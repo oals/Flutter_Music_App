@@ -30,8 +30,8 @@ class _UploadTextFieldState extends State<UploadTextField> {
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: TextField(
-        onTap: widget.isOnTap ? ()=>{
-          widget.callBack()
+        onTap: widget.isOnTap ? () {
+          widget.callBack();
         } : null ,
         controller: widget.controller,
         maxLines: widget.maxLines,

@@ -7,11 +7,13 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
+import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
+
 
 class UploadTrackScreen extends StatefulWidget {
   const UploadTrackScreen({
@@ -101,22 +103,25 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                       title: "Uploaded Tracks",
                       isNotification : false,
                       isEditBtn: false,
-                      isAddPlayListBtn : false,
                       isAddTrackBtn : true,
-                      isAddAlbumBtn : false,
                     ),
                     SizedBox(height: 25,),
 
                     for (Track track in uploadTrackList)...[
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0,right: 8),
-                        child: TrackListItem(trackItem: track,
+                        child: TrackListItem(
+                          trackItem: track,
+                          initAudioCallBack: (PlayerProv playerProv) async {
+
+                            await playerProv.initAudio(trackProv, trackProv.audioPlayerTrackList[playerProv.currentPage].trackId!);
+                          },
                           isAudioPlayer: false,
                           callBack: () async {
-
                             List<int> trackIdList = uploadTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                            trackProv.audioPlayerTrackList = uploadTrackList;
                             await trackProv.setAudioPlayerTrackIdList(trackIdList);
-
+                            trackProv.notify();
                           },
                         ),
                       ),

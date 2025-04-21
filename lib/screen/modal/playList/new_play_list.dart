@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -91,10 +92,9 @@ class _NewPlayListScreenState extends State<NewPlayListScreen> {
             onPressed: () {
               // 플레이리스트 생성 메서드 호출
 
-              playListProv.setNewPlaylist(
-                  textController.text, isAlbumPrivacy,false);
+              playListProv.setNewPlaylist(textController.text, isAlbumPrivacy,false);
+              Fluttertoast.showToast(msg: "생성 되었습니다.");
 
-              GoRouter.of(context).pop(); // 바텀 시트 닫기
             },
             child: Text('생성',style: TextStyle(color: Colors.white),),
           ),

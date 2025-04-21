@@ -72,7 +72,7 @@ class _MemberAlbumScreenScreenState extends State<MemberAlbumScreen> {
               return NotificationListener <ScrollNotification>(
                 onNotification: (notification) {
 
-                  if (playListList.memberPagePlayListTotalCount! > memberAlbums.length) {
+                  if (playListList.memberPageAlbumTotalCount! > memberAlbums.length) {
                     if (comnLoadProv.shouldLoadMoreData(notification)) {
                       comnLoadProv.loadMoreData(playListProv, "MemberPagePlayList", memberAlbums.length , memberId: widget.memberId);
                     }

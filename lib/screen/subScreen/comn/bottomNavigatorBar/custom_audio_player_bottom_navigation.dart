@@ -26,7 +26,7 @@ class CustomAudioPlayerBottomNavigation extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             TrackLikeBtn(track: trackInfoModel),
-            TrackCommentBtn(track: trackInfoModel),
+            _buildNavItem('assets/images/comment.svg', '', 1,20.w),
             _buildNavItem('assets/images/dotPoints.svg', '', 2,20.w),
             _buildNavItem('assets/images/more.svg', '', 3,20.w),
           ],

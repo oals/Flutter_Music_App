@@ -9,25 +9,25 @@ import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/router/app_screen.dart';
 
-import 'package:skrrskrr/screen/appScreen/album/my_album_screen.dart';
+import 'package:skrrskrr/screen/appScreen/album/like_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/category/category_screen.dart';
 import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
-import 'package:skrrskrr/screen/appScreen/playlist/member_album_screen.dart';
+import 'package:skrrskrr/screen/appScreen/album/member_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/playlist/member_play_list_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_member_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_play_list_screen.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 import 'package:skrrskrr/screen/appScreen/feed/feed_screen.dart';
-import 'package:skrrskrr/screen/appScreen/follow/follow_screen.dart';
+import 'package:skrrskrr/screen/appScreen/follow/member_follow_screen.dart';
 import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
-import 'package:skrrskrr/screen/appScreen/member/user_page_screen.dart';
+import 'package:skrrskrr/screen/appScreen/member/member_page_screen.dart';
 import 'package:skrrskrr/screen/appScreen/notification/notification_screen.dart';
-import 'package:skrrskrr/screen/appScreen/playlist/my_play_list_screen.dart';
+import 'package:skrrskrr/screen/appScreen/playlist/like_play_list_screen.dart';
 import 'package:skrrskrr/screen/appScreen/playlist/play_list_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_screen.dart';
 import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
-import 'package:skrrskrr/screen/appScreen/track/music_info_screen.dart';
-import 'package:skrrskrr/screen/appScreen/track/my_like_track_screen.dart';
+import 'package:skrrskrr/screen/appScreen/track/track_info_screen.dart';
+import 'package:skrrskrr/screen/appScreen/track/like_track_screen.dart';
 import 'package:skrrskrr/screen/appScreen/track/upload_track_screen.dart';
 
 
@@ -148,28 +148,28 @@ final router = GoRouter(
       ),
 
       GoRoute(
-        path: '/userPage/:memberId',
+        path: '/memberPage/:memberId',
         pageBuilder: (context, state) {
           final memberId = int.parse(state.pathParameters['memberId']!);
 
           return commonPageBuilder(
             context,
             state,
-            UserPageScreen(memberId: memberId),
+            MemberPageScreen(memberId: memberId),
             isShowAudioPlayer: true,
           );
         },
       ),
 
       GoRoute(
-        path: '/musicInfo',
+        path: '/trackInfo',
         pageBuilder: (context, state) {
           final Track track = state.extra as Track;
 
           return commonPageBuilder(
             context,
             state,
-            MusicInfoScreen(track: track),
+            TrackInfoScreen(track: track),
             isShowAudioPlayer: true,
           );
         },
@@ -236,33 +236,33 @@ final router = GoRouter(
 
 
       GoRoute(
-        path: '/adminLikeTrack/:adminId',
+        path: '/likeTrack/:adminId',
         pageBuilder: (context, state) {
 
           return commonPageBuilder(
             context,
             state,
-            MyLikeTrackScreen(),
+            LikeTrackScreen(),
             isShowAudioPlayer: true,
           );
         },
       ),
 
       GoRoute(
-        path: '/adminPlayList/:adminId',
+        path: '/likePlayList/:adminId',
         pageBuilder: (context, state) {
 
           return commonPageBuilder(
             context,
             state,
-            MyPlayListScreen(),
+            LikePlayListScreen(),
             isShowAudioPlayer: true,
           );
         },
       ),
 
       GoRoute(
-        path: '/adminUploadTrack/:adminId',
+        path: '/uploadTrack/:adminId',
         pageBuilder: (context, state) {
 
           return commonPageBuilder(
@@ -276,27 +276,27 @@ final router = GoRouter(
 
 
       GoRoute(
-        path: '/adminFollow/:adminId',
+        path: '/memberFollow/:adminId',
         pageBuilder: (context, state) {
 
           return commonPageBuilder(
             context,
             state,
-            FollowScreen(),
+            MemberFollowScreen(),
             isShowAudioPlayer: true,
           );
         },
       ),
 
       GoRoute(
-        path: '/adminAlbum/:adminId',
+        path: '/likeAlbum/:adminId',
         pageBuilder: (context, state) {
           final adminId = int.parse(state.pathParameters['adminId']!);
 
           return commonPageBuilder(
             context,
             state,
-            MyAlbumScreen(adminId: adminId),
+            LikeAlbumScreen(adminId: adminId),
             isShowAudioPlayer: true,
           );
         },

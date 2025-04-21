@@ -82,7 +82,7 @@ class _ChildCommentScreenState extends State<ChildCommentScreen> {
 
 
                   Future<void> fnRouter(memberId)  async{
-                    GoRouter.of(context).push('/userPage/${memberId}');
+                    GoRouter.of(context).push('/memberPage/${memberId}');
                   }
 
                   WidgetsBinding.instance.addPostFrameCallback((_) {

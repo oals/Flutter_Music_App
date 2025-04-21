@@ -16,6 +16,8 @@ import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indica
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
+import '../../../prov/player_prov.dart';
+
 class PlayListScreen extends StatefulWidget {
   const PlayListScreen({
     super.key,
@@ -82,7 +84,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
 
-            //호출되어서 리빌드해도 이전 값을 가지게 됨
             widget.playList.updateApiData(playListProv.playListInfoModel);
             playListProv.playListInfoModel = widget.playList;
             isAuth = Helpers.getIsAuth(widget.playList.memberId.toString(),loginMemberId!);
@@ -153,9 +154,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                 title: "",
                                 isNotification : true,
                                 isEditBtn: isAuth,
-                                isAddPlayListBtn : false,
                                 isAddTrackBtn : false,
-                                isAddAlbumBtn : false,
                               )),
                         ],
                       ),
@@ -219,7 +218,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                               ClipOval(
                                 child: CustomCachedNetworkImage(
                                     imagePath: widget.playList.memberImagePath,
-                                    imageWidth: 4.5.w,
+                                    imageWidth: 3.5.w,
                                     imageHeight: null,
                                   isBoxFit: true,
                                 ),
@@ -372,6 +371,9 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                         TrackListItem(
                                           trackItem: trackList[i],
                                           isAudioPlayer: false,
+                                          initAudioCallBack: (PlayerProv playerProv) {
+
+                                          },
                                           callBack: () async {
                                                 List<int> trackIdList = trackList.map((item) => int.parse(item.trackId.toString())).toList();
                                                 await trackProv.setAudioPlayerTrackIdList(trackIdList);

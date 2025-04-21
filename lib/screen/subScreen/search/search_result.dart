@@ -25,6 +25,8 @@ import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
+import '../../../prov/player_prov.dart';
+
 class SearchResultScreen extends StatefulWidget {
   const SearchResultScreen({
     super.key,
@@ -286,6 +288,9 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                           TrackListItem(
                             trackItem: searchTrackList[i],
                             isAudioPlayer: false,
+                            initAudioCallBack: (PlayerProv playerProv) {
+
+                            },
                             callBack: () async {
                             List<int> trackIdList = searchTrackList.map((item) => int.parse(item.trackId.toString())).toList();
                             await trackProv.setAudioPlayerTrackIdList(trackIdList);

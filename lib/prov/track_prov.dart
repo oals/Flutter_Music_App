@@ -22,7 +22,7 @@ class TrackProv extends ChangeNotifier {
 
   Track playTrackInfoModel = Track();
   List<Track> audioPlayerTrackList = [];
-  String lastTrackId = "";
+  String lastTrackId = '';
 
   void notify() {
     notifyListeners();
@@ -313,9 +313,7 @@ class TrackProv extends ChangeNotifier {
           initTrackToModel(["MyLikeTrackList"]);
         }
 
-        print(response['likeTrackList']);
         addTracksToModel(response['likeTrackList'], "MyLikeTrackList" );
-
         trackModel.likeTrackTotalCount = response['totalCount'];
 
         print('$url - Successful');
@@ -397,9 +395,11 @@ class TrackProv extends ChangeNotifier {
 
       if (response['status'] == '200') {
 
+        lastTrackId = trackId.toString();
+
         int index = trackModel.trackList.indexWhere((item) => item.trackId.toString() == lastTrackId);
-        trackModel.trackList[index].isPlaying = false;
-        // notify();
+        trackModel.trackList[index].isPlaying = true;
+
         print('$url - Successful');
         return true;
       } else {
@@ -503,7 +503,7 @@ class TrackProv extends ChangeNotifier {
 
 
   Future<void> uploadAlbum(List<Upload> uploadTrackList,
-      String title, String info, bool isPrivacy, int categoryCd) async {
+      String title, String info, bool isPrivacy, int categoryId) async {
 
     final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/albumUpload';
@@ -520,7 +520,7 @@ class TrackProv extends ChangeNotifier {
           'loginMemberId': loginMemberId,
           'albumNm': title,
           'trackInfo': info,
-          'trackCategoryId': (categoryCd + 1).toString(),
+          'trackCategoryId': categoryId,
           'isTrackPrivacy': isPrivacy.toString(),
         },
       );
@@ -541,7 +541,7 @@ class TrackProv extends ChangeNotifier {
   }
 
   Future<void> uploadTrack(List<Upload> uploadTrackList,
-      String title, String info, bool isPrivacy, int categoryCd) async {
+      String title, String info, bool isPrivacy, int categoryId) async {
     final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/trackUpload';
     try {
@@ -571,7 +571,7 @@ class TrackProv extends ChangeNotifier {
           'trackNm': title,
           'trackInfo': info,
           'trackTime': model.trackTime ?? "00:00",
-          'trackCategoryId': (categoryCd + 1).toString(),
+          'trackCategoryId': categoryId,
           'isTrackPrivacy': isPrivacy.toString(),
         },
       );
@@ -785,33 +785,4 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
-  Future<bool> getRecommendCategoryTrack(trackId,trackCategoryId) async {
-
-    final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getRecommendCategoryTrack?loginMemberId=${loginMemberId}&trackId=${trackId}&trackCategoryId=${trackCategoryId}';
-
-    try {
-      final response = await Helpers.apiCall(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response['status'] == '200') {
-        // 성공적으로 데이터를 가져옴
-
-        initTrackToModel(["RecommendCategoryTrackList",]);
-        addTracksToModel(response['recommendCategoryTrackList'], "RecommendCategoryTrackList");
-
-        print('$url - Successful');
-        return true;
-      } else {
-        throw Exception('Failed to load data');
-      }
-    } catch (error) {
-      print('$url - Fail');
-      return false;
-    }
-  }
 }

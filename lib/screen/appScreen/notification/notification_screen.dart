@@ -80,11 +80,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
 
                           if(notificationItem.notificationType == 1){
-                            GoRouter.of(context).push('/musicInfo/${notificationItem.notificationTrackId}');
+                            GoRouter.of(context).push('/trackInfo/${notificationItem.notificationTrackId}');
                           } else if (notificationItem.notificationType == 2){
-                            GoRouter.of(context).push('/musicInfo/${notificationItem.notificationTrackId}');
+                            GoRouter.of(context).push('/trackInfo/${notificationItem.notificationTrackId}');
                           } else if (notificationItem.notificationType == 3){
-                            GoRouter.of(context).push('/userPage/${notificationItem.notificationMemberId}');
+                            GoRouter.of(context).push('/memberPage/${notificationItem.notificationMemberId}');
                           }
 
                         }

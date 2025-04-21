@@ -17,12 +17,14 @@ class TrackListItem extends StatefulWidget {
   const TrackListItem({
     super.key,
     required this.trackItem,
+    required this.initAudioCallBack,
     required this.callBack,
     required this.isAudioPlayer,
   });
 
   final Track trackItem;
   final Function callBack;
+  final Function initAudioCallBack;
   final bool isAudioPlayer;
 
 
@@ -36,7 +38,6 @@ class _TrackListItemState extends State<TrackListItem> {
 
   @override
   Widget build(BuildContext context) {
-
     trackProv = Provider.of<TrackProv>(context);
     playerProv = Provider.of<PlayerProv>(context);
 
@@ -44,13 +45,18 @@ class _TrackListItemState extends State<TrackListItem> {
       onTap: () async {
 
         if (!widget.trackItem.isPlaying) {
+
+
           widget.trackItem.isPlaying = true;
+          print(widget.trackItem.trackNm);
+
           await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
 
-          await widget.callBack();
-
           trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
-          await trackProv.getAudioPlayerTrackList();
+          await widget.callBack(); /// 새 오디오 플레이리스트 저장
+
+          await widget.initAudioCallBack(playerProv); /// 새 오디오 플레이리스트 저장
+
 
           int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
           if (index != -1) {
@@ -66,7 +72,7 @@ class _TrackListItemState extends State<TrackListItem> {
           playerProv.notify();
 
         } else {
-          GoRouter.of(context).push('/musicInfo', extra: widget.trackItem);
+          GoRouter.of(context).push('/trackInfo', extra: widget.trackItem);
         }
       },
       child: Container(
@@ -145,7 +151,7 @@ class _TrackListItemState extends State<TrackListItem> {
                             child: GestureDetector(
                               onTap: (){
                                 print('음원상세페이지 이동');
-                                GoRouter.of(context).push('/musicInfo',extra: widget.trackItem);
+                                GoRouter.of(context).push('/trackInfo',extra: widget.trackItem);
                               },
                               child: Text(
                                 '${widget.trackItem.trackNm}',
@@ -161,12 +167,22 @@ class _TrackListItemState extends State<TrackListItem> {
                           SizedBox(height: 2,),
                           Row(
                             children: [
+
+                              Text(
+                                '${widget.trackItem.trackTime}',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                    fontWeight: FontWeight.w500
+                                ),
+                              ),
+                              SizedBox(width: 3,),
                               Row(
                                 children: [
                                   SvgPicture.asset(
                                     'assets/images/play.svg',
-                                    width: 12,
-                                    height: 12,
+                                    width: 11,
+                                    height: 11,
                                     color: Colors.grey,
                                   ),
                                   SizedBox(width: 1,),
@@ -175,6 +191,7 @@ class _TrackListItemState extends State<TrackListItem> {
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 12,
+                                        fontWeight: FontWeight.w500
                                     ),
                                   ),
                                 ],
@@ -194,8 +211,10 @@ class _TrackListItemState extends State<TrackListItem> {
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 12,
+                                        fontWeight: FontWeight.w500
                                     ),
                                   ),
+
                                 ],
                               ),
                             ],
@@ -204,38 +223,40 @@ class _TrackListItemState extends State<TrackListItem> {
                           Row(
                             children: [
                               Text(
-                                '${widget.trackItem.trackTime}',
+                                '#'+ Helpers.getCategory(widget.trackItem.trackCategoryId!),
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 12,
+                                  fontWeight: FontWeight.w500
                                 ),
                               ),
-                              SizedBox(width: 5,),
+                              SizedBox(width: 3,),
                               Text(
-                                Helpers.getCategory(widget.trackItem.trackCategoryId!),
+                                '#'+ Helpers.getCategory(2),
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 12,
+                                    fontWeight: FontWeight.w500
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 5,),
+                          SizedBox(height: 3,),
                             Row(
                               children: [
                                 ClipOval(
                                   child: CustomCachedNetworkImage(
                                     imagePath: widget.trackItem.memberImagePath,
-                                    imageWidth: 4.5.w,
+                                    imageWidth: 3.5.w,
                                     imageHeight: null,
                                     isBoxFit: true,
                                   ),
                                 ),
-                                SizedBox(width: 5,),
+                                SizedBox(width: 3,),
                                 GestureDetector(
                                   onTap: (){
                                     if (!widget.isAudioPlayer) {
-                                      GoRouter.of(context).push('/userPage/${widget.trackItem.memberId}');
+                                      GoRouter.of(context).push('/memberPage/${widget.trackItem.memberId}');
                                     }
                                   },
                                   child: Text(

@@ -46,7 +46,7 @@ class _UploadScreenState extends State<UploadScreen> {
   late String? title;
   late String? info;
   bool isPrivacy = false;
-  int categoryCd = 0;
+  int categoryId = 0;
 
   @override
   void initState() {
@@ -348,11 +348,14 @@ class _UploadScreenState extends State<UploadScreen> {
                 isOnTap : true,
                 callBack : ()=>{
 
+                AppBottomModalRouter.fnModalRouter(
+                  categoryId: categoryId - 1,
+                    context,6,
+                    callBack:(int selectedCategoryId) {
 
+                  categoryId = selectedCategoryId + 1;
+                  controller4.text = Helpers.getCategory(categoryId);
 
-                AppBottomModalRouter.fnModalRouter(context,6, callBack:(categoryNm,categoryIdx)=>{
-                  controller4.text = categoryNm,
-                  categoryCd = categoryIdx
                 })
 
                 },
@@ -448,13 +451,12 @@ class _UploadScreenState extends State<UploadScreen> {
               onTap: () async {
                 _saveTrackInfo();
                 if (widget.isAlbum) {
-                  await trackProv.uploadAlbum(uploadTrackList,title!,info!,isPrivacy,categoryCd);
+                  await trackProv.uploadAlbum(uploadTrackList,title!,info!,isPrivacy,categoryId);
                 } else {
-                  await trackProv.uploadTrack(uploadTrackList,title!,info!,isPrivacy,categoryCd);
+                  await trackProv.uploadTrack(uploadTrackList,title!,info!,isPrivacy,categoryId);
                 }
                 Fluttertoast.showToast(msg: "업로드 되었습니다.");
 
-                // GoRouter.of(context).pop();
 
 
               },

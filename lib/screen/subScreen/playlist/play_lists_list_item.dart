@@ -94,6 +94,7 @@ class _PlayListsListItemState extends State<PlayListsListItem> {
                                           style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 14,
+                                              fontWeight: FontWeight.w500
 
                                           ),
                                         ),
@@ -105,7 +106,7 @@ class _PlayListsListItemState extends State<PlayListsListItem> {
                                       style: TextStyle(
                                         color: Colors.grey,
                                         fontSize: 14,
-
+                                          fontWeight: FontWeight.w500
                                       ),
                                     ),
 
@@ -116,6 +117,7 @@ class _PlayListsListItemState extends State<PlayListsListItem> {
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 12,
+                                        fontWeight: FontWeight.w500
                                     ),
                                   ),
                                 ],
@@ -131,6 +133,7 @@ class _PlayListsListItemState extends State<PlayListsListItem> {
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 12,
+                                    fontWeight: FontWeight.w500
                                 ),
                               ),
                               SizedBox(width: 5,),
@@ -145,6 +148,7 @@ class _PlayListsListItemState extends State<PlayListsListItem> {
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 12,
+                                    fontWeight: FontWeight.w500
                                 ),
                               ),
 
@@ -152,21 +156,21 @@ class _PlayListsListItemState extends State<PlayListsListItem> {
                             ],
                           ),
 
-                          SizedBox(height: 5,),
+                          SizedBox(height: 3,),
                           Row(
                             children: [
                               ClipOval(
                                 child: CustomCachedNetworkImage(
                                   imagePath: widget.playList.memberImagePath,
-                                  imageWidth: 4.5.w,
+                                  imageWidth: 3.5.w,
                                   imageHeight: null,
                                   isBoxFit: true,
                                 ),
                               ),
-                              SizedBox(width: 5,),
+                              SizedBox(width: 3,),
                               GestureDetector(
                                 onTap: (){
-                                  GoRouter.of(context).push('/userPage/${widget.playList.memberId}');
+                                  GoRouter.of(context).push('/memberPage/${widget.playList.memberId}');
                                 },
                                 child: Text(
                                   '${widget.playList.memberNickName}',

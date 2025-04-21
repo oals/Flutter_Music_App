@@ -49,8 +49,8 @@ class _SettingScreenState extends State<SettingScreen> {
     List<String> cateogryList = [
       'My page',
       'Liked Tracks',
-      'Albums',
-      'Playlists',
+      'Liked Albums',
+      'Liked Playlists',
       'Uploaded',
       'Following',
       'Logout'
@@ -76,25 +76,25 @@ class _SettingScreenState extends State<SettingScreen> {
                       ;
                       String loginMemberId = await Helpers.getMemberId();
                       if (i == 0) {
-                        GoRouter.of(context).push('/userPage/${loginMemberId}');
+                        GoRouter.of(context).push('/memberPage/${loginMemberId}');
                       } else if (i == 1) {
                         GoRouter.of(context)
-                            .push('/adminLikeTrack/${loginMemberId}');
+                            .push('/likeTrack/${loginMemberId}');
                       } else if (i == 2) {
                         GoRouter.of(context)
-                            .push('/adminAlbum/${loginMemberId}');
+                            .push('/likeAlbum/${loginMemberId}');
                       } else if (i == 3) {
                         GoRouter.of(context)
-                            .push('/adminPlayList/${loginMemberId}');
+                            .push('/likePlayList/${loginMemberId}');
                       } else if (i == 4) {
                         GoRouter.of(context)
-                            .push('/adminUploadTrack/${loginMemberId}');
+                            .push('/uploadTrack/${loginMemberId}');
                       } else if (i == 5) {
                         GoRouter.of(context)
-                            .push('/adminFollow/${loginMemberId}');
+                            .push('/memberFollow/${loginMemberId}');
                       } else if (i == 6) {
                         print('로그아웃 클릭');
-                        await playerProv.audioPause();
+                        playerProv.togglePlayPause(true,trackProv);
                         await authProv.logout();
                         context.go('/splash');
                       }

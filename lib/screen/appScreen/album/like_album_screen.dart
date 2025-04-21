@@ -12,8 +12,8 @@ import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indica
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_lists_list_item.dart';
 
-class MyAlbumScreen extends StatefulWidget {
-  const MyAlbumScreen({
+class LikeAlbumScreen extends StatefulWidget {
+  const LikeAlbumScreen({
     super.key,
     required this.adminId,
   });
@@ -21,20 +21,20 @@ class MyAlbumScreen extends StatefulWidget {
   final int? adminId;
 
   @override
-  State<MyAlbumScreen> createState() => _MyAlbumScreenState();
+  State<LikeAlbumScreen> createState() => _LikeAlbumScreenState();
 }
 
-class _MyAlbumScreenState extends State<MyAlbumScreen> {
+class _LikeAlbumScreenState extends State<LikeAlbumScreen> {
   late PlaylistList playListModel;
   late PlayListProv playListProv;
   late ComnLoadProv comnLoadProv;
-  late Future<bool> _getPlayListFuture;
+  late Future<bool> _getLikePlayListInitFuture;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getPlayList(0, 0, true);
+    _getLikePlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getLikePlayList(0, true);
   }
 
   @override
@@ -55,7 +55,7 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
         height: 100.h,
         color: Colors.black,
         child: FutureBuilder<bool>(
-          future: _getPlayListFuture, // 비동기 메소드 호출
+          future: _getLikePlayListInitFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -72,7 +72,7 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
               onNotification: (notification) {
                 if (playListList.myPlayListTotalCount! > AlbumList.length) {
                   if (comnLoadProv.shouldLoadMoreData(notification)) {
-                    comnLoadProv.loadMoreData(playListProv, "PlayLists", AlbumList.length, trackId: 0 , isAlbum: true);
+                    comnLoadProv.loadMoreData(playListProv, "LikePlayLists", AlbumList.length , isAlbum: true);
                   }
                 } else {
                   if (comnLoadProv.isApiCall){
@@ -97,8 +97,6 @@ class _MyAlbumScreenState extends State<MyAlbumScreen> {
                             title: "Album",
                             isNotification : false,
                             isEditBtn: false,
-                            isAddPlayListBtn : false,
-                            isAddAlbumBtn : true,
                             isAddTrackBtn : false,
                           ),
                           SizedBox(

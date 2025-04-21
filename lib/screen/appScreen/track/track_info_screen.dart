@@ -32,8 +32,8 @@ import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dar
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
-class MusicInfoScreen extends StatefulWidget {
-  const MusicInfoScreen({
+class TrackInfoScreen extends StatefulWidget {
+  const TrackInfoScreen({
     super.key,
     required this.track,
   });
@@ -41,10 +41,10 @@ class MusicInfoScreen extends StatefulWidget {
   final Track track;
 
   @override
-  State<MusicInfoScreen> createState() => _MusicInfoScreenState();
+  State<TrackInfoScreen> createState() => _TrackInfoScreenState();
 }
 
-class _MusicInfoScreenState extends State<MusicInfoScreen> {
+class _TrackInfoScreenState extends State<TrackInfoScreen> {
   late String? loginMemberId;
   bool isAuth = false;
   bool isEdit = false;
@@ -54,14 +54,13 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
   late TrackProv trackProv;
   late PlayerProv playerProv;
   late Future<bool> _getTrackInfoFuture;
-  late Future<bool> _getRecommendCategoryTrackFuture;
+
 
   @override
   void initState() {
     print("MusicInfoScreen initstate");
     super.initState();
     _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getTrackInfo(widget.track.trackId);
-    _getRecommendCategoryTrackFuture = Provider.of<TrackProv>(context, listen: false).getRecommendCategoryTrack(widget.track.trackId,widget.track.trackCategoryId);
     _loadMemberId();
   }
 
@@ -114,7 +113,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
         child: Container(
           color: Color(0xff000000),
           width: 100.w,
-          height: 150.h,
+          height: 130.h,
           child: FutureBuilder<bool>(
             future: _getTrackInfoFuture,
             builder: (context, snapshot) {
@@ -137,7 +136,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                        height: 140.h,
+                        height: 100.h,
                         child: Stack(
                           children: [
                             Stack(
@@ -207,9 +206,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                     title: "",
                                     isNotification: true,
                                    isEditBtn: isAuth,
-                                  isAddPlayListBtn : false,
                                   isAddTrackBtn : false,
-                                  isAddAlbumBtn : false,
                                 )
                             ),
 
@@ -311,8 +308,8 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
 
                                         GestureDetector(
                                           onTap: () async {
-                                            await trackProv.setLastListenTrackId(widget.track.trackId!);
-                                            await playerProv.setAudioPlayer(trackProv);
+                                            // await trackProv.setLastListenTrackId(widget.track.trackId!);
+                                            // await playerProv.setAudioPlayer(trackProv);
                                           },
                                           child: Container(
                                             margin: EdgeInsets.all(5),
@@ -435,7 +432,7 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          GoRouter.of(context).push('/userPage/${widget.track.memberId}');
+                                          GoRouter.of(context).push('/memberPage/${widget.track.memberId}');
                                         },
                                         child: Column(
                                           children: [
@@ -493,34 +490,8 @@ class _MusicInfoScreenState extends State<MusicInfoScreen> {
                                     ],
                                   ),
                                   SizedBox(height: 20),
-                                  Text(
-                                    'Recommended Track',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  SizedBox(height: 10),
 
 
-                                  FutureBuilder<bool>(
-                                      future: _getRecommendCategoryTrackFuture,
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState == ConnectionState.waiting) {
-                                          return Center(child: CircularProgressIndicator());
-                                        } else if (snapshot.hasError) {
-                                          return Center(child: Text('오류 발생: ${snapshot.error}'));
-                                        } else if (!snapshot.hasData) {
-                                          return Center(child: Text('데이터가 없습니다.'));
-                                        }
-
-                                        List<Track> recommendTrackList = trackProv.trackListFilter("RecommendCategoryTrackList");
-
-                                        return TrackScrollHorizontalItem(trackList: recommendTrackList);
-                                   }
-                                 ),
-
-                                  SizedBox(height: 50),
                                 ],
                               ),
                             ),

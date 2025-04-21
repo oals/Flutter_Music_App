@@ -33,9 +33,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 title: "카테고리",
                 isNotification: true,
                 isEditBtn: false,
-                isAddPlayListBtn : false,
                 isAddTrackBtn : false,
-                isAddAlbumBtn : false,
               ),
               SizedBox(
                 height: 25,

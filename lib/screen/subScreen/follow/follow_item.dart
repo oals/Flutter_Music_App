@@ -46,7 +46,7 @@ class _FollowItemState extends State<FollowItem> {
         children: [
           GestureDetector(
             onTap: () {
-              GoRouter.of(context).push('/userPage/${widget.filteredFollowItem?.followMemberId}');
+              GoRouter.of(context).push('/memberPage/${widget.filteredFollowItem?.followMemberId}');
             },
             child: Row(
               children: [

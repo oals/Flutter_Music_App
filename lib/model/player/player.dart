@@ -12,9 +12,9 @@ class PlayerModel with ChangeNotifier{
   Duration totalDuration = Duration.zero;
   Timer? timer; // Timer 변수 추가
   double? height;
-  bool mounted = false;
+  // bool mounted = false;
   Offset dragOffset = Offset.zero;
-  ValueNotifier<Duration> positionNotifier = ValueNotifier<Duration>(Duration.zero);
+  // ValueNotifier<Duration> positionNotifier = ValueNotifier<Duration>(Duration.zero);
 
 
 

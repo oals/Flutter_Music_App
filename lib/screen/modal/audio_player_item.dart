@@ -84,19 +84,14 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                             color: Color(0xff000000),
                           ),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment
-                                .start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Stack(
                                 children: [
-
                                   ClipRRect(
-                                    borderRadius: BorderRadius
-                                        .only(
-                                      bottomLeft: Radius
-                                          .circular(35),
-                                      bottomRight: Radius
-                                          .circular(35),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(35),
+                                      bottomRight: Radius.circular(35),
                                     ),
 
                                     child: GestureDetector(
@@ -113,17 +108,13 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
 
                                   GestureDetector(
                                     onTap: () {
-                                      playerProv
-                                          .togglePlayPause(
-                                          playerModel
-                                              .isPlaying);
+                                      playerProv.togglePlayPause(playerModel.isPlaying,trackProv);
                                       setState(() {});
                                     },
                                     child: Container(
                                       width: 100.w,
                                       height: 99.h,
-                                      color: Colors
-                                          .transparent,
+                                      color: Colors .transparent,
                                     ),
                                   ),
 
@@ -131,10 +122,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                   if(!playerModel.isPlaying)
                                     GestureDetector(
                                       onTap: () {
-                                        playerProv
-                                            .togglePlayPause(
-                                            playerModel
-                                                .isPlaying);
+                                        playerProv.togglePlayPause(playerModel.isPlaying,trackProv);
                                         setState(() {});
                                       },
                                       child: Container(
@@ -142,18 +130,12 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                         height: 93.h,
                                         decoration: BoxDecoration(
                                           gradient: LinearGradient(
-                                            begin: Alignment
-                                                .bottomCenter,
-                                            end: Alignment
-                                                .topCenter,
+                                            begin: Alignment.bottomCenter,
+                                            end: Alignment.topCenter,
                                             colors: [
-                                              Colors
-                                                  .transparent
-                                                  .withOpacity(
-                                                  0.5),
+                                              Colors.transparent.withOpacity(0.5),
                                               // 하단은 어두운 색
-                                              Colors
-                                                  .transparent,
+                                              Colors.transparent,
                                               // 상단은 투명
                                             ],
                                             stops: [1, 1],
@@ -173,27 +155,20 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                             return Column(
                                               children: [
                                                 Row(
-                                                  mainAxisAlignment: MainAxisAlignment
-                                                      .spaceEvenly,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: [
                                                     value
                                                         ? CircularProgressIndicator()
                                                         : IconButton(
                                                       icon: Icon(
-                                                        !playerModel
-                                                            .isPlaying
-                                                            ? Icons
-                                                            .pause
+                                                        !playerModel.isPlaying
+                                                            ? Icons.pause
                                                             : null,
                                                         size: 48,
-                                                        color: Colors
-                                                            .white,
+                                                        color: Colors.white,
                                                       ),
                                                       onPressed: () {
-                                                        playerProv
-                                                            .togglePlayPause(
-                                                            playerModel
-                                                                .isPlaying);
+                                                        playerProv.togglePlayPause(playerModel.isPlaying,trackProv);
                                                         setState(() {});
                                                       },
                                                     ),
@@ -212,80 +187,44 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                     right: 2.w,
                                     left: 0.w,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Container(
-                                          padding: EdgeInsets
-                                              .only(
-                                              left: 15),
+                                          padding: EdgeInsets.only(left: 15),
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  print(
-                                                      '해당 곡 정보 페이지로 이동');
-
-                                                  playerProv
-                                                      .playerModel
-                                                      .fullScreen =
-                                                  false;
-                                                  appProv
-                                                      .isFullScreenFunc(
-                                                      false);
-                                                  GoRouter
-                                                      .of(
-                                                      context)
-                                                      .push(
-                                                      '/musicInfo',
-                                                      extra: widget.audioPlayerTrackItem);
+                                                  print('해당 곡 정보 페이지로 이동');
+                                                  playerProv.playerModel.fullScreen = false;
+                                                  appProv.isFullScreenFunc(false);
+                                                  GoRouter.of(context).push('/trackInfo', extra: widget.audioPlayerTrackItem);
                                                 },
                                                 child: SizedBox(
-                                                  width: 70
-                                                      .w,
+                                                  width: 70.w,
                                                   child: Text(
-                                                    widget.audioPlayerTrackItem
-                                                        .trackNm ??
-                                                        "잠시 후 다시 시도해주세요.",
+                                                    widget.audioPlayerTrackItem.trackNm ?? "잠시 후 다시 시도해주세요.",
                                                     style: TextStyle(
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight
-                                                          .w600,
-                                                      color: Colors
-                                                          .white,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Colors.white,
                                                     ),
-                                                    overflow: TextOverflow
-                                                        .ellipsis,
+                                                    overflow: TextOverflow.ellipsis,
                                                   ),
                                                 ),
                                               ),
                                               GestureDetector(
                                                 onTap: () async {
-                                                  print(
-                                                      '해당 유저 페이지로 이동');
-                                                  playerProv
-                                                      .playerModel
-                                                      .fullScreen =
-                                                  false;
-                                                  appProv
-                                                      .isFullScreenFunc(
-                                                      false);
+                                                  print('해당 유저 페이지로 이동');
+                                                  playerProv.playerModel.fullScreen = false;
+                                                  appProv.isFullScreenFunc(false);
 
-                                                  GoRouter
-                                                      .of(
-                                                      context)
-                                                      .push(
-                                                      '/userPage/${widget.audioPlayerTrackItem
-                                                          .memberId}');
+                                                  GoRouter.of(context).push('/memberPage/${widget.audioPlayerTrackItem.memberId}');
                                                 },
                                                 child: Text(
-                                                  widget.audioPlayerTrackItem
-                                                      .memberNickName ??
-                                                      "잠시 후 다시 시도해주세요.",
+                                                  widget.audioPlayerTrackItem.memberNickName ?? "잠시 후 다시 시도해주세요.",
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight
@@ -301,13 +240,8 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
 
                                         GestureDetector(
                                           onTap: () {
-                                            playerProv
-                                                .playerModel
-                                                .fullScreen =
-                                            false;
-                                            appProv
-                                                .isFullScreenFunc(
-                                                false);
+                                            playerProv.playerModel.fullScreen = false;
+                                            appProv.isFullScreenFunc(false);
                                             setState(() {});
                                           },
                                           child: Container(
@@ -336,96 +270,61 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                     top: 80.h,
                                     left: 0,
                                     right: 0,
-                                    child: Consumer<
-                                        PlayerProv>(
-                                        builder: (context,
-                                            playerProv,
-                                            child) {
-                                          return ValueListenableBuilder<Duration>(
-                                            valueListenable: playerModel.positionNotifier,
-                                            builder: (
-                                                context,
-                                                position,
-                                                child) {
-                                              return Column(
-                                                crossAxisAlignment: CrossAxisAlignment
-                                                    .end,
-                                                children: [
-                                                  Slider(
-                                                    value: playerModel
-                                                        .currentPosition
-                                                        .inSeconds
-                                                        .toDouble(),
-                                                    min: 0.0,
-                                                    max: playerModel
-                                                        .totalDuration
-                                                        .inSeconds
-                                                        .toDouble(),
-                                                    onChanged: playerProv
-                                                        .playerModel
-                                                        .isBuffering
-                                                        ? null
-                                                        : (
-                                                        value) {
-                                                      playerModel
-                                                          .currentPosition =
-                                                          Duration(
-                                                              seconds: value
-                                                                  .toInt());
-                                                      setState(() {});
-                                                    },
-                                                    onChangeEnd: playerModel
-                                                        .isBuffering
-                                                        ? null
-                                                        : playerProv
-                                                        .onSliderChangeEnd,
-                                                    activeColor: Colors
-                                                        .white,
-                                                    inactiveColor: Colors
-                                                        .grey,
-                                                  ),
+                                    child: Consumer<PlayerProv>(
+                                        builder: (context, playerProv, child) {
 
-                                                  Container(
-                                                    padding:
-                                                    EdgeInsets
-                                                        .only(
-                                                        left: 20,
-                                                        right: 30),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          '${playerModel
-                                                              .currentPosition
-                                                              .toString()
-                                                              .split(
-                                                              '.')
-                                                              .first}',
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Colors
-                                                                  .white),
-                                                        ),
-                                                        Text(
-                                                          '${playerModel
-                                                              .totalDuration
-                                                              .toString()
-                                                              .split(
-                                                              '.')
-                                                              .first}',
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Colors
-                                                                  .white),
-                                                        ),
-                                                      ],
+                                          return Column(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            children: [
+                                              Slider(
+                                                value: playerModel.currentPosition.inSeconds.toDouble(),
+                                                min: 0.0,
+                                                max: playerModel.totalDuration.inSeconds.toDouble(),
+                                                onChanged: playerProv.playerModel.isBuffering
+                                                    ? null
+                                                    : (value) {
+                                                  playerModel.currentPosition = Duration(seconds: value.toInt());
+                                                  setState(() {});
+                                                },
+                                                onChangeEnd: playerModel.isBuffering
+                                                    ? null
+                                                    : playerProv.onSliderChangeEnd,
+                                                activeColor: Colors.white,
+                                                inactiveColor: Colors.grey,
+                                              ),
+
+                                              Container(
+                                                padding:
+                                                EdgeInsets
+                                                    .only(
+                                                    left: 20,
+                                                    right: 30),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      '${playerModel.currentPosition.toString().split('.').first}',
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.white),
                                                     ),
-                                                  ),
-                                                ],
-                                              );
-                                            },
+                                                    Text(
+                                                      '${playerModel
+                                                          .totalDuration
+                                                          .toString()
+                                                          .split(
+                                                          '.')
+                                                          .first}',
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors
+                                                              .white),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           );
                                         }
                                     ),
@@ -437,14 +336,13 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                     right: 0,
                                     bottom: 0,
                                     child: CustomAudioPlayerBottomNavigation(
-                                      commentsCnt: widget.audioPlayerTrackItem
-                                          .commentsCnt,
-                                      currentIndex: appProv
-                                          .currentIndex,
+                                      currentIndex: appProv.currentIndex,
                                       trackInfoModel: widget.audioPlayerTrackItem,
                                       onTap: (index) async {
                                         appProv.currentIndex = index;
-                                        if (index == 2) {
+                                        if (index == 1) {
+                                          AppBottomModalRouter.fnModalRouter(context, 0, trackId: widget.audioPlayerTrackItem.trackId);
+                                        } else if (index == 2) {
                                           print("플리 팝업");
                                           AppBottomModalRouter.fnModalRouter(context, 7);
                                         } else
@@ -567,37 +465,21 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                                       thumbShape: RoundSliderThumbShape(
                                                           enabledThumbRadius: 0.0),
                                                       trackShape: CircularSliderTrackShape(
-                                                        progress: playerModel
-                                                            .totalDuration
-                                                            .inSeconds >
-                                                            0
-                                                            ? playerModel
-                                                            .currentPosition
-                                                            .inSeconds /
-                                                            playerModel
-                                                                .totalDuration
-                                                                .inSeconds
+                                                        progress: playerModel.totalDuration.inSeconds > 0
+                                                            ? playerModel.currentPosition.inSeconds / playerModel.totalDuration.inSeconds
                                                             : 0.0, // 진행 비율 계산
                                                       ),
 
                                                       trackHeight: 3.5, // 트랙의 두께
                                                     ),
                                                     child: Slider(
-                                                      value: playerModel
-                                                          .currentPosition
-                                                          .inSeconds
-                                                          .toDouble(),
+                                                      value: playerModel.currentPosition.inSeconds.toDouble(),
                                                       min: 0.0,
-                                                      max: playerModel
-                                                          .totalDuration
-                                                          .inSeconds
-                                                          .toDouble(),
+                                                      max: playerModel.totalDuration.inSeconds.toDouble(),
                                                       onChanged: null,
                                                       onChangeEnd: null,
-                                                      activeColor: Colors
-                                                          .white,
-                                                      inactiveColor: Colors
-                                                          .grey,
+                                                      activeColor: Colors.white,
+                                                      inactiveColor: Colors.grey,
                                                     ),
                                                   ),
                                                 ),
@@ -616,10 +498,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                                           .white,
                                                     ),
                                                     onPressed: () {
-                                                      playerProv
-                                                          .togglePlayPause(
-                                                          playerModel
-                                                              .isPlaying);
+                                                      playerProv.togglePlayPause(playerModel.isPlaying,trackProv);
                                                     }
                                                 ),
                                               ],

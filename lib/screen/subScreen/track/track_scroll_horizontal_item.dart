@@ -53,7 +53,9 @@ class _TrackScrollHorizontalItemState extends State<TrackScrollHorizontalItem> {
                     callBack: () async {
 
                       List<int> trackIdList = widget.trackList.map((item) => int.parse(item.trackId.toString())).toList();
+                      trackProv.audioPlayerTrackList = widget.trackList;
                       await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                      trackProv.notify();
 
                     },
                   ),

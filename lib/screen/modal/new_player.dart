@@ -66,6 +66,11 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                   if (index != -1) {
                     playerProv.currentPage = index;
                     trackProv.audioPlayerTrackList[index].isPlaying = true;
+
+                    WidgetsBinding.instance.addPostFrameCallback((_) async {
+                      await playerProv.initAudio(trackProv, trackProv.audioPlayerTrackList[playerProv.currentPage].trackId!);
+                    });
+
                   }
                   isInit = true;
                 }
@@ -84,7 +89,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                   ), // 페이지네이션
                   loop: false,// 반복
                   autoplay: false,// 자동 슬라이드
-                  duration: 300,// 속도
+                  duration: 500,// 속도
                   itemCount: trackProv.audioPlayerTrackList.length, // 슬라이드 개수
                   onIndexChanged: (index) async {
 
@@ -92,20 +97,21 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                       if(playerProv.page == index){
                         playerProv.page = -1;
                         playerProv.audioPlayerClear();
-                        await playerProv.audioPause();
+                        playerProv.togglePlayPause(!playerProv.playerModel.isPlaying,trackProv);
+                        trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
+                        trackProv.audioPlayerTrackList[index].isPlaying = true;
                       }
                     } else {
                       playerProv.audioPlayerClear();
-                      await playerProv.audioPause();
+                      playerProv.togglePlayPause(!playerProv.playerModel.isPlaying,trackProv);
                       trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
                       trackProv.audioPlayerTrackList[index].isPlaying = true;
                     }
 
                     if(playerProv.page == -1){
                       playerProv.currentPage = index;
-                      Future.delayed(Duration(seconds: 1)).then((value) async {
-                        // await playerProv.initAudio(trackProv, trackProv.audioPlayerTrackList[playerProv.currentPage].trackId!);
-                      });
+                      await playerProv.playTrackAtIndex(playerProv.currentPage);
+                      await trackProv.setLastListenTrackId(trackProv.audioPlayerTrackList[index].trackId!);
                     }
 
                   },

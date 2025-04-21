@@ -7,22 +7,24 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/player/player.dart';
+import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/modal/new_player.dart';
 
 class PlayerProv extends ChangeNotifier {
-  PlayerModel playerModel = PlayerModel();
-  late AudioPlayer _audioPlayer= AudioPlayer();
-  ValueNotifier<bool> audioPlayerNotifier = ValueNotifier<bool>(false);
-  String audioPlayerTrackListCd = '';
 
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  final ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: []);
+
+  PlayerModel playerModel = PlayerModel();
+
+  ValueNotifier<bool> audioPlayerNotifier = ValueNotifier<bool>(false);
   late SwiperController swiperController;
+
   int currentPage = 0;
   int page = -1;
 
-  bool isAudioInit = false;
-  bool isSetEventListener = false;
-  bool isCompletedHandled = false;
+
   void notify() {
     notifyListeners();
   }
@@ -39,96 +41,85 @@ class PlayerProv extends ChangeNotifier {
   }
 
 
-  Future<bool> setAudioPlayer(TrackProv trackProv) async{
+  Future<void> setupQueue(List<Track> audioTrackPlayList) async {
 
-    try {
+    _playlist.clear();
 
-      await audioPause();
+    for (Track track in audioTrackPlayList) {
+      String m3u8Url = dotenv.get("STREAM_URL") + '/${track.trackId}/playList.m3u8';
+      final source = AudioSource.uri(Uri.parse(m3u8Url));
+      _playlist.add(source); // 큐에 추가
+    }
 
-      // await trackProv.getLastListenTrackId();
+    await _audioPlayer.setAudioSource(_playlist); // 큐를 오디오 플레이어에 설정
+  }
 
-      // await trackProv.getAudioPlayerTrackList();
 
-      audioPlayerUiReload();
-
-      // await initAudio(trackProv);
-      // togglePlayPause(true);
-      // isAudioInit = true;
-
-      return true;
-    } catch (e) {
-      print(e);
-      return false;
+  Future<void> playTrackAtIndex(int index) async {
+    if (index >= 0 && index < _playlist.length) {
+      await _audioPlayer.seek(Duration.zero, index: index);
+      if (playerModel.isPlaying) {
+        await _audioPlayer.play();
+      }
+    } else {
+      print("잘못된 인덱스.");
     }
   }
 
+  Future<void> removeTrack(int index) async {
+    if (index >= 0 && index < _playlist.length) {
+      _playlist.removeAt(index); // 특정 인덱스의 트랙 제거
+    } else {
+      print("오디오 플레이리스트 트랙 제거 중 오류");
+    }
+  }
 
   Future<void> initAudio(TrackProv trackProv, int trackId) async {
-
     print("initAudio");
+    await setupQueue(trackProv.audioPlayerTrackList);
+    _audioPlayer.setLoopMode(LoopMode.off);
 
-    String m3u8Url = dotenv.get("STREAM_URL") + '/${trackId}/playList.m3u8';
+    audioPlayerPositionUpdate();
+  }
 
-    final source = AudioSource.uri(Uri.parse(m3u8Url));
+  void audioPlayerPositionUpdate() {
+    
+    playerModel.isBuffering = _audioPlayer.playbackEvent.processingState == ProcessingState.buffering;
 
-    await _audioPlayer.setAudioSource(source);
+    // 현재 재생 위치 업데이트
+    playerModel.currentPosition = _audioPlayer.position;
 
-    setAudioEventListener(trackProv);
+    // 총 재생 시간 업데이트
+    playerModel.totalDuration = _audioPlayer.playbackEvent.duration ?? Duration.zero;
 
   }
 
-  void setAudioEventListener(TrackProv trackProv){
 
-    if(isSetEventListener)
-      return;
+  void setTimer(TrackProv trackProv) async {
 
-    _audioPlayer.playbackEventStream.listen((event) async {
+    if(playerModel.timer == null) {
+      playerModel.timer = Timer.periodic(Duration(seconds: 1), (timer) async {
 
-      // 처리 상태를 확인하여 버퍼링 상태를 표시
-      playerModel.isBuffering = event.processingState == ProcessingState.buffering;
+        audioPlayerPositionUpdate();
 
-      // 현재 재생 위치 업데이트
-      playerModel.currentPosition = _audioPlayer.position;
+        if (playerModel.currentPosition.inSeconds == playerModel.totalDuration.inSeconds - 1) {
 
-      // 총 재생 시간 업데이트
-      playerModel.totalDuration = event.duration ?? Duration.zero;
+          if (page == -1 ) {
+            page = currentPage + 1;
+          } else {
+            currentPage = page;
+            page = page + 1;
+          }
 
-      if (event.processingState == ProcessingState.completed && !isCompletedHandled) {
-        isCompletedHandled = true;
+          swiperController.move(page, animation: true);
+          await playTrackAtIndex(page);
+        }
 
+        notify();
 
+      });
+    }
 
-
-
-        isCompletedHandled = false;
-      }
-
-      isSetEventListener = true;
-      notify();
-
-    });
-
-  }
-
-  void audioPlayerUiReload() {
-    audioPlayerNotifier.value = !audioPlayerNotifier.value;
-  }
-
-  Future<void> audioPause() async {
-    _audioPlayer.pause();
-    playerModel.isPlaying = false;
-    stopTimer();
-    await _audioPlayer.pause();
-  }
-
-
-  void setTimer() async {
-    // 1초마다 setState를 호출하여 Slider를 업데이트
-    playerModel.timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      // 매초마다 현재 위치를 갱신
-      playerModel.currentPosition = _audioPlayer.position;
-      notify();
-    });
   }
 
   void stopTimer() {
@@ -137,14 +128,14 @@ class PlayerProv extends ChangeNotifier {
   }
 
   // 재생/일시정지 버튼
-  void togglePlayPause(bool isPlaying) async {
+  void togglePlayPause(bool isPlaying, TrackProv trackProv) async {
     if (isPlaying) {
       playerModel.isPlaying = false;
       stopTimer();
       await _audioPlayer.pause();
     } else {
       playerModel.isPlaying = true;
-      setTimer();
+      setTimer(trackProv);
       await _audioPlayer.play();
     }
     notify();

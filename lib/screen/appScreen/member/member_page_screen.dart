@@ -19,6 +19,7 @@ import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
+import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 
 import 'package:skrrskrr/screen/modal/track/title_info_edit.dart';
 import 'package:skrrskrr/screen/appScreen/playlist/play_list_screen.dart';
@@ -31,8 +32,10 @@ import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
-class UserPageScreen extends StatefulWidget {
-  const UserPageScreen({
+import '../../../prov/player_prov.dart';
+
+class MemberPageScreen extends StatefulWidget {
+  const MemberPageScreen({
     super.key,
     required this.memberId,
   });
@@ -40,10 +43,10 @@ class UserPageScreen extends StatefulWidget {
   final int memberId;
 
   @override
-  State<UserPageScreen> createState() => _UserPageScreenState();
+  State<MemberPageScreen> createState() => _MemberPageScreenState();
 }
 
-class _UserPageScreenState extends State<UserPageScreen> {
+class _MemberPageScreenState extends State<MemberPageScreen> {
   bool isAuth = false;
   bool isEdit = false;
   late MemberProv memberProv;
@@ -229,9 +232,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                               title: "",
                               isNotification: true,
                               isEditBtn: isAuth,
-                              isAddPlayListBtn: false,
                               isAddTrackBtn: false,
-                              isAddAlbumBtn: false,
                             ),
                           ),
                           Positioned(
@@ -438,14 +439,34 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
-                                          Text(
-                                            'Playlists',
-                                            style: GoogleFonts.roboto(
-                                                color: Colors.white,
-                                                fontSize: 19,
-                                                fontWeight: FontWeight.w600),
+                                          Row(
+                                            children: [
+                                                Text(
+                                                  'Playlists',
+                                                  style: GoogleFonts.roboto(
+                                                      color: Colors.white,
+                                                      fontSize: 19,
+                                                      fontWeight: FontWeight.w600),
+                                                ),
+
+                                              if(isAuth)...[
+                                                SizedBox(width: 5,),
+
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    AppBottomModalRouter.fnModalRouter(context, 2);
+                                                  },
+                                                  child: Icon(
+                                                    Icons.add_circle_outline,
+                                                    color: Colors.white,
+                                                  ),
+                                                )
+                                              ]
+
+                                            ],
                                           ),
-                                          if (playListList.memberPagePlayListTotalCount != 6)
+
+                                          if (playListList.memberPagePlayListTotalCount! > 6)
                                             GestureDetector(
                                               onTap: () {
                                                 GoRouter.of(context).push('/memberPlayList/${memberModel.memberId}');
@@ -498,14 +519,33 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
-                                            Text(
-                                              'Albums',
-                                              style: GoogleFonts.roboto(
-                                                  color: Colors.white,
-                                                  fontSize: 19,
-                                                  fontWeight: FontWeight.w600),
+                                            Row(
+                                              children: [
+                                                  Text(
+                                                    'Albums',
+                                                    style: GoogleFonts.roboto(
+                                                        color: Colors.white,
+                                                        fontSize: 19,
+                                                        fontWeight: FontWeight.w600),
+                                                  ),
+
+                                                if(isAuth)...[
+                                                  SizedBox(width: 5,),
+
+                                                  GestureDetector(
+                                                    onTap : (){
+                                                      AppBottomModalRouter.fnModalRouter(context, 5,isAlbum: true);
+                                                    },
+                                                    child: Icon(
+                                                      Icons.add_circle_outline,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
+                                                ]
+
+                                              ],
                                             ),
-                                            if (playListList.memberPagePlayListTotalCount != 6)
+                                            if (playListList.memberPageAlbumTotalCount! > 6)
                                               GestureDetector(
                                                 onTap: () {
                                                   GoRouter.of(context).push('/memberAlbums/${memberModel.memberId}');
@@ -537,6 +577,7 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                             ],
                                           ),
                                         ),
+
                                       ],
                                     );
                                   }
@@ -586,6 +627,9 @@ class _UserPageScreenState extends State<UserPageScreen> {
                                             child: TrackListItem(
                                               trackItem: allTrackList[i],
                                               isAudioPlayer: false,
+                                              initAudioCallBack: (PlayerProv playerProv) {
+
+                                              },
                                               callBack: (){
 
                                             },)

@@ -83,7 +83,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
 
                     Future<void> fnRouter(memberId)  async{
-                      GoRouter.of(context).push('/userPage/${memberId}');
+                      GoRouter.of(context).push('/memberPage/${memberId}');
                     }
 
                     return SingleChildScrollView(

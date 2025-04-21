@@ -23,22 +23,20 @@ class _CategoryItemState extends State<CategoryItem> {
         widget.callBack()
       },
       child: Container(
-        width: 100.w,
-        padding: EdgeInsets.only(left: 5,top: 15,bottom: 15),
+        width: 40.w,
+        height: 5.h,
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              width: 1.5, // 선의 두께
-              color: Colors.grey, // 선의 색상
-            ),
-          ),
+          border: Border.all(width: 2,color: Colors.grey),
+          borderRadius: BorderRadius.circular(100)
         ),
-        child: Text(
-          widget.title,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-            fontSize: 16,
+        child: Center(
+          child: Text(
+            widget.title,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
           ),
         ),
       ),

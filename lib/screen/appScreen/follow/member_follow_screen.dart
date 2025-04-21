@@ -8,18 +8,18 @@ import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/follow/follow_list.dart';
 
 
-class FollowScreen extends StatefulWidget {
-  const FollowScreen({
+class MemberFollowScreen extends StatefulWidget {
+  const MemberFollowScreen({
     super.key,
     
   });
 
 
   @override
-  State<FollowScreen> createState() => _FollowScreenState();
+  State<MemberFollowScreen> createState() => _MemberFollowScreenState();
 }
 
-class _FollowScreenState extends State<FollowScreen>
+class _MemberFollowScreenState extends State<MemberFollowScreen>
     with SingleTickerProviderStateMixin {
 
   late TabController _tabController;
@@ -75,9 +75,7 @@ class _FollowScreenState extends State<FollowScreen>
                       title: titleText,
                       isNotification: true,
                     isEditBtn: false,
-                    isAddPlayListBtn : false,
                     isAddTrackBtn : false,
-                    isAddAlbumBtn : false,
                   ),
                   SizedBox(height: 10,),
 

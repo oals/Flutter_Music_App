@@ -32,7 +32,7 @@ class _CustomCachedNetworkImageState extends State<CustomCachedNetworkImage> {
         return CircularProgressIndicator();  // 로딩 중에 표시할 위젯
       },
       errorWidget: (context, url, error) {
-        print('이미지 로딩 실패: $error');
+        // print('이미지 로딩 실패: $error');
         return Icon(Icons.error);  // 로딩 실패 시 표시할 위젯
       },
       fadeInDuration: Duration(milliseconds: 500),  // 이미지가 로드될 때 페이드 인 효과
