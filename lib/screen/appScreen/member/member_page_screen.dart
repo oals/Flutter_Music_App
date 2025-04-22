@@ -625,12 +625,13 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                       for (int i = 0; i < allTrackList.length; i++) ...[
                                         Container(padding: EdgeInsets.only(bottom: 10),
                                             child: TrackListItem(
+                                              appScreenName: "MemberPageScreen",
                                               trackItem: allTrackList[i],
                                               isAudioPlayer: false,
                                               initAudioCallBack: (PlayerProv playerProv) {
 
                                               },
-                                              callBack: (){
+                                              initAudioPlayerTrackListCallBack: (){
 
                                             },)
                                         ),

@@ -21,6 +21,8 @@ class PlayerProv extends ChangeNotifier {
   ValueNotifier<bool> audioPlayerNotifier = ValueNotifier<bool>(false);
   late SwiperController swiperController;
 
+  String? currentAppScreen = "";
+
   int currentPage = 0;
   int page = -1;
 
@@ -56,13 +58,16 @@ class PlayerProv extends ChangeNotifier {
 
 
   Future<void> playTrackAtIndex(int index) async {
-    if (index >= 0 && index < _playlist.length) {
+
+    print('add');
+    print(index);
+    print(_playlist.length - 1);
+
+    if (index >= 0 && index <= ( _playlist.length - 1) ) {
       await _audioPlayer.seek(Duration.zero, index: index);
       if (playerModel.isPlaying) {
         await _audioPlayer.play();
       }
-    } else {
-      print("잘못된 인덱스.");
     }
   }
 
@@ -74,7 +79,7 @@ class PlayerProv extends ChangeNotifier {
     }
   }
 
-  Future<void> initAudio(TrackProv trackProv, int trackId) async {
+  Future<void> initAudio(TrackProv trackProv) async {
     print("initAudio");
     await setupQueue(trackProv.audioPlayerTrackList);
     _audioPlayer.setLoopMode(LoopMode.off);
@@ -102,17 +107,20 @@ class PlayerProv extends ChangeNotifier {
 
         audioPlayerPositionUpdate();
 
-        if (playerModel.currentPosition.inSeconds == playerModel.totalDuration.inSeconds - 1) {
+        if (playerModel.currentPosition.inSeconds == (playerModel.totalDuration.inSeconds - 1)) {
 
-          if (page == -1 ) {
-            page = currentPage + 1;
+          int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
+
+          if (index + 1 < trackProv.audioPlayerTrackList.length) {
+            swiperController.move(index + 1, animation: true);
+            await playTrackAtIndex(index);
           } else {
-            currentPage = page;
-            page = page + 1;
+            playerModel.isPlaying = false;
+            stopTimer();
+            await _audioPlayer.pause();
+            print("마지막 곡 종료.");
           }
 
-          swiperController.move(page, animation: true);
-          await playTrackAtIndex(page);
         }
 
         notify();

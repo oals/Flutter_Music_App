@@ -18,14 +18,16 @@ class TrackListItem extends StatefulWidget {
     super.key,
     required this.trackItem,
     required this.initAudioCallBack,
-    required this.callBack,
+    required this.initAudioPlayerTrackListCallBack,
     required this.isAudioPlayer,
+    required this.appScreenName,
   });
 
   final Track trackItem;
-  final Function callBack;
+  final Function initAudioPlayerTrackListCallBack;
   final Function initAudioCallBack;
   final bool isAudioPlayer;
+  final String? appScreenName;
 
 
   @override
@@ -46,21 +48,36 @@ class _TrackListItemState extends State<TrackListItem> {
 
         if (!widget.trackItem.isPlaying) {
 
+          // widget.trackItem.isPlaying = true;
 
-          widget.trackItem.isPlaying = true;
-          print(widget.trackItem.trackNm);
+          // await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
 
-          await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
+          // int index2 = trackProv.trackModel.trackList.indexWhere((item) => item.trackId == widget.trackItem.trackId);
+          // trackProv.trackModel.trackList[index2].isPlaying = true;
 
-          trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
-          await widget.callBack(); /// 새 오디오 플레이리스트 저장
-
-          await widget.initAudioCallBack(playerProv); /// 새 오디오 플레이리스트 저장
+          // trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
 
 
-          int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
+
+          /// 오디오 플레이어 트랙 리스트에서 선택시 실행되면안됨
+          /// 이전에 누른 리스트랑 같은 리스트에서 선택시 실행되면 안됨
+
+          if (widget.appScreenName != "AudioPlayerTrackListModal") {
+            if (playerProv.currentAppScreen != widget.appScreenName) {
+              print("이전화면과다름true");
+              playerProv.currentAppScreen = widget.appScreenName;
+
+              await widget.initAudioPlayerTrackListCallBack(); /// 오디오 재생목록 생성
+
+              await widget.initAudioCallBack(playerProv); /// 오디오 초기화 및 로드
+            }
+          }
+
+
+
+          int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId == widget.trackItem.trackId);
           if (index != -1) {
-            trackProv.audioPlayerTrackList[index].isPlaying = true;
+            // trackProv.audioPlayerTrackList[index].isPlaying = true;
 
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               playerProv.page = index;

@@ -287,11 +287,12 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                           ),
                           TrackListItem(
                             trackItem: searchTrackList[i],
+                            appScreenName: "SearchScreen",
                             isAudioPlayer: false,
                             initAudioCallBack: (PlayerProv playerProv) {
 
                             },
-                            callBack: () async {
+                            initAudioPlayerTrackListCallBack: () async {
                             List<int> trackIdList = searchTrackList.map((item) => int.parse(item.trackId.toString())).toList();
                             await trackProv.setAudioPlayerTrackIdList(trackIdList);
                           },)

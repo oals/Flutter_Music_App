@@ -397,8 +397,8 @@ class TrackProv extends ChangeNotifier {
 
         lastTrackId = trackId.toString();
 
-        int index = trackModel.trackList.indexWhere((item) => item.trackId.toString() == lastTrackId);
-        trackModel.trackList[index].isPlaying = true;
+        // int index = trackModel.trackList.indexWhere((item) => item.trackId.toString() == lastTrackId);
+        // trackModel.trackList[index].isPlaying = true;
 
         print('$url - Successful');
         return true;

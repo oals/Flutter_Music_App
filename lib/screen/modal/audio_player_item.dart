@@ -40,7 +40,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
   @override
   Widget build(BuildContext context) {
     appProv = Provider.of<AppProv>(context);
-    playerProv = Provider.of<PlayerProv>(context, listen: false);
+    playerProv = Provider.of<PlayerProv>(context);
     trackProv = Provider.of<TrackProv>(context, listen: false);
     playerModel = playerProv.playerModel;
 

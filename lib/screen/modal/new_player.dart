@@ -68,7 +68,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                     trackProv.audioPlayerTrackList[index].isPlaying = true;
 
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
-                      await playerProv.initAudio(trackProv, trackProv.audioPlayerTrackList[playerProv.currentPage].trackId!);
+                      await playerProv.initAudio(trackProv);
                     });
 
                   }
@@ -89,26 +89,20 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                   ), // 페이지네이션
                   loop: false,// 반복
                   autoplay: false,// 자동 슬라이드
-                  duration: 500,// 속도
+                  duration: 400,// 속도
                   itemCount: trackProv.audioPlayerTrackList.length, // 슬라이드 개수
                   onIndexChanged: (index) async {
 
-                    if(playerProv.page != -1 ){
-                      if(playerProv.page == index){
-                        playerProv.page = -1;
-                        playerProv.audioPlayerClear();
-                        playerProv.togglePlayPause(!playerProv.playerModel.isPlaying,trackProv);
-                        trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
-                        trackProv.audioPlayerTrackList[index].isPlaying = true;
-                      }
-                    } else {
+                    if (playerProv.page == index){
+                      playerProv.page = -1;
+                    }
+
+                    if (playerProv.page == -1 ){
                       playerProv.audioPlayerClear();
                       playerProv.togglePlayPause(!playerProv.playerModel.isPlaying,trackProv);
                       trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
                       trackProv.audioPlayerTrackList[index].isPlaying = true;
-                    }
 
-                    if(playerProv.page == -1){
                       playerProv.currentPage = index;
                       await playerProv.playTrackAtIndex(playerProv.currentPage);
                       await trackProv.setLastListenTrackId(trackProv.audioPlayerTrackList[index].trackId!);

@@ -23,6 +23,8 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
   void initState() {
     super.initState();
     scrollController = ScrollController();
+    print('AudioPlayerTrackList InitState');
+    setCurrentPlaying();
   }
 
   @override
@@ -31,17 +33,10 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    trackProv = Provider.of<TrackProv>(context);
-    playerProv = Provider.of<PlayerProv>(context);
-
-    // 화면 빌드 후 자동 스크롤 설정
+  void setCurrentPlaying(){
     WidgetsBinding.instance.addPostFrameCallback((_) {
 
-      print('123123');
       int playingTrackIndex = trackProv.audioPlayerTrackList.indexWhere((trackItem) => trackItem.isPlaying == true);
-
 
       if (playingTrackIndex != -1 && scrollController.hasClients) {
         // 해당 인덱스 위치로 스크롤
@@ -52,6 +47,13 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
         );
       }
     });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    trackProv = Provider.of<TrackProv>(context);
+    playerProv = Provider.of<PlayerProv>(context);
 
     return Container(
       width: 100.w,
@@ -148,6 +150,7 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
                             playerProv.removeTrack(i);
                             playerProv.currentPage = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
                             trackProv.audioPlayerTrackList = List.from(trackProv.audioPlayerTrackList);
+                            setCurrentPlaying();
 
                             trackProv.notify();
                             playerProv.notify();
@@ -160,11 +163,12 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
                           ),
                           child: TrackListItem(
                             trackItem: trackProv.audioPlayerTrackList[i],
+                            appScreenName: "AudioPlayerTrackListModal",
                             isAudioPlayer: true,
                             initAudioCallBack: (PlayerProv playerProv) {
 
                             },
-                            callBack: () async {
+                            initAudioPlayerTrackListCallBack: () async {
                               List<int> trackIdList = trackProv.audioPlayerTrackList.map((item) => int.parse(item.trackId.toString())).toList();
                               await trackProv.setAudioPlayerTrackIdList(trackIdList);
                             },

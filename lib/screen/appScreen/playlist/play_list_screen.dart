@@ -370,11 +370,12 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                       for(int i = 0; i < trackList.length; i++)...[
                                         TrackListItem(
                                           trackItem: trackList[i],
+                                          appScreenName: "PlayListScreen",
                                           isAudioPlayer: false,
                                           initAudioCallBack: (PlayerProv playerProv) {
 
                                           },
-                                          callBack: () async {
+                                          initAudioPlayerTrackListCallBack: () async {
                                                 List<int> trackIdList = trackList.map((item) => int.parse(item.trackId.toString())).toList();
                                                 await trackProv.setAudioPlayerTrackIdList(trackIdList);
                                               },

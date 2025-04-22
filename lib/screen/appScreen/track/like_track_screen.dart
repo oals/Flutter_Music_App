@@ -115,10 +115,11 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                         padding: const EdgeInsets.only(left: 8.0,right: 8),
                         child: TrackListItem(trackItem: track,
                           isAudioPlayer: false,
+                          appScreenName: "LikeTrackScreen",
                           initAudioCallBack: (PlayerProv playerProv) {
 
                           },
-                          callBack: () async {
+                          initAudioPlayerTrackListCallBack: () async {
 
 
                             List<int> trackIdList = likeTrackList.map((item) => int.parse(item.trackId.toString())).toList();

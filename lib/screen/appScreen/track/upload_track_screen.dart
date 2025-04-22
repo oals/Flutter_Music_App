@@ -112,12 +112,13 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                         padding: const EdgeInsets.only(left: 8.0,right: 8),
                         child: TrackListItem(
                           trackItem: track,
+                          appScreenName: "UploadTrackScreen",
                           initAudioCallBack: (PlayerProv playerProv) async {
 
-                            await playerProv.initAudio(trackProv, trackProv.audioPlayerTrackList[playerProv.currentPage].trackId!);
+                            await playerProv.initAudio(trackProv);
                           },
                           isAudioPlayer: false,
-                          callBack: () async {
+                          initAudioPlayerTrackListCallBack: () async {
                             List<int> trackIdList = uploadTrackList.map((item) => int.parse(item.trackId.toString())).toList();
                             trackProv.audioPlayerTrackList = uploadTrackList;
                             await trackProv.setAudioPlayerTrackIdList(trackIdList);
