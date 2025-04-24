@@ -4,17 +4,19 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/utils/helpers.dart';
+import 'package:http/http.dart' as http;
 
 class AuthService {
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn(
       clientId : dotenv.get("WEB_OAUTH_2_CLIENT_ID")
   );
 
   Future<User?> signInWithGoogle() async {
-      /// 로그인 팝업 생성
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      ///로그인 된 계정에 대한 인증 토큰 가져오기
+    /// 로그인 팝업 생성
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    ///로그인 된 계정에 대한 인증 토큰 가져오기
     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
     ///Firebase Authentication에 로그인할 수 있는  자격증명 생성
@@ -29,10 +31,10 @@ class AuthService {
     UserCredential userCredential = await _auth.signInWithCredential(credential);
 
     //idToken 검증 과정 위해 서버로 전송
-    final url= '/auth/fireBaseAuthing';
+    final url = '/auth/fireBaseAuthing';
 
     try {
-      final response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
           url,
           method: "POST",
           headers: {
@@ -41,18 +43,14 @@ class AuthService {
           },
       );
 
-      if(response['status'] == '200'){
+      if (response.statusCode == 200) {
         return userCredential.user;
       } else {
-        // 오류 처리
         return null;
       }
     } catch (error) {
       return null;
     }
-
-
-
   }
 
   Future<void> signOut() async {

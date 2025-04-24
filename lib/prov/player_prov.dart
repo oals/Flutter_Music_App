@@ -15,17 +15,12 @@ class PlayerProv extends ChangeNotifier {
 
   final AudioPlayer _audioPlayer = AudioPlayer();
   final ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: []);
-
   PlayerModel playerModel = PlayerModel();
-
   ValueNotifier<bool> audioPlayerNotifier = ValueNotifier<bool>(false);
   late SwiperController swiperController;
-
   String? currentAppScreen = "";
-
   int currentPage = 0;
   int page = -1;
-
 
   void notify() {
     notifyListeners();
@@ -42,7 +37,6 @@ class PlayerProv extends ChangeNotifier {
     playerModel.dragOffset = Offset.zero;
   }
 
-
   Future<void> setupQueue(List<Track> audioTrackPlayList) async {
 
     _playlist.clear();
@@ -50,7 +44,7 @@ class PlayerProv extends ChangeNotifier {
     for (Track track in audioTrackPlayList) {
       String m3u8Url = dotenv.get("STREAM_URL") + '/${track.trackId}/playList.m3u8';
       final source = AudioSource.uri(Uri.parse(m3u8Url));
-      _playlist.add(source); // 큐에 추가
+      _playlist.add(source);
     }
 
     await _audioPlayer.setAudioSource(_playlist); // 큐를 오디오 플레이어에 설정
@@ -58,10 +52,6 @@ class PlayerProv extends ChangeNotifier {
 
 
   Future<void> playTrackAtIndex(int index) async {
-
-    print('add');
-    print(index);
-    print(_playlist.length - 1);
 
     if (index >= 0 && index <= ( _playlist.length - 1) ) {
       await _audioPlayer.seek(Duration.zero, index: index);
@@ -73,15 +63,18 @@ class PlayerProv extends ChangeNotifier {
 
   Future<void> removeTrack(int index) async {
     if (index >= 0 && index < _playlist.length) {
-      _playlist.removeAt(index); // 특정 인덱스의 트랙 제거
+      _playlist.removeAt(index);
     } else {
       print("오디오 플레이리스트 트랙 제거 중 오류");
     }
   }
 
   Future<void> initAudio(TrackProv trackProv) async {
+
     print("initAudio");
+
     await setupQueue(trackProv.audioPlayerTrackList);
+
     _audioPlayer.setLoopMode(LoopMode.off);
 
     audioPlayerPositionUpdate();
@@ -99,10 +92,10 @@ class PlayerProv extends ChangeNotifier {
 
   }
 
-
   void setTimer(TrackProv trackProv) async {
 
-    if(playerModel.timer == null) {
+    if (playerModel.timer == null) {
+
       playerModel.timer = Timer.periodic(Duration(seconds: 1), (timer) async {
 
         audioPlayerPositionUpdate();
@@ -120,19 +113,15 @@ class PlayerProv extends ChangeNotifier {
             await _audioPlayer.pause();
             print("마지막 곡 종료.");
           }
-
         }
-
         notify();
-
       });
     }
-
   }
 
   void stopTimer() {
-    playerModel.timer?.cancel(); // 타이머 취소
-    playerModel.timer = null;    // 타이머 변수 초기화
+    playerModel.timer?.cancel();
+    playerModel.timer = null;
   }
 
   // 재생/일시정지 버튼
@@ -149,8 +138,6 @@ class PlayerProv extends ChangeNotifier {
     notify();
   }
 
-
-
   // 드래그 중일 때 크기 조정
   void handleDragUpdate(DragUpdateDetails details) {
     playerModel.dragOffset += details.delta;
@@ -163,7 +150,7 @@ class PlayerProv extends ChangeNotifier {
     notify();
   }
 
-// 드래그가 끝났을 때 처리
+  // 드래그가 끝났을 때 처리
   bool handleDragEnd() {
     if (playerModel.height == 80) {
       playerModel.fullScreen = false;
@@ -190,6 +177,5 @@ class PlayerProv extends ChangeNotifier {
     playerModel.fullScreen = true;
     notify();
   }
-
 
 }

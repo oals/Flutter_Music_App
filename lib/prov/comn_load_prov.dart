@@ -5,7 +5,7 @@ import 'package:skrrskrr/prov/track_prov.dart';
 class ComnLoadProv extends ChangeNotifier{
 
   bool isApiCall = false;
-  int offset = 0;
+  int listDataOffset = 0;
 
   void notify() {
     notifyListeners();
@@ -15,19 +15,20 @@ class ComnLoadProv extends ChangeNotifier{
     isApiCall = false;
   }
 
+  Future<void> loadMoreData(dynamic provider, String apiName, int offset, {searchText,memberId, playListId, isAlbum, trackId}) async {
 
-  Future<void> loadMoreData(dynamic provider,String apiName, int offset, {searchText,memberId, playListId, isAlbum, trackId}) async {
+    listDataOffset = offset;
     if (!isApiCall) {
       setApiCallStatus(true);
       await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
       if (apiName == 'UploadTrack') {
-        await provider.getUploadTrack(offset);
+        await provider.getUploadTrack(offset,20);
       } else if (apiName == 'LikeTrack'){
-        await provider.getLikeTrack(offset);
-      } else if(apiName == 'MemberPageTrack') {
-        await provider.getMemberPageTrack(memberId,offset);
+        await provider.getLikeTrack(offset,20);
+      } else if (apiName == 'MemberPageTrack') {
+        await provider.getMemberPageTrack(memberId,offset,20);
       } else if (apiName == 'SearchTrack') {
-        await provider.getSearchTrack(searchText,offset);
+        await provider.getSearchTrack(searchText,offset,20);
       } else if (apiName == 'SearchMember') {
         await provider.getSearchMember(searchText,offset,20);
       } else if (apiName == 'SearchPlayList') {
@@ -41,8 +42,6 @@ class ComnLoadProv extends ChangeNotifier{
       } else if (apiName == "LikePlayLists") {
         await provider.getLikePlayList(offset, isAlbum);
       }
-
-
 
       setApiCallStatus(false);
     }
@@ -62,6 +61,4 @@ class ComnLoadProv extends ChangeNotifier{
     isApiCall = false;
     notify();
   }
-
-
 }

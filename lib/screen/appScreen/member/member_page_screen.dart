@@ -29,7 +29,8 @@ import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indica
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_lists_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
+
+import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 import '../../../prov/player_prov.dart';
@@ -71,7 +72,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
     print("UserPageScreen initstate");
     super.initState();
     _getUserInitFuture = Provider.of<MemberProv>(context, listen: false).getMemberPageInfo(widget.memberId);
-    _getUserTrackFuture = Provider.of<TrackProv>(context, listen: false).getMemberPageTrack(widget.memberId, 0);
+    _getUserTrackFuture = Provider.of<TrackProv>(context, listen: false).getMemberPageTrack(widget.memberId, 0,20);
     _getUserPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getMemberPagePlayList(widget.memberId,0,7);
     _getUserAlbumFuture = Provider.of<PlayListProv>(context, listen: false).getMemberPageAlbum(widget.memberId,0,7);
     _getUserPopularTrackFuture = Provider.of<TrackProv>(context, listen: false).getMemberPagePopularTrack(widget.memberId);
@@ -409,11 +410,44 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                   return CircularProgressIndicator();
                                 } else {
 
-                                  popularTrackList = trackProv.trackListFilter("MemberPagePopularTrackList");
-                                  return Column(
-                                    children: [
-                                      TrackScrollHorizontalItem(trackList: popularTrackList)
-                                    ]
+                                  if (popularTrackList.isEmpty){
+                                    popularTrackList = trackProv.trackListFilter("MemberPagePopularTrackList");
+                                  }
+
+                                  return SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        Wrap(
+                                          spacing: 5.0, // 아이템 간의 가로 간격
+                                          runSpacing: 20.0, // 줄 간격
+                                          alignment: WrapAlignment.spaceBetween,
+                                          children: popularTrackList.map((item) {
+                                            return Row(
+                                              children: [
+                                                TrackSquareItem(
+                                                  trackItem: item,
+                                                  appScreenName: "memberPopularTrackList",
+                                                  initAudioPlayerTrackListCallBack: () async {
+
+                                                    List<int> trackIdList = popularTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+
+                                                    trackProv.audioPlayerTrackList = popularTrackList;
+                                                    await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                                    trackProv.notify();
+
+                                                  },
+                                                ),
+
+                                                SizedBox(width: 3,),
+                                              ],
+                                            );
+                                          },
+                                          ).toList(),
+                                        ),
+
+                                      ],
+                                    ),
                                   );
                                 }
                               }
@@ -628,10 +662,24 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                               appScreenName: "MemberPageScreen",
                                               trackItem: allTrackList[i],
                                               isAudioPlayer: false,
-                                              initAudioCallBack: (PlayerProv playerProv) {
+                                              initAudioPlayerTrackListCallBack: () async {
 
-                                              },
-                                              initAudioPlayerTrackListCallBack: (){
+                                                await trackProv.getMemberPageTrack(widget.memberId,comnLoadProv.listDataOffset, trackProv.trackModel.allTrackTotalCount!);
+
+                                                trackProv.addUniqueTracksToList(
+                                                  sourceList: list,
+                                                  targetSet: allTrackSet,
+                                                  targetList: allTrackList,
+                                                  trackCd: "MemberPageTrackList",
+                                                );
+
+                                                List<int> trackIdList = allTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                                print(trackIdList.length);
+
+                                                trackProv.audioPlayerTrackList = allTrackList;
+                                                await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                                trackProv.notify();
+
 
                                             },)
                                         ),

@@ -28,7 +28,7 @@ import 'package:skrrskrr/screen/subScreen/track/track_like_btn.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
+
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 

@@ -8,7 +8,6 @@ import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
 
 class AppProv extends ChangeNotifier{
 
-
   int currentIndex = 0;
   Widget appScreenWidget = Container();
   bool isFullScreen = false;
@@ -33,6 +32,4 @@ class AppProv extends ChangeNotifier{
   bool isShowAppbar(Widget widget) {
     return !(widget is HomeScreen || widget is SettingScreen);
   }
-
-
 }

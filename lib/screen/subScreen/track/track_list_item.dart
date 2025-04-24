@@ -17,7 +17,6 @@ class TrackListItem extends StatefulWidget {
   const TrackListItem({
     super.key,
     required this.trackItem,
-    required this.initAudioCallBack,
     required this.initAudioPlayerTrackListCallBack,
     required this.isAudioPlayer,
     required this.appScreenName,
@@ -25,7 +24,6 @@ class TrackListItem extends StatefulWidget {
 
   final Track trackItem;
   final Function initAudioPlayerTrackListCallBack;
-  final Function initAudioCallBack;
   final bool isAudioPlayer;
   final String? appScreenName;
 
@@ -47,37 +45,22 @@ class _TrackListItemState extends State<TrackListItem> {
       onTap: () async {
 
         if (!widget.trackItem.isPlaying) {
-
-          // widget.trackItem.isPlaying = true;
-
-          // await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
-
-          // int index2 = trackProv.trackModel.trackList.indexWhere((item) => item.trackId == widget.trackItem.trackId);
-          // trackProv.trackModel.trackList[index2].isPlaying = true;
-
-          // trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
-
-
-
-          /// 오디오 플레이어 트랙 리스트에서 선택시 실행되면안됨
-          /// 이전에 누른 리스트랑 같은 리스트에서 선택시 실행되면 안됨
-
           if (widget.appScreenName != "AudioPlayerTrackListModal") {
             if (playerProv.currentAppScreen != widget.appScreenName) {
-              print("이전화면과다름true");
               playerProv.currentAppScreen = widget.appScreenName;
 
-              await widget.initAudioPlayerTrackListCallBack(); /// 오디오 재생목록 생성
+              ///이전 아이템 false
+              trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
 
-              await widget.initAudioCallBack(playerProv); /// 오디오 초기화 및 로드
+              await widget.initAudioPlayerTrackListCallBack(); /// 오디오 재생목록 생성
+              await playerProv.initAudio(trackProv);
             }
           }
 
-
-
           int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId == widget.trackItem.trackId);
           if (index != -1) {
-            // trackProv.audioPlayerTrackList[index].isPlaying = true;
+
+            trackProv.lastListenTrackList.insert(0, widget.trackItem);
 
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               playerProv.page = index;
@@ -98,7 +81,6 @@ class _TrackListItemState extends State<TrackListItem> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
               children: [
                 Row(
                   children: [

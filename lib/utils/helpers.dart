@@ -163,8 +163,21 @@ class Helpers {
 
   }
 
+  static dynamic extractValue(String responseBody, String key) {
+    try {
+      final String decodedBody = utf8.decode(responseBody.codeUnits);
 
-  static Future<dynamic> apiCall(
+      final Map<String, dynamic> jsonData = jsonDecode(decodedBody);
+
+      return jsonData.containsKey(key) ? jsonData[key] : null;
+    } catch (e) {
+      print('Error decoding JSON or extracting key: $e');
+      return null;
+    }
+  }
+
+
+  static Future<http.Response> apiCall(
       String url, {
         String method = 'GET',  // 기본값 'GET'
         Map<String, String>? headers,  // 요청 헤더 (optional)
@@ -182,19 +195,19 @@ class Helpers {
 
       if(isGetRefreshToken){
         String? refreshToken = await storage.read(key: "refresh_token");
-          if (refreshToken != null) {
-            headers ??= {}; // headers가 null인 경우 빈 맵으로 초기화
-            headers['Refresh-Token'] = refreshToken; // 액세스 토큰을 Authorization 헤더에 추가
-          }
-        } else {
-          String? jwtToken = await storage.read(key: "jwt_token");
-          if (jwtToken != null) {
-            headers ??= {};  // headers가 null인 경우 빈 맵으로 초기화
-            if(!url.startsWith("/auth/")){
-              headers['Authorization'] = 'Bearer $jwtToken';  // 액세스 토큰을 Authorization 헤더에 추가
-            }
+        if (refreshToken != null) {
+          headers ??= {}; // headers가 null인 경우 빈 맵으로 초기화
+          headers['Refresh-Token'] = refreshToken; // 액세스 토큰을 Authorization 헤더에 추가
+        }
+      } else {
+        String? jwtToken = await storage.read(key: "jwt_token");
+        if (jwtToken != null) {
+          headers ??= {};  // headers가 null인 경우 빈 맵으로 초기화
+          if(!url.startsWith("/auth/")){
+            headers['Authorization'] = 'Bearer $jwtToken';  // 액세스 토큰을 Authorization 헤더에 추가
           }
         }
+      }
 
       if (method == 'POST' || method == 'PUT') {
         // POST 요청 처리
@@ -226,7 +239,7 @@ class Helpers {
         var httpResponse = await http.Response.fromStream(response);
 
         if (httpResponse.body.isEmpty) {
-          return null; // 빈 본문 처리
+          return httpResponse; // 빈 본문 처리
         }
 
         return await _processResponse(httpResponse, url, method, headers, body, fileList);
@@ -241,13 +254,15 @@ class Helpers {
       }
     } catch (error) {
       // 오류 처리
-      print('Error: $error');
-      return null;
+        print('Error: $error');
+        return http.Response(json.encode({'message': '$error'}), 500,);
+      }
     }
-  }
+
+
 
   // 응답 처리 (공통 처리)
-  static Future<dynamic> _processResponse(
+  static Future<http.Response> _processResponse(
       http.Response response,
       String url,
       String method,
@@ -258,43 +273,41 @@ class Helpers {
     if (response.statusCode == 200) {
       // 성공적인 응답 처리
       final decodedBody = utf8.decode(response.bodyBytes);
-      return json.decode(decodedBody);
+      return response;
 
     } else if (response.statusCode == 401){
       // Refresh 토큰을 사용하여 새로운 JWT 토큰을 얻어오는 로직
-      var refreshResponse = await _getRefreshToken();
+      http.Response refreshResponse = await _getRefreshToken();
 
-      if (refreshResponse['status'] != "200") {
+      if (refreshResponse.statusCode != 200) {
         AuthProv authProv = Provider.of<AuthProv>(navigatorKey.currentContext!, listen: false);
         await authProv.logout();
         GoRouter.of(navigatorKey.currentState!.context).push("/splash");
-        return null;
+        return http.Response(json.encode({'message': '리프레쉬 토큰 만료'}), refreshResponse.statusCode,);
       }
 
       const storage = FlutterSecureStorage();
-      await storage.write(key: "jwt_token", value: refreshResponse['jwtToken']);  // JWT 토큰 저장
+      await storage.write(key: "jwt_token", value: Helpers.extractValue(refreshResponse.body, 'jwtToken'));  // JWT 토큰 저장
       // 새로운 토큰을 사용하여 원래의 API 호출을 재시도
       return await apiCall(url, method: method, headers: headers, body: body, fileList: fileList,isGetRefreshToken: false);
 
     } else {
-      print('Failed request with status: ${response.statusCode}');
-      return null;
+      return http.Response(json.encode({'message': 'Failed request with status: ${response.statusCode}'}), response.statusCode,);
     }
   }
 
-  static Future<dynamic> _getRefreshToken() async {
+  static Future<http.Response> _getRefreshToken() async {
 
-    var response = await Helpers.apiCall(
+    http.Response response = await Helpers.apiCall(
         '/auth/refreshToken',
         method: "POST",
         headers: {
-          'Content-Type': 'application/json', // JSON 형식
+          'Content-Type': 'application/json',
         },
         isGetRefreshToken: true
     );
 
     return response;
   }
-
 
 }

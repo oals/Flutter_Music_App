@@ -362,26 +362,21 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
 
                       if(!appProv.isFullScreen)
                         Container(
+                          width : 100.w,
                           height: 10.h,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius
-                                .circular(20),
+                            borderRadius: BorderRadius.circular(20),
                             gradient: LinearGradient(
                               colors: [
                                 Color(0xff000000),
-                                // 상단의 연한 색 (색상값을 조정하세요)
                                 Color(0xff1c1c1c),
-                                // 하단의 어두운 색 (현재 색상)
                               ],
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                             ),
                           ),
-                          width: 100.w,
-                          padding: EdgeInsets.only(left: 10,
-                              right: 10,
-                              top: 10,
-                              bottom: 10),
+
+                          padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment
                                 .spaceBetween,
@@ -391,12 +386,10 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                               Row(
                                 children: [
                                   ClipRRect(
-                                    borderRadius: BorderRadius
-                                        .circular(15.0),
+                                    borderRadius: BorderRadius.circular(15.0),
                                     // 원하는 둥글기 조정
                                     child: CustomCachedNetworkImage(
-                                      imagePath: widget.audioPlayerTrackItem
-                                          .trackImagePath,
+                                      imagePath: widget.audioPlayerTrackItem.trackImagePath,
                                       imageWidth: 14.w,
                                       imageHeight: 14.h,
                                       isBoxFit: true,

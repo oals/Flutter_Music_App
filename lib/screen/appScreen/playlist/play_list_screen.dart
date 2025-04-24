@@ -47,7 +47,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
     print("PlayListScreen initstate");
     super.initState();
     _getPlayListInitFuture = Provider.of<PlayListProv>(context, listen: false).getPlayListInfo(widget.playList.playListId!);
-    _getPlayListTrackInitFuture = Provider.of<TrackProv>(context, listen: false).getPlayListTrackList(widget.playList.playListId!,0);
+    _getPlayListTrackInitFuture = Provider.of<TrackProv>(context, listen: false).getPlayListTrackList(widget.playList.playListId!,0,20);
     _loadMemberId();
   }
 
@@ -372,13 +372,24 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                           trackItem: trackList[i],
                                           appScreenName: "PlayListScreen",
                                           isAudioPlayer: false,
-                                          initAudioCallBack: (PlayerProv playerProv) {
+
+                                          initAudioPlayerTrackListCallBack: () async {
+
+                                            await trackProv.getPlayListTrackList(widget.playList.playListId!,comnLoadProv.listDataOffset, widget.playList.trackCnt!);
+
+                                            trackList = trackProv.trackListFilter("PlayListTrackList");
+
+                                            List<int> trackIdList = trackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                            print(trackIdList.length);
+
+                                            trackProv.audioPlayerTrackList = trackList;
+                                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                            trackProv.notify();
+
+
+
 
                                           },
-                                          initAudioPlayerTrackListCallBack: () async {
-                                                List<int> trackIdList = trackList.map((item) => int.parse(item.trackId.toString())).toList();
-                                                await trackProv.setAudioPlayerTrackIdList(trackIdList);
-                                              },
                                         ),
                                         SizedBox(height: 5,),
                                       ]

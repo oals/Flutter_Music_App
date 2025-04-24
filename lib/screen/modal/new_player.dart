@@ -64,11 +64,13 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                 if(!isInit){
                   int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
                   if (index != -1) {
+
                     playerProv.currentPage = index;
                     trackProv.audioPlayerTrackList[index].isPlaying = true;
 
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
                       await playerProv.initAudio(trackProv);
+                      trackProv.notify();
                     });
 
                   }
@@ -89,7 +91,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                   ), // 페이지네이션
                   loop: false,// 반복
                   autoplay: false,// 자동 슬라이드
-                  duration: 400,// 속도
+                  duration: 600,// 속도
                   itemCount: trackProv.audioPlayerTrackList.length, // 슬라이드 개수
                   onIndexChanged: (index) async {
 
@@ -98,9 +100,17 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                     }
 
                     if (playerProv.page == -1 ){
+                      /// 같은 아이템이 서로 다른 리스트에 다른 인덱스에 존재하면 위 코드 작동 안하는 거 아닌가
+
+                      /// 그리고 리스트가 바뀌면 이전 리스트의 아이템을 false 해야하는데 바뀐 리스트에 false 적용하는거같은데
+
                       playerProv.audioPlayerClear();
                       playerProv.togglePlayPause(!playerProv.playerModel.isPlaying,trackProv);
-                      trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
+
+                      if (trackProv.audioPlayerTrackList.length > playerProv.currentPage) {
+                        trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
+                      }
+
                       trackProv.audioPlayerTrackList[index].isPlaying = true;
 
                       playerProv.currentPage = index;

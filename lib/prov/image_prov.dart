@@ -26,6 +26,7 @@ class ImageProv extends ChangeNotifier {
   }
 
   Future<String> updateMemberImage(Upload? upload) async {
+
     List<http.MultipartFile?> fileList = [];
     final url = '/api/updateMemberImage';
 
@@ -34,25 +35,24 @@ class ImageProv extends ChangeNotifier {
         fileList.add(await Helpers.fnSetUploadImageFile(upload, "uploadImage"));
       }
 
-      // POST 요청
-      final response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
         url,
         method: "POST",
-        headers: {'Content-Type': 'application/json'}, // JSON 형태로 전송
+        headers: {
+          'Content-Type': 'application/json'
+        },
         fileList: fileList,
         body: {
           'memberId': upload?.memberId.toString(),
         },
       );
 
-      if (response['status'] == "200") {
-        return response['imagePath'];
+      if (response.statusCode == 200) {
+        return Helpers.extractValue(response.body, 'memberImagePath').toString();
       }
-
-      throw Exception('Failed to load data');
-
+      throw Exception(Helpers.extractValue(response.body, 'message'));
     } catch (error) {
-      // 오류 처리
+      print(error);
       print('$url - Fail');
       return "";
     }
@@ -64,33 +64,28 @@ class ImageProv extends ChangeNotifier {
     final url = '/api/updateTrackImage';
 
     try {
-
-      // 이미지 파일 추가
       if (upload != null) {
-        // 바이트 배열을 멀티파트 파일로 추가
         fileList.add(await Helpers.fnSetUploadImageFile(upload, "uploadImage"));
       }
 
-
-      // POST 요청
-      final response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
         url,
         method: "POST",
-        headers: {'Content-Type': 'application/json'}, // JSON 형태로 전송
+        headers: {
+          'Content-Type': 'application/json'
+        },
         fileList: fileList,
         body: {
           'trackId': upload?.trackId.toString(),
         },
       );
 
-
-      if(response['status'] == "200"){
-        return response['imagePath'];
+      if (response.statusCode == 200) {
+        return Helpers.extractValue(response.body, "trackImagePath").toString();
       }
-
-      throw Exception('Failed to load data');
+      throw Exception(Helpers.extractValue(response.body, 'message'));
     } catch (error) {
-      // 오류 처리
+      print(error);
       print('$url - Fail');
       return "";
     }

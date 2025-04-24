@@ -58,7 +58,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
     // TODO: implement initState
     super.initState();
 
-    _getSearchTrackFuture = Provider.of<TrackProv>(context, listen: false).getSearchTrack(widget.searchText,0);
+    _getSearchTrackFuture = Provider.of<TrackProv>(context, listen: false).getSearchTrack(widget.searchText,0,20);
     _getSearchPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getSearchPlayList(widget.searchText,0, 8);
     _getSearchMemberFuture = Provider.of<MemberProv>(context, listen: false).getSearchMember(widget.searchText,0, 6);
   }
@@ -289,12 +289,31 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                             trackItem: searchTrackList[i],
                             appScreenName: "SearchScreen",
                             isAudioPlayer: false,
-                            initAudioCallBack: (PlayerProv playerProv) {
-
-                            },
                             initAudioPlayerTrackListCallBack: () async {
-                            List<int> trackIdList = searchTrackList.map((item) => int.parse(item.trackId.toString())).toList();
-                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+
+                              /**
+                               * 검색의 경우 조회수 높은 순으로 100개 정도만?
+                               * */
+
+                              await trackProv.getSearchTrack(widget.searchText, comnLoadProv.listDataOffset, trackProv.trackModel.searchTrackTotalCount!);
+
+                              trackProv.addUniqueTracksToList(
+                                sourceList: list,
+                                targetSet: searchTrackSet,
+                                targetList: searchTrackList,
+                                trackCd: "SearchTrackList",
+                              );
+
+                              List<int> trackIdList = searchTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                              print(trackIdList.length);
+
+                              trackProv.audioPlayerTrackList = searchTrackList;
+                              await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                              trackProv.notify();
+
+
+
+
                           },)
                         ],
                       ],

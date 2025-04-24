@@ -12,11 +12,11 @@ import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/utils/helpers.dart';
+import 'package:http/http.dart' as http;
 
 class AuthProv with ChangeNotifier{
 
   MemberModel model = MemberModel();
-
 
   void notify() {
     notifyListeners();
@@ -26,13 +26,12 @@ class AuthProv with ChangeNotifier{
     model = MemberModel();
   }
 
-  // jwt 토큰 생성
   Future<bool> fnCreateJwtToken(User user) async {
 
-    final url= '/auth/createJwtToken';
+    final url = '/auth/createJwtToken';
 
     try {
-      final response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
         url,
         method: "POST",
         headers: {
@@ -44,29 +43,32 @@ class AuthProv with ChangeNotifier{
         }
       );
 
-      if(response['status'] == '200'){
+      if (response.statusCode == 200) {
 
         final storage = FlutterSecureStorage();
-        await storage.write(key: "jwt_token", value: response['jwtToken']);
-        await storage.write(key: "refresh_token", value: response['refreshToken']);
+
+        await storage.write(key: "jwt_token", value: Helpers.extractValue(response.body, 'jwtToken'));
+
+        await storage.write(key: "refresh_token", value: Helpers.extractValue(response.body, 'refreshToken'));
+
         print('$url - Successful');
         return true;
       } else {
-        throw Exception('Failed to load data');
+        throw Exception(Helpers.extractValue(response.body, 'message'));
       }
     } catch (error) {
+      print(error);
       print('$url - Fail');
       return false;
     }
   }
 
-  // jwt token 검증
   Future<bool> fnJwtAuthing(String? jwtToken) async {
 
-    final url= '/auth/jwtAuthing';
+    final url = '/auth/jwtAuthing';
 
     try {
-      final response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
           url,
           method: "POST",
           headers: {
@@ -75,13 +77,14 @@ class AuthProv with ChangeNotifier{
           },
       );
 
-      if(response['status'] == '200'){
+      if (response.statusCode == 200) {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception('Failed to load data');
+        throw Exception(Helpers.extractValue(response.body, 'message'));
       }
     } catch (error) {
+      print(error);
       print('$url - Fail');
       return false;
     }
@@ -91,10 +94,10 @@ class AuthProv with ChangeNotifier{
   // 파이어베이스 id Token 인증을 위한
   Future<bool> fnFireBaseAuthing(User user) async {
 
-    final url= '/auth/fireBaseAuthing';
+    final url = '/auth/fireBaseAuthing';
 
     try {
-      final response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
           url,
           method: "POST",
           headers: {
@@ -103,19 +106,21 @@ class AuthProv with ChangeNotifier{
           },
       );
 
-      if(response['status'] == '200'){
+      if (response.statusCode == 200) {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception('Failed to load data');
+        throw Exception(Helpers.extractValue(response.body, 'message'));
       }
     } catch (error) {
+      print(error);
       print('$url - Fail');
       return false;
     }
   }
 
   Future<void> logout() async {
+
     final storage = FlutterSecureStorage();
     SharedPreferences prefs =
     await SharedPreferences.getInstance();
@@ -132,6 +137,4 @@ class AuthProv with ChangeNotifier{
     model.memberEmail = null;
     notifyListeners(); // 상태 변경 알림
   }
-
-
 }

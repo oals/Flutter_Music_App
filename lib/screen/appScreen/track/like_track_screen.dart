@@ -38,7 +38,7 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getLikeTrackInitFuture = Provider.of<TrackProv>(context,listen: false,).getLikeTrack(0);
+    _getLikeTrackInitFuture = Provider.of<TrackProv>(context,listen: false,).getLikeTrack(0,20);
   }
 
   @override
@@ -116,15 +116,25 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                         child: TrackListItem(trackItem: track,
                           isAudioPlayer: false,
                           appScreenName: "LikeTrackScreen",
-                          initAudioCallBack: (PlayerProv playerProv) {
 
-                          },
                           initAudioPlayerTrackListCallBack: () async {
 
 
-                            List<int> trackIdList = likeTrackList.map((item) => int.parse(item.trackId.toString())).toList();
-                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                            await trackProv.getLikeTrack(comnLoadProv.listDataOffset, trackModel.likeTrackTotalCount!);
 
+                            trackProv.addUniqueTracksToList(
+                              sourceList: list,
+                              targetSet: likeTrackSet,
+                              targetList: likeTrackList,
+                              trackCd: "MyLikeTrackList",
+                            );
+
+                            List<int> trackIdList = likeTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                            print(trackIdList.length);
+
+                            trackProv.audioPlayerTrackList = likeTrackList;
+                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                            trackProv.notify();
 
 
                           },
@@ -133,17 +143,6 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                       SizedBox(height: 10,),
                     ],
 
-                    // Wrap(
-                    //   spacing: 30.0,
-                    //   runSpacing: 20.0,
-                    //   alignment: WrapAlignment.spaceBetween,
-                    //   children: likeTrackList.map((item) {
-                    //     return TrackSquareItem(
-                    //       track: item,
-                    //       bgColor: Colors.red,
-                    //     );
-                    //   }).toList(),
-                    // ),
 
                     CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
 

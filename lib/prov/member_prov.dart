@@ -8,16 +8,15 @@ import 'package:skrrskrr/model/follow/follow_info_model.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/member/member_model_list.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/utils/helpers.dart';
+import 'package:http/http.dart' as http;
 
 class MemberProv with ChangeNotifier {
 
   MemberModel model = MemberModel();
   List<MemberModel> memberModelList = [];
   MemberModelList searchMemberModelList = MemberModelList();
-
 
   void notify() {
     notifyListeners();
@@ -27,12 +26,13 @@ class MemberProv with ChangeNotifier {
     model = MemberModel();
   }
 
-
   Future<void> fnMemberInfoUpdate({memberNickName,memberInfo}) async {
-    final url= '/api/setMemberInfoUpdate';
+
+    final String loginMemberId = await Helpers.getMemberId();
+    final url = '/api/setMemberInfoUpdate';
+
     try{
-      final String loginMemberId = await Helpers.getMemberId();
-      dynamic response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
             url,
             method: 'POST',
             headers: {
@@ -45,47 +45,42 @@ class MemberProv with ChangeNotifier {
             }
           );
 
-      if (response['status'] == '200') {
+      if (response.statusCode == 200) {
         print('$url - Successful');
       } else {
-        // 오류 처리
-        throw Exception('Failed to load data');
+        throw Exception(Helpers.extractValue(response.body, 'message'));
       }
     } catch (error) {
-      // 오류 처리
+      print(error);
       print('$url - Fail');
     }
   }
 
-
-
   Future<bool> getRecommendMember() async {
 
     final loginMemberId = await Helpers.getMemberId();
-    final url= '/api/getRecommendMember?loginMemberId=${loginMemberId}';
+    final url = '/api/getRecommendMember?loginMemberId=${loginMemberId}';
 
     try {
-      final response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
         url,
       );
 
-
-      if (response['status'] == '200') {
+      if (response.statusCode == 200) {
 
         memberModelList = [];
 
-        for (var item in response['randomMemberList']){
+        for (var item in Helpers.extractValue(response.body, "memberList")){
           memberModelList.add(MemberModel.fromJson(item));
         }
 
         print('$url - Successful');
         return true;
       } else {
-        // 오류 처리
-        throw Exception('Failed to load data');
+        throw Exception(Helpers.extractValue(response.body, 'message'));
       }
     } catch (error) {
-      // 오류 처리
+      print(error);
       print('$url - Fail');
       return false;
 
@@ -93,67 +88,68 @@ class MemberProv with ChangeNotifier {
   }
 
   Future<bool> getSearchMember(String searchText, int offset, int limit) async {
+
     final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/getSearchMember?loginMemberId=${loginMemberId}&searchText=$searchText&limit=${limit}&offset=$offset';
 
     try {
-      final response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
       );
 
-      if (response['status'] == "200") {
-        // 성공적으로 데이터를 가져옴
+      if (response.statusCode == 200) {
+
         if (offset == 0) {
           searchMemberModelList = MemberModelList();
         }
-        for (var item in response['memberList']) {
+        for (var item in Helpers.extractValue(response.body, 'followMemberList')) {
           searchMemberModelList.memberList.add(FollowInfoModel.fromJson(item));
         }
 
-        searchMemberModelList.memberListCnt = response['memberListCnt'];
+        searchMemberModelList.memberListCnt = Helpers.extractValue(response.body, 'totalCount');
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception('Failed to load data');
+        throw Exception(Helpers.extractValue(response.body, 'message'));
       }
     } catch (error) {
+      print(error);
       print('$url - Fail');
       return false;
     }
   }
-
 
   Future<bool> getMemberInfo(String memberEmail) async {
 
     final String? deviceToken = await FcmNotifications.getMyDeviceToken();
-    final url= '/api/getMemberInfo?memberEmail=${memberEmail}&deviceToken=${deviceToken}';
+    final url = '/api/getMemberInfo?memberEmail=${memberEmail}&deviceToken=${deviceToken}';
 
     try {
-      final response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
         url,
       );
 
-      if (response['status'] == '200') {
-        model = MemberModel.fromJson(response['member']);
+      if (response.statusCode == 200) {
+
+        model = MemberModel.fromJson(Helpers.extractValue(response.body, 'member'));
+
         await saveMemberData();
+
         print('$url - Successful');
         return true;
       } else {
-        // 오류 처리
-        throw Exception('Failed to load data');
+        throw Exception(Helpers.extractValue(response.body, 'message'));
       }
     } catch (error) {
-      // 오류 처리
+      print(error);
       print('$url - Fail');
       return false;
-
     }
   }
-
 
   Future<void> saveMemberData() async {
     // SharedPreferences에 저장
@@ -165,34 +161,32 @@ class MemberProv with ChangeNotifier {
     notifyListeners(); // 상태 변경 알림
   }
 
-
   //유저 페이지 접근
   Future<bool> getMemberPageInfo(int memberId) async {
 
     final String loginMemberId = await Helpers.getMemberId();
-    final url= '/api/getMemberPageInfo?memberId=${memberId}&loginMemberId=${loginMemberId}';
+    final url = '/api/getMemberPageInfo?memberId=${memberId}&loginMemberId=${loginMemberId}';
 
     try {
-      final response = await Helpers.apiCall(
+      http.Response response = await Helpers.apiCall(
         url,
       );
 
-      if (response['status'] == '200') {
+      if (response.statusCode == 200) {
 
         model = MemberModel();
-        model = MemberModel.fromJson(response['memberDTO']);
+
+        model = MemberModel.fromJson(Helpers.extractValue(response.body, 'member'));
 
         print('$url - Successful');
         return true;
       } else {
-        // 오류 처리
-        throw Exception('Failed to load data');
+        throw Exception(Helpers.extractValue(response.body, 'message'));
       }
     } catch (error) {
-      // 오류 처리
+      print(error);
       print('$url - Fail');
       return false;
     }
   }
-
 }

@@ -17,8 +17,9 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/category/category_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/member/member_scroll_horizontal_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
+
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -35,6 +36,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
   late MemberProv memberProv;
   late PlayerProv playerProv;
   late TrackProv trackProv;
+  List<Track> recommendTrackList = [];
   late Future<bool>? _getRecommendPlayListFuture;
   late Future<bool>? _getRecommendAlbumFuture;
   late Future<bool>? _getRecommendTrackFuture;
@@ -153,9 +155,45 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                       return Center(child: Text('Error: ${snapshot.error}'));
                                     }
 
-                                    List<Track> recommendTrackList = trackProv.trackListFilter("RecommendTrackList");
+                                    if (recommendTrackList.isEmpty) {
+                                      recommendTrackList = trackProv.trackListFilter("RecommendTrackList");
+                                    }
 
-                                    return TrackScrollHorizontalItem(trackList: recommendTrackList);
+                                    return SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        children: [
+                                          Wrap(
+                                            spacing: 5.0, // 아이템 간의 가로 간격
+                                            runSpacing: 20.0, // 줄 간격
+                                            alignment: WrapAlignment.spaceBetween,
+                                            children: recommendTrackList.map((item) {
+                                              return Row(
+                                                children: [
+                                                  TrackSquareItem(
+                                                    trackItem: item,
+                                                    appScreenName: "PopularTrackList",
+                                                    initAudioPlayerTrackListCallBack: () async {
+
+                                                      List<int> trackIdList = recommendTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+
+                                                      trackProv.audioPlayerTrackList = recommendTrackList;
+                                                      await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                                      trackProv.notify();
+
+                                                    },
+                                                  ),
+
+                                                  SizedBox(width: 3,),
+                                                ],
+                                              );
+                                            },
+                                            ).toList(),
+                                          ),
+
+                                        ],
+                                      ),
+                                    );
                                   }
                               ),
 

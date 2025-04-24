@@ -17,7 +17,8 @@ import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_scroll_horizontal_item.dart';
+
+import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -33,6 +34,7 @@ class _SettingScreenState extends State<SettingScreen> {
   late AuthProv authProv;
   late TrackProv trackProv;
   late Future<bool>? _getLastListenTrackFuture;
+
 
   @override
   void initState() {
@@ -71,27 +73,21 @@ class _SettingScreenState extends State<SettingScreen> {
                 padding: EdgeInsets.only(bottom: 8, top: 8),
                 child: GestureDetector(
                     onTap: () async {
-                      PlayerProv playerProv =
-                          Provider.of<PlayerProv>(context, listen: false);
-                      ;
+                      PlayerProv playerProv = Provider.of<PlayerProv>(context, listen: false);;
+
                       String loginMemberId = await Helpers.getMemberId();
                       if (i == 0) {
                         GoRouter.of(context).push('/memberPage/${loginMemberId}');
                       } else if (i == 1) {
-                        GoRouter.of(context)
-                            .push('/likeTrack/${loginMemberId}');
+                        GoRouter.of(context).push('/likeTrack/${loginMemberId}');
                       } else if (i == 2) {
-                        GoRouter.of(context)
-                            .push('/likeAlbum/${loginMemberId}');
+                        GoRouter.of(context).push('/likeAlbum/${loginMemberId}');
                       } else if (i == 3) {
-                        GoRouter.of(context)
-                            .push('/likePlayList/${loginMemberId}');
+                        GoRouter.of(context).push('/likePlayList/${loginMemberId}');
                       } else if (i == 4) {
-                        GoRouter.of(context)
-                            .push('/uploadTrack/${loginMemberId}');
+                        GoRouter.of(context).push('/uploadTrack/${loginMemberId}');
                       } else if (i == 5) {
-                        GoRouter.of(context)
-                            .push('/memberFollow/${loginMemberId}');
+                        GoRouter.of(context).push('/memberFollow/${loginMemberId}');
                       } else if (i == 6) {
                         print('로그아웃 클릭');
                         playerProv.togglePlayPause(true,trackProv);
@@ -171,13 +167,45 @@ class _SettingScreenState extends State<SettingScreen> {
                     return Center(child: Text('데이터가 없습니다.'));
                   }
 
-                  List<Track> lastListenTrackList = trackProv.trackListFilter("LastListenTrackList");
+                  if (trackProv.lastListenTrackList.isEmpty) {
+                    trackProv.lastListenTrackList = trackProv.trackListFilter("LastListenTrackList");
+                  }
 
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Wrap(
+                          spacing: 5.0, // 아이템 간의 가로 간격
+                          runSpacing: 20.0, // 줄 간격
+                          alignment: WrapAlignment.spaceBetween,
+                          children: trackProv.lastListenTrackList.map((item) {
+                            return Row(
+                              children: [
+                                TrackSquareItem(
+                                  trackItem: item,
+                                  appScreenName: "LastListenTrackList",
+                                  initAudioPlayerTrackListCallBack: () async {
 
-                return Container(
-                  child: TrackScrollHorizontalItem(
-                  trackList: lastListenTrackList),
-                );
+                                    List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+
+                                    trackProv.audioPlayerTrackList = trackProv.lastListenTrackList;
+                                    await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                    trackProv.notify();
+
+                                  },
+                                ),
+
+                                SizedBox(width: 3,),
+                              ],
+                            );
+                          },
+                          ).toList(),
+                        ),
+
+                      ],
+                    ),
+                  );
               }
             ),
 

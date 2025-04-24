@@ -21,11 +21,13 @@ class TrackSquareItem extends StatefulWidget {
   const TrackSquareItem({
     super.key,
     required this.trackItem,
-    required this.callBack,
+    required this.initAudioPlayerTrackListCallBack,
+    required this.appScreenName,
   });
 
   final Track trackItem;
-  final Function callBack;
+  final Function initAudioPlayerTrackListCallBack;
+  final String? appScreenName;
 
   @override
   State<TrackSquareItem> createState() => _TrackSquareItemState();
@@ -45,17 +47,20 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
     return GestureDetector(
       onTap: () async {
         if (!widget.trackItem.isPlaying) {
-          widget.trackItem.isPlaying = true;
-          await trackProv.setLastListenTrackId(widget.trackItem.trackId!);
+          if (widget.appScreenName != "AudioPlayerTrackListModal") {
+            if (playerProv.currentAppScreen != widget.appScreenName) {
+              playerProv.currentAppScreen = widget.appScreenName;
 
-          trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
+              ///이전 아이템 false
+              trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
 
-          await widget.callBack(); /// 새 오디오 플레이리스트 저장
+              await widget.initAudioPlayerTrackListCallBack(); /// 오디오 재생목록 생성
+              await playerProv.initAudio(trackProv);
+            }
+          }
 
-          int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
+          int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId == widget.trackItem.trackId);
           if (index != -1) {
-            trackProv.audioPlayerTrackList[index].isPlaying = true;
-
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               playerProv.page = index;
               playerProv.swiperController.move(index, animation: true);

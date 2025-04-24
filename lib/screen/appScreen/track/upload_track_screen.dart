@@ -35,7 +35,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getUploadInitFuture = Provider.of<TrackProv>(context, listen: false).getUploadTrack(0);
+    _getUploadInitFuture = Provider.of<TrackProv>(context, listen: false).getUploadTrack(0,20);
   }
 
   @override
@@ -113,13 +113,20 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                         child: TrackListItem(
                           trackItem: track,
                           appScreenName: "UploadTrackScreen",
-                          initAudioCallBack: (PlayerProv playerProv) async {
-
-                            await playerProv.initAudio(trackProv);
-                          },
                           isAudioPlayer: false,
                           initAudioPlayerTrackListCallBack: () async {
+
+                            await trackProv.getUploadTrack(comnLoadProv.listDataOffset, trackModel.uploadTrackTotalCount!);
+
+                            trackProv.addUniqueTracksToList(
+                              sourceList: list,
+                              targetSet: uploadTrackSet,
+                              targetList: uploadTrackList,
+                              trackCd: "UploadTrackList",
+                            );
+
                             List<int> trackIdList = uploadTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+
                             trackProv.audioPlayerTrackList = uploadTrackList;
                             await trackProv.setAudioPlayerTrackIdList(trackIdList);
                             trackProv.notify();
@@ -128,18 +135,6 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                       ),
                       SizedBox(height: 10,),
                     ],
-
-                    // Wrap(
-                    //   spacing: 30.0,
-                    //   runSpacing: 20.0,
-                    //   alignment: WrapAlignment.spaceBetween,
-                    //   children: uploadTrackList.map((item) {
-                    //     return TrackSquareItem(
-                    //       track: item,
-                    //       bgColor: Colors.purpleAccent,
-                    //     );
-                    //   }).toList(),
-                    // ),
 
 
                     SizedBox(height: 5),

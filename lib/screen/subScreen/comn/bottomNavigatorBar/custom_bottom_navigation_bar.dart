@@ -15,12 +15,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
         color: Colors.black, // 배경색
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildNavItem(Icons.home, 'LoFi', 0,33.w),
-          // _buildNavItem(Icons.feed, '', 1,20.w),
-          _buildNavItem(Icons.search, '', 2,33.w),
-          _buildNavItem(Icons.settings, '', 3,33.w),
+          _buildNavItem(Icons.search, '', 2,18.w),
+          _buildNavItem(Icons.home, '', 0,18.w),
+          _buildNavItem(Icons.settings, '', 3,18.w),
         ],
       ),
     );
