@@ -58,19 +58,22 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
       child: ValueListenableBuilder<bool>(
           valueListenable: playerProv.audioPlayerNotifier,
           builder: (context, value, child) {
+            final bool isTrackSelected = widget.audioPlayerTrackItem.trackId != null;
 
             return GestureDetector(
-              onPanUpdate: (details) {
-                playerProv.handleDragUpdate(details);
-              },
-              onPanEnd: (details) {
-                appProv.isFullScreenFunc(
-                    playerProv.handleDragEnd());
-              },
-              onTap: () {
+              onPanUpdate: isTrackSelected
+                  ? (details) {
+                    playerProv.handleDragUpdate(details);
+                  } : null,
+              onPanEnd: isTrackSelected
+                  ? (details) {
+                appProv.isFullScreenFunc(playerProv.handleDragEnd());
+              } : null,
+              onTap: isTrackSelected
+                  ? () {
                 playerProv.setFullScreen();
                 appProv.isFullScreenFunc(true);
-              },
+              } : null,
               child: SingleChildScrollView(
                 child: Container(
                   width: 100.w,
@@ -255,10 +258,8 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                                     .black,
                                               ),
                                               child: Icon(
-                                                Icons
-                                                    .keyboard_arrow_down_sharp,
-                                                color: Colors
-                                                    .white,
+                                                Icons.keyboard_arrow_down_sharp,
+                                                color: Colors.white,
                                               )
                                           ),
                                         ),
@@ -272,36 +273,35 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                     right: 0,
                                     child: Consumer<PlayerProv>(
                                         builder: (context, playerProv, child) {
-
                                           return Column(
                                             crossAxisAlignment: CrossAxisAlignment.end,
                                             children: [
-                                              Slider(
-                                                value: playerModel.currentPosition.inSeconds.toDouble(),
-                                                min: 0.0,
-                                                max: playerModel.totalDuration.inSeconds.toDouble(),
-                                                onChanged: playerProv.playerModel.isBuffering
-                                                    ? null
-                                                    : (value) {
-                                                  playerModel.currentPosition = Duration(seconds: value.toInt());
-                                                  setState(() {});
-                                                },
-                                                onChangeEnd: playerModel.isBuffering
-                                                    ? null
-                                                    : playerProv.onSliderChangeEnd,
-                                                activeColor: Colors.white,
-                                                inactiveColor: Colors.grey,
+                                              SliderTheme(
+                                                data: SliderTheme.of(context).copyWith(
+                                                  thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0.0), // 동그라미 크기를 0으로 설정
+                                                ),
+                                                child: Slider(
+                                                  value: playerModel.currentPosition.inSeconds.toDouble(),
+                                                  min: 0.0,
+                                                  max: playerModel.totalDuration.inSeconds.toDouble(),
+                                                  onChanged: playerProv.playerModel.isBuffering
+                                                      ? null
+                                                      : (value) {
+                                                    playerModel.currentPosition = Duration(seconds: value.toInt());
+                                                    setState(() {});
+                                                  },
+                                                  onChangeEnd: playerModel.isBuffering
+                                                      ? null
+                                                      : playerProv.onSliderChangeEnd,
+                                                  activeColor: Colors.white,
+                                                  inactiveColor: Colors.white10,
+                                                ),
                                               ),
 
                                               Container(
-                                                padding:
-                                                EdgeInsets
-                                                    .only(
-                                                    left: 20,
-                                                    right: 30),
+                                                padding: EdgeInsets.only(left: 20, right: 30),
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Text(
                                                       '${playerModel.currentPosition.toString().split('.').first}',
@@ -409,9 +409,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                       SizedBox(
                                         width: 60.w,
                                         child: Text(
-                                          widget.audioPlayerTrackItem
-                                              .trackNm ??
-                                              "null.",
+                                          widget.audioPlayerTrackItem.trackNm ?? "Select a track",
                                           style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight
@@ -427,7 +425,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                       Text(
                                         widget.audioPlayerTrackItem
                                             .memberNickName ??
-                                            "null",
+                                            "Lofi",
                                         style: TextStyle(
                                             color: Colors
                                                 .grey,
@@ -480,18 +478,16 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
 
                                                 IconButton(
                                                     icon: Icon(
-                                                      playerModel
-                                                          .isPlaying
-                                                          ? Icons
-                                                          .pause
-                                                          : Icons
-                                                          .play_arrow,
+                                                      playerModel.isPlaying
+                                                          ? Icons.pause
+                                                          : Icons.play_arrow,
                                                       size: 32,
-                                                      color: Colors
-                                                          .white,
+                                                      color: Colors.white,
                                                     ),
                                                     onPressed: () {
-                                                      playerProv.togglePlayPause(playerModel.isPlaying,trackProv);
+                                                      if (widget.audioPlayerTrackItem.trackId != null) {
+                                                        playerProv.togglePlayPause(playerModel.isPlaying,trackProv);
+                                                      }
                                                     }
                                                 ),
                                               ],

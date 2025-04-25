@@ -270,7 +270,9 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                   return Dialog(
                                                     backgroundColor: Colors.transparent,
                                                     child: TitleInfoEditModal(
-                                                        title: memberModel.memberNickName!,
+                                                        title: "닉네임 수정",
+                                                        text: memberModel.memberNickName!,
+                                                        maxLines : 1,
                                                         fnCallBack: (String? newTitle) {
                                                           setNewTitle(1, newTitle!);
                                                         }),
@@ -332,16 +334,12 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                             return Dialog(
                                                               backgroundColor:
                                                               Colors.transparent,
-                                                              child:
-                                                              TitleInfoEditModal(
-                                                                  title: memberModel
-                                                                      .memberInfo ??
-                                                                      "",
-                                                                  fnCallBack:
-                                                                      (String?
-                                                                  newTitle) {
-                                                                    setNewTitle(2,
-                                                                        newTitle!);
+                                                              child: TitleInfoEditModal(
+                                                                  title: "info 수정",
+                                                                  text: memberModel.memberInfo ?? "",
+                                                                  maxLines : 5,
+                                                                  fnCallBack: (String?newTitle) {
+                                                                    setNewTitle(2, newTitle!);
                                                                   }),
                                                             );
                                                           });

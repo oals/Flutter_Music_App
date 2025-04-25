@@ -190,7 +190,9 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                         return Dialog(
                                           backgroundColor: Colors.transparent,
                                           child: TitleInfoEditModal(
-                                            title: widget.playList.playListNm!,
+                                            title: "플레이스트명 수정",
+                                            text: widget.playList.playListNm!,
+                                            maxLines : 1,
                                             fnCallBack: (String? newTitle) async {
                                               await playListProv.setPlayListInfo(widget.playList.playListId!, newTitle!);
                                               widget.playList.playListNm = newTitle;
@@ -380,14 +382,10 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                             trackList = trackProv.trackListFilter("PlayListTrackList");
 
                                             List<int> trackIdList = trackList.map((item) => int.parse(item.trackId.toString())).toList();
-                                            print(trackIdList.length);
 
                                             trackProv.audioPlayerTrackList = trackList;
                                             await trackProv.setAudioPlayerTrackIdList(trackIdList);
                                             trackProv.notify();
-
-
-
 
                                           },
                                         ),

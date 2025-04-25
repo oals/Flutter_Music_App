@@ -14,8 +14,10 @@ class TrackProv extends ChangeNotifier {
   Upload model = Upload();
   TrackList trackModel = TrackList();
   Track trackInfoModel = Track();
+
   List<Track> lastListenTrackList = [];
-  Track playTrackInfoModel = Track();
+  List<Track> recommendTrackList = [];
+
   List<Track> audioPlayerTrackList = [];
   String lastTrackId = '';
 
@@ -103,7 +105,6 @@ class TrackProv extends ChangeNotifier {
     }
 
   }
-
 
   Future<bool> getPlayListTrackList(int playListId, int offset, int limit) async {
 

@@ -47,13 +47,16 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
     return GestureDetector(
       onTap: () async {
         if (!widget.trackItem.isPlaying) {
+
+          widget.trackItem.isPlaying = true;
+
+          if (trackProv.audioPlayerTrackList.length > playerProv.currentPage) {
+            trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
+          }
+
           if (widget.appScreenName != "AudioPlayerTrackListModal") {
             if (playerProv.currentAppScreen != widget.appScreenName) {
               playerProv.currentAppScreen = widget.appScreenName;
-
-              ///이전 아이템 false
-              trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
-
               await widget.initAudioPlayerTrackListCallBack(); /// 오디오 재생목록 생성
               await playerProv.initAudio(trackProv);
             }

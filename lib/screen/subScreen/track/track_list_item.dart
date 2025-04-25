@@ -45,12 +45,14 @@ class _TrackListItemState extends State<TrackListItem> {
       onTap: () async {
 
         if (!widget.trackItem.isPlaying) {
+          widget.trackItem.isPlaying = true;
+
+          if (trackProv.audioPlayerTrackList.length > playerProv.currentPage) {
+            trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
+          }
           if (widget.appScreenName != "AudioPlayerTrackListModal") {
             if (playerProv.currentAppScreen != widget.appScreenName) {
               playerProv.currentAppScreen = widget.appScreenName;
-
-              ///이전 아이템 false
-              trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
 
               await widget.initAudioPlayerTrackListCallBack(); /// 오디오 재생목록 생성
               await playerProv.initAudio(trackProv);
@@ -59,9 +61,6 @@ class _TrackListItemState extends State<TrackListItem> {
 
           int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId == widget.trackItem.trackId);
           if (index != -1) {
-
-            trackProv.lastListenTrackList.insert(0, widget.trackItem);
-
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               playerProv.page = index;
               playerProv.swiperController.move(index, animation: true);

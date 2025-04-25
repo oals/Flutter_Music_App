@@ -64,7 +64,7 @@ class _FollowListState extends State<FollowList> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '비어있습니다.',
+                  'Empty',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,

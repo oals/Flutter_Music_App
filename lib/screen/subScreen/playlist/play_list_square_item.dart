@@ -29,7 +29,6 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
   @override
   Widget build(BuildContext context) {
 
-
     return Container(
       child: Wrap(
         spacing: 8.0, // 아이템 간의 가로 간격

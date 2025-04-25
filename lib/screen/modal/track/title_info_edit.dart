@@ -6,10 +6,14 @@ class TitleInfoEditModal extends StatefulWidget {
   const TitleInfoEditModal({
     super.key,
     required this.title,
+    required this.text,
+    required this.maxLines,
     required this.fnCallBack,
   });
 
   final String title;
+  final String text;
+  final int maxLines;
   final Function fnCallBack;
 
   @override
@@ -23,7 +27,7 @@ class _TitleInfoEditModalState extends State<TitleInfoEditModal> {
   @override
   void initState() {
     super.initState();
-    _editConntroller = TextEditingController(text: widget.title);
+    _editConntroller = TextEditingController(text: widget.text);
   }
 
   @override
@@ -32,17 +36,14 @@ class _TitleInfoEditModalState extends State<TitleInfoEditModal> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-
 
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Container(
         width: 100.w,
-        height: 20.h,
-        color: Color(0xff200f2e),
+        color: Colors.black,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -50,7 +51,7 @@ class _TitleInfoEditModalState extends State<TitleInfoEditModal> {
             Padding(
               padding: EdgeInsets.only(top: 10),
               child: Text(
-                '새로운 닉네임',
+                widget.title,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
               ),
             ),
@@ -58,7 +59,7 @@ class _TitleInfoEditModalState extends State<TitleInfoEditModal> {
             Material(
               child: TextField(
                 controller: _editConntroller,
-                maxLines: 1,  // 여러 줄 텍스트 입력 가능
+                maxLines: widget.maxLines,  // 여러 줄 텍스트 입력 가능
                 decoration: InputDecoration(
                   fillColor: const Color(0xff8515e7),
                   hintText: '음원 소개를 입력하세요.',
@@ -71,12 +72,6 @@ class _TitleInfoEditModalState extends State<TitleInfoEditModal> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // 다이얼로그 닫기
-                  },
-                  child: Text('취소'),
-                ),
                 ElevatedButton(
                   onPressed: () {
                     if(_editConntroller.text.length == 0){
@@ -86,10 +81,28 @@ class _TitleInfoEditModalState extends State<TitleInfoEditModal> {
                       Navigator.of(context).pop(); // 다이얼로그 닫기
                     }
                   },
-                  child: Text('저장'),
+                  child: Text(
+                    '저장',
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // 다이얼로그 닫기
+                  },
+                  child: Text(
+                    '취소',
+                    style: TextStyle(
+                        color: Colors.white
+                    ),
+                  ),
                 ),
               ],
             ),
+            SizedBox(height: 10),
           ],
         ),
       ),

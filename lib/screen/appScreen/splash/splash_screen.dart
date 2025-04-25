@@ -8,8 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/main.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
+import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/prov/track_prov.dart';
 
 import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
 
@@ -39,18 +41,18 @@ class _SplashScreenState extends State<SplashScreen> {
       }
 
       AuthProv authProv = Provider.of<AuthProv>(context, listen: false);
-      MemberProv memberProv = Provider.of<MemberProv>(context, listen: false);
+      AppProv appProv = Provider.of<AppProv>(context,listen: false);
+
+
       final storage = FlutterSecureStorage();
 
 
       Future<void> _jwtAuthing() async {
         final jwt_Token = await storage.read(key: "jwt_token");
-        print("파이어베이스 검증 후 jwt 토큰 검증 진행 api 호출 ");
 
         bool isJwtAuth = await authProv.fnJwtAuthing(jwt_Token);
         if (isJwtAuth) {
-          // 인증 성공
-          await memberProv.getMemberInfo(user.email!);
+          await appProv.firstLoad(user.email!);
           GoRouter.of(context).pushReplacement('/home/${false}');
         } else {
           GoRouter.of(context).pushReplacement('/login');
@@ -59,13 +61,13 @@ class _SplashScreenState extends State<SplashScreen> {
       }
 
       Future<void> _handleAuth(User user) async {
+        print('test123123');
         bool isFireBaseAuth = await authProv.fnFireBaseAuthing(user);
         if (isFireBaseAuth) {
           _jwtAuthing();
         }
       }
 
-      // 첫 번째 인증 시도
       await _handleAuth(user);
     });
   }

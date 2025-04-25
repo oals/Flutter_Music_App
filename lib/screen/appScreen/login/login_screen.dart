@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/main.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
+import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 
@@ -23,8 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MemberProv memberProv = Provider.of<MemberProv>(context);
+    AppProv appProv = Provider.of<AppProv>(context,listen: false);
     AuthProv authProv = Provider.of<AuthProv>(context);
+
 
     return Scaffold(
       body: Container(
@@ -79,16 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (user != null) {
                           bool isCreateJwt = await authProv.fnCreateJwtToken(user);
                           if(isCreateJwt) {
-                            bool isGetMemberInfo = await memberProv.getMemberInfo(user.email!);
+                            bool isGetMemberInfo = await appProv.firstLoad(user.email!);
                             if (isGetMemberInfo) {
-
-                              /** 유저 관심 음악 카테고리 설정 */
-
-
-
-
-
-
                               GoRouter.of(context).push('/home/${false}');
                             } else {
                               Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요..');

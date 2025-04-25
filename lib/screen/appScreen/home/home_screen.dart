@@ -30,28 +30,11 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenStateState createState() => _HomeScreenStateState();
 }
 
-
 class _HomeScreenStateState extends State<HomeScreen> {
   late PlayListProv playListProv;
   late MemberProv memberProv;
   late PlayerProv playerProv;
   late TrackProv trackProv;
-  List<Track> recommendTrackList = [];
-  late Future<bool>? _getRecommendPlayListFuture;
-  late Future<bool>? _getRecommendAlbumFuture;
-  late Future<bool>? _getRecommendTrackFuture;
-  late Future<bool>? _getRecommendMember;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _getRecommendTrackFuture = Provider.of<TrackProv>(context, listen: false).getRecommendTrackList();
-    _getRecommendPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getRecommendPlayList();
-    _getRecommendAlbumFuture = Provider.of<PlayListProv>(context, listen: false).getRecommendAlbum();
-    _getRecommendMember = Provider.of<MemberProv>(context, listen: false).getRecommendMember();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +43,6 @@ class _HomeScreenStateState extends State<HomeScreen> {
     memberProv = Provider.of<MemberProv>(context,listen: false);
     playListProv = Provider.of<PlayListProv>(context,listen: false);
     playerProv = Provider.of<PlayerProv>(context,listen: false);
-
 
     return Scaffold(
       body: Container(
@@ -74,62 +56,13 @@ class _HomeScreenStateState extends State<HomeScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 10,),
-
 
                   Container(
                     width: 100.w,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
-
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                      onTap: (){
-                                        GoRouter.of(context).push('/category/${1}');
-                                      },
-                                      child: CategorySquareItem(imageWidth: 30, imagePath: 'assets/images/testImage3.png', imageText: "Month", imageSubText: "Beat")),
-                                  SizedBox(width: 10,),
-                                  CategorySquareItem(imageWidth: 30, imagePath:   'assets/images/testImage4.png', imageText: "Month", imageSubText: "Ballad"),
-                                  SizedBox(width: 10,),
-                                  CategorySquareItem(imageWidth: 30, imagePath:   'assets/images/testImage5.png', imageText: "Month", imageSubText: "Rock"),
-                                ],
-                              ),
-                              SizedBox(height: 10,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CategorySquareItem(imageWidth: 46, imagePath:   'assets/images/testImage5.png', imageText: "Month", imageSubText: "Hip-Hop"),
-                                  SizedBox(width: 10,),
-                                  CategorySquareItem(imageWidth: 46, imagePath:   'assets/images/testImage6.png', imageText: "Month", imageSubText: "K-Pop"),
-                                ],
-                              ),
-                              SizedBox(height: 10,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage7.png', imageText: "Month", imageSubText: "Beat"),
-                                  SizedBox(width: 4,),
-                                  CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage8.png', imageText: "Month", imageSubText: "Rock"),
-                                  SizedBox(width: 4,),
-                                  CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage9.png', imageText: "Month", imageSubText: "Rock"),
-                                  SizedBox(width: 4,),
-                                  CategorySquareItem(imageWidth: 22, imagePath:   'assets/images/testImage10.png', imageText: "Month", imageSubText: "Rock"),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 20,),
+                        SizedBox(height: 10,),
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: Column(
@@ -146,56 +79,41 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                 height: 15,
                               ),
 
-                              FutureBuilder<bool>(
-                                  future: _getRecommendTrackFuture,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return Center(child: CircularProgressIndicator());
-                                    } else if (snapshot.hasError) {
-                                      return Center(child: Text('Error: ${snapshot.error}'));
-                                    }
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                Wrap(
+                                  spacing: 5.0, // 아이템 간의 가로 간격
+                                  runSpacing: 20.0, // 줄 간격
+                                  alignment: WrapAlignment.spaceBetween,
+                                  children: trackProv.recommendTrackList.map((item) {
+                                    return Row(
+                                      children: [
+                                        TrackSquareItem(
+                                          trackItem: item,
+                                          appScreenName: "PopularTrackList",
+                                          initAudioPlayerTrackListCallBack: () async {
 
-                                    if (recommendTrackList.isEmpty) {
-                                      recommendTrackList = trackProv.trackListFilter("RecommendTrackList");
-                                    }
+                                            List<int> trackIdList = trackProv.recommendTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
-                                    return SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: [
-                                          Wrap(
-                                            spacing: 5.0, // 아이템 간의 가로 간격
-                                            runSpacing: 20.0, // 줄 간격
-                                            alignment: WrapAlignment.spaceBetween,
-                                            children: recommendTrackList.map((item) {
-                                              return Row(
-                                                children: [
-                                                  TrackSquareItem(
-                                                    trackItem: item,
-                                                    appScreenName: "PopularTrackList",
-                                                    initAudioPlayerTrackListCallBack: () async {
+                                            trackProv.audioPlayerTrackList = trackProv.recommendTrackList;
+                                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                            trackProv.notify();
 
-                                                      List<int> trackIdList = recommendTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                          },
+                                        ),
 
-                                                      trackProv.audioPlayerTrackList = recommendTrackList;
-                                                      await trackProv.setAudioPlayerTrackIdList(trackIdList);
-                                                      trackProv.notify();
-
-                                                    },
-                                                  ),
-
-                                                  SizedBox(width: 3,),
-                                                ],
-                                              );
-                                            },
-                                            ).toList(),
-                                          ),
-
-                                        ],
-                                      ),
+                                        SizedBox(width: 3,),
+                                      ],
                                     );
-                                  }
-                              ),
+                                  },
+                                  ).toList(),
+                                ),
+
+                              ],
+                            ),
+                          ),
 
 
                             ],
@@ -220,30 +138,18 @@ class _HomeScreenStateState extends State<HomeScreen> {
 
                         Padding(
                           padding: const EdgeInsets.only(top: 5, left: 10,),
-                          child: FutureBuilder<bool>(
-                              future: _getRecommendAlbumFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
-                                } else {
-
-                                  List<PlayListInfoModel> playList = playListProv.albums.playList;
-
-                                  return SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      children: [
-                                        PlayListSquareItem(
-                                          playList: playList,
-                                          isHome: true,
-                                          isAlbum : true,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }
-                              }
-                          ),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                PlayListSquareItem(
+                                  playList: playListProv.recommendAlbumList.playList,
+                                  isHome: true,
+                                  isAlbum : true,
+                                ),
+                              ],
+                            ),
+                          )
                         ),
 
                         /** 추천 플레이리스트 */
@@ -267,38 +173,94 @@ class _HomeScreenStateState extends State<HomeScreen> {
 
                         Padding(
                           padding: const EdgeInsets.only(top: 5, left: 10,),
-                          child: FutureBuilder<bool>(
-                              future: _getRecommendPlayListFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
-                                } else {
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                PlayListSquareItem(
+                                  playList: playListProv.recommendPlayListsList.playList,
+                                  isHome: true,
+                                  isAlbum : false,
+                                ),
 
-                                  List<PlayListInfoModel> playList = playListProv.playlists.playList;
-
-                                  return SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      children: [
-                                        PlayListSquareItem(
-                                          playList: playList,
-                                          isHome: true,
-                                          isAlbum : false,
-                                        ),
-
-                                      ],
-                                    ),
-                                  );
-                                }
-                              }
+                              ],
+                            ),
                           ),
                         ),
 
                         SizedBox(
                           height: 20,
                         ),
-                        
 
+
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Recently Listened Track',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                // Text(
+                                //   'more',
+                                //   style: TextStyle(
+                                //       fontSize: 14,
+                                //       color: Colors.grey,
+                                //       fontWeight: FontWeight.w700),
+                                // ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                Wrap(
+                                  spacing: 5.0, // 아이템 간의 가로 간격
+                                  runSpacing: 20.0, // 줄 간격
+                                  alignment: WrapAlignment.spaceBetween,
+                                  children: trackProv.lastListenTrackList.map((item) {
+                                    return Row(
+                                      children: [
+                                        TrackSquareItem(
+                                          trackItem: item,
+                                          appScreenName: "LastListenTrackList",
+                                          initAudioPlayerTrackListCallBack: () async {
+
+                                            List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+
+                                            trackProv.audioPlayerTrackList = trackProv.lastListenTrackList;
+                                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                            trackProv.notify();
+
+                                          },
+                                        ),
+
+                                        SizedBox(width: 3,),
+                                      ],
+                                    );
+                                  },
+                                  ).toList(),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
                         Container(
                           padding: EdgeInsets.all(10),
                           child: Column(
@@ -314,18 +276,8 @@ class _HomeScreenStateState extends State<HomeScreen> {
                               SizedBox(
                                 height: 20,
                               ),
-                              FutureBuilder<bool>(
-                                  future: _getRecommendMember,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
-                                    } else {
-                                      return MemberScrollHorizontalItem(
-                                        memberList: memberProv
-                                            .memberModelList,
-                                      );
-                                    }
-                                  }
+                              MemberScrollHorizontalItem(
+                                memberList: memberProv.recommendMemberList,
                               ),
 
                             ],

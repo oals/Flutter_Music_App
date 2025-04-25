@@ -281,7 +281,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 width : 100.w,
                                 padding: EdgeInsets.only(top: 33.h),
                                 child: Text(
-                                  '비어있습니다.',
+                                  'Empty',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,

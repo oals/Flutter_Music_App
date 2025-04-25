@@ -33,20 +33,12 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   late AuthProv authProv;
   late TrackProv trackProv;
-  late Future<bool>? _getLastListenTrackFuture;
-
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _getLastListenTrackFuture = Provider.of<TrackProv>(context, listen: false).getLastListenTrack();
-  }
 
   @override
   Widget build(BuildContext context) {
     authProv = Provider.of<AuthProv>(context);
     trackProv = Provider.of<TrackProv>(context);
+
 
     List<String> cateogryList = [
       'My page',
@@ -156,58 +148,41 @@ class _SettingScreenState extends State<SettingScreen> {
             SizedBox(
               height: 10,
             ),
-            FutureBuilder<bool>(
-                future: _getLastListenTrackFuture, // 비동기 메소드 호출
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('오류 발생: ${snapshot.error}'));
-                  } else if (!snapshot.hasData) {
-                    return Center(child: Text('데이터가 없습니다.'));
-                  }
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Wrap(
+                    spacing: 5.0, // 아이템 간의 가로 간격
+                    runSpacing: 20.0, // 줄 간격
+                    alignment: WrapAlignment.spaceBetween,
+                    children: trackProv.lastListenTrackList.map((item) {
+                      return Row(
+                        children: [
+                          TrackSquareItem(
+                            trackItem: item,
+                            appScreenName: "LastListenTrackList",
+                            initAudioPlayerTrackListCallBack: () async {
 
-                  if (trackProv.lastListenTrackList.isEmpty) {
-                    trackProv.lastListenTrackList = trackProv.trackListFilter("LastListenTrackList");
-                  }
+                              List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        Wrap(
-                          spacing: 5.0, // 아이템 간의 가로 간격
-                          runSpacing: 20.0, // 줄 간격
-                          alignment: WrapAlignment.spaceBetween,
-                          children: trackProv.lastListenTrackList.map((item) {
-                            return Row(
-                              children: [
-                                TrackSquareItem(
-                                  trackItem: item,
-                                  appScreenName: "LastListenTrackList",
-                                  initAudioPlayerTrackListCallBack: () async {
+                              trackProv.audioPlayerTrackList = trackProv.lastListenTrackList;
+                              await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                              trackProv.notify();
 
-                                    List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                            },
+                          ),
 
-                                    trackProv.audioPlayerTrackList = trackProv.lastListenTrackList;
-                                    await trackProv.setAudioPlayerTrackIdList(trackIdList);
-                                    trackProv.notify();
+                          SizedBox(width: 3,),
+                        ],
+                      );
+                    },
+                    ).toList(),
+                  ),
 
-                                  },
-                                ),
-
-                                SizedBox(width: 3,),
-                              ],
-                            );
-                          },
-                          ).toList(),
-                        ),
-
-                      ],
-                    ),
-                  );
-              }
-            ),
+                ],
+              ),
+            )
 
           ],
         ),

@@ -42,7 +42,6 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AppProv()),
         ChangeNotifierProvider(create: (context) => SearchProv()),
         ChangeNotifierProvider(create: (context) => PlayerProv()),
         ChangeNotifierProvider(create: (context) => MemberProv()),
@@ -55,6 +54,12 @@ void main() async {
         ChangeNotifierProvider(create: (context) => CategoryProv()),
         ChangeNotifierProvider(create: (context) => AuthProv()),
         ChangeNotifierProvider(create: (context) => ComnLoadProv()),
+        ChangeNotifierProvider(create: (context) => AppProv(
+          Provider.of<TrackProv>(context, listen: false),
+          Provider.of<PlayListProv>(context, listen: false),
+          Provider.of<MemberProv>(context, listen: false),
+        ),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -71,10 +76,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     FcmNotifications.initializeNotification(context);  // Firebase 알림 초기화
     print('메인 빌드');
+
     return ResponsiveSizer(  // 화면 크기 자동 조정
       builder: (context, orientation, screenType) {
         return MaterialApp.router(

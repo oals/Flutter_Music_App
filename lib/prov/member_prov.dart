@@ -15,7 +15,7 @@ import 'package:http/http.dart' as http;
 class MemberProv with ChangeNotifier {
 
   MemberModel model = MemberModel();
-  List<MemberModel> memberModelList = [];
+  List<MemberModel> recommendMemberList = [];
   MemberModelList searchMemberModelList = MemberModelList();
 
   void notify() {
@@ -68,10 +68,10 @@ class MemberProv with ChangeNotifier {
 
       if (response.statusCode == 200) {
 
-        memberModelList = [];
+        recommendMemberList = [];
 
         for (var item in Helpers.extractValue(response.body, "memberList")){
-          memberModelList.add(MemberModel.fromJson(item));
+          recommendMemberList.add(MemberModel.fromJson(item));
         }
 
         print('$url - Successful');
