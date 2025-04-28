@@ -51,7 +51,7 @@ class _UploadScreenState extends State<UploadScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    for(int i = 0; i < 1; i++){
+    for (int i = 0; i < 1; i++) {
       Upload upload = Upload();
       upload.uploadFileNm = "";
       uploadTrackList.add(upload);
@@ -83,8 +83,6 @@ class _UploadScreenState extends State<UploadScreen> {
           controller1.text = fileNameWithoutExtension;
         }
 
-
-
         setState(() {});
       } else {
         print("파일이 선택되지 않았습니다.");
@@ -97,26 +95,42 @@ class _UploadScreenState extends State<UploadScreen> {
       info = controller2.text;
     }
 
+
     Future<void> _pickImage() async {
+      try {
 
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.image, // 이미지 파일만 선택
-      );
+        final ImagePicker picker = ImagePicker();
+        final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
-      if (result != null && result.files.isNotEmpty) {
+        if (image != null) {
+          _imageBytes = await Helpers.cropImage(image.path);
 
-        _imageBytes = await Helpers.cropImage(result.files.first.path!);
+          if (_imageBytes != null) {
+            FilePickerResult filePickerResult = await Helpers.convertUint8ListToFilePickerResult(
+              _imageBytes!,
+              _imageBytes!.lengthInBytes,
+            );
 
-        FilePickerResult filePickerResult = await Helpers.convertUint8ListToFilePickerResult(_imageBytes!,result.files.first.size);
+            uploadTrackList[0].uploadImage = filePickerResult;
+            uploadTrackList[0].uploadImageNm = image.path.split('/').last;
 
+            setState(() {});
 
-        uploadTrackList[0].uploadImage = filePickerResult;
-        uploadTrackList[0].uploadImageNm = result.files.first.name ?? "";
-
-
-        setState(() {});
+          } else {
+            print("이미지를 자르는 중 문제가 발생했습니다.");
+          }
+        } else {
+          print("이미지가 선택되지 않았습니다.");
+        }
+      } catch (e) {
+        print("이미지 선택 또는 처리 중 오류 발생: $e");
       }
     }
+
+
+
+
+
 
 
     return Container(

@@ -34,12 +34,12 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
   }
 
   void setCurrentPlaying(){
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
 
       int playingTrackIndex = trackProv.audioPlayerTrackList.indexWhere((trackItem) => trackItem.isPlaying == true);
 
       if (playingTrackIndex != -1 && scrollController.hasClients) {
-        // 해당 인덱스 위치로 스크롤
         scrollController.animateTo(
           (playingTrackIndex - 2) * 10.h,
           duration: Duration(milliseconds: 100),

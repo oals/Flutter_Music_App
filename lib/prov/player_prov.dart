@@ -37,6 +37,19 @@ class PlayerProv extends ChangeNotifier {
     playerModel.dragOffset = Offset.zero;
   }
 
+  Future<void> initAudioPlayer(TrackProv trackProv,int trackId , String appScreenName, Function initAudioPlayerTrackListCallBack) async{
+    if (currentAppScreen != appScreenName) {
+      currentAppScreen = appScreenName;
+      await initAudioPlayerTrackListCallBack(); /// 오디오 재생목록 생성
+      await initAudio(trackProv);
+    } else if (appScreenName == 'LastListenTrackList'){
+      print('실행할곳테스트');
+      await initAudioPlayerTrackListCallBack();
+      await trackProv.setLastListenTrackId(trackId);
+
+    }
+  }
+
   Future<void> setupQueue(List<Track> audioTrackPlayList) async {
 
     _playlist.clear();

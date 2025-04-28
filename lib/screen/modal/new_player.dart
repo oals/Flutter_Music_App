@@ -111,7 +111,13 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
 
                       playerProv.currentPage = index;
                       await playerProv.playTrackAtIndex(playerProv.currentPage);
+
+                      if (trackProv.lastListenTrackList[0].trackId != trackProv.audioPlayerTrackList[index].trackId!) {
+                        trackProv.updateLastListenTrackList(trackProv.audioPlayerTrackList[index]);
+                      }
+
                       await trackProv.setLastListenTrackId(trackProv.audioPlayerTrackList[index].trackId!);
+                      trackProv.notify();
                     }
                   },
                   itemBuilder: (BuildContext ctx, int index) {

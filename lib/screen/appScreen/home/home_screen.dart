@@ -221,57 +221,52 @@ class _HomeScreenStateState extends State<HomeScreen> {
                           height: 10,
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(left : 8.0),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                Wrap(
-                                  spacing: 5.0, // 아이템 간의 가로 간격
-                                  runSpacing: 20.0, // 줄 간격
-                                  alignment: WrapAlignment.spaceBetween,
-                                  children: trackProv.lastListenTrackList.map((item) {
-                                    return Row(
-                                      children: [
-                                        TrackSquareItem(
-                                          trackItem: item,
-                                          appScreenName: "LastListenTrackList",
-                                          initAudioPlayerTrackListCallBack: () async {
+                            child: Wrap(
+                              spacing: 5.0, // 아이템 간의 가로 간격
+                              runSpacing: 20.0, // 줄 간격
+                              alignment: WrapAlignment.spaceBetween,
+                              children: trackProv.lastListenTrackList.map((item) {
+                                return Row(
+                                  children: [
+                                    TrackSquareItem(
+                                      trackItem: item,
+                                      appScreenName: "LastListenTrackList",
+                                      initAudioPlayerTrackListCallBack: () async {
 
-                                            List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                        List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                        trackProv.audioPlayerTrackList = List.from(trackProv.lastListenTrackList);
+                                        await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                        trackProv.notify();
 
-                                            trackProv.audioPlayerTrackList = trackProv.lastListenTrackList;
-                                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
-                                            trackProv.notify();
+                                      },
+                                    ),
 
-                                          },
-                                        ),
-
-                                        SizedBox(width: 3,),
-                                      ],
-                                    );
-                                  },
-                                  ).toList(),
-                                ),
-
-                              ],
+                                    SizedBox(width: 3,),
+                                  ],
+                                );
+                              },
+                              ).toList(),
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
+
+                        SizedBox(height: 20,),
                         Container(
-                          padding: EdgeInsets.all(10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Artists you should follow',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700),
+                              Padding(
+                                padding: const EdgeInsets.only(left : 8.0),
+                                child: Text(
+                                  'Artists you should follow',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700),
+                                ),
                               ),
                               SizedBox(
                                 height: 20,

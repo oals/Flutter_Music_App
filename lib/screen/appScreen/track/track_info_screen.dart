@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +50,6 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
   bool isAuth = false;
   bool isEdit = false;
   bool moreInfo = false;
-  Uint8List? _imageBytes = null; // 선택된 이미지의 바이트 데이터
 
   late TrackProv trackProv;
   late PlayerProv playerProv;
@@ -74,39 +74,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
 
     trackProv = Provider.of<TrackProv>(context);
     playerProv = Provider.of<PlayerProv>(context,listen: false);
-
-    ImageProv imageProv = Provider.of<ImageProv>(context);
     FollowProv followProv = Provider.of<FollowProv>(context);
-
-
-    Future<void> _pickImage(Track trackInfoModel) async {
-      Upload upload = Upload();
-      upload.trackId = widget.track.trackId;
-
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.image, // 이미지 파일만 선택
-      );
-
-      if (result != null && result.files.isNotEmpty) {
-        _imageBytes = await Helpers.cropImage(result.files.first.path!);
-
-        FilePickerResult filePickerResult =
-            await Helpers.convertUint8ListToFilePickerResult(
-                _imageBytes!, result.files.first.size);
-
-        upload.uploadImage = filePickerResult;
-        upload.uploadImageNm = result.files.first.name ?? "";
-
-        String newImagePath = await imageProv.updateTrackImage(upload);
-
-        if(newImagePath != ""){
-          widget.track.trackImagePath = newImagePath;
-        }
-        setState(() {});
-      }
-    }
-
-
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -142,9 +110,10 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                             Stack(
                               children: [
                                 GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
                                     if (isAuth) {
-                                      _pickImage(widget.track);
+                                      trackProv.trackInfoModel.trackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
+                                      setState(() {});
                                     }
                                   },
                                   child: CustomCachedNetworkImage(
@@ -176,8 +145,9 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                     children: [
                                       if(isEdit)...[
                                         GestureDetector(
-                                          onTap:() => {
-                                            _pickImage(widget.track)
+                                          onTap:() async {
+                                            trackProv.trackInfoModel.trackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
+                                            setState(() {});
                                           },
                                           child: Text(
                                             '이미지 변경',

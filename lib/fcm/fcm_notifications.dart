@@ -26,11 +26,6 @@ class FcmNotifications{
    */
   static void initializeNotification(BuildContext context) async {
 
-    /** 백그라운드에서 메시지를 받을 때 호출 할 백그라운드 이벤트 리스너 설정*/
-    FirebaseMessaging.onBackgroundMessage(
-        _firebaseMessagingBackgroundHandler /** 메서드 전달 */
-    );
-
     /** fcm에서 받은 메시지를 화면에 표시하기 위함
      * 이 객체를 통해 알림 채널을 설정, 초기화, 알림 표시 등 작업
      * */
@@ -48,10 +43,10 @@ class FcmNotifications{
         ));
 
 
-
     /**로컬 알림을 초기화 하는 메서드
      *  알림을 표시하기 전에 꼭 초기화를 해야함
      * */
+
     await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
       android: AndroidInitializationSettings("@mipmap/ic_launcher"), /** 알림에 표시 될 아이콘 */
     ));
@@ -65,13 +60,48 @@ class FcmNotifications{
 
     firebaseMessagingForegroundHandler(context);
 
+    /** 백그라운드에서 메시지를 받을 때 호출 할 백그라운드 이벤트 리스너 설정*/
+    FirebaseMessaging.onBackgroundMessage(
+        _firebaseMessagingBackgroundHandler /** 메서드 전달 */
+    );
   }
 
   /** 백그라운드 이벤트 리스너*/
   static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    print("백그라운드 메시지 처리.. ${message.notification!.body!}");
-  }
+    try {
+      // 메시지의 제목과 본문 추출
+      RemoteNotification? notification = message.notification;
 
+      print("백그라운드 메시지 처리 중...");
+
+      // 메시지 데이터 확인
+      if (message.data.isNotEmpty) {
+        print("메시지 데이터: ${message.data}");
+      }
+
+      // 로컬 알림 생성 (flutter_local_notifications 활용)
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+      await flutterLocalNotificationsPlugin.show(
+        notification.hashCode, // 알림의 고유 id
+        notification?.title,
+        notification?.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            'high_importance_channel',
+            'high_importance_notification',
+            importance: Importance.max,
+            color: Colors.black54, // 알림 아이콘 색상 설정 (배경 색상은 따로 스타일로 설정)
+            category: 'category_alert',
+          ),
+        ),
+      );
+
+
+    } catch (e) {
+      print("백그라운드 메시지 처리 중 오류 발생: $e");
+    }
+  }
 
   /** 포그라운드 이벤트 리스너 */
   static void firebaseMessagingForegroundHandler(BuildContext context) async {
@@ -93,7 +123,7 @@ class FcmNotifications{
 
         // 이미 초기화된 flutterLocalNotificationsPlugin을 사용해야 함
         /** 푸시 알림을 화면에 표시*/
-        flutterLocalNotificationsPlugin.show(
+        await flutterLocalNotificationsPlugin.show(
           notification.hashCode, // 알림의 고유 id
           notification.title, // 알림의 제목
           notification.body, // 알림의 내용

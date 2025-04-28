@@ -61,7 +61,6 @@ class _SplashScreenState extends State<SplashScreen> {
       }
 
       Future<void> _handleAuth(User user) async {
-        print('test123123');
         bool isFireBaseAuth = await authProv.fnFireBaseAuthing(user);
         if (isFireBaseAuth) {
           _jwtAuthing();

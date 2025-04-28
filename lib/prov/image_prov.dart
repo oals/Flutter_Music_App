@@ -43,7 +43,7 @@ class ImageProv extends ChangeNotifier {
         },
         fileList: fileList,
         body: {
-          'memberId': upload?.memberId.toString(),
+          'loginMemberId': upload?.memberId.toString(),
         },
       );
 

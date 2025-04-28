@@ -47,28 +47,14 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
     return GestureDetector(
       onTap: () async {
         if (!widget.trackItem.isPlaying) {
-
           widget.trackItem.isPlaying = true;
+          trackProv.updateLastListenTrackList(widget.trackItem);
 
-          if (trackProv.audioPlayerTrackList.length > playerProv.currentPage) {
-            trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
-          }
+          trackProv.initCurrentTrackPlaying(playerProv.currentPage);
 
-          if (widget.appScreenName != "AudioPlayerTrackListModal") {
-            if (playerProv.currentAppScreen != widget.appScreenName) {
-              playerProv.currentAppScreen = widget.appScreenName;
-              await widget.initAudioPlayerTrackListCallBack(); /// 오디오 재생목록 생성
-              await playerProv.initAudio(trackProv);
-            }
-          }
+          await playerProv.initAudioPlayer(trackProv,widget.trackItem.trackId!,widget.appScreenName!,widget.initAudioPlayerTrackListCallBack);
 
-          int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId == widget.trackItem.trackId);
-          if (index != -1) {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              playerProv.page = index;
-              playerProv.swiperController.move(index, animation: true);
-            });
-          }
+          trackProv.updateAudioPlayerSwiper(widget.trackItem.trackId!,playerProv, widget.appScreenName!);
 
           trackProv.notify();
           playerProv.notify();

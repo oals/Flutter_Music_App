@@ -1,11 +1,8 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/screen/modal/audio_player_track_list_modal.dart';
 import 'package:skrrskrr/screen/modal/comment/child_comment.dart';
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
@@ -17,6 +14,7 @@ import 'package:skrrskrr/screen/modal/upload/select_category.dart';
 
 // AppBottomRouter 클래스 정의
 class AppBottomModalRouter {
+
 
   static void fnModalRouter(
       BuildContext context,
@@ -31,15 +29,26 @@ class AppBottomModalRouter {
         Function? callBack,
       }) async {
 
-    OverlayEntry? modalOverlayEntry;
+    OverlayEntry? parentOverlayEntry;
     DraggableScrollableController draggableScrollableController = DraggableScrollableController();
 
+
+
+    // void _removeOverlay() {
+    //   if(modalOverlayEntry != null){
+    //     modalOverlayEntry?.remove();
+    //     modalOverlayEntry = null;
+    //   }
+    // }
+
     void _removeOverlay() {
-      if(modalOverlayEntry != null){
-        modalOverlayEntry?.remove();
-        modalOverlayEntry = null;
+      if (parentOverlayEntry != null) {
+        parentOverlayEntry?.remove();
+        parentOverlayEntry = null;
       }
     }
+
+
     final Map<int, Future<dynamic> Function()> modalWidgets = {
       0: () async {
         return CommentScreen(trackId: trackId);
@@ -64,10 +73,7 @@ class AppBottomModalRouter {
         return SelectCategory(
             categoryId : categoryId,
           callBack: (int categoryIdList) {
-
             callBack!(categoryIdList);
-
-            _removeOverlay();
           },
         );
       },
@@ -79,7 +85,6 @@ class AppBottomModalRouter {
           trackId: trackId!,
           callBack : (int? playListId) {
             callBack!(playListId);
-            _removeOverlay();
           }
         );
       },
@@ -88,52 +93,110 @@ class AppBottomModalRouter {
     if (modalWidgets.containsKey(modalIndex)) {
       dynamic modalFunction = modalWidgets[modalIndex];
 
-      var maxSize = 0.9;
+
+      double maxSize = 0.9;
       if(modalIndex == 1 || modalIndex == 5) {
         maxSize = 1.0;
       } else if (modalIndex == 7 ) {
         maxSize = 0.95;
       }
 
-      void _showOverlay(BuildContext context) async {
-        Widget? modalContent = await modalFunction();
+      void _showOverlay() async {
 
-        modalOverlayEntry = OverlayEntry(
-          builder: (context) => Material(
-            color: Colors.transparent,
-            child: Listener(
-              onPointerUp: (event) {
-                if (modalOverlayEntry != null && draggableScrollableController.size <= 0.75) {
-                  _removeOverlay();
-                }
-              },
-              child: Container(
-                  color: Colors.transparent,
-                  child: DraggableScrollableSheet(
-                    snap: true,
-                    snapSizes: [0.0, maxSize],
-                    initialChildSize: maxSize,
-                    minChildSize: 0.0,
-                    maxChildSize: maxSize,
-                    controller: draggableScrollableController,
-                    builder: (BuildContext context, scrollController) {
-                      return SingleChildScrollView(
-                          controller: scrollController,
-                          child: modalContent!
+        Widget? modalContent = await modalFunction();
+        OverlayEntry? childOverlayEntry;
+        bool isClosing = false;
+        double currentExtent = maxSize;
+
+        parentOverlayEntry = OverlayEntry(
+          builder: (context) {
+            return Material(
+              color: Colors.black.withOpacity(0.5), // 배경 색상
+              child: Listener(
+                onPointerUp: (details) {
+                  if (!isClosing && currentExtent <= 0.8) {
+                    isClosing = true;
+                    Future.microtask(() {
+                      childOverlayEntry = OverlayEntry(
+                        builder: (context) {
+                          return TweenAnimationBuilder<double>(
+                            tween: Tween<double>(begin: 1.0, end: 0.0),
+                            duration: Duration(milliseconds: 650),
+                            curve: Curves.easeInOut,
+                            builder: (context, value, child) {
+                              return Transform.translate(
+                                offset: Offset(0, value * 100.h),
+                                child: child,
+                              );
+                            },
+                            onEnd: () {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                parentOverlayEntry?.remove();
+                                childOverlayEntry?.remove();
+                              });
+
+
+                            },
+                          );
+                        },
+                      );
+                      Overlay.of(context).insert(childOverlayEntry!);
+                    });
+                  }
+                },
+                child: NotificationListener<DraggableScrollableNotification>(
+                  onNotification: (notification) {
+                    currentExtent = notification.extent;
+                    return true;
+                  },
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween<double>(begin: 1.0, end: !isClosing ? 0.0 : 1.0),
+                    duration: Duration(milliseconds: 650),
+                    curve: Curves.easeInOut,
+                    builder: (context, value, child) {
+                      return Transform.translate(
+                        offset: Offset(0, value * 100.h),
+                        child: DraggableScrollableSheet(
+                          initialChildSize: maxSize,
+                          minChildSize: 0.0,
+                          maxChildSize: maxSize,
+                          builder: (context, scrollController) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      controller: scrollController,
+                                      child: modalContent!,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       );
                     },
                   ),
                 ),
               ),
-            ),
-          );
+            );
+          },
+        );
 
-        if (!modalOverlayEntry!.maintainState) {
-          Overlay.of(context).insert(modalOverlayEntry!);
-        }
+        Overlay.of(context).insert(parentOverlayEntry!);
+
+
       }
 
-      _showOverlay(context);
+      _showOverlay();
     }
   }
 

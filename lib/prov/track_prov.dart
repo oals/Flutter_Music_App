@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/model/comn/upload.dart';
+import 'package:skrrskrr/prov/player_prov.dart';
 
 import 'package:skrrskrr/utils/helpers.dart';
 
@@ -81,7 +82,6 @@ class TrackProv extends ChangeNotifier {
   }
 
   void initTrackToModel(List<String> trackCdList){
-
     try {
       for (String trackCd in trackCdList) {
         List<dynamic> trackListCopy = List.from(trackModel.trackList);
@@ -97,14 +97,46 @@ class TrackProv extends ChangeNotifier {
             }
           }
         }
-
       }
     } catch (e, stacktrace) {
       print('오류 발생: $e');
       print('스택 트레이스: $stacktrace');
     }
+  }
+
+  void updateLastListenTrackList(Track trackItem){
+
+    lastListenTrackList[0].isPlaying = false;
+    lastListenTrackList.removeWhere((track) => track.trackId == trackItem.trackId);
+    lastListenTrackList.insert(0, trackItem);
+    lastListenTrackList[0].isPlaying = true;
 
   }
+
+  void initCurrentTrackPlaying(int currentPage) async{
+      if (audioPlayerTrackList.length > currentPage) {
+        audioPlayerTrackList[currentPage].isPlaying = false;
+      }
+  }
+
+
+  void updateAudioPlayerSwiper(int trackId, PlayerProv playerProv, String appScreenName){
+
+    int index = audioPlayerTrackList.indexWhere((item) => item.trackId == trackId);
+    if (index != -1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (appScreenName == 'LastListenTrackList') {
+          playerProv.page = 0;
+        } else {
+          playerProv.page = index;
+        }
+        playerProv.swiperController.move(playerProv.page, animation: true);
+      });
+    }
+
+  }
+
+
 
   Future<bool> getPlayListTrackList(int playListId, int offset, int limit) async {
 

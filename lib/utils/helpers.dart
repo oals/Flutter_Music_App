@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:skrrskrr/fcm/auth_service.dart';
 import 'package:skrrskrr/model/comn/upload.dart';
@@ -65,42 +66,55 @@ class Helpers {
     return prefs.getString("memberId") ?? '';
   }
 
-  // static Future<void> pickImage(dynamic model, bool isMemberImage, BuildContext context) async {
-  //
-  //
-  //   Upload upload = Upload();
-  //   if (isMemberImage) {
-  //     upload.memberId = model.memberId;
-  //   } else {
-  //     upload.trackId = model.trackId;
-  //   }
-  //
-  //   FilePickerResult? result = await FilePicker.platform.pickFiles(
-  //     type: FileType.image, // 이미지 파일만 선택
-  //   );
-  //
-  //   if (result != null && result.files.isNotEmpty) {
-  //     _imageBytes = await Helpers.cropImage(result.files.first.path!);
-  //
-  //     FilePickerResult filePickerResult =
-  //     await Helpers.convertUint8ListToFilePickerResult(_imageBytes!, result.files.first.size);
-  //
-  //     upload.uploadImage = filePickerResult;
-  //     upload.uploadImageNm = result.files.first.name ?? "";
-  //
-  //     if(newImagePath != ""){
-  //       if (isMemberImage) {
-  //         String newImagePath = await Provider.of<ImageProv>(context).updateMemberImage(upload);
-  //         model.memberImagePath = newImagePath;
-  //       } else {
-  //         String newImagePath = await Provider.of<ImageProv>(context).updateTrackImage(upload);
-  //         model.trackImagePath = newImagePath;
-  //       }
-  //     }
-  //
-  //
-  //   }
-  // }
+
+  static Future<String?> pickImage(int? id, bool isMemberImage, BuildContext context) async {
+    try {
+
+      final ImageProv imageProv = Provider.of<ImageProv>(context,listen: false);
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      Upload upload = Upload();
+
+      if (isMemberImage) {
+        upload.memberId = id;
+      } else {
+        upload.trackId = id;
+      }
+
+      if (image != null) {
+        Uint8List? _imageBytes = await Helpers.cropImage(image.path);
+
+        if (_imageBytes != null) {
+          FilePickerResult filePickerResult = await Helpers.convertUint8ListToFilePickerResult(
+            _imageBytes,
+            _imageBytes.lengthInBytes,
+          );
+
+          upload.uploadImage = filePickerResult;
+          upload.uploadImageNm = image.path.split('/').last;
+
+          String? newImagePath = null;
+          if (isMemberImage) {
+            newImagePath = await imageProv.updateMemberImage(upload);
+          } else {
+            newImagePath = await imageProv.updateTrackImage(upload);
+          }
+
+          return newImagePath;
+
+        } else {
+          print("이미지를 자르는 중 문제가 발생했습니다.");
+        }
+      } else {
+        print("이미지가 선택되지 않았습니다.");
+      }
+    } catch (e) {
+      print("이미지 선택 또는 처리 중 오류 발생: $e");
+    }
+
+    return null;
+  }
+
 
   static Future<void> setNotificationIsView(bool notificationIsView) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

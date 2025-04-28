@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,7 +55,6 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
   late TrackProv trackProv;
   late ImageProv imageProv;
 
-  Uint8List? _imageBytes = null; // 선택된 이미지의 바이트 데이터
   late String? loginMemberId;
   late Future<bool> _getUserInitFuture;
   late Future<bool> _getUserTrackFuture;
@@ -97,32 +97,6 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
     trackProv = Provider.of<TrackProv>(context);
     imageProv = Provider.of<ImageProv>(context);
     comnLoadProv = Provider.of<ComnLoadProv>(context);
-
-
-    Future<void> _pickImage(MemberModel memberModel) async {
-      Upload upload = Upload();
-      upload.memberId = memberModel.memberId;
-
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.image, // 이미지 파일만 선택
-      );
-
-      if (result != null && result.files.isNotEmpty) {
-        _imageBytes = await Helpers.cropImage(result.files.first.path!);
-
-        FilePickerResult filePickerResult = await Helpers.convertUint8ListToFilePickerResult(
-            _imageBytes!, result.files.first.size);
-
-        upload.uploadImage = filePickerResult;
-        upload.uploadImageNm = result.files.first.name ?? "";
-
-        String newImagePath = await imageProv.updateMemberImage(upload);
-        if (newImagePath.isNotEmpty) {
-          memberModel.memberImagePath = newImagePath;
-        }
-        setState(() {});
-      }
-    }
 
     void setNewTitle(int cd, String newTitle) async {
       if (cd == 1) {
@@ -203,7 +177,10 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                   children: [
                                     if (isEdit) ...[
                                       GestureDetector(
-                                        onTap: () => {_pickImage(memberModel)},
+                                        onTap: () async {
+                                          memberModel.memberImagePath = await Helpers.pickImage(memberModel.memberId, true, context);
+                                          setState(() {});
+                                        },
                                         child: Text(
                                           '이미지 변경',
                                           style: TextStyle(color: Colors.white),
@@ -213,8 +190,6 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                   ],
                                 ),
                               ),
-
-
 
                             ],
                           ),
