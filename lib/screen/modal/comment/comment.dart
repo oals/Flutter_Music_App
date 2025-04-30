@@ -9,43 +9,61 @@ import 'package:skrrskrr/model/comment/comment_model.dart';
 import 'package:skrrskrr/prov/comment_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
+import 'package:skrrskrr/screen/subScreen/comment/comment_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 
 class CommentScreen extends StatefulWidget {
   const CommentScreen({
     super.key,
     required this.trackId,
+    required this.notificationCommentId,
+    required this.callBack,
   });
 
   final int? trackId;
+  final int? notificationCommentId;
+  final Function callBack;
 
   @override
   State<CommentScreen> createState() => _CommentScreenState();
 }
 
 class _CommentScreenState extends State<CommentScreen> {
+  late CommentProv commentProv;
   final TextEditingController textController = TextEditingController();
   String? selectCommentMemberNickName = "";
   int? commentId = null;
   late Future<bool> _getCommentInitFuture;
+  late List<CommentModel> commentModel;
+  late ScrollController scrollController;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getCommentInitFuture = Provider.of<CommentProv>(context, listen: false).getComment(widget.trackId);
+    scrollController = ScrollController();
+
+    if (widget.notificationCommentId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(Duration(milliseconds: 300)).then((value) {
+          int index = commentProv.findCommentIndex(commentModel, widget.notificationCommentId!);
+          scrollController.jumpTo(index * 8.h);
+        });
+      });
+    }
   }
 
   @override
   void dispose() {
     textController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    CommentProv commentProv = Provider.of<CommentProv>(context);
+    commentProv = Provider.of<CommentProv>(context);
 
     return Container(
       height: 90.h,
@@ -61,7 +79,7 @@ class _CommentScreenState extends State<CommentScreen> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.white, //0xff8515e7
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
               ),
               width: 50,
@@ -75,167 +93,61 @@ class _CommentScreenState extends State<CommentScreen> {
                 future: _getCommentInitFuture, // 비동기 함수 호출
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    // 로딩 상태
-                    return Center(child: CircularProgressIndicator());
+                    return Center(child: CustomProgressIndicatorItem());
                   } else {
-                    // 데이터가 있을 때
-                    List<CommentModel> commentModel = commentProv.commentModel;
 
-
-                    Future<void> fnRouter(memberId)  async{
-                      GoRouter.of(context).push('/memberPage/${memberId}');
-                    }
+                    commentModel = commentProv.commentModel;
 
                     return SingleChildScrollView(
+                      controller: scrollController,
                       scrollDirection: Axis.vertical,
                       child: Container(
                         child: Column(
                           children: [
                             for (CommentModel comment in commentModel) ...[
-                              GestureDetector(
-                                onTap: () {
-                                  print("답글 쓰기");
-                                  // 닉네임을 텍스트 필드에 추가
-                                  selectCommentMemberNickName = '@${comment.memberNickName} ';
-                                  commentId = comment.commentId;
-
-                                  textController.text =
-                                  '@${comment.memberNickName} ';
-                                  textController.selection =
-                                      TextSelection.fromPosition(
-                                          TextPosition(
-                                              offset: textController
-                                                  .text
-                                                  .length)); // 커서를 텍스트 끝으로 이동
-                                },
-                                child: Container(
-                                  color: Colors.black,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          GestureDetector(
-                                            onTap : () {
-                                              fnRouter(comment.memberId);
-                                            },
-                                            child: ClipOval(
-                                              child: CustomCachedNetworkImage(
-                                                  imagePath:comment.memberImagePath,
-                                                  imageWidth : 8.w,
-                                                  imageHeight : null,
-                                                isBoxFit: true,
-                                              ),
-
-
-                                            ),
-                                          ),
-
-                                          SizedBox(width: 5),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-
-                                                GestureDetector(
-                                                  onTap:(){
-                                                    fnRouter(comment.memberId);
-                                                  },
-                                                  child: Text(
-                                                    comment.memberNickName!,
-                                                    style: TextStyle(
-                                                        color: Colors.grey),
-                                                  ),
-                                                ),
-
-
-                                                SizedBox(height: 3),
-                                                Text(
-                                                  comment.commentText!,
-                                                  style: TextStyle(
-                                                      color: Colors.white),
-                                                ),
-                                                SizedBox(height: 3),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      comment.commentDate!,
-                                                      style: TextStyle(
-                                                          fontSize: 13,
-                                                          color: Colors.grey),
-                                                    ),
-                                                    SizedBox(width: 5),
-                                                    if (comment.isChildCommentActive!)
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          AppBottomModalRouter.fnModalRouter(context,4,
-                                                              trackId:
-                                                                  comment.trackId,
-                                                              commentId: comment
-                                                                  .commentId);
-                                                        },
-                                                        child: Text(
-                                                          "답글 보기",
-                                                          style: TextStyle(
-                                                            fontSize: 13,
-                                                            color: Colors.grey,
-                                                            decoration:
-                                                                TextDecoration
-                                                                    .underline,
-                                                            // 밑줄 추가
-                                                            decorationColor:
-                                                                Colors.grey,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  print("댓글 좋아요");
-
-                                                  commentProv.setCommentLike(comment.commentId);
-                                                  setState(() {
-                                                    comment.commentLikeStatus = !comment.commentLikeStatus!;
-                                                    if(comment.commentLikeStatus!){
-                                                      comment.commentLikeCnt = comment.commentLikeCnt! + 1;
-                                                    }else {
-                                                      comment.commentLikeCnt = comment.commentLikeCnt! - 1;
-                                                    }
-                                                  });
-
-                                                },
-                                                child: SvgPicture.asset(
-                                                  !comment.commentLikeStatus!
-                                                      ? 'assets/images/heart.svg'
-                                                      : 'assets/images/heart_red.svg',
-                                                ),
-                                              ),
-                                              Text(
-                                                comment.commentLikeCnt.toString(),
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              CommentItem(
+                                  commentModel: comment,
+                                  commentLikeCallBack: () {
+                                    commentProv.setCommentLike(comment.commentId);
+                                    commentProv.fnUpdateCommentLike(comment);
+                                  },
+                                  replyCommentCallBack: (){
+                                    selectCommentMemberNickName = '@${comment.memberNickName} ';
+                                    commentId = comment.commentId;
+                                    textController.text = '@${comment.memberNickName} ';
+                                    textController.selection = TextSelection.fromPosition(TextPosition(offset: textController.text.length));
+                                  },
+                                  modalCloseCallBack: (){
+                                      widget.callBack();
+                                  },
+                                  isChildComment: false,
                               ),
                               SizedBox(height: 15),
+                              for(CommentModel childComment in comment.childComments ?? []) ...[
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 30),
+                                  child: CommentItem(
+                                      commentModel: childComment,
+                                      commentLikeCallBack: () {
+                                        commentProv.setCommentLike(childComment.commentId);
+                                        commentProv.fnUpdateCommentLike(childComment);
+                                      },
+                                      replyCommentCallBack: (){
+                                        selectCommentMemberNickName = '@${childComment.memberNickName} ';
+                                        commentId = childComment.commentId;
+                                        textController.text = '@${childComment.memberNickName} ';
+                                        textController.selection = TextSelection.fromPosition(TextPosition(offset: textController.text.length));
+                                      },
+                                      modalCloseCallBack: (){
+                                        widget.callBack();
+                                      },
+                                     isChildComment: true,
+                                  ),
+                                ),
+                                SizedBox(height: 15),
+                              ]
                             ],
+
                             if (commentModel.isEmpty) ...[
                               Text(
                                 '댓글을 남겨보세요.',
@@ -253,9 +165,10 @@ class _CommentScreenState extends State<CommentScreen> {
                 },
               ),
             ),
+
+
             Container(
               padding: EdgeInsets.only(left: 8, right: 8),
-              // 적당한 패딩 추가
               decoration: BoxDecoration(
                 color: Colors.white, // 배경색 설정
                 borderRadius: BorderRadius.circular(10), // 둥근 모서리
@@ -265,8 +178,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   Expanded(
                     child: TextField(
                       onChanged: (text) {
-                        if (!text
-                            .contains(selectCommentMemberNickName.toString())) {
+                        if (!text.contains(selectCommentMemberNickName.toString())) {
                           textController.text = "";
                         }
                       },
@@ -282,26 +194,19 @@ class _CommentScreenState extends State<CommentScreen> {
                   IconButton(
                     icon: Icon(Icons.send, color: Colors.black), // 전송 버튼 아이콘
                     onPressed: () async {
-                      // 댓글 전송 로직 추가
                       if (textController.text != "") {
-                        String commentText = textController.text;
-                        textController.text = "";
-                        if (selectCommentMemberNickName != "" && commentText.contains(selectCommentMemberNickName.toString())) {
-                          commentText = commentText.split(selectCommentMemberNickName.toString())[1];
-                          selectCommentMemberNickName = "";
 
-                          await commentProv.setComment(
+                        await commentProv.setComment(
                             widget.trackId,
-                            commentText,
-                            commentId,
-                          );
-                        } else {
-                          await commentProv.setComment(
-                              widget.trackId, commentText, null);
-                        }
+                            textController.text,
+                            commentId
+                        );
+
+                        textController.text = "";
+                        selectCommentMemberNickName = "";
                         commentId = null;
-                        _getCommentInitFuture = commentProv.getComment(widget.trackId);
-                        setState(() {});
+
+                        commentProv.notify();
                       }
                     },
                   ),

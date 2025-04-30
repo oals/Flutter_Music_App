@@ -203,7 +203,12 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                                   print('해당 곡 정보 페이지로 이동');
                                                   playerProv.playerModel.fullScreen = false;
                                                   appProv.isFullScreenFunc(false);
-                                                  GoRouter.of(context).push('/trackInfo', extra: widget.audioPlayerTrackItem);
+                                                  GoRouter.of(context).push('/trackInfo',
+                                                    extra: {
+                                                      'track': widget.audioPlayerTrackItem,
+                                                      'commendId': null,
+                                                    },
+                                                  );
                                                 },
                                                 child: SizedBox(
                                                   width: 70.w,
@@ -251,11 +256,8 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                               width: 30,
                                               height: 30,
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius
-                                                    .circular(
-                                                    100),
-                                                color: Colors
-                                                    .black,
+                                                borderRadius: BorderRadius.circular(100),
+                                                color: Colors.black,
                                               ),
                                               child: Icon(
                                                 Icons.keyboard_arrow_down_sharp,
@@ -326,10 +328,9 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                               ),
                                             ],
                                           );
-                                        }
+                                        },
                                     ),
                                   ),
-
 
                                   Positioned(
                                     left: 0,
@@ -341,19 +342,23 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                       onTap: (index) async {
                                         appProv.currentIndex = index;
                                         if (index == 1) {
-                                          AppBottomModalRouter.fnModalRouter(context, 0, trackId: widget.audioPlayerTrackItem.trackId);
+                                          AppBottomModalRouter.fnModalRouter(
+                                              context,
+                                              0,
+                                              trackId: widget.audioPlayerTrackItem.trackId,
+                                              callBack: (){
+                                                playerProv.playerModel.fullScreen = false;
+                                                appProv.isFullScreenFunc(false);
+                                              }
+                                          );
                                         } else if (index == 2) {
-                                          print("플리 팝업");
                                           AppBottomModalRouter.fnModalRouter(context, 7);
-                                        } else
-                                        if (index == 3) {
+                                        } else if (index == 3) {
                                           AppBottomModalRouter.fnModalRouter(context, 3, track: widget.audioPlayerTrackItem);
                                         }
                                       },
                                     ),
                                   ),
-
-
                                 ],
                               ),
                             ],

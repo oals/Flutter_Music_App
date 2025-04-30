@@ -60,7 +60,12 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
           playerProv.notify();
 
         } else {
-          GoRouter.of(context).push('/trackInfo', extra: widget.trackItem);
+          GoRouter.of(context).push('/trackInfo',
+            extra: {
+              'track': widget.trackItem,
+              'commendId': null,
+            },
+          );
         }
 
       },
@@ -133,7 +138,12 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
               child: GestureDetector(
                 onTap: () {
                   print('음원상세 클릭');
-                  GoRouter.of(context).push('/trackInfo',extra: widget.trackItem);
+                  GoRouter.of(context).push('/trackInfo',
+                    extra: {
+                      'track': widget.trackItem,
+                      'commendId': null,
+                    },
+                  );
                 },
                 child: Text(
                   '${widget.trackItem.trackNm}',

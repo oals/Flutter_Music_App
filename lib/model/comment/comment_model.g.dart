@@ -9,10 +9,10 @@ part of 'comment_model.dart';
 CommentModel _$CommentModelFromJson(Map<String, dynamic> json) => CommentModel()
   ..commentId = (json['commentId'] as num?)?.toInt()
   ..memberId = (json['memberId'] as num?)?.toInt()
-  ..parentCommentMemberId = (json['parentCommentMemberId'] as num?)?.toInt()
   ..trackId = (json['trackId'] as num?)?.toInt()
   ..memberImagePath = json['memberImagePath'] as String?
   ..memberNickName = json['memberNickName'] as String?
+  ..parentCommentMemberId = (json['parentCommentMemberId'] as num?)?.toInt()
   ..parentCommentMemberNickName = json['parentCommentMemberNickName'] as String?
   ..commentLikeStatus = json['commentLikeStatus'] as bool?
   ..commentLikeCnt = (json['commentLikeCnt'] as num?)?.toInt()
@@ -20,7 +20,7 @@ CommentModel _$CommentModelFromJson(Map<String, dynamic> json) => CommentModel()
   ..commentDate = json['commentDate'] as String?
   ..parentCommentId = (json['parentCommentId'] as num?)?.toInt()
   ..isChildCommentActive = json['isChildCommentActive'] as bool?
-  ..childComment = (json['childComment'] as List<dynamic>?)
+  ..childComments = (json['childComments'] as List<dynamic>?)
       ?.map((e) => CommentModel.fromJson(e as Map<String, dynamic>))
       .toList();
 
@@ -28,16 +28,16 @@ Map<String, dynamic> _$CommentModelToJson(CommentModel instance) =>
     <String, dynamic>{
       'commentId': instance.commentId,
       'memberId': instance.memberId,
-      'parentCommentMemberId': instance.parentCommentMemberId,
       'trackId': instance.trackId,
       'memberImagePath': instance.memberImagePath,
       'memberNickName': instance.memberNickName,
+      'parentCommentMemberId': instance.parentCommentMemberId,
       'parentCommentMemberNickName': instance.parentCommentMemberNickName,
       'commentLikeStatus': instance.commentLikeStatus,
       'commentLikeCnt': instance.commentLikeCnt,
       'commentText': instance.commentText,
       'commentDate': instance.commentDate,
       'parentCommentId': instance.parentCommentId,
-      'childCommentActive': instance.isChildCommentActive,
-      'childComment': instance.childComment,
+      'isChildCommentActive': instance.isChildCommentActive,
+      'childComments': instance.childComments,
     };

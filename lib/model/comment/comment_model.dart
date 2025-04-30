@@ -31,7 +31,7 @@ class CommentModel {
 
   bool? isChildCommentActive;
 
-  List<CommentModel>? childComment = [];
+  List<CommentModel>? childComments = [];
 
   CommentModel();
 

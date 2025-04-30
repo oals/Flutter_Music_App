@@ -35,10 +35,12 @@ import 'package:skrrskrr/screen/appScreen/track/upload_track_screen.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Page commonPageBuilder(
-    BuildContext context,
-    GoRouterState state,
-    Widget pageWidget,
-    {required bool isShowAudioPlayer}
+      BuildContext context,
+      GoRouterState state,
+      Widget pageWidget,
+      {
+        required bool isShowAudioPlayer
+      }
     ) {
 
   final AppProv appProv = Provider.of<AppProv>(context);
@@ -164,12 +166,15 @@ final router = GoRouter(
       GoRoute(
         path: '/trackInfo',
         pageBuilder: (context, state) {
-          final Track track = state.extra as Track;
+
+          final Map<String, dynamic> extraData = state.extra as Map<String, dynamic>;
+          final Track track = extraData['track'] as Track;
+          final int? commentId = extraData['commendId'] as int?;
 
           return commonPageBuilder(
             context,
             state,
-            TrackInfoScreen(track: track),
+            TrackInfoScreen(track: track,commentId: commentId,),
             isShowAudioPlayer: true,
           );
         },

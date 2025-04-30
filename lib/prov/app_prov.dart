@@ -2,6 +2,8 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
@@ -67,6 +69,31 @@ class AppProv extends ChangeNotifier{
         for (var item in Helpers.extractValue(response.body, "recommendMembers")){
           memberProv.recommendMemberList.add(MemberModel.fromJson(item));
         }
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception(Helpers.extractValue(response.body, 'message'));
+      }
+    } catch (error) {
+      print(error);
+      print('$url - Fail');
+      return false;
+    }
+  }
+
+  Future<bool> getCategoryList() async {
+
+    final url = '/api/getCategoryList';
+
+    try {
+      http.Response response = await Helpers.apiCall(
+        url,
+      );
+
+      if (response.statusCode == 200) {
+
+        Helpers.categoryList = List<String>.from(Helpers.extractValue(response.body, 'categoryNmList'));
 
         print('$url - Successful');
         return true;

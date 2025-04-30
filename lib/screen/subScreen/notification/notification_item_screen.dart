@@ -51,8 +51,8 @@ class _NotificationItemScreenState extends State<NotificationItemScreen> {
                   widget.notificationsModel.notificationMsg!,
                     style: TextStyle(
                       color: !widget.notificationsModel.notificationIsView! ? Colors.white : Colors.grey,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
                       overflow: TextOverflow.ellipsis
                     ),
 

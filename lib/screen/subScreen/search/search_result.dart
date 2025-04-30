@@ -18,6 +18,7 @@ import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 
 import 'package:skrrskrr/screen/subScreen/follow/follow_item.dart';
@@ -109,7 +110,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   future: _getSearchMemberFuture, // 비동기 메소드 호출
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return Center(child: CustomProgressIndicatorItem());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('오류 발생: ${snapshot.error}'));
                     } else if (!snapshot.hasData) {
@@ -175,7 +176,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               future: _getSearchPlayListFuture, // 비동기 메소드 호출
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return Center(child: CustomProgressIndicatorItem());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('오류 발생: ${snapshot.error}'));
                     } else if (!snapshot.hasData) {
@@ -245,7 +246,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               future: _getSearchTrackFuture, // 비동기 메소드 호출
                   builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return Center(child: CustomProgressIndicatorItem());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('오류 발생: ${snapshot.error}'));
                   } else if (!snapshot.hasData) {

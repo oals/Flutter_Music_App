@@ -24,6 +24,7 @@ import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
 import 'package:skrrskrr/screen/modal/track/track_info_edit.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_comment_btn.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_like_btn.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
@@ -37,9 +38,11 @@ class TrackInfoScreen extends StatefulWidget {
   const TrackInfoScreen({
     super.key,
     required this.track,
+    required this.commentId,
   });
 
   final Track track;
+  final int? commentId;
 
   @override
   State<TrackInfoScreen> createState() => _TrackInfoScreenState();
@@ -55,13 +58,16 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
   late PlayerProv playerProv;
   late Future<bool> _getTrackInfoFuture;
 
-
   @override
   void initState() {
     print("MusicInfoScreen initstate");
     super.initState();
     _getTrackInfoFuture = Provider.of<TrackProv>(context, listen: false).getTrackInfo(widget.track.trackId);
     _loadMemberId();
+
+    if (widget.commentId != null) {
+      AppBottomModalRouter.fnModalRouter(context, 0, trackId: widget.track.trackId,commentId: widget.commentId);
+    }
   }
 
   void _loadMemberId() async {
@@ -86,7 +92,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
             future: _getTrackInfoFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: CustomProgressIndicatorItem());
               } else if (snapshot.hasError) {
                 return Center(child: Text('오류 발생: ${snapshot.error}'));
               } else if (!snapshot.hasData) {
@@ -133,9 +139,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                       end: Alignment.topCenter,
                                       colors: [
                                         Colors.black.withOpacity(0.7),
-                                        // 하단은 어두운 색
                                         Colors.transparent,
-                                        // 상단은 투명
                                       ],
                                       stops: [0.1, 1.0],
                                     ),
@@ -146,8 +150,11 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                       if(isEdit)...[
                                         GestureDetector(
                                           onTap:() async {
-                                            trackProv.trackInfoModel.trackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
-                                            setState(() {});
+                                            String? newTrackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
+                                            if (newTrackImagePath != null) {
+                                              trackProv.trackInfoModel.trackImagePath = newTrackImagePath;
+                                              setState(() {});
+                                            }
                                           },
                                           child: Text(
                                             '이미지 변경',
@@ -196,10 +203,8 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-
                                             SizedBox(
                                               width: 80.w,
                                               child: Text(
@@ -210,14 +215,12 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                                     fontWeight: FontWeight.w800),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
-
                                             ),
 
                                             Row(
                                               children: [
                                                 Text(
-                                                  widget.track.memberNickName ??
-                                                      "null",
+                                                  widget.track.memberNickName ?? "null",
                                                   style: TextStyle(
                                                       color: Colors.grey,
                                                       fontSize: 17),
@@ -248,8 +251,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                             Text(
                                               widget.track.trackCategoryId == null
                                                   ? "null"
-                                                  : Helpers.getCategory(
-                                                  widget.track.trackCategoryId!),
+                                                  : Helpers.getCategory(widget.track.trackCategoryId!),
                                               style:
                                                   TextStyle(color: Colors.grey),
                                             ),

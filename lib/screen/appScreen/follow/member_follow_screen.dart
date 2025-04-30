@@ -5,6 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/follow/follow_model.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/follow/follow_list.dart';
 
 
@@ -60,7 +61,7 @@ class _MemberFollowScreenState extends State<MemberFollowScreen>
           // 팔로우 및 팔로잉 데이터를 비동기적으로 가져오는 함수
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CustomProgressIndicatorItem());
             } else {
 
               FollowModel followModel = followProv.followModel;

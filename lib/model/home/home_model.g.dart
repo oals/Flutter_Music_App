@@ -18,9 +18,6 @@ HomeModel _$HomeModelFromJson(Map<String, dynamic> json) => HomeModel(
           .toList(),
     );
 
-
-
-
 Map<String, dynamic> _$HomeModelToJson(HomeModel instance) => <String, dynamic>{
       'topicIdx': instance.topicIdx,
       'homeCategory': instance.homeCategory,

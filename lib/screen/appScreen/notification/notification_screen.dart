@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/notifications/notifications_model.dart';
+import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 
 import 'package:skrrskrr/screen/subScreen/notification/notification_item_screen.dart';
 import 'package:skrrskrr/utils/helpers.dart';
@@ -26,37 +28,37 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getNotificationInitFuture = Provider.of<NotificationsProv>(context,listen: false).getNotifications(0);
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-
 
     NotificationsProv notificationsProv = Provider.of<NotificationsProv>(context);
 
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.all(8),
         color: Colors.black,
         child: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 40),
+
+              CustomAppbar(
+                fnBackBtncallBack: () => {GoRouter.of(context).pop()},
+                fnUpdtBtncallBack: () => {},
+                title: "Notifications",
+                isNotification: false,
+                isEditBtn: false,
+                isAddTrackBtn : false,
+              ),
 
               Container(
                 width: 100.w,
                 height: 75.h,
+                padding: EdgeInsets.all(8),
                 child: SingleChildScrollView(
                   child: FutureBuilder<bool>(
                     future: _getNotificationInitFuture,
@@ -79,16 +81,40 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           }
 
 
-                          if(notificationItem.notificationType == 1){
-                            GoRouter.of(context).push('/trackInfo/${notificationItem.notificationTrackId}');
-                          } else if (notificationItem.notificationType == 2){
-                            GoRouter.of(context).push('/trackInfo/${notificationItem.notificationTrackId}');
-                          } else if (notificationItem.notificationType == 3){
+
+
+                          /**
+                           * 좋아요 알림
+                           * 댓글 알림
+                           * 팔로우 알림
+                           * */
+
+                          if (notificationItem.notificationType == 1) {
+
+                            Track track = Track();
+                            track.trackId = notificationItem.notificationTrackId;
+                            GoRouter.of(context).push('/trackInfo',
+                              extra: {
+                                'track': track,
+                                'commendId': null,
+                              },
+                            );
+
+                          } else if (notificationItem.notificationType == 2) {
+
+                            Track track = Track();
+                            track.trackId = notificationItem.notificationTrackId;
+                            GoRouter.of(context).push('/trackInfo',
+                              extra: {
+                                'track': track,
+                                'commendId': notificationItem.notificationCommentId
+                              },
+                            );
+
+                          } else if (notificationItem.notificationType == 3) {
                             GoRouter.of(context).push('/memberPage/${notificationItem.notificationMemberId}');
                           }
-
                         }
-
 
                         // 리스트에서 하나라도 notificationIsView가 true인 것이 있는지 체크하는 함수
                         bool checkNotificationIsViewExistence(List notificationsList) {
@@ -119,106 +145,91 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(height: 10,),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
+
                                 GestureDetector(
-                                  onTap: () {
-                                    GoRouter.of(context).pop();
+                                  onTap: ()=>{
+                                    if(notificationIsViewExistence){
+                                      notificationsProv.setAllNotificationIsView(),
+
+                                      for(int i = 0; i < notificationsModel.todayNotificationsList.length; i++){
+                                        notificationsModel.todayNotificationsList[i]
+                                            .notificationIsView = true
+                                      },
+                                      for(int i = 0; i < notificationsModel.monthNotificationsList.length; i++){
+                                        notificationsModel.monthNotificationsList[i]
+                                            .notificationIsView = true
+                                      },
+                                      for(int i = 0; i < notificationsModel.yearNotificationsList.length; i++){
+                                        notificationsModel.yearNotificationsList[i]
+                                            .notificationIsView = true
+                                      },
+
+                                      Fluttertoast.showToast(msg: '전체 읽음 처리 되었습니다..'),
+
+                                      notificationIsViewExistence = false,
+
+                                      setState(() {},
+                                      ),
+
+                                    },
                                   },
-                                  child: Icon(
-                                    Icons.arrow_back_rounded,
-                                    color: Colors.white,
+                                  child: Container(
+                                    color: Color(0xFF1C1C1C),
+                                    padding: EdgeInsets.all(5),
+                                    child: Text(
+                                      'Mark all as read',
+                                      style: TextStyle(
+                                          color: notificationIsViewExistence ? Colors.white : Colors.grey,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 12),
+                                    ),
                                   ),
                                 ),
 
-                                Row(
-                                  children: [
+                                SizedBox(width: 5,),
 
-                                    GestureDetector(
-                                      onTap: ()=>{
-                                        if(notificationIsViewExistence){
-                                          notificationsProv.setAllNotificationIsView(),
+                                GestureDetector(
+                                  onTap: ()=>{
+                                    print('전체삭제'),
+                                    if(notificationIsExistence){
 
-                                          for(int i = 0; i < notificationsModel.todayNotificationsList.length; i++){
-                                            notificationsModel.todayNotificationsList[i]
-                                                .notificationIsView = true
-                                          },
-                                          for(int i = 0; i < notificationsModel.monthNotificationsList.length; i++){
-                                            notificationsModel.monthNotificationsList[i]
-                                                .notificationIsView = true
-                                          },
-                                          for(int i = 0; i < notificationsModel.yearNotificationsList.length; i++){
-                                            notificationsModel.yearNotificationsList[i]
-                                                .notificationIsView = true
-                                          },
+                                      notificationsProv.setDelNotificationIsView(),
 
-                                          Fluttertoast.showToast(msg: '전체 읽음 처리 되었습니다..'),
+                                      notificationsModel.todayNotificationsList = [],
+                                      notificationsModel.monthNotificationsList = [],
+                                      notificationsModel.yearNotificationsList = [],
+                                      notificationIsExistence = false,
+                                      notificationIsViewExistence = false,
+                                      setState(() {
+                                      })
 
-                                          notificationIsViewExistence = false,
-
-                                          setState(() {},
-                                          ),
-
-                                        },
-                                      },
-                                      child: Container(
-                                        color: Color(0xFF1C1C1C),
-                                        padding: EdgeInsets.all(5),
-                                        child: Text(
-                                          '전체 읽음',
-                                          style: TextStyle(
-                                              color: notificationIsViewExistence ? Colors.white : Colors.grey,
-                                              fontWeight: FontWeight.w800,
-                                              fontSize: 12),
-                                        ),
-                                      ),
+                                    }
+                                  },
+                                  child: Container(
+                                    color: Color(0xFF1C1C1C),
+                                    padding: EdgeInsets.all(5),
+                                    child: Text(
+                                      'Delete all ',
+                                      style: TextStyle(
+                                          color: notificationIsExistence ? Colors.white : Colors.grey,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 12),
                                     ),
-
-                                    SizedBox(width: 5,),
-
-                                    GestureDetector(
-                                      onTap: ()=>{
-                                        print('전체삭제'),
-                                        if(notificationIsExistence){
-
-                                          notificationsProv.setDelNotificationIsView(),
-
-                                          notificationsModel.todayNotificationsList = [],
-                                          notificationsModel.monthNotificationsList = [],
-                                          notificationsModel.yearNotificationsList = [],
-                                          notificationIsExistence = false,
-                                          notificationIsViewExistence = false,
-                                          setState(() {
-                                          })
-
-                                        }
-                                      },
-                                      child: Container(
-                                        color: Color(0xFF1C1C1C),
-                                        padding: EdgeInsets.all(5),
-                                        child: Text(
-                                          '전체 삭제',
-                                          style: TextStyle(
-                                              color: notificationIsExistence ? Colors.white : Colors.grey,
-                                              fontWeight: FontWeight.w800,
-                                              fontSize: 12),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-
-
                               ],
                             ),
 
 
                             if(notificationIsExistence)...[
                               if(notificationsModel.todayNotificationsList.length != 0)...[
-                                SizedBox(height: 10),
+
                                 Text(
-                                  '오늘',
+                                  'Today',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w800,
@@ -238,7 +249,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               if(notificationsModel.monthNotificationsList.length != 0)...[
                                 SizedBox(height: 10),
                                 Text(
-                                  '이번 달',
+                                  'Month',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w800,
@@ -258,7 +269,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               if(notificationsModel.yearNotificationsList.length != 0)...[
                                 SizedBox(height: 10),
                                 Text(
-                                  '그 외',
+                                  'Year',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w800,
@@ -283,7 +294,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 child: Text(
                                   'Empty',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.grey,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),

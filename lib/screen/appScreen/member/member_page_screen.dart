@@ -178,8 +178,11 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                     if (isEdit) ...[
                                       GestureDetector(
                                         onTap: () async {
-                                          memberModel.memberImagePath = await Helpers.pickImage(memberModel.memberId, true, context);
-                                          setState(() {});
+                                          String? newMemberImagePath = await Helpers.pickImage(memberModel.memberId, true, context);
+                                          if (newMemberImagePath != null) {
+                                            memberModel.memberImagePath = newMemberImagePath;
+                                            setState(() {});
+                                          }
                                         },
                                         child: Text(
                                           '이미지 변경',

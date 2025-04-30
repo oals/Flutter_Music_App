@@ -7,6 +7,7 @@ import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/follow/follow_item.dart';
 
@@ -63,7 +64,7 @@ class _SearchMemberScreenState extends State<SearchMemberScreen> {
           future: _getSearchMemberFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CustomProgressIndicatorItem());
             } else if (snapshot.hasError) {
               return Center(child: Text('오류 발생: ${snapshot.error}'));
             } else if (!snapshot.hasData) {

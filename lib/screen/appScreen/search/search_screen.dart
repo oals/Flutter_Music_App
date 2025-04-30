@@ -5,6 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/search/search_history_model.dart';
 import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/search/search_find.dart';
 import 'package:skrrskrr/screen/subScreen/search/search_main.dart';
 import 'package:skrrskrr/screen/subScreen/search/search_result.dart';
@@ -56,7 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
             future: _getSearchInitFuture, // 비동기 메소드 호출
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: CustomProgressIndicatorItem());
               } else if (snapshot.hasError) {
                 return Center(child: Text('오류 발생: ${snapshot.error}'));
               }

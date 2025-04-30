@@ -12,6 +12,7 @@ import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 
 class MyPlayListModalScreen extends StatefulWidget {
   const MyPlayListModalScreen({
@@ -56,7 +57,7 @@ class _MyPlayListModalScreenState extends State<MyPlayListModalScreen> {
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // 데이터 로딩 중
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CustomProgressIndicatorItem());
           } else if (snapshot.hasError) {
             return Center(child: Text('오류 발생: ${snapshot.error}'));
           } else if (!snapshot.hasData) {

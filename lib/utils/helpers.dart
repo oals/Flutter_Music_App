@@ -26,20 +26,18 @@ import '../main.dart';
 
 class Helpers {
 
+  static List<String>? categoryList;
+
 
   static Future<FilePickerResult> convertUint8ListToFilePickerResult(Uint8List imageBytes, int size) async {
     final tempFile = await _writeToTempFile(imageBytes);
-
     return FilePickerResult([PlatformFile(path: tempFile.path, name: 'image.jpg_${size}', size: size)]);
   }
 
   static Future<File> _writeToTempFile(Uint8List bytes) async {
-
     final tempDir = Directory.systemTemp;
     final tempFile = File('${tempDir.path}/image_${DateTime.now().millisecondsSinceEpoch}.jpg');
-
     await tempFile.writeAsBytes(bytes);
-
     return tempFile;
   }
 
@@ -53,7 +51,7 @@ class Helpers {
     if (croppedFile != null) {
       return await File(croppedFile.path).readAsBytes();
     } else {
-      return null; // croppedFile이 null인 경우 null 반환
+      return null;
     }
   }
 
@@ -116,33 +114,23 @@ class Helpers {
   }
 
 
-  static Future<void> setNotificationIsView(bool notificationIsView) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("notificationIsView", notificationIsView);
-  }
+  // static Future<void> setNotificationIsView(bool notificationIsView) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.setBool("notificationIsView", notificationIsView);
+  // }
+  //
+  // static Future<bool> getNotificationIsView() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   return prefs.getBool("notificationIsView") ?? false;
+  // }
 
-  static Future<bool> getNotificationIsView() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool("notificationIsView") ?? false;
-  }
 
 
-  static String getCategory(int trackCategoryId){
 
-    if (trackCategoryId == 1) {
-      return "K-pop";
-    } else if (trackCategoryId == 2) {
-      return "HipHop";
-    } else if (trackCategoryId == 3) {
-      return "Ballad";
-    } else if (trackCategoryId == 4) {
-      return "Rock";
-    } else if (trackCategoryId == 5) {
-      return "Dj";
-    } else if (trackCategoryId == 6) {
-      return "R&B";
-    }
-    return "All";
+
+
+  static String getCategory(int trackCategoryId) {
+    return categoryList![trackCategoryId - 1];
   }
 
 

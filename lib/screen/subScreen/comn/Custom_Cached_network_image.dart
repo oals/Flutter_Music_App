@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 
 class CustomCachedNetworkImage extends StatefulWidget {
   const CustomCachedNetworkImage({
@@ -29,11 +30,10 @@ class _CustomCachedNetworkImageState extends State<CustomCachedNetworkImage> {
     return CachedNetworkImage(
       imageUrl: imageProv.imageLoader(widget.imagePath),  // 이미지 URL
       placeholder: (context, url) {
-        return CircularProgressIndicator();  // 로딩 중에 표시할 위젯
+        return SizedBox();
       },
       errorWidget: (context, url, error) {
-        // print('이미지 로딩 실패: $error');
-        return Icon(Icons.error);  // 로딩 실패 시 표시할 위젯
+        return Icon(Icons.error);
       },
       fadeInDuration: Duration(milliseconds: 500),  // 이미지가 로드될 때 페이드 인 효과
       fadeOutDuration: Duration(milliseconds: 500),  // 이미지가 사라질 때 페이드 아웃 효과

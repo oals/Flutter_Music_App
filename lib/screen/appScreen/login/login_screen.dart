@@ -27,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
     AppProv appProv = Provider.of<AppProv>(context,listen: false);
     AuthProv authProv = Provider.of<AuthProv>(context);
 
-
     return Scaffold(
       body: Container(
         width: 100.w,
@@ -83,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if(isCreateJwt) {
                             bool isGetMemberInfo = await appProv.firstLoad(user.email!);
                             if (isGetMemberInfo) {
+                              await appProv.getCategoryList();
                               GoRouter.of(context).push('/home/${false}');
                             } else {
                               Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요..');

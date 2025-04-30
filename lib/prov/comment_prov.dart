@@ -6,7 +6,6 @@ import 'package:skrrskrr/utils/helpers.dart';
 class CommentProv extends ChangeNotifier {
 
   List<CommentModel> commentModel = [];
-  CommentModel childCommentModel = CommentModel();
 
   void notify() {
     notifyListeners();
@@ -43,7 +42,7 @@ class CommentProv extends ChangeNotifier {
     }
   }
 
-  Future<bool> setComment(trackId, String commentText,commentId) async {
+  Future<bool> setComment(trackId, String commentText, int? commentId) async {
 
     final String loginMemberId = await Helpers.getMemberId();
     final url = '/api/setComment';
@@ -64,6 +63,15 @@ class CommentProv extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
+
+        CommentModel newComment = CommentModel.fromJson(Helpers.extractValue(response.body, 'comment'));
+
+        if (commentId == null) {
+          commentModel.insert(0, newComment);
+        } else {
+          addCommentToModel(commentModel,commentId, newComment);
+        }
+
         print('$url - Successful');
         return true;;
       } else {
@@ -106,35 +114,66 @@ class CommentProv extends ChangeNotifier {
     }
   }
 
-  Future<bool> getChildComment(commentId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getChildComment?commentId=${commentId}&loginMemberId=${loginMemberId}';
+  void addCommentToModel(List<CommentModel> commentModels, int? commentId, CommentModel newComment) {
+    for (CommentModel commentItem in commentModels) {
 
-    try {
-      http.Response response = await Helpers.apiCall(
-          url
-      );
-
-      if (response.statusCode == 200) {
-        
-        childCommentModel = CommentModel();
-        childCommentModel = CommentModel.fromJson(Helpers.extractValue(response.body, 'comment'));
-        childCommentModel.childComment = [];
-
-        for (var childComment in Helpers.extractValue(response.body, 'commentList')) {
-          childCommentModel.childComment?.add(CommentModel.fromJson(childComment));
+      if (commentItem.commentId == commentId) {
+        if (commentItem.childComments == null) {
+          commentItem.childComments = [];
         }
+        commentItem.childComments?.add(newComment);
 
-        print('$url - Successful');
-        return true;;
-      } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        break;
       }
-    } catch (error) {
-      print(error);
-      print('$url - Fail');
-      return false;
+      CommentModel? targetParentItem;
+
+      for (CommentModel commentItem in commentModels) { // 부모 리스트 반복
+        if (commentItem.childComments?.any((child) => child.commentId == commentId) ?? false) {
+          targetParentItem = commentItem;
+          break;
+        }
+      }
+
+      if (targetParentItem != null) {
+        targetParentItem.childComments?.add(newComment);
+        break;
+      }
     }
+  }
+
+
+  List<CommentModel> flattenComments(List<CommentModel> parentComments) {
+    List<CommentModel> flatList = [];
+
+    for (var parentComment in parentComments) {
+      flatList.add(parentComment);
+
+      if (parentComment.childComments != null) {
+        flatList.addAll(flattenComments(parentComment.childComments!));
+      }
+    }
+
+    return flatList;
+  }
+
+  int findCommentIndex(List<CommentModel> parentComments, int targetCommentId) {
+
+    List<CommentModel> flatComments = flattenComments(parentComments);
+
+    return flatComments.indexWhere((comment) => comment.commentId == targetCommentId);
+  }
+
+  void fnUpdateCommentLike(CommentModel commentModel){
+
+    commentModel.commentLikeStatus = !commentModel.commentLikeStatus!;
+
+    if (commentModel.commentLikeStatus!) {
+      commentModel.commentLikeCnt = commentModel.commentLikeCnt! + 1;
+    } else {
+      commentModel.commentLikeCnt = commentModel.commentLikeCnt! - 1;
+    }
+
+    notify();
   }
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/search/search_history_model.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 
 class SearchFindScreen extends StatefulWidget {
   const SearchFindScreen({
@@ -37,7 +38,7 @@ class _SearchFindScreenState extends State<SearchFindScreen> {
       builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return Expanded(
-            child: Center(child: CircularProgressIndicator())
+            child: Center(child: CustomProgressIndicatorItem())
         );
       } else if (snapshot.hasError) {
         return Center(child: Text('오류 발생: ${snapshot.error}'));

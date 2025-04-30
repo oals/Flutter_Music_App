@@ -84,12 +84,13 @@ class _CustomAppbarState extends State<CustomAppbar> {
               if (widget.isAddTrackBtn) ...[
                 GestureDetector(
                   onTap: () {
-                    AppBottomModalRouter.fnModalRouter(context,1);
+                    AppBottomModalRouter.fnModalRouter(context,5,isAlbum: false);
                   },
-                  child: Icon(
-                    Icons.add,
+                  child:SvgPicture.asset(
+                    'assets/images/upload.svg',
                     color: Colors.white,
-                    size: 30,
+                    width: 28,
+                    height: 28,
                   ),
                 ),
               ],

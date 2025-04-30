@@ -16,13 +16,6 @@ class MemberModel {
   int? memberFollowCnt;
   int? memberFollowerCnt;
   String? memberImagePath;
-
-  List<Track>? popularTrackList = [];
-  List<PlayListInfoModel> playListList = [];
-  int? playListListCnt;
-  List<Track>? allTrackList = [];
-  int? allTrackListCnt;
-
   int? isFollowedCd;
 
 

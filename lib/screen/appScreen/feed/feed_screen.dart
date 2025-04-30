@@ -33,7 +33,7 @@ class _FeedScreenState extends State<FeedScreen> {
           GestureDetector(
             onTap: () async {
               // 파일 선택기 띄우기
-              AppBottomModalRouter.fnModalRouter(context,1);
+
             },
             child: SvgPicture.asset(
               'assets/images/upload.svg',

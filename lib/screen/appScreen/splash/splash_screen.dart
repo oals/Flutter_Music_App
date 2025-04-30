@@ -53,6 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
         bool isJwtAuth = await authProv.fnJwtAuthing(jwt_Token);
         if (isJwtAuth) {
           await appProv.firstLoad(user.email!);
+          await appProv.getCategoryList();
           GoRouter.of(context).pushReplacement('/home/${false}');
         } else {
           GoRouter.of(context).pushReplacement('/login');

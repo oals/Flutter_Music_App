@@ -61,7 +61,12 @@ class _TrackListItemState extends State<TrackListItem> {
           playerProv.notify();
 
         } else {
-          GoRouter.of(context).push('/trackInfo', extra: widget.trackItem);
+          GoRouter.of(context).push('/trackInfo',
+            extra: {
+              'track': widget.trackItem,
+              'commendId': null,
+            },
+          );
         }
       },
       child: Container(
@@ -139,7 +144,12 @@ class _TrackListItemState extends State<TrackListItem> {
                             child: GestureDetector(
                               onTap: (){
                                 print('음원상세페이지 이동');
-                                GoRouter.of(context).push('/trackInfo',extra: widget.trackItem);
+                                GoRouter.of(context).push('/trackInfo',
+                                  extra: {
+                                    'track': widget.trackItem,
+                                    'commendId': null,
+                                  },
+                                );
                               },
                               child: Text(
                                 '${widget.trackItem.trackNm}',
@@ -208,26 +218,13 @@ class _TrackListItemState extends State<TrackListItem> {
                             ],
                           ),
                           SizedBox(height: 1,),
-                          Row(
-                            children: [
-                              Text(
-                                '#'+ Helpers.getCategory(widget.trackItem.trackCategoryId!),
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500
-                                ),
-                              ),
-                              SizedBox(width: 3,),
-                              Text(
-                                '#'+ Helpers.getCategory(2),
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                    fontWeight: FontWeight.w500
-                                ),
-                              ),
-                            ],
+                          Text(
+                            '#'+ Helpers.getCategory(widget.trackItem.trackCategoryId!),
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500
+                            ),
                           ),
                           SizedBox(height: 3,),
                             Row(
