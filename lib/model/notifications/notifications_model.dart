@@ -23,10 +23,10 @@ class NotificationsModel {
 
   int? notificationCommentId;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int? totalCount;
 
-  List<NotificationsModel> todayNotificationsList = [];
-  List<NotificationsModel> monthNotificationsList = [];
-  List<NotificationsModel> yearNotificationsList = [];
+  List<NotificationsModel> notificationList = [];
 
   NotificationsModel();
 

@@ -48,11 +48,11 @@ class _MemberScrollHorizontalItemState
                   GestureDetector(
                     onTap: () async {
                       print('이동');
-                      GoRouter.of(context).push('/memberPage/${widget.memberList[i].memberId}');
+                      GoRouter.of(context).push('/memberPage/${widget.memberList[i].followMemberId}');
                     },
                     child: ClipOval(
                       child: CustomCachedNetworkImage(
-                          imagePath:widget.memberList![i].memberImagePath,
+                          imagePath:widget.memberList![i].followImagePath,
                           imageWidth : 25.w,
                           imageHeight : 12.5.h,
                         isBoxFit: true,
@@ -61,74 +61,65 @@ class _MemberScrollHorizontalItemState
 
                   ),
                   SizedBox(height: 8),
-                  Column(
-                    children: [
-                      Text(
-                        widget.memberList[i].memberNickName,
-                        style: TextStyle(
-                            color: Colors.white,
-                          fontSize: 15,
+
+                  if(widget.memberList![i].isFollowedCd == 2 || widget.memberList![i].isFollowedCd == 3)
+                    Text(
+                      'This account follows you.',
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
                           fontWeight: FontWeight.w700
-                        ),
                       ),
-                      // if (widget.memberList![i].isFollowedCd == 2 ||
-                      //     widget.memberList![i].isFollowedCd == 3)
-                      //   Text(
-                      //     widget.memberList![i].isFollowedCd == 2
-                      //         ? '나를 팔로우합니다'
-                      //         : widget.memberList![i].isFollowedCd == 3
-                      //             ? '나를 팔로우합니다'
-                      //             : '',
-                      //     style: TextStyle(color: Colors.white),
-                      //   ),
-                    ],
+                    ),
+
+                  Text(
+                    widget.memberList[i].followNickName,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700
+                    ),
                   ),
+
                   SizedBox(
                     height: 4,
                   ),
                   Container(
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        backgroundColor:
-                            WidgetStateProperty.all(Color(0xFF1C1C1C)),
-                        // 버튼 배경을 투명으로 설정
+                        backgroundColor: WidgetStateProperty.all(Color(0xFF1C1C1C)),
                         shadowColor: WidgetStateProperty.all(Colors.transparent),
-                        // 그림자 제거
                         shape: WidgetStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8), // 둥근 모서리 설정
                         )),
                       ),
                       onPressed: () async {
 
-                        int followingMemberId = int.parse(await Helpers.getMemberId());
+                        int followerId = int.parse(await Helpers.getMemberId());
 
-                        await followProv.setFollow(widget.memberList![i].memberId,followingMemberId);
+                        await followProv.setFollow(followerId,widget.memberList![i].followMemberId);
 
-                        setState(() {
-                          if(widget.memberList![i].isFollowedCd == 0) {
-                            widget.memberList![i].isFollowedCd = 1;
-                          } else if(widget.memberList![i].isFollowedCd == 1) {
-                            widget.memberList![i].isFollowedCd = 0;
-                          } else if(widget.memberList![i].isFollowedCd == 2) {
-                            widget.memberList![i].isFollowedCd = 3;
-                          } else if (widget.memberList![i].isFollowedCd == 3){
-                            widget.memberList![i].isFollowedCd = 2;
-                          }
-                        });
+                        if (widget.memberList![i].isFollowedCd == 0) {
+                          widget.memberList![i].isFollowedCd = 1;
+                        } else if(widget.memberList![i].isFollowedCd == 1) {
+                          widget.memberList![i].isFollowedCd = 0;
+                        } else if(widget.memberList![i].isFollowedCd == 2) {
+                          widget.memberList![i].isFollowedCd = 3;
+                        } else if (widget.memberList![i].isFollowedCd == 3){
+                          widget.memberList![i].isFollowedCd = 2;
+                        }
+                        setState(() {});
                       },
                       child: Text(
-                        widget.memberList![i].isFollowedCd == 1
-                            ? "언팔로우"
-                            : widget.memberList![i].isFollowedCd == 3
-                                ? '언팔로우'
-                                : widget.memberList![i].isFollowedCd == 2
-                                    ? '팔로우'
-                                    : '팔로우',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w700),
+                        widget.memberList![i].isFollowedCd == 1 ||  widget.memberList![i].isFollowedCd == 3
+                            ? "Unfollow"
+                            : 'Follow',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
                       ),
+
+
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

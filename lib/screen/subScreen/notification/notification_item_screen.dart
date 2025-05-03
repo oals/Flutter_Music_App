@@ -26,7 +26,7 @@ class _NotificationItemScreenState extends State<NotificationItemScreen> {
       height: 7.h,
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(width: 1, color: Colors.grey), // 위쪽만 테두리 추가
+          bottom: BorderSide(width: 1, color: Colors.grey),
         ),
       ),
       child: Row(
@@ -35,13 +35,16 @@ class _NotificationItemScreenState extends State<NotificationItemScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset('assets/images/testImage3.png',
-                  width: 40,
-                  height: 40,
-                ),
-              ),
+
+              if (widget.notificationsModel.notificationType == 1)
+                Icon(Icons.heart_broken_sharp,color: Colors.white,size: 35,),
+
+              if (widget.notificationsModel.notificationType == 2)
+                Icon(Icons.comment_outlined,color: Colors.white,size: 35,),
+
+              if (widget.notificationsModel.notificationType == 3)
+                Icon(Icons.account_circle,color: Colors.white,size: 35,),
+
               SizedBox(
                 width: 10,
               ),

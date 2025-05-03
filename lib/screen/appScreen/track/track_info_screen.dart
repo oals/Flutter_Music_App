@@ -23,7 +23,7 @@ import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
-import 'package:skrrskrr/screen/modal/track/track_info_edit.dart';
+import 'package:skrrskrr/screen/modal/track/info_edit_modal.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_comment_btn.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_like_btn.dart';
@@ -52,7 +52,6 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
   late String? loginMemberId;
   bool isAuth = false;
   bool isEdit = false;
-  bool moreInfo = false;
 
   late TrackProv trackProv;
   late PlayerProv playerProv;
@@ -83,96 +82,94 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
     FollowProv followProv = Provider.of<FollowProv>(context);
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          color: Color(0xff000000),
-          width: 100.w,
-          height: 130.h,
-          child: FutureBuilder<bool>(
-            future: _getTrackInfoFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CustomProgressIndicatorItem());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('오류 발생: ${snapshot.error}'));
-              } else if (!snapshot.hasData) {
-                return Center(child: Text('데이터가 없습니다.'));
-              }
+      body: Container(
+        color: Color(0xff000000),
+        width: 100.w,
+        child: FutureBuilder<bool>(
+          future: _getTrackInfoFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CustomProgressIndicatorItem());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('오류 발생: ${snapshot.error}'));
+            } else if (!snapshot.hasData) {
+              return Center(child: Text('데이터가 없습니다.'));
+            }
 
-              widget.track.updateApiData(trackProv.trackInfoModel);
-              trackProv.trackInfoModel = widget.track;
-              isAuth = Helpers.getIsAuth(widget.track.memberId.toString(), loginMemberId!);
+            widget.track.updateApiData(trackProv.trackInfoModel);
+            trackProv.trackInfoModel = widget.track;
+            isAuth = Helpers.getIsAuth(widget.track.memberId.toString(), loginMemberId!);
+      
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 100.h,
-                        child: Stack(
-                          children: [
-                            Stack(
-                              children: [
-                                GestureDetector(
-                                  onTap: () async {
-                                    if (isAuth) {
-                                      trackProv.trackInfoModel.trackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: CustomCachedNetworkImage(
-                                      imagePath: widget.track.trackImagePath,
-                                      imageWidth : 100.w,
-                                      imageHeight : 50.h,
-                                    isBoxFit: true,
-                                  ),
-
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 68.h,
+                          child: Stack(
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  if (isAuth) {
+                                    trackProv.trackInfoModel.trackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
+                                    setState(() {});
+                                  }
+                                },
+                                child: CustomCachedNetworkImage(
+                                  imagePath: widget.track.trackImagePath,
+                                  imageWidth : 100.w,
+                                  imageHeight : 50.h,
+                                  isBoxFit: true,
                                 ),
-                                Container(
-                                  width: 100.w,
-                                  height: 50.h,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [
-                                        Colors.black.withOpacity(0.7),
-                                        Colors.transparent,
-                                      ],
-                                      stops: [0.1, 1.0],
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      if(isEdit)...[
-                                        GestureDetector(
-                                          onTap:() async {
-                                            String? newTrackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
-                                            if (newTrackImagePath != null) {
-                                              trackProv.trackInfoModel.trackImagePath = newTrackImagePath;
-                                              setState(() {});
-                                            }
-                                          },
-                                          child: Text(
-                                            '이미지 변경',
-                                            style: TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
+
+                              ),
+
+                              Container(
+                                width: 100.w,
+                                height: 50.h,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                    colors: [
+                                      Colors.black.withOpacity(0.7),
+                                      Colors.transparent,
                                     ],
+                                    stops: [0.1, 1.0],
                                   ),
                                 ),
-                              ],
-                            ),
-
-                            Positioned(
-                                top: 0,
-                                left: 0,
-                                right : 0,
-                                child: CustomAppbar(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    if(isEdit)...[
+                                      GestureDetector(
+                                        onTap:() async {
+                                          String? newTrackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
+                                          if (newTrackImagePath != null) {
+                                            trackProv.trackInfoModel.trackImagePath = newTrackImagePath;
+                                            setState(() {});
+                                          }
+                                        },
+                                        child: Text(
+                                          '이미지 변경',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                    
+                              Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  right : 0,
+                                  child: CustomAppbar(
                                     fnBackBtncallBack: ()=>{GoRouter.of(context).pop()},
                                     fnUpdtBtncallBack:()=>{
                                       setState(() {
@@ -182,300 +179,260 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
 
                                     title: "",
                                     isNotification: true,
-                                   isEditBtn: isAuth,
-                                  isAddTrackBtn : false,
-                                )
-                            ),
-
-                            Positioned(
-                              top: 41.h,
-                              left: 10,
-                              right: 15,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 100.w,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              width: 80.w,
-                                              child: Text(
-                                                widget.track.trackNm ?? "null",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 25,
-                                                    fontWeight: FontWeight.w800),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  widget.track.memberNickName ?? "null",
-                                                  style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 17),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            Row(
-                                              children: [
-                                                SvgPicture.asset(
-                                                  'assets/images/play.svg',
-                                                  color: Colors.grey,
-                                                  width: 10,
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  ' ${widget.track.trackPlayCnt} plays ',
-                                                  style: TextStyle(
-                                                      color: Colors.grey),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
-                                            Text(
-                                              widget.track.trackCategoryId == null
-                                                  ? "null"
-                                                  : Helpers.getCategory(widget.track.trackCategoryId!),
-                                              style:
-                                                  TextStyle(color: Colors.grey),
-                                            ),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
-                                            Text(
-                                              widget.track.trackTime ?? "null",
-                                              style:
-                                                  TextStyle(color: Colors.grey),
-                                            ),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
-                                            Text(
-                                              widget.track.trackUploadDate ??
-                                                  "null",
-                                              style:
-                                                  TextStyle(color: Colors.grey),
-                                            ),
-                                            SizedBox(
-                                              height: 25,
-                                            ),
-                                          ],
-                                        ),
-
-                                        GestureDetector(
-                                          onTap: () async {
-                                            // await trackProv.setLastListenTrackId(widget.track.trackId!);
-                                            // await playerProv.setAudioPlayer(trackProv);
-                                          },
-                                          child: Container(
-                                            margin: EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Colors.white, // 테두리 색상
-                                                width: 3.0, // 테두리 두께
-                                              ),
-                                              shape: BoxShape.circle, // 원형으로 설정
-                                            ),
-                                            child: SvgPicture.asset(
-                                              'assets/images/play_circle.svg',
-                                              width: 4.5.w,
-                                              height: 4.5.h,
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
+                                    isEditBtn: isAuth,
+                                    isAddTrackBtn : false,
+                                  )
+                              ),
+                    
+                              Positioned.fill(
+                                top: 41.h,
+                                left: 10,
+                                right: 15,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 100.w,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          TrackLikeBtn(track: widget.track),
-                                          SizedBox(width: 10,),
-                                          TrackCommentBtn( track : widget.track),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              SizedBox(
+                                                width: 80.w,
+                                                child: Text(
+                                                  widget.track.trackNm ?? "null",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 25,
+                                                      fontWeight: FontWeight.w800),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+
+                                              Text(
+                                                widget.track.memberNickName ?? "null",
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 17),
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    'assets/images/play.svg',
+                                                    color: Colors.grey,
+                                                    width: 10,
+                                                    height: 10,
+                                                  ),
+                                                  Text(' ${widget.track.trackPlayCnt} plays ',
+                                                    style: TextStyle(
+                                                        color: Colors.grey),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 3,
+                                              ),
+                                              Text(
+                                                widget.track.trackCategoryId == null
+                                                    ? "null"
+                                                    : Helpers.getCategory(widget.track.trackCategoryId!),
+                                                style: TextStyle(color: Colors.grey),
+                                              ),
+                                              SizedBox(
+                                                height: 3,
+                                              ),
+                                              Text(
+                                                widget.track.trackTime ?? "null",
+                                                style:
+                                                TextStyle(color: Colors.grey),
+                                              ),
+                                              SizedBox(
+                                                height: 3,
+                                              ),
+                                              Text(
+                                                widget.track.trackUploadDate ??
+                                                    "null",
+                                                style:
+                                                TextStyle(color: Colors.grey),
+                                              ),
+                                              SizedBox(
+                                                height: 25,
+                                              ),
+                                            ],
+                                          ),
+
+                                          GestureDetector(
+                                            onTap: () async {
+                                              // await trackProv.setLastListenTrackId(widget.track.trackId!);
+                                              // await playerProv.setAudioPlayer(trackProv);
+                                            },
+                                            child: Container(
+                                              margin: EdgeInsets.only(top: 2.5.h),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: Colors.white, // 테두리 색상
+                                                  width: 3.0, // 테두리 두께
+                                                ),
+                                                shape: BoxShape.circle, // 원형으로 설정
+                                              ),
+                                              child: SvgPicture.asset(
+                                                'assets/images/play_circle.svg',
+                                                width: 4.5.w,
+                                                height: 4.5.h,
+                                              ),
+                                            ),
+                                          )
                                         ],
                                       ),
-                                      if(isEdit)...[
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            print('음원 소개 편집 버튼');
-
-                                            showDialog(
-                                              context: context,
-                                              barrierDismissible: true,
-                                              builder: (context) {
-                                                return Dialog(
-                                                  backgroundColor:
-                                                  Colors.transparent,
-                                                  child: TrackInfoEdit(
-                                                    trackInfo:
-                                                    widget.track.trackInfo!,
-                                                    onSave: (String? trackInfo) async {
-                                                      widget.track.trackInfo = trackInfo;
-
-                                                      bool isUpdate = await trackProv.setTrackInfo(trackInfo);
-                                                      if(isUpdate) {
-                                                        Fluttertoast.showToast(msg: '변경되었습니다.');
-                                                        setState(() {});
-                                                      } else {
-                                                        Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요');
-                                                      }
-                                                      ///  저장할떄 리빌드되면서 기본값으로 덮어씌우는 듯
-                                                      ///  영역 나누고나서 다시 테스트 필요 우선 trackinfo 넘겨서 저장
-                                                    },
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: SvgPicture.asset(
-                                            'assets/images/edit.svg',
-                                            width: 24,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ],
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-
-                                  /// 곡 정보
-                                  SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          constraints: moreInfo
-                                              ? BoxConstraints()
-                                              : BoxConstraints(
-                                                  maxHeight: 10.h),
-                                          width: 90.w,
-                                          padding: EdgeInsets.all(10),
-                                          child: Text(
-                                            widget.track.trackInfo ?? "정보 없음",
-                                            style: TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              moreInfo = !moreInfo;
-                                            });
-                                          },
-                                          child: Text(
-                                            !moreInfo ? '더 보기' : '접기',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w700),
-                                          ),
-                                        ),
-                                      ],
                                     ),
-                                  ),
 
-                                  Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          GoRouter.of(context).push('/memberPage/${widget.track.memberId}');
-                                        },
-                                        child: Column(
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
                                           children: [
-                                            ClipOval(
-                                              child: Image.asset(
-                                                'assets/images/testImage.png',
-                                                width: 110,
-                                                height: 110,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            SizedBox(height: 8),
-                                            Text(
-                                              widget.track.memberNickName ??
-                                                  "null",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w900),
-                                            ),
+                                            TrackLikeBtn(track: widget.track),
+                                            SizedBox(width: 10,),
+                                            TrackCommentBtn( track : widget.track),
                                           ],
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      if (!isEdit)
-                                        ElevatedButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                widget.track.followMember ==
-                                                        true
-                                                    ? WidgetStateProperty.all(
-                                                        Colors.white)
-                                                    : WidgetStateProperty.all(
-                                                        Colors.white),
+                                        if(isEdit)...[
+                                          SizedBox(
+                                            width: 5,
                                           ),
-                                          onPressed: () async {
-                                            print('버튼 클릭');
+                                          GestureDetector(
+                                            onTap: () {
+                                              print('음원 소개 편집 버튼');
 
-                                            await followProv.setFollow(
-                                                widget.track.memberId,
-                                                loginMemberId);
+                                              AppBottomModalRouter.fnModalRouter(
+                                                  context,
+                                                  1,
+                                                  maxLines: null,
+                                                  infoText: widget.track.trackInfo,
+                                                  callBack: (String newTrackInfo) async {
 
-                                            setState(() {});
-                                          },
-                                          child: Text(
-                                            widget.track.followMember == true
-                                                ? '언팔로우'
-                                                : '팔로우',
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w700),
+                                                    bool isUpdate = await trackProv.setTrackInfo(newTrackInfo);
+
+                                                    widget.track.trackInfo = newTrackInfo;
+
+                                                    if (isUpdate) {
+                                                      Fluttertoast.showToast(msg: '변경되었습니다.');
+                                                    } else {
+                                                      Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요');
+                                                    }
+
+                                                    setState(() {});
+                                                  });
+
+                                            },
+                                            child: SvgPicture.asset(
+                                              'assets/images/edit.svg',
+                                              width: 24,
+                                              color: Colors.white,
+                                            ),
                                           ),
-                                        ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 20),
+                                        ],
+                                      ],
+                                    ),
 
 
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                        /// 곡 정보
+                        Container(
+                          width: 98.w,
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            widget.track.trackInfo ?? "정보 없음",
+                            style: TextStyle(color: Colors.white),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+
+                        SizedBox(height: 5,),
+
+                        Container(
+                          padding: EdgeInsets.only(left: 10,bottom: 10,right: 10),
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  GoRouter.of(context).push('/memberPage/${widget.track.memberId}');
+                                },
+                                child: Column(
+                                  children: [
+                                    ClipOval(
+                                      child: CustomCachedNetworkImage(
+                                        imagePath: widget.track.memberImagePath,
+                                        imageWidth: 25.w,
+                                        imageHeight: 12.5.h,
+                                        isBoxFit: true,
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(widget.track.memberNickName ??
+                                        "null",
+                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              if (!isAuth && !isEdit)
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: WidgetStateProperty.all(Color(0xFF1C1C1C)),
+                                    shadowColor: WidgetStateProperty.all(Colors.transparent),
+                                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8), // 둥근 모서리 설정
+                                    )),
+                                  ),
+                                  onPressed: () async {
+                                    await followProv.setFollow(loginMemberId, widget.track.memberId,);
+                                    widget.track.isFollowMember = !widget.track.isFollowMember!;
+                                    setState(() {});
+                                  },
+                                  child: Text(
+                                    widget.track.isFollowMember == true
+                                        ? 'Unfollow'
+                                        : 'Follow',
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+
+
+                        SizedBox(height: 10.h,),
+                      ],
+                    ),
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+               
+            
+            
+            
+            
+              ],
+            );
+          },
         ),
       ),
     );

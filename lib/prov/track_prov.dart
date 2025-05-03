@@ -119,7 +119,6 @@ class TrackProv extends ChangeNotifier {
       }
   }
 
-
   void updateAudioPlayerSwiper(int trackId, PlayerProv playerProv, String appScreenName){
 
     int index = audioPlayerTrackList.indexWhere((item) => item.trackId == trackId);
@@ -133,10 +132,7 @@ class TrackProv extends ChangeNotifier {
         playerProv.swiperController.move(playerProv.page, animation: true);
       });
     }
-
   }
-
-
 
   Future<bool> getPlayListTrackList(int playListId, int offset, int limit) async {
 
@@ -398,9 +394,9 @@ class TrackProv extends ChangeNotifier {
 
   void fnUpdateTrackLikeStatus(Track track){
 
-    track.trackLikeStatus = !track.trackLikeStatus!;
+    track.isTrackLikeStatus = !track.isTrackLikeStatus!;
 
-    if (track.trackLikeStatus!) {
+    if (track.isTrackLikeStatus!) {
       track.trackLikeCnt = track.trackLikeCnt! + 1;
     } else {
       track.trackLikeCnt = track.trackLikeCnt! - 1;

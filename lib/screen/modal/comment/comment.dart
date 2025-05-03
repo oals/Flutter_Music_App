@@ -46,7 +46,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
     if (widget.notificationCommentId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(Duration(milliseconds: 300)).then((value) {
+        Future.delayed(Duration(milliseconds: 500)).then((value) {
           int index = commentProv.findCommentIndex(commentModel, widget.notificationCommentId!);
           scrollController.jumpTo(index * 8.h);
         });

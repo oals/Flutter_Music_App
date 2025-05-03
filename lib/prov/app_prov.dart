@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
+import 'package:skrrskrr/model/follow/follow_info_model.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
@@ -67,7 +68,7 @@ class AppProv extends ChangeNotifier{
         }
 
         for (var item in Helpers.extractValue(response.body, "recommendMembers")){
-          memberProv.recommendMemberList.add(MemberModel.fromJson(item));
+          memberProv.recommendMemberList.add(FollowInfoModel.fromJson(item));
         }
 
         print('$url - Successful');

@@ -135,7 +135,7 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
                       SvgPicture.asset(
                         width: 16,
                         height: 16,
-                        widget.track.trackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
+                        widget.track.isTrackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
                       ),
                       SizedBox(
                         width: 2,
@@ -186,7 +186,7 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
               child: Row(
                 children: [
                   SvgPicture.asset(
-                    widget.track.trackLikeStatus!
+                    widget.track.isTrackLikeStatus!
                         ? 'assets/images/heart_red.svg'
                         : 'assets/images/heart.svg',
                   ),

@@ -23,8 +23,8 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track()
   ..playListId = (json['playListId'] as num?)?.toInt()
   ..trackCategoryId = (json['trackCategoryId'] as num?)?.toInt()
   ..categoryNm = json['categoryNm'] as String?
-  ..trackLikeStatus = json['trackLikeStatus'] as bool?
-  ..followMember = json['followMember'] as bool?
+  ..isTrackLikeStatus = json['isTrackLikeStatus'] as bool?
+  ..isFollowMember = json['isFollowMember'] as bool?
   ..commentsCnt = (json['commentsCnt'] as num?)?.toInt();
 
 Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
@@ -44,7 +44,7 @@ Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'playListId': instance.playListId,
       'trackCategoryId': instance.trackCategoryId,
       'categoryNm': instance.categoryNm,
-      'trackLikeStatus': instance.trackLikeStatus,
-      'followMember': instance.followMember,
+      'isTrackLikeStatus': instance.isTrackLikeStatus,
+      'isFollowMember': instance.isFollowMember,
       'commentsCnt': instance.commentsCnt,
     };

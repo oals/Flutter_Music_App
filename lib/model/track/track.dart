@@ -39,9 +39,9 @@ class Track {
 
   String? categoryNm;
 
-  bool? trackLikeStatus;
+  bool? isTrackLikeStatus;
 
-  bool? followMember;
+  bool? isFollowMember;
 
   int? commentsCnt;
 
@@ -73,8 +73,8 @@ class Track {
     playListId = updatedTrack.playListId ?? playListId;
     trackCategoryId = updatedTrack.trackCategoryId ?? trackCategoryId;
     categoryNm = updatedTrack.categoryNm ?? categoryNm;
-    trackLikeStatus = updatedTrack.trackLikeStatus ?? trackLikeStatus;
-    followMember = updatedTrack.followMember ?? followMember;
+    isTrackLikeStatus = updatedTrack.isTrackLikeStatus ?? isTrackLikeStatus;
+    isFollowMember = updatedTrack.isFollowMember ?? isFollowMember;
     commentsCnt = updatedTrack.commentsCnt ?? commentsCnt;
   }
 

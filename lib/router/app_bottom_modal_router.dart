@@ -7,6 +7,7 @@ import 'package:skrrskrr/screen/modal/audio_player_track_list_modal.dart';
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
 import 'package:skrrskrr/screen/modal/playList/my_play_list_modal.dart';
 import 'package:skrrskrr/screen/modal/playList/new_play_list.dart';
+import 'package:skrrskrr/screen/modal/track/info_edit_modal.dart';
 import 'package:skrrskrr/screen/modal/track/track_more_info.dart';
 import 'package:skrrskrr/screen/modal/upload/upload.dart';
 import 'package:skrrskrr/screen/modal/upload/select_category.dart';
@@ -20,6 +21,8 @@ class AppBottomModalRouter {
         String trackImagePath = "",
         int? trackId,
         int? commentId,
+        int? maxLines,
+        String? infoText,
         Track? track,
         int? categoryId,
         bool? isAlbum,
@@ -85,6 +88,19 @@ class AppBottomModalRouter {
             }
           );
         },
+      1: () async {return InfoEditModal(
+          infoText: infoText!,
+          maxLines : maxLines,
+          onSave: (String newTrackInfo) {
+            callBack!(newTrackInfo);
+            final context = findContext();
+            if(context != null) {
+              isClosing = true;
+              removeOverlay(context);
+            }
+          }
+        );
+        },
       2: () async {return NewPlayListScreen();},
       3: () async {return TrackMoreInfoScreen(track: track!);},
       5: () async {return UploadScreen(
@@ -129,7 +145,7 @@ class AppBottomModalRouter {
       dynamic modalFunction = modalWidgets[modalIndex];
 
       double maxSize = 0.9;
-      if(modalIndex == 1 || modalIndex == 5) {
+      if (modalIndex == 5) {
         maxSize = 1.0;
       } else if (modalIndex == 7 ) {
         maxSize = 0.95;

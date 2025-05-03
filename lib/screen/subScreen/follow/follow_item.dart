@@ -70,30 +70,35 @@ class _FollowItemState extends State<FollowItem> {
                       widget.filteredFollowItem!.followNickName!,
                       style: TextStyle(color: Colors.white),
                     ),
-                    if (!widget.isSearch && widget.filteredFollowItem!.isFollowedCd != 0)
-                      Text(
-                         widget.isFollowingItem
-                             ? widget.filteredFollowItem!.isFollowedCd != 3 ? '' : '나를 팔로우합2니다'
-                             : widget.filteredFollowItem!.isFollowedCd == 3 ?  '내가 팔로우합니다.' : '',
-                        style:
-                        TextStyle(color: Colors.grey, fontSize: 13),
-                      ),
 
-                    if (widget.isSearch && widget.filteredFollowItem!.isFollowedCd != 0)
-                      Text(
-                        widget.filteredFollowItem!.isFollowedCd == 3 || widget.filteredFollowItem!.isFollowedCd == 2
-                            ? '나를 팔로우 합니다'
-                            : '',
-                        style:
-                        TextStyle(color: Colors.grey, fontSize: 13),
-                      ),
+                    if(widget.isSearch)
+                      if(widget.filteredFollowItem!.isFollowedCd == 3)
+                        Text(
+                          'This account follows you',
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        ),
+
+                    if (!widget.isSearch && widget.isFollowingItem)
+                      if(widget.filteredFollowItem!.isFollowedCd == 3)
+                        Text(
+                          'This account follows you',
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        ),
+
+                    if (!widget.isSearch && !widget.isFollowingItem)
+                      if(widget.filteredFollowItem!.isFollowedCd == 1 || widget.filteredFollowItem!.isFollowedCd == 3)
+                        Text(
+                          'Following this account',
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        ),
+
                   ],
                 ),
               ],
             ),
           ),
-          if(widget.isSearch || widget.isFollowingItem ||  widget.filteredFollowItem!.isFollowedCd == 2)
-          ElevatedButton(
+
+            ElevatedButton(
             style: ButtonStyle(
               shape: WidgetStateProperty.all(
                 RoundedRectangleBorder(
@@ -104,42 +109,27 @@ class _FollowItemState extends State<FollowItem> {
 
               side: WidgetStateProperty.all(
                 BorderSide(
-                  color:  widget.filteredFollowItem!.isFollow!
-                      ? Color(0xff000000)
-                      : Color(0xff000000),
-                  // 테두리 색상
+                  color: Color(0xff000000),
                   width: 1.0, // 테두리 두께
                 ),
               ),
             ),
             onPressed: () async {
               print('버튼 클릭');
-              int followingMemberId = int.parse(await Helpers.getMemberId());
+              int followerId = int.parse(await Helpers.getMemberId());
 
-              widget.setFollow(widget.filteredFollowItem!.followMemberId, followingMemberId);
+              widget.setFollow(followerId,widget.filteredFollowItem!.followMemberId);
 
-              setState(() {
-                widget.filteredFollowItem!.isFollow = !widget.filteredFollowItem!.isFollow!;
-              });
+              widget.filteredFollowItem!.isFollow = !widget.filteredFollowItem!.isFollow!;
+              setState(() {});
             },
-            child: widget.isFollowingItem
-                ? Text(
-              !widget.filteredFollowItem!.isFollow! ? "언팔로우" : '팔로우',
-              style: TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w700),
-            )
-                : Text(
-              widget.filteredFollowItem!.isFollowedCd == 0
-                  ? widget.filteredFollowItem!.isFollow! ? "언팔로우" : '팔로우'
-                  : widget.filteredFollowItem!.isFollowedCd == 1
-                  ? widget.filteredFollowItem!.isFollow! ? "팔로우" : '언팔로우'
-                  : widget.filteredFollowItem!.isFollowedCd == 3
-                  ? widget.filteredFollowItem!.isFollow! ? '맞팔로우' : '언팔로우'
-                  : widget.filteredFollowItem!.isFollowedCd == 2
-                  ? widget.filteredFollowItem!.isFollow! ? '언팔로우' : '맞팔로우' : 'null',
-              style: TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w700),
-            ),
+            child: Text(
+              widget.filteredFollowItem!.isFollow!
+                    ? "Unfollow"
+                    : 'Follow',
+                style: TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w700),
+              )
           ),
         ],
       ),

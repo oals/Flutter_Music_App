@@ -15,7 +15,6 @@ class MemberFollowScreen extends StatefulWidget {
     
   });
 
-
   @override
   State<MemberFollowScreen> createState() => _MemberFollowScreenState();
 }
@@ -58,7 +57,6 @@ class _MemberFollowScreenState extends State<MemberFollowScreen>
         height: 120.h,
         child: FutureBuilder<bool>(
           future: _getFollowListInitFuture,
-          // 팔로우 및 팔로잉 데이터를 비동기적으로 가져오는 함수
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CustomProgressIndicatorItem());
@@ -83,25 +81,24 @@ class _MemberFollowScreenState extends State<MemberFollowScreen>
                   TabBar(
                     controller: _tabController,
                     labelColor: Colors.white,
-                    // 선택된 탭의 텍스트 색상
                     unselectedLabelColor: Colors.grey,
                     indicator: BoxDecoration(
-                      color: Colors.black,  // 기본 회색 선을 없애기 위해 투명으로 설정
+                      color: Colors.black,
                       border: Border(
                         bottom: BorderSide(
-                          width: 1.5,  // 선의 두께
-                          color: Colors.white,  // 선의 색상
+                          width: 1.5,
+                          color: Colors.white,
                         ),
                       ),
                     ),
-                    isScrollable: false,    // 탭이 스크롤 가능하도록 설정 (선택 사항)
-                    padding: EdgeInsets.zero,  // TabBar 내부의 패딩을 0으로 설정
+                    isScrollable: false,
+                    padding: EdgeInsets.zero,
                     tabs: [
                       Container(
                         padding: EdgeInsets.all(5),
                         child: Center(
                             child: Text(
-                                '${followModel.followingList?.length} 팔로잉',
+                                '${followModel.followingList?.length} following',
                               style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),
                             ),),
                       ),
@@ -109,7 +106,7 @@ class _MemberFollowScreenState extends State<MemberFollowScreen>
                         padding: EdgeInsets.all(5),
                         child: Center(
                             child: Text(
-                                '${followModel.followerList?.length} 팔로워',
+                                '${followModel.followerList?.length} follower',
                               style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),
                             )),
                       ),

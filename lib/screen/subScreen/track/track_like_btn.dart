@@ -33,7 +33,7 @@ class _TrackLikeBtnState extends State<TrackLikeBtn> {
             trackProv.notify();
           },
           child: SvgPicture.asset(
-            widget.track.trackLikeStatus!
+            widget.track.isTrackLikeStatus!
                 ? 'assets/images/heart_red.svg'
                 : 'assets/images/heart.svg' ,
             width: 27,

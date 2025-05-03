@@ -9,15 +9,14 @@ import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
-import 'package:skrrskrr/screen/modal/track/title_info_edit.dart';
+import 'package:skrrskrr/router/app_bottom_modal_router.dart';
+
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
-
-import '../../../prov/player_prov.dart';
 
 class PlayListScreen extends StatefulWidget {
   const PlayListScreen({
@@ -184,25 +183,18 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     print('플리 소개 편집 버튼');
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: true,
-                                      builder: (context) {
-                                        return Dialog(
-                                          backgroundColor: Colors.transparent,
-                                          child: TitleInfoEditModal(
-                                            title: "플레이스트명 수정",
-                                            text: widget.playList.playListNm!,
-                                            maxLines : 1,
-                                            fnCallBack: (String? newTitle) async {
-                                              await playListProv.setPlayListInfo(widget.playList.playListId!, newTitle!);
-                                              widget.playList.playListNm = newTitle;
-                                              setState(() {});
-                                            },
-                                          ),
-                                        );
-                                      },
-                                    );
+                                    AppBottomModalRouter.fnModalRouter(
+                                        context,
+                                        1,
+                                        maxLines: 1,
+                                        infoText: widget.playList.playListNm,
+                                        callBack: (String newTitle) async {
+
+                                          await playListProv.setPlayListInfo(widget.playList.playListId!, newTitle);
+                                          widget.playList.playListNm = newTitle;
+                                          setState(() {});
+
+                                        });
                                   },
                                   child: SvgPicture.asset(
                                     'assets/images/edit.svg',

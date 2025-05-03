@@ -15,7 +15,7 @@ import 'package:http/http.dart' as http;
 class MemberProv with ChangeNotifier {
 
   MemberModel model = MemberModel();
-  List<MemberModel> recommendMemberList = [];
+  List<FollowInfoModel> recommendMemberList = [];
   MemberModelList searchMemberModelList = MemberModelList();
 
   void notify() {
@@ -56,37 +56,6 @@ class MemberProv with ChangeNotifier {
     }
   }
 
-  Future<bool> getRecommendMember() async {
-
-    final loginMemberId = await Helpers.getMemberId();
-    final url = '/api/getRecommendMember?loginMemberId=${loginMemberId}';
-
-    try {
-      http.Response response = await Helpers.apiCall(
-        url,
-      );
-
-      if (response.statusCode == 200) {
-
-        recommendMemberList = [];
-
-        for (var item in Helpers.extractValue(response.body, "memberList")){
-          recommendMemberList.add(MemberModel.fromJson(item));
-        }
-
-        print('$url - Successful');
-        return true;
-      } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
-      }
-    } catch (error) {
-      print(error);
-      print('$url - Fail');
-      return false;
-
-    }
-  }
-
   Future<bool> getSearchMember(String searchText, int offset, int limit) async {
 
     final String loginMemberId = await Helpers.getMemberId();
@@ -105,8 +74,16 @@ class MemberProv with ChangeNotifier {
         if (offset == 0) {
           searchMemberModelList = MemberModelList();
         }
-        for (var item in Helpers.extractValue(response.body, 'followMemberList')) {
-          searchMemberModelList.memberList.add(FollowInfoModel.fromJson(item));
+
+        for (var followerData in Helpers.extractValue(response.body, 'followMemberList')) {
+
+          FollowInfoModel followInfoModel = FollowInfoModel.fromJson(followerData);
+
+          if (followInfoModel.isFollowedCd == 1 || followInfoModel.isFollowedCd == 3) {
+            followInfoModel.isFollow = true;
+          }
+
+          searchMemberModelList.memberList.add(followInfoModel);
         }
 
         searchMemberModelList.memberListCnt = Helpers.extractValue(response.body, 'totalCount');

@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/notifications/notifications_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
+import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 
 import 'package:skrrskrr/screen/subScreen/notification/notification_item_screen.dart';
 import 'package:skrrskrr/utils/helpers.dart';
@@ -25,6 +27,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
   late Future<bool> _getNotificationInitFuture;
   late bool notificationIsViewExistence = false;
   late bool notificationIsExistence = false;
+  late ComnLoadProv comnLoadProv;
+  late NotificationsProv notificationsProv;
 
   @override
   void initState() {
@@ -35,7 +39,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
 
-    NotificationsProv notificationsProv = Provider.of<NotificationsProv>(context);
+    notificationsProv = Provider.of<NotificationsProv>(context);
+    comnLoadProv = Provider.of<ComnLoadProv>(context);
+
 
     return Scaffold(
       body: Container(
@@ -57,92 +63,38 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
               Container(
                 width: 100.w,
-                height: 75.h,
+                height: 85.h,
                 padding: EdgeInsets.all(8),
-                child: SingleChildScrollView(
-                  child: FutureBuilder<bool>(
-                    future: _getNotificationInitFuture,
+                child: FutureBuilder<bool>(
+                  future: _getNotificationInitFuture,
+                  builder: (context, snapshot){
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else {
 
-                    builder: (context, snapshot){
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      } else {
+                      NotificationsModel notificationsModel = notificationsProv.model;
 
-                        NotificationsModel notificationsModel = notificationsProv.model;
+                      // 알림에서 "isView" 상태가 true인 것이 있는지 체크
+                      notificationIsViewExistence = notificationsProv.checkNotificationIsViewExistence(notificationsModel.notificationList);
 
-                        void setNotificationIsView(NotificationsModel notificationItem) async {
+                      // 알림 리스트 중 하나라도 비어 있지 않은지 체크
+                      notificationIsExistence = notificationsProv.checkNotificationExistence(notificationsModel.notificationList);
 
-                          if(!notificationItem.notificationIsView!){
-                            await notificationsProv.setNotificationIsView(notificationItem.notificationId!);
-
-                            setState(() {
-                              notificationItem.notificationIsView = true;
-                            });
-                          }
-
-
-
-
-                          /**
-                           * 좋아요 알림
-                           * 댓글 알림
-                           * 팔로우 알림
-                           * */
-
-                          if (notificationItem.notificationType == 1) {
-
-                            Track track = Track();
-                            track.trackId = notificationItem.notificationTrackId;
-                            GoRouter.of(context).push('/trackInfo',
-                              extra: {
-                                'track': track,
-                                'commendId': null,
-                              },
-                            );
-
-                          } else if (notificationItem.notificationType == 2) {
-
-                            Track track = Track();
-                            track.trackId = notificationItem.notificationTrackId;
-                            GoRouter.of(context).push('/trackInfo',
-                              extra: {
-                                'track': track,
-                                'commendId': notificationItem.notificationCommentId
-                              },
-                            );
-
-                          } else if (notificationItem.notificationType == 3) {
-                            GoRouter.of(context).push('/memberPage/${notificationItem.notificationMemberId}');
-                          }
-                        }
-
-                        // 리스트에서 하나라도 notificationIsView가 true인 것이 있는지 체크하는 함수
-                        bool checkNotificationIsViewExistence(List notificationsList) {
-                          for (var notification in notificationsList) {
-                            if (notification.notificationIsView != null && !notification.notificationIsView!) {
-                              return true;
+                      return NotificationListener<ScrollNotification>(
+                          onNotification: (notification) {
+                          if (notificationsModel.totalCount! >  notificationsModel.notificationList.length) {
+                            if (comnLoadProv.shouldLoadMoreData(notification)) {
+                              comnLoadProv.loadMoreData(notificationsProv, "Notifications",  notificationsModel.notificationList.length );
+                            }
+                          } else {
+                            if (comnLoadProv.isApiCall){
+                              comnLoadProv.resetApiCallStatus();
                             }
                           }
                           return false;
-                        }
-
-                        // 전체 알림이 비어있는지 체크하는 함수
-                        bool checkNotificationExistence(List todayList, List monthList, List yearList) {
-                          return todayList.isNotEmpty || monthList.isNotEmpty || yearList.isNotEmpty;
-                        }
-
-                        // today, month, year 알림에서 "isView" 상태가 true인 것이 있는지 체크
-                        notificationIsViewExistence = checkNotificationIsViewExistence(notificationsModel.todayNotificationsList) ||
-                            checkNotificationIsViewExistence(notificationsModel.monthNotificationsList) ||
-                            checkNotificationIsViewExistence(notificationsModel.yearNotificationsList);
-
-                        // 알림 리스트 중 하나라도 비어 있지 않은지 체크
-                        notificationIsExistence = checkNotificationExistence(notificationsModel.todayNotificationsList,
-                            notificationsModel.monthNotificationsList,
-                            notificationsModel.yearNotificationsList);
-
-
-                        return Column(
+                        },
+                      child: SingleChildScrollView(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 10,),
@@ -152,29 +104,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                                 GestureDetector(
                                   onTap: ()=>{
-                                    if(notificationIsViewExistence){
+                                    if (notificationIsViewExistence) {
                                       notificationsProv.setAllNotificationIsView(),
 
-                                      for(int i = 0; i < notificationsModel.todayNotificationsList.length; i++){
-                                        notificationsModel.todayNotificationsList[i]
-                                            .notificationIsView = true
-                                      },
-                                      for(int i = 0; i < notificationsModel.monthNotificationsList.length; i++){
-                                        notificationsModel.monthNotificationsList[i]
-                                            .notificationIsView = true
-                                      },
-                                      for(int i = 0; i < notificationsModel.yearNotificationsList.length; i++){
-                                        notificationsModel.yearNotificationsList[i]
-                                            .notificationIsView = true
+                                      for (int i = 0; i < notificationsModel.notificationList.length; i++) {
+                                        notificationsModel.notificationList[i].notificationIsView = true
                                       },
 
                                       Fluttertoast.showToast(msg: '전체 읽음 처리 되었습니다..'),
-
                                       notificationIsViewExistence = false,
-
-                                      setState(() {},
-                                      ),
-
+                                      setState(() {}),
                                     },
                                   },
                                   child: Container(
@@ -194,19 +133,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                                 GestureDetector(
                                   onTap: ()=>{
-                                    print('전체삭제'),
-                                    if(notificationIsExistence){
 
+                                    if (notificationIsExistence) {
                                       notificationsProv.setDelNotificationIsView(),
-
-                                      notificationsModel.todayNotificationsList = [],
-                                      notificationsModel.monthNotificationsList = [],
-                                      notificationsModel.yearNotificationsList = [],
+                                      notificationsModel.notificationList = [],
                                       notificationIsExistence = false,
                                       notificationIsViewExistence = false,
-                                      setState(() {
-                                      })
-
+                                      setState(() {})
                                     }
                                   },
                                   child: Container(
@@ -225,66 +158,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             ),
 
 
-                            if(notificationIsExistence)...[
-                              if(notificationsModel.todayNotificationsList.length != 0)...[
+                            if (notificationIsExistence)...[
 
-                                Text(
-                                  'Today',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 20),
-                                ),
-                                SizedBox(height: 5),
-                              ],
-
-                              for(int i = 0; i < notificationsModel.todayNotificationsList.length; i++)...[
-                                  GestureDetector(
+                              for (int i = 0; i < notificationsModel.notificationList.length; i++)
+                                GestureDetector(
                                     onTap : () {
-                                        setNotificationIsView(notificationsModel.todayNotificationsList[i]);
+                                       notificationsProv.moveNotification(notificationsModel.notificationList[i],context);
                                       },
-                                    child: NotificationItemScreen(notificationsModel : notificationsModel.todayNotificationsList[i]))
-                              ],
+                                    child: NotificationItemScreen(notificationsModel : notificationsModel.notificationList[i]))
 
-                              if(notificationsModel.monthNotificationsList.length != 0)...[
-                                SizedBox(height: 10),
-                                Text(
-                                  'Month',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 20),
-                                ),
-                                SizedBox(height: 5),
-                              ],
-
-                              for(int i = 0; i < notificationsModel.monthNotificationsList.length; i++)...[
-                                  GestureDetector(
-                                      onTap : () {
-                                          setNotificationIsView(notificationsModel.monthNotificationsList[i]);
-                                        },
-                                      child: NotificationItemScreen(notificationsModel : notificationsModel.monthNotificationsList[i]))
-                              ],
-
-                              if(notificationsModel.yearNotificationsList.length != 0)...[
-                                SizedBox(height: 10),
-                                Text(
-                                  'Year',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 20),
-                                ),
-                                SizedBox(height: 5),
-                              ],
-
-                              for(int i = 0; i < notificationsModel.yearNotificationsList.length; i++)...[
-                                  GestureDetector(
-                                      onTap : () {
-                                          setNotificationIsView(notificationsModel.yearNotificationsList[i]);
-                                        },
-                                      child: NotificationItemScreen(notificationsModel : notificationsModel.yearNotificationsList[i]))
-                              ],
                             ],
 
                             if(!notificationIsExistence)...[
@@ -301,23 +183,22 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                            ]
+                            ],
+
+                            Center(
+                                child: CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
+                            ),
+                    ],
+                        ),
+                      )
+                      );
+
+                    }
 
 
-                          ],
-                        );
-
-                      }
-
-
-                    },
-                  ),
+                  },
                 ),
               ),
-
-
-
-
             ],
           ),
         ),

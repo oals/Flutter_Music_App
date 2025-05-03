@@ -41,6 +41,8 @@ class ComnLoadProv extends ChangeNotifier{
         await provider.getPlayList(trackId, offset, isAlbum);
       } else if (apiName == "LikePlayLists") {
         await provider.getLikePlayList(offset, isAlbum);
+      } else if (apiName == "Notifications") {
+        await provider.getNotifications(offset);
       }
 
       setApiCallStatus(false);

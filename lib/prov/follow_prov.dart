@@ -35,12 +35,29 @@ class FollowProv extends ChangeNotifier{
         followModel.followerList = [];
         followModel.followingList = [];
 
+        //검색 api에도 필요함
+        // 공통을 만들어야하나
+
         for (var followerData in Helpers.extractValue(response.body, 'followerList')) {
-          followModel.followerList?.add(FollowInfoModel.fromJson(followerData));
+
+          FollowInfoModel followInfoModel = FollowInfoModel.fromJson(followerData);
+
+          if (followInfoModel.isFollowedCd == 1 || followInfoModel.isFollowedCd == 3) {
+            followInfoModel.isFollow = true;
+          }
+
+          followModel.followerList?.add(followInfoModel);
         }
 
         for (var followingData in Helpers.extractValue(response.body, 'followingList')) {
-          followModel.followingList?.add(FollowInfoModel.fromJson(followingData));
+
+          FollowInfoModel followInfoModel = FollowInfoModel.fromJson(followingData);
+
+          if (followInfoModel.isFollowedCd == 1 || followInfoModel.isFollowedCd == 3) {
+            followInfoModel.isFollow = true;
+          }
+
+          followModel.followingList?.add(followInfoModel);
         }
 
         print('$url - Successful');

@@ -199,7 +199,7 @@ class _TrackListItemState extends State<TrackListItem> {
                                 children: [
 
                                   SvgPicture.asset(
-                                    widget.trackItem.trackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
+                                    widget.trackItem.isTrackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
                                     width: 15,
                                     height: 15,
                                   ),
