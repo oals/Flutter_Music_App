@@ -93,57 +93,69 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                 }
                 return false;
               },
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+              child: Stack(
+                children: [
 
-                    CustomAppbar(
-                      fnBackBtncallBack: () => {GoRouter.of(context).pop()},
-                      fnUpdtBtncallBack:()=>{},
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: CustomAppbar(
+                      fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
+                      fnUpdateBtnCallBack:()=>{},
                       title: "Uploaded Tracks",
                       isNotification : false,
                       isEditBtn: false,
                       isAddTrackBtn : true,
                     ),
-                    SizedBox(height: 25,),
+                  ),
 
-                    for (Track track in uploadTrackList)...[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0,right: 8),
-                        child: TrackListItem(
-                          trackItem: track,
-                          appScreenName: "UploadTrackScreen",
-                          isAudioPlayer: false,
-                          initAudioPlayerTrackListCallBack: () async {
+                  Padding(
+                    padding: EdgeInsets.only(top: 100),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
 
-                            await trackProv.getUploadTrack(comnLoadProv.listDataOffset, trackModel.uploadTrackTotalCount!);
+                          for (Track track in uploadTrackList)...[
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0,right: 8),
+                              child: TrackListItem(
+                                trackItem: track,
+                                appScreenName: "UploadTrackScreen",
+                                isAudioPlayer: false,
+                                initAudioPlayerTrackListCallBack: () async {
 
-                            trackProv.addUniqueTracksToList(
-                              sourceList: list,
-                              targetSet: uploadTrackSet,
-                              targetList: uploadTrackList,
-                              trackCd: "UploadTrackList",
-                            );
+                                  await trackProv.getUploadTrack(comnLoadProv.listDataOffset, trackModel.uploadTrackTotalCount!);
 
-                            List<int> trackIdList = uploadTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                  trackProv.addUniqueTracksToList(
+                                    sourceList: list,
+                                    targetSet: uploadTrackSet,
+                                    targetList: uploadTrackList,
+                                    trackCd: "UploadTrackList",
+                                  );
 
-                            trackProv.audioPlayerTrackList = uploadTrackList;
-                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
-                            trackProv.notify();
-                          },
-                        ),
+                                  List<int> trackIdList = uploadTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+
+                                  trackProv.audioPlayerTrackList = uploadTrackList;
+                                  await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                  trackProv.notify();
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 10,),
+                          ],
+
+
+                          SizedBox(height: 5),
+
+                          CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
+
+                        ],
                       ),
-                      SizedBox(height: 10,),
-                    ],
-
-
-                    SizedBox(height: 5),
-
-                    CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
-
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ),
             );
           },

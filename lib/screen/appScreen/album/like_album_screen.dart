@@ -53,6 +53,7 @@ class _LikeAlbumScreenState extends State<LikeAlbumScreen> {
 
     return Scaffold(
       body: Container(
+        width: 100.w,
         height: 100.h,
         color: Colors.black,
         child: FutureBuilder<bool>(
@@ -82,42 +83,55 @@ class _LikeAlbumScreenState extends State<LikeAlbumScreen> {
                 }
                 return false;
               },
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+              child: Stack(
+                children: [
 
-                    Container(
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: CustomAppbar(
+                      fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
+                      fnUpdateBtnCallBack:()=>{},
+                      title: "Liked Album",
+                      isNotification : false,
+                      isEditBtn: false,
+                      isAddTrackBtn : false,
+                    ),
+                  ),
+
+
+                  Padding(
+                    padding: EdgeInsets.only(top: 100),
+                    child: SingleChildScrollView(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomAppbar(
-                            fnBackBtncallBack: () => {GoRouter.of(context).pop()},
-                            fnUpdtBtncallBack:()=>{},
-                            title: "Album",
-                            isNotification : false,
-                            isEditBtn: false,
-                            isAddTrackBtn : false,
-                          ),
-                          SizedBox(
-                            height: 20,
+
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+
+                                for(int i = 0; i < AlbumList.length; i++)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15,bottom: 5),
+                                    child: PlayListsListItem(playList: AlbumList[i],isAlbum: false),
+                                  )
+                              ],
+                            ),
                           ),
 
-                          for(int i = 0; i < AlbumList.length; i++)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15,bottom: 5),
-                              child: PlayListsListItem(playList: AlbumList[i],isAlbum: false),
-                            )
+                          Center(
+                              child: CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
+                          ),
                         ],
                       ),
                     ),
-
-                    Center(
-                        child: CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },

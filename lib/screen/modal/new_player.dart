@@ -37,14 +37,11 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
     playerProv.swiperController = SwiperController();
   }
 
-
   @override
   void dispose() {
-    // TODO: implement dispose
     playerProv.swiperController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +68,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
 
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
                       await playerProv.initAudio(trackProv);
+                      await playerProv.playTrackAtIndex(index);
                       trackProv.notify();
                     });
 

@@ -69,7 +69,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
     playListProv = Provider.of<PlayListProv>(context);
     trackProv = Provider.of<TrackProv>(context);
 
-
     return Scaffold(
       body: Container(
         width: 100.w,
@@ -104,12 +103,10 @@ class _PlayListScreenState extends State<PlayListScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-
                     Container(
                       child: Stack(
                         children: [
                           CustomCachedNetworkImage(imagePath: widget.playList.playListImagePath, imageWidth: 100.w, imageHeight: 50.h,isBoxFit: true,),
-
                           Container(
                             width: 100.w,
                             height: 50.h,
@@ -142,10 +139,10 @@ class _PlayListScreenState extends State<PlayListScreen> {
                               left: 0,
                               right: 0,
                               child: CustomAppbar(
-                                fnBackBtncallBack: () => {
+                                fnBackBtnCallBack: () => {
                                   GoRouter.of(context).pop()
                                 },
-                                fnUpdtBtncallBack:()=>{
+                                fnUpdateBtnCallBack:()=>{
                                   setState(() {
                                     isEdit = !isEdit;
                                   }),
@@ -155,12 +152,11 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                 isNotification : true,
                                 isEditBtn: isAuth,
                                 isAddTrackBtn : false,
-                              )),
+                              ),
+                          ),
                         ],
                       ),
                     ),
-
-
 
                     Container(
                       width: 100.w,
@@ -178,7 +174,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
-                              if(isEdit)...[
+                              if (isEdit)...[
                                 SizedBox(width: 3),
                                 GestureDetector(
                                   onTap: () {
@@ -189,12 +185,11 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                         maxLines: 1,
                                         infoText: widget.playList.playListNm,
                                         callBack: (String newTitle) async {
-
                                           await playListProv.setPlayListInfo(widget.playList.playListId!, newTitle);
                                           widget.playList.playListNm = newTitle;
                                           setState(() {});
-
-                                        });
+                                        },
+                                    );
                                   },
                                   child: SvgPicture.asset(
                                     'assets/images/edit.svg',
@@ -283,7 +278,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                         onTap: () {
                                           print('플리 좋아요');
                                           playListProv.setPlayListLike(widget.playList.playListId!);
-                                          print(widget.playList.isPlayListLike );
+
                                           widget.playList.isPlayListLike = !widget.playList.isPlayListLike!;
 
                                           if (widget.playList.isPlayListLike!) {
@@ -291,8 +286,6 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                           } else {
                                             widget.playList.playListLikeCnt = widget.playList.playListLikeCnt! - 1;
                                           }
-
-                                          print(widget.playList.isPlayListLike );
 
                                           setState(() {});
                                         },
@@ -329,25 +322,9 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                   ),
                                 ],
                               ),
-                              Container(
-                                margin: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.white, // 테두리 색상
-                                    width: 3.0, // 테두리 두께
-                                  ),
-                                  shape: BoxShape.circle, // 원형으로 설정
-                                ),
-                                child: SvgPicture.asset(
-                                  'assets/images/play_circle.svg',
-                                  width: 4.5.w,
-                                  height: 4.5.h,
-                                ),
-                              )
                             ],
                           ),
                           SizedBox(height: 20),
-
 
                           FutureBuilder<bool>(
                               future: _getPlayListTrackInitFuture,
@@ -362,12 +339,11 @@ class _PlayListScreenState extends State<PlayListScreen> {
 
                                   return Column(
                                     children: [
-                                      for(int i = 0; i < trackList.length; i++)...[
+                                      for (int i = 0; i < trackList.length; i++)...[
                                         TrackListItem(
                                           trackItem: trackList[i],
                                           appScreenName: "PlayListScreen",
                                           isAudioPlayer: false,
-
                                           initAudioPlayerTrackListCallBack: () async {
 
                                             await trackProv.getPlayListTrackList(widget.playList.playListId!,comnLoadProv.listDataOffset, widget.playList.trackCnt!);
@@ -377,18 +353,22 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                             List<int> trackIdList = trackList.map((item) => int.parse(item.trackId.toString())).toList();
 
                                             trackProv.audioPlayerTrackList = trackList;
+
                                             await trackProv.setAudioPlayerTrackIdList(trackIdList);
+
+                                            await trackProv.setLastListenTrackId(trackList[i].trackId!);
+
                                             trackProv.notify();
 
                                           },
                                         ),
                                         SizedBox(height: 5,),
-                                      ]
+                                      ],
                                     ],
                                   );
 
                                }
-                              }
+                              },
                              ),
 
                         ],

@@ -30,20 +30,21 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
   bool isLoading = false;
   late String? memberNickName;
   late String? memberImagePath;
-
+  late NotificationsProv notificationsProv;
+  late Future<void> _getNotificationInitFuture;
 
   @override
   void initState() {
     super.initState();
+    _getNotificationInitFuture = Provider.of<NotificationsProv>(context,listen: false).sharedSaveNotificationsIsView();
     _loadPreferences();
   }
 
-  // 비동기적으로 SharedPreferences를 로드하는 함수
   Future<void> _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     memberNickName = prefs.getString("memberNickName");
     memberImagePath = prefs.getString("memberImagePath");
+
     isLoading = true;
     setState(() {});
   }
@@ -51,26 +52,34 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
   @override
   Widget build(BuildContext context) {
 
-    if(!isLoading){
+    if (!isLoading) {
       return CircularProgressIndicator();
     }
 
-    NotificationsProv notificationsProv = Provider.of<NotificationsProv>(context);
+    notificationsProv = Provider.of<NotificationsProv>(context);
 
     return Container(
       color: Color(0xff000000),
-      height: widget.preferredSize.height, // 생성자에서 설정한 높이를 사용
-      child: Container(
-        padding: EdgeInsets.only(top: 40,left: 10,right: 15),
+      height: widget.preferredSize.height,
+      child: FutureBuilder<void>(
+      future: _getNotificationInitFuture, // 비동기 메소드 호출
+      builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center();
+      } else if (snapshot.hasError) {
+        return Center(child: Text('오류 발생: ${snapshot.error}'));
+      }  else {
+      return Container(
+        padding: EdgeInsets.only(top: 40, left: 10, right: 15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
                 CustomCachedNetworkImage(
-                    imagePath:memberImagePath,
-                    imageWidth : 9.w,
-                    imageHeight : 4.5.h,
+                  imagePath: memberImagePath,
+                  imageWidth: 9.w,
+                  imageHeight: 4.5.h,
                   isBoxFit: true,
                 ),
                 SizedBox(
@@ -116,6 +125,9 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
             ],
           ],
         ),
+      );
+    }
+        }
       ),
     );
   }

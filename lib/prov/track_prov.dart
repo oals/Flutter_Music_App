@@ -104,33 +104,64 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
-  void updateLastListenTrackList(Track trackItem){
-
+  void updateLastListenTrackList(Track trackItem) {
     lastListenTrackList[0].isPlaying = false;
     lastListenTrackList.removeWhere((track) => track.trackId == trackItem.trackId);
     lastListenTrackList.insert(0, trackItem);
     lastListenTrackList[0].isPlaying = true;
-
   }
 
   void initCurrentTrackPlaying(int currentPage) async{
+
       if (audioPlayerTrackList.length > currentPage) {
         audioPlayerTrackList[currentPage].isPlaying = false;
       }
   }
 
-  void updateAudioPlayerSwiper(int trackId, PlayerProv playerProv, String appScreenName){
+  void updateAudioPlayerSwiper(int trackId, PlayerProv playerProv, String appScreenName) async {
 
     int index = audioPlayerTrackList.indexWhere((item) => item.trackId == trackId);
     if (index != -1) {
+
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (appScreenName == 'LastListenTrackList') {
-          playerProv.page = 0;
+          playerProv.page = index;
         } else {
           playerProv.page = index;
         }
+
         playerProv.swiperController.move(playerProv.page, animation: true);
       });
+    }
+  }
+
+  Future<bool> setTrackPlayCnt(int trackId) async {
+
+    final url = '/api/setTrackPlayCnt';
+
+    try {
+      http.Response response = await Helpers.apiCall(
+        url,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: {
+          'trackId' : trackId
+        }
+      );
+
+      if (response.statusCode == 200) {
+
+        print('$url - Successful');
+        return true;
+      } else {
+        throw Exception(Helpers.extractValue(response.body, 'message'));
+      }
+    } catch (error) {
+      print(error);
+      print('$url - Fail');
+      return false;
     }
   }
 

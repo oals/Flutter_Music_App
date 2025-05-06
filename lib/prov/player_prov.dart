@@ -40,14 +40,13 @@ class PlayerProv extends ChangeNotifier {
   Future<void> initAudioPlayer(TrackProv trackProv,int trackId , String appScreenName, Function initAudioPlayerTrackListCallBack) async{
     if (currentAppScreen != appScreenName) {
       currentAppScreen = appScreenName;
-      await initAudioPlayerTrackListCallBack(); /// 오디오 재생목록 생성
-      await initAudio(trackProv);
-    } else if (appScreenName == 'LastListenTrackList'){
-      print('실행할곳테스트');
       await initAudioPlayerTrackListCallBack();
-      await trackProv.setLastListenTrackId(trackId);
-
+      await initAudio(trackProv);
     }
+    // else if (appScreenName == 'LastListenTrackList'){
+    //   await initAudioPlayerTrackListCallBack();
+    //   await trackProv.setLastListenTrackId(trackId);
+    // }
   }
 
   Future<void> setupQueue(List<Track> audioTrackPlayList) async {
@@ -60,9 +59,17 @@ class PlayerProv extends ChangeNotifier {
       _playlist.add(source);
     }
 
-    await _audioPlayer.setAudioSource(_playlist); // 큐를 오디오 플레이어에 설정
+    await _audioPlayer.setAudioSource(_playlist,preload: true); // 큐를 오디오 플레이어에 설정
   }
 
+  void addTrack(Track newTrack,int index) async {
+    String m3u8Url = dotenv.get("STREAM_URL") + '/${newTrack.trackId}/playList.m3u8';
+    final newSource = AudioSource.uri(Uri.parse(m3u8Url));
+
+    await _playlist.insert(index,newSource);
+
+    await _audioPlayer.load();
+  }
 
   Future<void> playTrackAtIndex(int index) async {
 
@@ -117,15 +124,20 @@ class PlayerProv extends ChangeNotifier {
 
           int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
 
-          if (index + 1 < trackProv.audioPlayerTrackList.length) {
-            swiperController.move(index + 1, animation: true);
-            await playTrackAtIndex(index);
-          } else {
-            playerModel.isPlaying = false;
-            stopTimer();
-            await _audioPlayer.pause();
-            print("마지막 곡 종료.");
+          if (index != -1) {
+            trackProv.setTrackPlayCnt(trackProv.audioPlayerTrackList[index].trackId!);
+
+            if (index + 1 < trackProv.audioPlayerTrackList.length) {
+              swiperController.move(index + 1, animation: true);
+              await playTrackAtIndex(index);
+            } else {
+              playerModel.isPlaying = false;
+              stopTimer();
+              await _audioPlayer.pause();
+              print("마지막 곡 종료.");
+            }
           }
+
         }
         notify();
       });

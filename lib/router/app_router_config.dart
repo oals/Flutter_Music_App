@@ -44,6 +44,7 @@ Page commonPageBuilder(
     ) {
 
   final AppProv appProv = Provider.of<AppProv>(context);
+
   appProv.appScreenWidget = pageWidget;
 
   return CustomTransitionPage(
@@ -64,7 +65,7 @@ final router = GoRouter(
     redirect: (BuildContext context, GoRouterState state) {
       final location = state.matchedLocation;
       print('네비게이션 이동 추적 : ' + location);
-      return location; // 리디렉션하지 않음
+      return location;
     },
     routes: [
 

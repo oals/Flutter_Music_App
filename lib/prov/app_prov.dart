@@ -9,6 +9,7 @@ import 'package:skrrskrr/model/follow/follow_info_model.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_screen.dart';
@@ -24,8 +25,9 @@ class AppProv extends ChangeNotifier{
   final TrackProv trackProv;
   final PlayListProv playListProv;
   final MemberProv memberProv;
+  final NotificationsProv notificationsProv;
 
-  AppProv(this.trackProv, this.playListProv, this.memberProv);
+  AppProv(this.trackProv, this.playListProv, this.memberProv, this.notificationsProv);
 
 
   int currentIndex = 0;
@@ -47,6 +49,7 @@ class AppProv extends ChangeNotifier{
       );
 
       if (response.statusCode == 200) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
 
         memberProv.model = MemberModel.fromJson(Helpers.extractValue(response.body, 'member'));
         await memberProv.saveMemberData();
@@ -70,6 +73,10 @@ class AppProv extends ChangeNotifier{
         for (var item in Helpers.extractValue(response.body, "recommendMembers")){
           memberProv.recommendMemberList.add(FollowInfoModel.fromJson(item));
         }
+
+        bool notificationIsView = Helpers.extractValue(response.body, 'notificationIsView');
+        await prefs.setBool('notificationsIsView', notificationIsView);
+        notificationsProv.setNotificationsIsView(notificationIsView);
 
         print('$url - Successful');
         return true;

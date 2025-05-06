@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 
 class UploadTextField extends StatefulWidget {
   const UploadTextField(
-      {super.key,
-      required this.label,
-      required this.maxLines,
-      required this.controller,
-      required this.isReadOnly,
-      required this.isOnTap,
-      required this.callBack});
+      {
+        super.key,
+        required this.label,
+        required this.maxLines,
+        required this.controller,
+        required this.focusNode,
+        required this.isReadOnly,
+        required this.isOnTap,
+        required this.callBack});
 
   final String label;
   final int? maxLines;
   final TextEditingController controller;
+  final FocusNode? focusNode;
   final bool isReadOnly;
   final bool isOnTap;
   final Function callBack;
@@ -30,6 +33,7 @@ class _UploadTextFieldState extends State<UploadTextField> {
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: TextField(
+        focusNode: widget.focusNode,
         onTap: widget.isOnTap ? () {
           widget.callBack();
         } : null ,

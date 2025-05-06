@@ -48,7 +48,8 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
       onTap: () async {
         if (!widget.trackItem.isPlaying) {
           widget.trackItem.isPlaying = true;
-          trackProv.updateLastListenTrackList(widget.trackItem);
+
+          // trackProv.updateLastListenTrackList(widget.trackItem);
 
           trackProv.initCurrentTrackPlaying(playerProv.currentPage);
 

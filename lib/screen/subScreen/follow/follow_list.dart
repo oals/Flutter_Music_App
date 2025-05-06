@@ -65,7 +65,7 @@ class _FollowListState extends State<FollowList> {
                 Text(
                   'Empty',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.grey,
                     fontWeight: FontWeight.w700,
                     fontSize: 18,
                   ),
@@ -73,7 +73,6 @@ class _FollowListState extends State<FollowList> {
               ],
             ),
           ),
-
       ],
     );
   }

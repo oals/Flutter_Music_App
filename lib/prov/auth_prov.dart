@@ -122,8 +122,7 @@ class AuthProv with ChangeNotifier{
   Future<void> logout() async {
 
     final storage = FlutterSecureStorage();
-    SharedPreferences prefs =
-    await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
     // 저장된 JWT 토큰 삭제
@@ -132,7 +131,7 @@ class AuthProv with ChangeNotifier{
 
     final GoogleSignIn _googleSignIn = GoogleSignIn();
     await _googleSignIn.signOut();
-    // Firebase Authentication 로그아웃
+
     await FirebaseAuth.instance.signOut();
     model.memberEmail = null;
     notifyListeners(); // 상태 변경 알림

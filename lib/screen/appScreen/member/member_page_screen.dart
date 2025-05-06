@@ -6,11 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:skrrskrr/model/comn/upload.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
@@ -21,20 +18,15 @@ import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
-
-
-import 'package:skrrskrr/screen/appScreen/playlist/play_list_screen.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_lists_list_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
-import '../../../prov/player_prov.dart';
 
 class MemberPageScreen extends StatefulWidget {
   const MemberPageScreen({
@@ -191,10 +183,10 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                             left: 0,
                             right: 0,
                             child: CustomAppbar(
-                              fnBackBtncallBack: () => {
+                              fnBackBtnCallBack: () => {
                                 GoRouter.of(context).pop()
                               },
-                              fnUpdtBtncallBack: () {
+                              fnUpdateBtnCallBack: () {
                                 isEdit = !isEdit;
                                 setState(() {});
                               },

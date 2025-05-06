@@ -129,16 +129,14 @@ class MemberProv with ChangeNotifier {
   }
 
   Future<void> saveMemberData() async {
-    // SharedPreferences에 저장
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('memberEmail', model.memberEmail.toString());
     await prefs.setString('memberImagePath', model.memberImagePath.toString());
     await prefs.setString('memberNickName', model.memberNickName.toString());
     await prefs.setString('memberId', model.memberId.toString());
-    notifyListeners(); // 상태 변경 알림
+    notifyListeners();
   }
 
-  //유저 페이지 접근
   Future<bool> getMemberPageInfo(int memberId) async {
 
     final String loginMemberId = await Helpers.getMemberId();

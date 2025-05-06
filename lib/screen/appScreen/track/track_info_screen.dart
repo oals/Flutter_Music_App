@@ -25,6 +25,7 @@ import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 import 'package:skrrskrr/screen/modal/comment/comment.dart';
 import 'package:skrrskrr/screen/modal/track/info_edit_modal.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
+import 'package:skrrskrr/screen/subScreen/comn/slider/circular_slider_track_shape.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_comment_btn.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_like_btn.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
@@ -170,8 +171,8 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                   left: 0,
                                   right : 0,
                                   child: CustomAppbar(
-                                    fnBackBtncallBack: ()=>{GoRouter.of(context).pop()},
-                                    fnUpdtBtncallBack:()=>{
+                                    fnBackBtnCallBack: ()=>{GoRouter.of(context).pop()},
+                                    fnUpdateBtnCallBack:()=>{
                                       setState(() {
                                         isEdit = !isEdit;
                                       }),
@@ -265,32 +266,87 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                                 TextStyle(color: Colors.grey),
                                               ),
                                               SizedBox(
-                                                height: 25,
+                                                height: 15,
                                               ),
                                             ],
                                           ),
 
-                                          GestureDetector(
-                                            onTap: () async {
-                                              // await trackProv.setLastListenTrackId(widget.track.trackId!);
-                                              // await playerProv.setAudioPlayer(trackProv);
-                                            },
-                                            child: Container(
-                                              margin: EdgeInsets.only(top: 2.5.h),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color: Colors.white, // 테두리 색상
-                                                  width: 3.0, // 테두리 두께
-                                                ),
-                                                shape: BoxShape.circle, // 원형으로 설정
-                                              ),
-                                              child: SvgPicture.asset(
-                                                'assets/images/play_circle.svg',
-                                                width: 4.5.w,
-                                                height: 4.5.h,
-                                              ),
-                                            ),
-                                          )
+                                          Consumer<PlayerProv>(
+                                              builder: (context, PlayerProv, child) {
+                                                return Container(
+                                                  margin: EdgeInsets.only(top: 2.5.h) ,
+                                                  child: Row(
+                                                    children: [
+                                                      if (!playerProv.playerModel.fullScreen)
+                                                        Stack(
+                                                          children: [
+                                                              Positioned(
+                                                              left: 1,
+                                                              right: 1,
+                                                              child: SliderTheme(
+                                                                data: SliderThemeData(
+                                                                  thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0.0),
+                                                                  trackShape: CircularSliderTrackShape(
+                                                                    progress: trackProv.lastTrackId == widget.track.trackId.toString() ?
+                                                                    playerProv.playerModel.totalDuration.inSeconds > 0
+                                                                        ? playerProv.playerModel.currentPosition.inSeconds / playerProv.playerModel.totalDuration.inSeconds
+                                                                        : 0.0
+                                                                    : 0.0,
+                                                                  ),
+                                                                  trackHeight: 3.5,
+                                                                ),
+                                                                child: Slider(
+                                                                  value: trackProv.lastTrackId == widget.track.trackId.toString() ? 0 : playerProv.playerModel.currentPosition.inSeconds.toDouble(),
+                                                                  min: 0.0,
+                                                                  max: trackProv.lastTrackId == widget.track.trackId.toString() ? 0 : playerProv.playerModel.totalDuration.inSeconds.toDouble(),
+                                                                  onChanged: null,
+                                                                  onChangeEnd: null,
+                                                                  activeColor: Colors.white,
+                                                                  inactiveColor: Colors.grey,
+                                                                ),
+                                                              ),
+                                                            ),
+
+                                                            IconButton(
+                                                                icon: Icon(
+                                                                  trackProv.lastTrackId == widget.track.trackId.toString() ? playerProv.playerModel.isPlaying
+                                                                      ? Icons.pause
+                                                                      : Icons.play_arrow
+                                                                  : Icons.play_arrow,
+                                                                  size: 32,
+                                                                  color: Colors.white,
+                                                                ),
+                                                                onPressed: () async {
+                                                                  if (trackProv.lastTrackId != widget.track.trackId.toString()) {
+                                                                    int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId == widget.track.trackId);
+
+                                                                    if (index == -1) {
+                                                                      index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
+                                                                      trackProv.audioPlayerTrackList.insert(index + 1, widget.track);
+                                                                      playerProv.addTrack(widget.track, index + 1);
+                                                                    }
+
+                                                                    List<int> trackIdList = trackProv.audioPlayerTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                                                    await trackProv.setAudioPlayerTrackIdList(trackIdList);
+
+                                                                    trackProv.updateAudioPlayerSwiper(widget.track.trackId!,playerProv,"TrackInfoScreen");
+                                                                    playerProv.playerModel.isPlaying = false;
+                                                                  }
+
+                                                                  playerProv.togglePlayPause(playerProv.playerModel.isPlaying, trackProv);
+
+                                                                  playerProv.notify();
+                                                                  trackProv.notify();
+                                                                }
+                                                            ),
+                                                          ],
+                                                        ),
+
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -332,8 +388,8 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                                     }
 
                                                     setState(() {});
-                                                  });
-
+                                                  },
+                                              );
                                             },
                                             child: SvgPicture.asset(
                                               'assets/images/edit.svg',

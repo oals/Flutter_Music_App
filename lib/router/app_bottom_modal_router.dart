@@ -35,34 +35,6 @@ class AppBottomModalRouter {
 
     final GlobalKey listenerKey = GlobalKey();
 
-    void removeOverlay(BuildContext buildContext){
-
-      Future.microtask(() {
-        childOverlayEntry = OverlayEntry(
-          builder: (context) {
-            return TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 1.0, end: 0.0),
-              duration: Duration(milliseconds: 650),
-              curve: Curves.easeInOut,
-              builder: (context, value, child) {
-                return Transform.translate(
-                  offset: Offset(0, value * 100.h),
-                  child: child
-                );
-              },
-              onEnd: () {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  childOverlayEntry?.remove();
-                  parentOverlayEntry?.remove();
-                });
-              },
-            );
-          },
-        );
-        Overlay.of(buildContext).insert(childOverlayEntry!);
-      });
-    }
-
     BuildContext? findContext(){
       final context = listenerKey.currentContext;
 
@@ -71,7 +43,40 @@ class AppBottomModalRouter {
       }
 
       return null;
+    }
 
+    void removeOverlay(BuildContext? context){
+
+      final buildContext = context == null ? findContext() : context;
+
+      if(buildContext != null) {
+        isClosing = true;
+
+        Future.microtask(() {
+          childOverlayEntry = OverlayEntry(
+            builder: (context) {
+              return TweenAnimationBuilder<double>(
+                tween:  Tween<double>(begin: 1.0, end: 0.0),
+                duration: const Duration(milliseconds: 650),
+                curve: Curves.easeInOut,
+                builder: (context, value, child) {
+                  return Transform.translate(
+                      offset: Offset(0, value * 100.h),
+                      child: child
+                  );
+                },
+                onEnd: () {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    childOverlayEntry?.remove();
+                    parentOverlayEntry?.remove();
+                  });
+                },
+              );
+            },
+          );
+          Overlay.of(buildContext).insert(childOverlayEntry!);
+        });
+      }
     }
 
     final Map<int, Future<dynamic> Function()> modalWidgets = {
@@ -80,11 +85,7 @@ class AppBottomModalRouter {
             notificationCommentId : commentId,
             callBack: () {
               callBack!();
-              final context = findContext();
-              if(context != null) {
-                isClosing = true;
-                removeOverlay(context);
-              }
+              removeOverlay(null);
             }
           );
         },
@@ -93,11 +94,7 @@ class AppBottomModalRouter {
           maxLines : maxLines,
           onSave: (String newTrackInfo) {
             callBack!(newTrackInfo);
-            final context = findContext();
-            if(context != null) {
-              isClosing = true;
-              removeOverlay(context);
-            }
+            removeOverlay(null);
           }
         );
         },
@@ -106,11 +103,7 @@ class AppBottomModalRouter {
       5: () async {return UploadScreen(
             isAlbum : isAlbum!,
             callBack: () {
-              final context = findContext();
-              if(context != null) {
-                isClosing = true;
-                removeOverlay(context);
-              }
+              removeOverlay(null);
             }
           );
         },
@@ -118,11 +111,7 @@ class AppBottomModalRouter {
             categoryId : categoryId,
             callBack: (int categoryIdList) {
               callBack!(categoryIdList);
-              final context = findContext();
-              if(context != null) {
-                isClosing = true;
-                removeOverlay(context);
-              }
+              removeOverlay(null);
             },
           );
       },
@@ -131,11 +120,7 @@ class AppBottomModalRouter {
           trackId: trackId!,
           callBack : (int? playListId) {
             callBack!(playListId);
-            final context = findContext();
-            if(context != null) {
-              isClosing = true;
-              removeOverlay(context);
-            }
+            removeOverlay(null);
           }
         );
       },

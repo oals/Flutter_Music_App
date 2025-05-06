@@ -6,6 +6,7 @@ import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
@@ -56,7 +57,7 @@ class _MemberPlayListScreenState extends State<MemberPlayListScreen> {
       height: 100.h,
       color: Colors.black,
       child: FutureBuilder<bool>(
-          future: _getMemberPlayListFuture, // 비동기 메소드 호출
+          future: _getMemberPlayListFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CustomProgressIndicatorItem());
@@ -84,53 +85,53 @@ class _MemberPlayListScreenState extends State<MemberPlayListScreen> {
                   }
                   return false;
                 },
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 50,),
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        child: Row(
+                child: Stack(
+                  children: [
+
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: CustomAppbar(
+                        fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
+                        fnUpdateBtnCallBack:()=>{},
+                        title: "PlayLists",
+                        isNotification : false,
+                        isEditBtn: false,
+                        isAddTrackBtn : false,
+                      ),
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.only(top: 100),
+                      child: SingleChildScrollView(
+                        child: Column(
                           children: [
-                            GestureDetector(
-                                onTap: (){
-                                  GoRouter.of(context).pop();
-                                },
-                                child: Icon(Icons.arrow_back_rounded,color: Colors.white,)),
-                            SizedBox(width: 5,),
-                            Text(
-                              'PlayLists' ,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 18,
-                                color: Colors.white,
+
+                            if (memberPlayList.length != 0) ...[
+
+                              SizedBox(
+                                height: 8,
                               ),
-                            ),
+
+                              for(int i = 0; i < memberPlayList.length; i++)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 15,bottom: 5),
+                                  child: PlayListsListItem(playList: memberPlayList[i],isAlbum: false),
+                                ),
+
+                              SizedBox(
+                                height: 8,
+                              ),
+                              CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
+
+
+                            ],
                           ],
                         ),
                       ),
-
-                      if (memberPlayList.length != 0) ...[
-
-                        SizedBox(
-                          height: 8,
-                        ),
-
-                        for(int i = 0; i < memberPlayList.length; i++)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15,bottom: 5),
-                            child: PlayListsListItem(playList: memberPlayList[i],isAlbum: false),
-                          ),
-
-                        SizedBox(
-                          height: 8,
-                        ),
-                        CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
-
-
-                      ],
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/notifications/notifications_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/utils/helpers.dart';
@@ -16,8 +17,14 @@ class NotificationsProv extends ChangeNotifier{
     notifyListeners();
   }
 
-  void setNotificationsIsView(bool isView){
+  void setNotificationsIsView(bool isView) async{
     notificationsIsView = isView;
+    notify();
+  }
+
+  Future<void> sharedSaveNotificationsIsView() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    notificationsIsView = await prefs.getBool('notificationsIsView') ?? false;
     notify();
   }
 
@@ -40,6 +47,8 @@ class NotificationsProv extends ChangeNotifier{
 
       if (response.statusCode == 200) {
 
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('notificationsIsView',false);
         setNotificationsIsView(false);
 
         print('$url - Successful');
@@ -72,6 +81,8 @@ class NotificationsProv extends ChangeNotifier{
 
       if (response.statusCode == 200) {
 
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('notificationsIsView',false);
         setNotificationsIsView(false);
 
         print('$url - Successful');
@@ -106,7 +117,10 @@ class NotificationsProv extends ChangeNotifier{
 
       if (response.statusCode == 200) {
 
-        setNotificationsIsView(Helpers.extractValue(response.body, "notificationIsView"));
+        bool notificationIsView = Helpers.extractValue(response.body, 'notificationIsView');
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('notificationsIsView', notificationIsView);
+        setNotificationsIsView(notificationIsView);
 
         print('$url - Successful');
         return true;

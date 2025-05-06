@@ -405,12 +405,9 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                     width: 10,
                                   ),
                                   Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .center,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-
                                       SizedBox(
                                         width: 60.w,
                                         child: Text(
@@ -492,6 +489,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                                     onPressed: () {
                                                       if (widget.audioPlayerTrackItem.trackId != null) {
                                                         playerProv.togglePlayPause(playerModel.isPlaying,trackProv);
+                                                        playerProv.notify();
                                                       }
                                                     }
                                                 ),

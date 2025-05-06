@@ -59,6 +59,7 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
     return Scaffold(
       body: Container(
         color: Colors.black,
+        width: 100.w,
         height: 100.h,
         child: FutureBuilder<bool>(
           future: _getLikeTrackInitFuture, // 비동기 메소드 호출
@@ -96,58 +97,68 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                 }
                 return false;
               },
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    CustomAppbar(
-                      fnBackBtncallBack: () => {GoRouter.of(context).pop()},
-                      fnUpdtBtncallBack: () => {},
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: CustomAppbar(
+                      fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
+                      fnUpdateBtnCallBack: () => {},
                       title: "Liked Track",
                       isNotification: false,
                       isEditBtn: false,
                       isAddTrackBtn: false,
                     ),
-                    SizedBox(
-                      height: 20,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 100),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+
+                          for (Track track in likeTrackList) ...[
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              child: TrackListItem(
+                                trackItem: track,
+                                isAudioPlayer: false,
+                                appScreenName: "LikeTrackScreen",
+                                initAudioPlayerTrackListCallBack: () async {
+                                  await trackProv.getLikeTrack(
+                                      comnLoadProv.listDataOffset,
+                                      trackModel.likeTrackTotalCount!);
+
+                                  trackProv.addUniqueTracksToList(
+                                    sourceList: list,
+                                    targetSet: likeTrackSet,
+                                    targetList: likeTrackList,
+                                    trackCd: "MyLikeTrackList",
+                                  );
+
+                                  List<int> trackIdList = likeTrackList
+                                      .map((item) =>
+                                          int.parse(item.trackId.toString()))
+                                      .toList();
+
+                                  trackProv.audioPlayerTrackList = likeTrackList;
+                                  await trackProv
+                                      .setAudioPlayerTrackIdList(trackIdList);
+                                  trackProv.notify();
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                          CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
+                        ],
+                      ),
                     ),
-                    for (Track track in likeTrackList) ...[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 8),
-                        child: TrackListItem(
-                          trackItem: track,
-                          isAudioPlayer: false,
-                          appScreenName: "LikeTrackScreen",
-                          initAudioPlayerTrackListCallBack: () async {
-                            await trackProv.getLikeTrack(
-                                comnLoadProv.listDataOffset,
-                                trackModel.likeTrackTotalCount!);
-
-                            trackProv.addUniqueTracksToList(
-                              sourceList: list,
-                              targetSet: likeTrackSet,
-                              targetList: likeTrackList,
-                              trackCd: "MyLikeTrackList",
-                            );
-
-                            List<int> trackIdList = likeTrackList
-                                .map((item) =>
-                                    int.parse(item.trackId.toString()))
-                                .toList();
-
-                            trackProv.audioPlayerTrackList = likeTrackList;
-                            await trackProv
-                                .setAudioPlayerTrackIdList(trackIdList);
-                            trackProv.notify();
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                    CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },

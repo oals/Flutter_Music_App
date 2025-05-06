@@ -56,6 +56,7 @@ class _LikePlayListScreenState extends State<LikePlayListScreen> {
 
     return Scaffold(
       body: Container(
+        width: 100.w,
         height: 100.h,
         color: Colors.black,
         child: FutureBuilder<bool>(
@@ -72,8 +73,6 @@ class _LikePlayListScreenState extends State<LikePlayListScreen> {
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                print(playListList.myPlayListTotalCount);
-
                 if (playListList.myPlayListTotalCount! > playLists.length) {
                   if (comnLoadProv.shouldLoadMoreData(notification)) {
                     comnLoadProv.loadMoreData(playListProv, "LikePlayLists", playLists.length , isAlbum: false);
@@ -86,41 +85,54 @@ class _LikePlayListScreenState extends State<LikePlayListScreen> {
                 return false;
               },
 
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+              child: Stack(
+                children: [
 
-                    Container(
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child:  CustomAppbar(
+                      fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
+                      fnUpdateBtnCallBack:()=>{},
+                      title: "Liked PlayLists",
+                      isNotification : false,
+                      isEditBtn: false,
+                      isAddTrackBtn : false,
+                    ),
+                  ),
+
+
+                  Padding(
+                    padding: EdgeInsets.only(top: 100),
+                    child: SingleChildScrollView(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          CustomAppbar(
-                            fnBackBtncallBack: () => {GoRouter.of(context).pop()},
-                            fnUpdtBtncallBack:()=>{},
-                            title: "PlayLists",
-                            isNotification : false,
-                            isEditBtn: false,
-                            isAddTrackBtn : false,
-                          ),
-                          SizedBox(
-                            height: 20,
+
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+
+                                for(int i = 0; i < playLists.length; i++)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15,bottom: 5),
+                                    child: PlayListsListItem(playList: playLists[i],isAlbum: false,),
+                                  )
+                              ],
+                            ),
                           ),
 
-                          for(int i = 0; i < playLists.length; i++)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15,bottom: 5),
-                              child: PlayListsListItem(playList: playLists[i],isAlbum: false,),
-                            )
+                          CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
+
                         ],
                       ),
                     ),
-
-                    CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
-
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },

@@ -58,6 +58,7 @@ void main() async {
           Provider.of<TrackProv>(context, listen: false),
           Provider.of<PlayListProv>(context, listen: false),
           Provider.of<MemberProv>(context, listen: false),
+          Provider.of<NotificationsProv>(context, listen: false),
         ),
         ),
       ],

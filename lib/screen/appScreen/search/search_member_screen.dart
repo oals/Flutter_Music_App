@@ -7,6 +7,7 @@ import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/follow/follow_item.dart';
@@ -31,17 +32,14 @@ class _SearchMemberScreenState extends State<SearchMemberScreen> {
   late ComnLoadProv comnLoadProv;
   late Future<bool>? _getSearchMemberFuture;
 
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getSearchMemberFuture = Provider.of<MemberProv>(context, listen: false).getSearchMember(widget.searchText,0, 20);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     comnLoadProv.clear();
     super.dispose();
   }
@@ -86,57 +84,57 @@ class _SearchMemberScreenState extends State<SearchMemberScreen> {
                   }
                   return false;
                 },
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 50,),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Row(
+                child: Stack(
+                  children: [
+
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: CustomAppbar(
+                        fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
+                        fnUpdateBtnCallBack:()=>{},
+                        title: "Users",
+                        isNotification : false,
+                        isEditBtn: false,
+                        isAddTrackBtn : false,
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(top : 100.0),
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
                             children: [
-                              GestureDetector(
-                                  onTap: (){
-                                    GoRouter.of(context).pop();
-                                  },
-                                  child: Icon(Icons.arrow_back_rounded,color: Colors.white,)),
-                              SizedBox(width: 5,),
-                              Text(
-                                'Users' ,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 18,
-                                  color: Colors.white,
+
+                              if (memberModelList.memberList.length != 0) ...[
+
+                                SizedBox(
+                                  height: 8,
                                 ),
-                              ),
+                                for (int i = 0; i < memberModelList.memberList.length; i++) ...[
+                                  FollowItem(
+                                    filteredFollowItem: memberModelList.memberList[i],
+                                    setFollow: setFollow,
+                                    isFollowingItem: false,
+                                    isSearch: true,
+                                  ),
+                                ],
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
+
+
+                              ],
                             ],
                           ),
                         ),
-
-                        if (memberModelList.memberList.length != 0) ...[
-
-                          SizedBox(
-                            height: 8,
-                          ),
-                          for (int i = 0; i < memberModelList.memberList.length; i++) ...[
-                            FollowItem(
-                              filteredFollowItem: memberModelList.memberList[i],
-                              setFollow: setFollow,
-                              isFollowingItem: false,
-                              isSearch: true,
-                            ),
-                          ],
-                          SizedBox(
-                            height: 8,
-                          ),
-                          CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
-
-
-                        ],
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               );
             }

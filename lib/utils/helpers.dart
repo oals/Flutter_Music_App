@@ -113,28 +113,9 @@ class Helpers {
     return null;
   }
 
-
-  // static Future<void> setNotificationIsView(bool notificationIsView) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.setBool("notificationIsView", notificationIsView);
-  // }
-  //
-  // static Future<bool> getNotificationIsView() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   return prefs.getBool("notificationIsView") ?? false;
-  // }
-
-
-
-
-
-
   static String getCategory(int trackCategoryId) {
     return categoryList![trackCategoryId - 1];
   }
-
-
-
 
   static Future<http.MultipartFile?> fnSetUploadAudioFile(Upload upload, serverFileNm) async {
 
@@ -156,11 +137,15 @@ class Helpers {
     File file = File(upload.uploadImage!.files.first.path.toString());
     List<int> fileBytes = await file.readAsBytes();
 
+    String fileType = upload.uploadImageNm?.endsWith('.png') ?? false ? 'png' : 'jpeg';
+
+
     return http.MultipartFile.fromBytes(
       serverFileNm, // 서버에서 받을 필드 이름
       fileBytes,
-      filename: upload.uploadImageNm ?? "", // 파일 이름
-      contentType: MediaType('image', 'jpeg'), // MIME 타입 (필요에 따라 수정)
+      filename: upload.uploadImageNm ?? "",
+      contentType: MediaType('image', fileType),
+
     );
 
   }

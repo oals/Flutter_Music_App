@@ -2,18 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
-import 'package:skrrskrr/prov/track_prov.dart';
-import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/appScreen/feed/feed_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_screen.dart';
-import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
 import 'package:skrrskrr/screen/modal/new_player.dart';
 import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
-import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar_v2.dart';
-import 'package:skrrskrr/screen/subScreen/comn/bottomNavigatorBar/custom_audio_player_bottom_navigation.dart';
 import 'package:skrrskrr/screen/subScreen/comn/bottomNavigatorBar/custom_bottom_navigation_bar.dart';
 
 
@@ -40,16 +34,14 @@ class _AppScreenState extends State<AppScreen> {
   @override
   void initState() {
     super.initState();
-    _childNotifier.value = widget.child; // 초기 child 설정
+    _childNotifier.value = widget.child;
     _overlayEntry = _createOverlay();
   }
 
   OverlayEntry? _createOverlay() {
     return OverlayEntry(
       builder: (context) {
-
         bool isHideAudioPlayer = appProv.isHideAudioPlayer(appProv.appScreenWidget);
-
         return isHideAudioPlayer
             ? Container()
             : Stack(
@@ -88,7 +80,6 @@ class _AppScreenState extends State<AppScreen> {
     );
   }
 
-
   void showOverlayIfNeeded() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!widget.isShowAudioPlayer && _overlayEntry != null) {
@@ -98,28 +89,15 @@ class _AppScreenState extends State<AppScreen> {
     });
   }
 
-
   @override
   void didUpdateWidget(covariant AppScreen oldWidget) {
-
     super.didUpdateWidget(oldWidget);
-
-    if (oldWidget.child is SplashScreen && _childNotifier.value is! HomeScreen) {
-      _childNotifier.value = HomeScreen();
-    }
 
     if (widget.child == appProv.appScreenWidget ) {
       _childNotifier.value = widget.child;
       showOverlayIfNeeded();
     }
   }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    showOverlayIfNeeded();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -137,12 +115,13 @@ class _AppScreenState extends State<AppScreen> {
           ValueListenableBuilder<Widget>(
             valueListenable: _childNotifier,
             builder: (context, child, childWidget) {
+
               return AnimatedSwitcher(
-                duration: const Duration(milliseconds: 700), // 애니메이션 지속 시간
+                duration: const Duration(milliseconds: 700),
                 child: _childNotifier.value,
                 transitionBuilder: (Widget child, Animation<double> animation) {
                   return FadeTransition(
-                      opacity: animation, child: child); // 페이드 애니메이션
+                      opacity: animation, child: child);
                 },
               );
             },
@@ -150,7 +129,7 @@ class _AppScreenState extends State<AppScreen> {
         ],
       ),
         bottomNavigationBar: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 700), // 애니메이션 지속 시간
+          duration: const Duration(milliseconds: 700),
           transitionBuilder: (child, animation) {
             return FadeTransition(
               opacity: animation,
@@ -161,7 +140,6 @@ class _AppScreenState extends State<AppScreen> {
             currentIndex: appProv.currentIndex,
             onTap: (index) {
               appProv.currentIndex = index;
-              // 화면 전환 로직
               if (index == 0) {
                 context.go('/home/${true}');
               } else if (index == 1) {
@@ -172,11 +150,11 @@ class _AppScreenState extends State<AppScreen> {
                 context.go('/search');
               } else if (index == 3) {
                 appProv.appScreenWidget = SettingScreen();
-                context.go('/setting');
+                context.go ('/setting');
               }
-              appProv.notify();
+              // appProv.notify();
             },
-          ) : SizedBox(),
+          ) : SizedBox()
         ),
     );
   }

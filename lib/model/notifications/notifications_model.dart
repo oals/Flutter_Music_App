@@ -23,6 +23,8 @@ class NotificationsModel {
 
   int? notificationCommentId;
 
+  String? memberImagePath;
+
   @JsonKey(includeFromJson: false, includeToJson: false)
   int? totalCount;
 

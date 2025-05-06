@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/notifications/notifications_model.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
+import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 
 class NotificationItemScreen extends StatefulWidget {
   const NotificationItemScreen({
@@ -36,14 +37,15 @@ class _NotificationItemScreenState extends State<NotificationItemScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
 
-              if (widget.notificationsModel.notificationType == 1)
-                Icon(Icons.heart_broken_sharp,color: Colors.white,size: 35,),
+              ClipOval(
+                child: CustomCachedNetworkImage(
+                  imagePath: widget.notificationsModel.memberImagePath,
+                  imageWidth: 10.w,
+                  imageHeight: 5.h,
+                  isBoxFit: false,
+                ),
+              ),
 
-              if (widget.notificationsModel.notificationType == 2)
-                Icon(Icons.comment_outlined,color: Colors.white,size: 35,),
-
-              if (widget.notificationsModel.notificationType == 3)
-                Icon(Icons.account_circle,color: Colors.white,size: 35,),
 
               SizedBox(
                 width: 10,

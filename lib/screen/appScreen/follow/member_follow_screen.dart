@@ -69,8 +69,8 @@ class _MemberFollowScreenState extends State<MemberFollowScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CustomAppbar(
-                    fnBackBtncallBack: ()=>{GoRouter.of(context).pop()},
-                    fnUpdtBtncallBack:()=>{},
+                    fnBackBtnCallBack: ()=>{GoRouter.of(context).pop()},
+                    fnUpdateBtnCallBack:()=>{},
                       title: titleText,
                       isNotification: true,
                     isEditBtn: false,

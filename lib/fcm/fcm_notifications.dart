@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/utils/helpers.dart';
 
@@ -139,7 +140,9 @@ class FcmNotifications{
         );
 
         print("Foreground 메시지 수신: ${{message.notification!.body!}}");
-        Provider.of<NotificationsProv>(context, listen: false).setNotificationsIsView(true);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('notificationsIsView', true);
+        Provider.of<NotificationsProv>(context, listen: false).sharedSaveNotificationsIsView();
       }
     });
 
