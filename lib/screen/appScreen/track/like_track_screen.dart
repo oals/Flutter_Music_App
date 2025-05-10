@@ -118,11 +118,12 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                       child: Column(
                         children: [
 
-                          for (Track track in likeTrackList) ...[
+                          for (int i = 0; i < likeTrackList.length; i++) ...[
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0, right: 8),
                               child: TrackListItem(
-                                trackItem: track,
+                                trackItem: likeTrackList[i],
+                                trackItemIdx : i,
                                 isAudioPlayer: false,
                                 appScreenName: "LikeTrackScreen",
                                 initAudioPlayerTrackListCallBack: () async {

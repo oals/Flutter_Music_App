@@ -351,11 +351,14 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                           spacing: 5.0, // 아이템 간의 가로 간격
                                           runSpacing: 20.0, // 줄 간격
                                           alignment: WrapAlignment.spaceBetween,
-                                          children: popularTrackList.map((item) {
+                                          children: popularTrackList.asMap().entries.map((entry) {
+                                            int i = entry.key;
+                                            Track trackItem = entry.value;
                                             return Row(
                                               children: [
                                                 TrackSquareItem(
-                                                  trackItem: item,
+                                                  trackItem: trackItem,
+                                                  trackItemIdx : i ,
                                                   appScreenName: "memberPopularTrackList",
                                                   initAudioPlayerTrackListCallBack: () async {
 
@@ -590,6 +593,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                             child: TrackListItem(
                                               appScreenName: "MemberPageScreen",
                                               trackItem: allTrackList[i],
+                                              trackItemIdx : i,
                                               isAudioPlayer: false,
                                               initAudioPlayerTrackListCallBack: () async {
 

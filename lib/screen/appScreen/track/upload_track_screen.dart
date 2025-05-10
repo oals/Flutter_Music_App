@@ -117,11 +117,12 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
 
-                          for (Track track in uploadTrackList)...[
+                          for (int i = 0 ; i < uploadTrackList.length; i++)...[
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,right: 8),
                               child: TrackListItem(
-                                trackItem: track,
+                                trackItem: uploadTrackList[i],
+                                trackItemIdx : i,
                                 appScreenName: "UploadTrackScreen",
                                 isAudioPlayer: false,
                                 initAudioPlayerTrackListCallBack: () async {

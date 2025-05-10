@@ -27,6 +27,7 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
   late PlayerProv playerProv;
   late Future<bool> _getAudioPlayerTrackListFuture;
   bool isInit = false;
+  bool isTrackLoad = false;
 
   @override
   void initState() {
@@ -55,14 +56,11 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                 return Center();
               } else if (snapshot.hasError) {
                 return Center(child: Text('오류 발생: ${snapshot.error}'));
-              } else if (!snapshot.hasData) {
-                return Center(child: Text('데이터가 없습니다.'));
               } else {
 
-                if(!isInit){
+                if (!isInit) {
                   int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
                   if (index != -1) {
-
                     playerProv.currentPage = index;
                     trackProv.audioPlayerTrackList[index].isPlaying = true;
 
@@ -76,53 +74,34 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                   isInit = true;
                 }
 
-                print('오디오빌드');
-
                 return trackProv.audioPlayerTrackList.isNotEmpty
                     ? Swiper(
+                  key: ValueKey(playerProv.currentPage),
                   index: playerProv.currentPage,
-                  controller: playerProv.swiperController,
-                  scrollDirection: Axis.horizontal, // 슬라이드 방향
-                  axisDirection: AxisDirection.left, // 정렬
-                  loop: false,// 반복
-                  autoplay: false,// 자동 슬라이드
-                  duration: 600,// 속도
                   itemCount: trackProv.audioPlayerTrackList.length,
+                  controller: playerProv.swiperController,
+                  scrollDirection: Axis.horizontal,
+                  axisDirection: AxisDirection.left,
+                  fade: 1.0,
+                  // loop: playerProv.playerModel.audioPlayerPlayOption == 1 ? true : false,
+                  loop: false,
+                  autoplay: false,
                   onIndexChanged: (index) async {
+                    print('호출 테스트');
+                    print(index);
 
-                    print("오디오 이동");
-
-                    if (playerProv.page == index){
-                      playerProv.page = -1;
+                    if (!isTrackLoad){
+                      isTrackLoad = true;
+                      await playerProv.audioTrackMoveSetting(trackProv, index);
+                      isTrackLoad = false;
+                      print("실행 완료 → 현재 인덱스: $index");
                     }
 
-                    if (playerProv.page == -1 ){
-
-                      playerProv.audioPlayerClear();
-                      playerProv.togglePlayPause(!playerProv.playerModel.isPlaying,trackProv);
-
-                      if (trackProv.audioPlayerTrackList.length > playerProv.currentPage) {
-                        trackProv.audioPlayerTrackList[playerProv.currentPage].isPlaying = false;
-                      }
-
-                      trackProv.audioPlayerTrackList[index].isPlaying = true;
-
-                      playerProv.currentPage = index;
-                      await playerProv.playTrackAtIndex(playerProv.currentPage);
-
-                      if (trackProv.lastListenTrackList[0].trackId != trackProv.audioPlayerTrackList[index].trackId!) {
-                        trackProv.updateLastListenTrackList(trackProv.audioPlayerTrackList[index]);
-                      }
-
-                      await trackProv.setLastListenTrackId(trackProv.audioPlayerTrackList[index].trackId!);
-                      trackProv.notify();
-                    }
                   },
                   itemBuilder: (BuildContext ctx, int index) {
                     return AudioPlayerItem(audioPlayerTrackItem : trackProv.audioPlayerTrackList[index]);
                   },
-                )
-                    : AudioPlayerItem(audioPlayerTrackItem : Track());
+                ) : AudioPlayerItem(audioPlayerTrackItem : Track());
 
               }
           },

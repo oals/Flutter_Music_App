@@ -87,11 +87,15 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                   spacing: 5.0, // 아이템 간의 가로 간격
                                   runSpacing: 20.0, // 줄 간격
                                   alignment: WrapAlignment.spaceBetween,
-                                  children: trackProv.recommendTrackList.map((item) {
+                                  children: trackProv.recommendTrackList.asMap().entries.map((entry) {
+                                    int i = entry.key;  // 인덱스
+                                    Track trackItem = entry.value; // 리스트 요소
+
                                     return Row(
                                       children: [
                                         TrackSquareItem(
-                                          trackItem: item,
+                                          trackItem: trackItem,
+                                          trackItemIdx : i ,
                                           appScreenName: "PopularTrackList",
                                           initAudioPlayerTrackListCallBack: () async {
 
@@ -228,11 +232,14 @@ class _HomeScreenStateState extends State<HomeScreen> {
                               spacing: 5.0, // 아이템 간의 가로 간격
                               runSpacing: 20.0, // 줄 간격
                               alignment: WrapAlignment.spaceBetween,
-                              children: trackProv.lastListenTrackList.map((item) {
+                              children: trackProv.lastListenTrackList.asMap().entries.map((entry) {
+                                int i = entry.key;
+                                Track trackItem = entry.value;
                                 return Row(
                                   children: [
                                     TrackSquareItem(
-                                      trackItem: item,
+                                      trackItem: trackItem,
+                                      trackItemIdx: i,
                                       appScreenName: "LastListenTrackList",
                                       initAudioPlayerTrackListCallBack: () async {
 

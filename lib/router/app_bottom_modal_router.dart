@@ -115,7 +115,11 @@ class AppBottomModalRouter {
             },
           );
       },
-      7: () async {return AudioPlayerTrackListModal();},
+      7: () async {return AudioPlayerTrackListModal(
+        callBack: () {
+          removeOverlay(null);
+        },
+      );},
       8: () async {return MyPlayListModalScreen(
           trackId: trackId!,
           callBack : (int? playListId) {
@@ -133,7 +137,7 @@ class AppBottomModalRouter {
       if (modalIndex == 5) {
         maxSize = 1.0;
       } else if (modalIndex == 7 ) {
-        maxSize = 0.95;
+        maxSize = 0.93;
       }
 
       void _showOverlay() async {

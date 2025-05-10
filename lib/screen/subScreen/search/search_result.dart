@@ -288,6 +288,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                           ),
                           TrackListItem(
                             trackItem: searchTrackList[i],
+                            trackItemIdx : i,
                             appScreenName: "SearchScreen",
                             isAudioPlayer: false,
                             initAudioPlayerTrackListCallBack: () async {

@@ -21,11 +21,13 @@ class TrackSquareItem extends StatefulWidget {
   const TrackSquareItem({
     super.key,
     required this.trackItem,
+    required this.trackItemIdx,
     required this.initAudioPlayerTrackListCallBack,
     required this.appScreenName,
   });
 
   final Track trackItem;
+  final int? trackItemIdx;
   final Function initAudioPlayerTrackListCallBack;
   final String? appScreenName;
 
@@ -49,7 +51,9 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
         if (!widget.trackItem.isPlaying) {
           widget.trackItem.isPlaying = true;
 
-          // trackProv.updateLastListenTrackList(widget.trackItem);
+          if (widget.trackItemIdx == playerProv.currentPage) {
+            trackProv.updateLastListenTrackList(widget.trackItem);
+          }
 
           trackProv.initCurrentTrackPlaying(playerProv.currentPage);
 
@@ -57,7 +61,8 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
 
           trackProv.updateAudioPlayerSwiper(widget.trackItem.trackId!,playerProv, widget.appScreenName!);
 
-          trackProv.notify();
+          playerProv.togglePlayPause(false, trackProv);
+
           playerProv.notify();
 
         } else {

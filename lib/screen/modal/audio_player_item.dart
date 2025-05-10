@@ -10,6 +10,7 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/bottomNavigatorBar/custom_audio_player_bottom_navigation.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/slider/circular_slider_track_shape.dart';
 
 class AudioPlayerItem extends StatefulWidget {
@@ -150,18 +151,18 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                   Positioned(
                                     top: 42.h,
                                     left: 40.w,
+                                    right: 40.w,
                                     child: Center(
                                       child: Selector<PlayerProv, bool>(
-                                          selector: (context, value) =>
-                                          playerProv.playerModel.isBuffering,
+                                          selector: (context, value) => playerProv.playerModel.isBuffering,
                                           builder: (context, value, child) {
                                             return Column(
                                               children: [
                                                 Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
                                                     value
-                                                        ? CircularProgressIndicator()
+                                                        ? CustomProgressIndicatorItem()
                                                         : IconButton(
                                                       icon: Icon(
                                                         !playerModel.isPlaying
@@ -306,18 +307,14 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Text(
-                                                      '${playerModel.currentPosition.toString().split('.').first}',
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          color: Colors.white),
+                                                      playerModel.currentPosition.inHours > 0
+                                                          ? "${playerModel.currentPosition.inHours}:${(playerModel.currentPosition.inMinutes % 60).toString().padLeft(2, '0')}:${(playerModel.currentPosition.inSeconds % 60).toString().padLeft(2, '0')}"
+                                                          : "${(playerModel.currentPosition.inMinutes % 60).toString().padLeft(2, '0')}:${(playerModel.currentPosition.inSeconds % 60).toString().padLeft(2, '0')}",
+                                                      style: TextStyle(fontSize: 12, color: Colors.white),
                                                     ),
+
                                                     Text(
-                                                      '${playerModel
-                                                          .totalDuration
-                                                          .toString()
-                                                          .split(
-                                                          '.')
-                                                          .first}',
+                                                      '${ widget.audioPlayerTrackItem.trackTime}',
                                                       style: TextStyle(
                                                           fontSize: 12,
                                                           color: Colors

@@ -17,12 +17,14 @@ class TrackListItem extends StatefulWidget {
   const TrackListItem({
     super.key,
     required this.trackItem,
+    required this.trackItemIdx,
     required this.initAudioPlayerTrackListCallBack,
     required this.isAudioPlayer,
     required this.appScreenName,
   });
 
   final Track trackItem;
+  final int? trackItemIdx;
   final Function initAudioPlayerTrackListCallBack;
   final bool isAudioPlayer;
   final String? appScreenName;
@@ -46,7 +48,10 @@ class _TrackListItemState extends State<TrackListItem> {
 
         if (!widget.trackItem.isPlaying) {
           widget.trackItem.isPlaying = true;
-          trackProv.updateLastListenTrackList(widget.trackItem);
+
+          if (widget.trackItemIdx == playerProv.currentPage) {
+            trackProv.updateLastListenTrackList(widget.trackItem);
+          }
 
           if (widget.appScreenName != "AudioPlayerTrackListModal") {
 
@@ -57,16 +62,19 @@ class _TrackListItemState extends State<TrackListItem> {
 
           trackProv.updateAudioPlayerSwiper(widget.trackItem.trackId!, playerProv, widget.appScreenName!);
 
-          trackProv.notify();
+          playerProv.togglePlayPause(false, trackProv);
+
           playerProv.notify();
 
         } else {
-          GoRouter.of(context).push('/trackInfo',
-            extra: {
-              'track': widget.trackItem,
-              'commendId': null,
-            },
-          );
+          if (widget.appScreenName != 'AudioPlayerTrackListModal') {
+            GoRouter.of(context).push('/trackInfo',
+              extra: {
+                'track': widget.trackItem,
+                'commendId': null,
+              },
+            );
+          }
         }
       },
       child: Container(
@@ -143,13 +151,14 @@ class _TrackListItemState extends State<TrackListItem> {
                             width: 57.w,
                             child: GestureDetector(
                               onTap: (){
-                                print('음원상세페이지 이동');
-                                GoRouter.of(context).push('/trackInfo',
-                                  extra: {
-                                    'track': widget.trackItem,
-                                    'commendId': null,
-                                  },
-                                );
+                                if (widget.appScreenName != 'AudioPlayerTrackListModal') {
+                                  GoRouter.of(context).push('/trackInfo',
+                                    extra: {
+                                      'track': widget.trackItem,
+                                      'commendId': null,
+                                    },
+                                  );
+                                }
                               },
                               child: Text(
                                 '${widget.trackItem.trackNm}',

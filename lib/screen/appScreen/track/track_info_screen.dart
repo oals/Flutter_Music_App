@@ -317,13 +317,14 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                                                   color: Colors.white,
                                                                 ),
                                                                 onPressed: () async {
+
                                                                   if (trackProv.lastTrackId != widget.track.trackId.toString()) {
                                                                     int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId == widget.track.trackId);
 
                                                                     if (index == -1) {
                                                                       index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
                                                                       trackProv.audioPlayerTrackList.insert(index + 1, widget.track);
-                                                                      playerProv.addTrack(widget.track, index + 1);
+                                                                      await playerProv.addTrack(widget.track, index + 1);
                                                                     }
 
                                                                     List<int> trackIdList = trackProv.audioPlayerTrackList.map((item) => int.parse(item.trackId.toString())).toList();
@@ -336,7 +337,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                                                   playerProv.togglePlayPause(playerProv.playerModel.isPlaying, trackProv);
 
                                                                   playerProv.notify();
-                                                                  trackProv.notify();
+
                                                                 }
                                                             ),
                                                           ],

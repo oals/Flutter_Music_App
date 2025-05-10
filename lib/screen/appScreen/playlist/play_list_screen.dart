@@ -342,6 +342,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                       for (int i = 0; i < trackList.length; i++)...[
                                         TrackListItem(
                                           trackItem: trackList[i],
+                                          trackItemIdx : i,
                                           appScreenName: "PlayListScreen",
                                           isAudioPlayer: false,
                                           initAudioPlayerTrackListCallBack: () async {

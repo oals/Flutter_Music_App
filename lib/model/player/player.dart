@@ -8,14 +8,12 @@ class PlayerModel with ChangeNotifier{
   bool fullScreen = false;
   bool isPlaying = false;
   bool isBuffering = false;
+  int audioPlayerPlayOption = 0;
   Duration currentPosition = Duration.zero;
   Duration totalDuration = Duration.zero;
-  Timer? timer; // Timer 변수 추가
+  Timer? timer;
   double? height;
-  // bool mounted = false;
   Offset dragOffset = Offset.zero;
-  // ValueNotifier<Duration> positionNotifier = ValueNotifier<Duration>(Duration.zero);
-
 
 
 }

@@ -122,16 +122,7 @@ class TrackProv extends ChangeNotifier {
 
     int index = audioPlayerTrackList.indexWhere((item) => item.trackId == trackId);
     if (index != -1) {
-
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (appScreenName == 'LastListenTrackList') {
-          playerProv.page = index;
-        } else {
-          playerProv.page = index;
-        }
-
-        playerProv.swiperController.move(playerProv.page, animation: true);
-      });
+      await playerProv.audioTrackMoveSetting(this,index);
     }
   }
 

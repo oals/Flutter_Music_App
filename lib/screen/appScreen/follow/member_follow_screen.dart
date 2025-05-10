@@ -49,7 +49,6 @@ class _MemberFollowScreenState extends State<MemberFollowScreen>
   Widget build(BuildContext context) {
     followProv = Provider.of<FollowProv>(context);
 
-    print('빌드1');
     return Scaffold(
       body: Container(
         color: Color(0xff000000),

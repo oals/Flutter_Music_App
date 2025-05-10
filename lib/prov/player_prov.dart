@@ -20,7 +20,6 @@ class PlayerProv extends ChangeNotifier {
   late SwiperController swiperController;
   String? currentAppScreen = "";
   int currentPage = 0;
-  int page = -1;
 
   void notify() {
     notifyListeners();
@@ -43,10 +42,6 @@ class PlayerProv extends ChangeNotifier {
       await initAudioPlayerTrackListCallBack();
       await initAudio(trackProv);
     }
-    // else if (appScreenName == 'LastListenTrackList'){
-    //   await initAudioPlayerTrackListCallBack();
-    //   await trackProv.setLastListenTrackId(trackId);
-    // }
   }
 
   Future<void> setupQueue(List<Track> audioTrackPlayList) async {
@@ -62,8 +57,9 @@ class PlayerProv extends ChangeNotifier {
     await _audioPlayer.setAudioSource(_playlist,preload: true); // 큐를 오디오 플레이어에 설정
   }
 
-  void addTrack(Track newTrack,int index) async {
+  Future<void> addTrack(Track newTrack,int index) async {
     String m3u8Url = dotenv.get("STREAM_URL") + '/${newTrack.trackId}/playList.m3u8';
+
     final newSource = AudioSource.uri(Uri.parse(m3u8Url));
 
     await _playlist.insert(index,newSource);
@@ -96,6 +92,7 @@ class PlayerProv extends ChangeNotifier {
     await setupQueue(trackProv.audioPlayerTrackList);
 
     _audioPlayer.setLoopMode(LoopMode.off);
+    _audioPlayer.setShuffleModeEnabled(false);
 
     audioPlayerPositionUpdate();
   }
@@ -105,41 +102,87 @@ class PlayerProv extends ChangeNotifier {
     playerModel.isBuffering = _audioPlayer.playbackEvent.processingState == ProcessingState.buffering;
 
     // 현재 재생 위치 업데이트
-    playerModel.currentPosition = _audioPlayer.position;
+    playerModel.currentPosition = Duration(seconds: (_audioPlayer.position.inMilliseconds / 1000).round());
 
     // 총 재생 시간 업데이트
     playerModel.totalDuration = _audioPlayer.playbackEvent.duration ?? Duration.zero;
 
   }
 
+  Future<void> audioTrackMoveSetting(TrackProv trackProv, int index) async{
+
+    audioPlayerClear();
+
+    togglePlayPause(!playerModel.isPlaying,trackProv);
+
+    if (trackProv.audioPlayerTrackList.length > currentPage) {
+      trackProv.audioPlayerTrackList[currentPage].isPlaying = false;
+    }
+
+    trackProv.audioPlayerTrackList[index].isPlaying = true;
+
+    currentPage = index;
+
+    await playTrackAtIndex(currentPage);
+
+    if (trackProv.lastListenTrackList[0].trackId != trackProv.audioPlayerTrackList[index].trackId!) {
+      trackProv.updateLastListenTrackList(trackProv.audioPlayerTrackList[index]);
+    }
+
+    await trackProv.setLastListenTrackId(trackProv.audioPlayerTrackList[index].trackId!);
+    trackProv.notify();
+  }
+
+
+  Future<void> nextTrackLoad(TrackProv trackProv) async {
+    int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
+
+    if (index != -1) {
+      trackProv.setTrackPlayCnt(trackProv.audioPlayerTrackList[index].trackId!);
+
+      if (playerModel.audioPlayerPlayOption == 2) {
+        playerModel.currentPosition = Duration.zero;
+        await _audioPlayer.seek(Duration.zero);
+      } else if (index + 1 < trackProv.audioPlayerTrackList.length) {
+        await swiperController.move(index + 1, animation: true);
+      } else {
+
+        if (playerModel.audioPlayerPlayOption == 1) {
+
+
+          print('처음부터시작');
+          await audioTrackMoveSetting(trackProv,0);
+          // await swiperController.next(animation: true);
+
+
+
+        } else {
+          playerModel.isPlaying = false;
+          stopTimer();
+          await _audioPlayer.pause();
+        }
+
+        playerModel.currentPosition = Duration.zero;
+        await _audioPlayer.seek(Duration.zero);
+
+      }
+    }
+  }
+
+
   void setTimer(TrackProv trackProv) async {
 
     if (playerModel.timer == null) {
+      audioPlayerPositionUpdate();
 
       playerModel.timer = Timer.periodic(Duration(seconds: 1), (timer) async {
-
         audioPlayerPositionUpdate();
 
-        if (playerModel.currentPosition.inSeconds == (playerModel.totalDuration.inSeconds - 1)) {
-
-          int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
-
-          if (index != -1) {
-            trackProv.setTrackPlayCnt(trackProv.audioPlayerTrackList[index].trackId!);
-
-            if (index + 1 < trackProv.audioPlayerTrackList.length) {
-              swiperController.move(index + 1, animation: true);
-              await playTrackAtIndex(index);
-            } else {
-              playerModel.isPlaying = false;
-              stopTimer();
-              await _audioPlayer.pause();
-              print("마지막 곡 종료.");
-            }
-          }
-
+        if (playerModel.currentPosition.inSeconds == playerModel.totalDuration.inSeconds) {
+          await nextTrackLoad(trackProv);
+        } else {
+          notify();
         }
-        notify();
       });
     }
   }
@@ -189,7 +232,6 @@ class PlayerProv extends ChangeNotifier {
     return playerModel.fullScreen;
   }
 
-
   // 슬라이더 터치가 끝났을 때 위치 조정
   void onSliderChangeEnd(double value) {
     final newPosition = Duration(seconds: value.toInt());
@@ -202,5 +244,4 @@ class PlayerProv extends ChangeNotifier {
     playerModel.fullScreen = true;
     notify();
   }
-
 }

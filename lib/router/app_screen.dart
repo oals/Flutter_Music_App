@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/screen/appScreen/feed/feed_screen.dart';
+import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_screen.dart';
+import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 import 'package:skrrskrr/screen/modal/new_player.dart';
 import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar_v2.dart';
@@ -93,11 +95,22 @@ class _AppScreenState extends State<AppScreen> {
   void didUpdateWidget(covariant AppScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    if (oldWidget.child is SplashScreen && _childNotifier.value is! HomeScreen) {
+      _childNotifier.value = HomeScreen();
+    }
+
     if (widget.child == appProv.appScreenWidget ) {
       _childNotifier.value = widget.child;
       showOverlayIfNeeded();
     }
   }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    showOverlayIfNeeded();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +165,6 @@ class _AppScreenState extends State<AppScreen> {
                 appProv.appScreenWidget = SettingScreen();
                 context.go ('/setting');
               }
-              // appProv.notify();
             },
           ) : SizedBox()
         ),

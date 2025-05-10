@@ -1,3 +1,4 @@
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -7,7 +8,12 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
 
 class AudioPlayerTrackListModal extends StatefulWidget {
-  const AudioPlayerTrackListModal({super.key});
+  const AudioPlayerTrackListModal({
+    super.key,
+    required this.callBack,
+  });
+
+  final Function callBack;
 
   @override
   State<AudioPlayerTrackListModal> createState() =>
@@ -42,7 +48,7 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
       if (playingTrackIndex != -1 && scrollController.hasClients) {
         scrollController.animateTo(
           (playingTrackIndex - 2) * 10.h,
-          duration: Duration(milliseconds: 100),
+          duration: Duration(milliseconds: 600),
           curve: Curves.easeInOut,
         );
       }
@@ -57,35 +63,90 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
 
     return Container(
       width: 100.w,
-      height: 95.h,
+      height: 93.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.black,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 8,right: 8),
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Center(
-                child: Text(
-                  'next up',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 17,
+              padding: const EdgeInsets.only(top: 15, bottom: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                      width: 32.w,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap:(){
+                              widget.callBack();
+                            },
+                            child: Icon(
+                              Icons.keyboard_arrow_down_sharp,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      )
                   ),
-                ),
+                  Container(
+                    width: 32.w,
+                    child: Center(
+                      child: Text(
+                        'next up',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 17,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 32.w,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+
+                        GestureDetector(
+                          onTap: () {
+                              if (playerProv.playerModel.audioPlayerPlayOption == 2) {
+                                playerProv.playerModel.audioPlayerPlayOption = 0;
+                              } else {
+                                playerProv.playerModel.audioPlayerPlayOption++;
+                              }
+                              setState(() {});
+                            },
+                          child: Row(
+                            children: [
+                              if (playerProv.playerModel.audioPlayerPlayOption == 0)
+                                Icon(Icons.repeat_rounded,color: Colors.grey, size: 26,),
+                              if (playerProv.playerModel.audioPlayerPlayOption == 1)
+                                Icon(Icons.repeat_rounded,color: Colors.white,size: 26),
+                              if (playerProv.playerModel.audioPlayerPlayOption == 2)
+                                Icon(Icons.repeat_one_rounded,color: Colors.white,size: 26),
+                            ],
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
+
             Expanded(
               child: SingleChildScrollView(
                 controller: scrollController,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 10),
                     for (int i = 0; i < trackProv.audioPlayerTrackList.length; i++) ...[
                       if (i == 0 && !trackProv.audioPlayerTrackList[i].isPlaying)
                         Padding(
@@ -136,6 +197,7 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
                               ),
                             ),
                           ),
+
                       AnimatedSize(
                         duration: Duration(seconds: 1),
                         curve: Curves.linear,
@@ -145,15 +207,23 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
                           dismissThresholds: {
                             DismissDirection.endToStart: 0.6,
                           },
-                          onDismissed: (direction) {
-                            trackProv.audioPlayerTrackList.removeAt(i);
-                            playerProv.removeTrack(i);
-                            playerProv.currentPage = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
-                            trackProv.audioPlayerTrackList = List.from(trackProv.audioPlayerTrackList);
-                            setCurrentPlaying();
+                          onDismissed: (direction) async {
 
-                            trackProv.notify();
-                            playerProv.notify();
+                            if (trackProv.audioPlayerTrackList.length > 1) {
+
+                              await trackProv.audioPlayerTrackList.removeAt(i);
+                              await playerProv.removeTrack(i);
+
+                              playerProv.currentPage = trackProv.audioPlayerTrackList.indexWhere(
+                                      (item) => item.trackId.toString() == trackProv.lastTrackId);
+
+                              trackProv.audioPlayerTrackList = List.from(trackProv.audioPlayerTrackList);
+
+                              List<int> trackIdList = trackProv.audioPlayerTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                              trackProv.setAudioPlayerTrackIdList(trackIdList);
+
+                              playerProv.notify();
+                            }
                           },
                           background: Container(
                             color: Colors.red,
@@ -163,6 +233,7 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
                           ),
                           child: TrackListItem(
                             trackItem: trackProv.audioPlayerTrackList[i],
+                            trackItemIdx : i,
                             appScreenName: "AudioPlayerTrackListModal",
                             isAudioPlayer: true,
                             initAudioPlayerTrackListCallBack: () {},
