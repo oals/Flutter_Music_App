@@ -355,7 +355,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
 
                                             trackProv.audioPlayerTrackList = trackList;
 
-                                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                            trackProv.setAudioPlayerTrackIdList(trackIdList);
 
                                             await trackProv.setLastListenTrackId(trackList[i].trackId!);
 

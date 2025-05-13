@@ -180,7 +180,7 @@ class Helpers {
 
       final storage = FlutterSecureStorage();
 
-      if(isGetRefreshToken){
+      if (isGetRefreshToken){
         String? refreshToken = await storage.read(key: "refresh_token");
         if (refreshToken != null) {
           headers ??= {}; // headers가 null인 경우 빈 맵으로 초기화
@@ -190,7 +190,7 @@ class Helpers {
         String? jwtToken = await storage.read(key: "jwt_token");
         if (jwtToken != null) {
           headers ??= {};  // headers가 null인 경우 빈 맵으로 초기화
-          if(!url.startsWith("/auth/")){
+          if (!url.startsWith("/auth/")) {
             headers['Authorization'] = 'Bearer $jwtToken';  // 액세스 토큰을 Authorization 헤더에 추가
           }
         }

@@ -71,22 +71,22 @@ class _FollowItemState extends State<FollowItem> {
                       style: TextStyle(color: Colors.white),
                     ),
 
-                    if(widget.isSearch)
-                      if(widget.filteredFollowItem!.isFollowedCd == 3)
+                    if (widget.isSearch)
+                      if (widget.filteredFollowItem!.isFollowedCd == 3)
                         Text(
                           'This account follows you',
                           style: TextStyle(color: Colors.grey, fontSize: 13),
                         ),
 
                     if (!widget.isSearch && widget.isFollowingItem)
-                      if(widget.filteredFollowItem!.isFollowedCd == 3)
+                      if (widget.filteredFollowItem!.isFollowedCd == 3)
                         Text(
                           'This account follows you',
                           style: TextStyle(color: Colors.grey, fontSize: 13),
                         ),
 
                     if (!widget.isSearch && !widget.isFollowingItem)
-                      if(widget.filteredFollowItem!.isFollowedCd == 1 || widget.filteredFollowItem!.isFollowedCd == 3)
+                      if (widget.filteredFollowItem!.isFollowedCd == 1 || widget.filteredFollowItem!.isFollowedCd == 3)
                         Text(
                           'Following this account',
                           style: TextStyle(color: Colors.grey, fontSize: 13),

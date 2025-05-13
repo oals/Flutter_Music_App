@@ -88,7 +88,7 @@ class _UploadScreenState extends State<UploadScreen> {
         controller3.text = uploadTrackList[0].uploadFileNm!;
         String fileName = uploadTrackList[0].uploadFileNm!;
         String fileNameWithoutExtension = fileName.split('.').first;
-        if(!widget.isAlbum) {
+        if (!widget.isAlbum) {
           controller1.text = fileNameWithoutExtension;
         }
 
@@ -150,7 +150,7 @@ class _UploadScreenState extends State<UploadScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if(!widget.isAlbum)...[
+                  if (!widget.isAlbum)...[
                     GestureDetector(
                       onTap: (){
                         _pickImage();
@@ -193,7 +193,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
                   ],
 
-                  if(widget.isAlbum)...[
+                  if (widget.isAlbum)...[
                     Container(
                       width: 100.w,
                       height: 35.h,
@@ -268,8 +268,8 @@ class _UploadScreenState extends State<UploadScreen> {
                                   GestureDetector(
                                     onTap: (){
 
-                                      if(uploadTrackList[i].uploadFile != null) {
-                                        if(_imageBytes == null){
+                                      if (uploadTrackList[i].uploadFile != null) {
+                                        if (_imageBytes == null) {
                                           _pickImage();
                                         } else {
                                           selectedFile(i);
@@ -323,7 +323,7 @@ class _UploadScreenState extends State<UploadScreen> {
                                               size: 10.w,
                                             ),
                                           ),
-                                          if(uploadTrackList[i].uploadFileNm! != "")...[
+                                          if (uploadTrackList[i].uploadFileNm! != "")...[
                                             SizedBox(height: 5,),
                                             Text(
                                               uploadTrackList[i].uploadFileNm!,
@@ -403,7 +403,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   ),
 
                   SizedBox(height: 10),
-                  if(!widget.isAlbum)
+                  if (!widget.isAlbum)
                     Container(
                       width: 97.w,
                       height: 5.h,
@@ -502,7 +502,7 @@ class _UploadScreenState extends State<UploadScreen> {
                 ],
               ),
 
-              if(isUploading)
+              if (isUploading)
                 Positioned(
                   top: 0,
                   left: 0,

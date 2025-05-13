@@ -113,7 +113,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           onPressed: () => {
                             _searchController.text = "",
 
-                            if(searchId != 0){
+                            if (searchId != 0) {
                               FocusScope.of(context).requestFocus(_focusNode),
                               if (searchId == 2) {
                                 searchId = 1,
@@ -160,7 +160,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
                   const SizedBox(height: 15),
 
-                  if(searchId == 0)
+                  if (searchId == 0)
                     SearchMainScreen(recentListenTrackHistory: recentListenTrackHistory,)
 
                   else if (searchId == 1)

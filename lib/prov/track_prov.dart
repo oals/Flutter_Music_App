@@ -18,7 +18,6 @@ class TrackProv extends ChangeNotifier {
 
   List<Track> lastListenTrackList = [];
   List<Track> recommendTrackList = [];
-
   List<Track> audioPlayerTrackList = [];
   String lastTrackId = '';
 
@@ -31,19 +30,18 @@ class TrackProv extends ChangeNotifier {
   }
 
   void addUniqueTracksToList({
-    required List<Track> sourceList, // 필터링할 원본 리스트
-    required Set<Track> targetSet,  // 중복 체크용 Set
-    required List<Track> targetList, // 데이터가 추가될 리스트
-    required String trackCd, // 필터링 조건 함수
+    required List<Track> sourceList,
+    required Set<Track> targetSet,
+    required List<Track> targetList,
+    required String trackCd,
   }) {
     sourceList.where((item) => item.trackListCd.contains(trackCd)).forEach((item) {
       if (!targetSet.contains(item)) {
-        targetList.add(item); // 중복되지 않은 항목만 추가
-        targetSet.add(item);  // Set에도 추가
+        targetList.add(item);
+        targetSet.add(item);
       }
     });
   }
-
 
   void addAudioPlayerTracksToModel(List<dynamic> trackList, String trackListCd) {
 
@@ -60,7 +58,6 @@ class TrackProv extends ChangeNotifier {
         audioPlayerTrackList.add(trackModel.trackList[duplicateIndex]);
       }
     }
-
   }
 
   void addTracksToModel(List<dynamic> trackList, String trackListCd) {
@@ -111,18 +108,25 @@ class TrackProv extends ChangeNotifier {
     lastListenTrackList[0].isPlaying = true;
   }
 
-  void initCurrentTrackPlaying(int currentPage) async{
-
+  void initCurrentTrackPlaying(int currentPage) {
       if (audioPlayerTrackList.length > currentPage) {
         audioPlayerTrackList[currentPage].isPlaying = false;
       }
   }
 
-  void updateAudioPlayerSwiper(int trackId, PlayerProv playerProv, String appScreenName) async {
+  Future<void> updateAudioPlayerSwiper(int trackId, PlayerProv playerProv, String appScreenName) async {
 
     int index = audioPlayerTrackList.indexWhere((item) => item.trackId == trackId);
+
     if (index != -1) {
-      await playerProv.audioTrackMoveSetting(this,index);
+
+      if (playerProv.currentPage == index) {
+        await playerProv.audioTrackMoveSetting(this, index);
+      } else {
+        playerProv.currentPage = index;
+      }
+
+      playerProv.carouselSliderController.jumpToPage(index);
     }
   }
 

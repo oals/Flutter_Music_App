@@ -127,9 +127,8 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                                 isAudioPlayer: false,
                                 appScreenName: "LikeTrackScreen",
                                 initAudioPlayerTrackListCallBack: () async {
-                                  await trackProv.getLikeTrack(
-                                      comnLoadProv.listDataOffset,
-                                      trackModel.likeTrackTotalCount!);
+
+                                  await trackProv.getLikeTrack(comnLoadProv.listDataOffset, trackModel.likeTrackTotalCount!);
 
                                   trackProv.addUniqueTracksToList(
                                     sourceList: list,
@@ -138,14 +137,10 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                                     trackCd: "MyLikeTrackList",
                                   );
 
-                                  List<int> trackIdList = likeTrackList
-                                      .map((item) =>
-                                          int.parse(item.trackId.toString()))
-                                      .toList();
+                                  List<int> trackIdList = likeTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
                                   trackProv.audioPlayerTrackList = likeTrackList;
-                                  await trackProv
-                                      .setAudioPlayerTrackIdList(trackIdList);
+                                  trackProv.setAudioPlayerTrackIdList(trackIdList);
                                   trackProv.notify();
                                 },
                               ),

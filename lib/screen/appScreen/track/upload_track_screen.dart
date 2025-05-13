@@ -87,7 +87,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                     comnLoadProv.loadMoreData(trackProv, "UploadTrack", uploadTrackList.length);
                   }
                 } else {
-                  if(comnLoadProv.isApiCall){
+                  if (comnLoadProv.isApiCall) {
                     comnLoadProv.resetApiCallStatus();
                   }
                 }
@@ -139,7 +139,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                                   List<int> trackIdList = uploadTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
                                   trackProv.audioPlayerTrackList = uploadTrackList;
-                                  await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                  trackProv.setAudioPlayerTrackIdList(trackIdList);
                                   trackProv.notify();
                                 },
                               ),

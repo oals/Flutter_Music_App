@@ -166,12 +166,12 @@ class _SettingScreenState extends State<SettingScreen> {
                             trackItem: trackItem,
                             trackItemIdx : i ,
                             appScreenName: "LastListenTrackList",
-                            initAudioPlayerTrackListCallBack: () async {
+                            initAudioPlayerTrackListCallBack: () {
 
                               List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
                               trackProv.audioPlayerTrackList = trackProv.lastListenTrackList;
-                              await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                              trackProv.setAudioPlayerTrackIdList(trackIdList);
                               trackProv.notify();
 
                             },

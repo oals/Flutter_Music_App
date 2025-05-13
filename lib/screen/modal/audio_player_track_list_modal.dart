@@ -1,4 +1,4 @@
-import 'package:card_swiper/card_swiper.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';

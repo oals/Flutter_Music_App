@@ -144,24 +144,11 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
                     ],
                   ),
 
-                  // Row(
-                  //   children: [
-                  //     Icon(Icons.insert_comment_outlined,color: Colors.white,),
-                  //     SizedBox(
-                  //       width: 2,
-                  //     ),
-                  //     Text(widget.track.commentsCnt.toString(),style: TextStyle(color: Colors.white),),
-                  //   ],
-                  // ),
                   SizedBox(height: 3,),
-                  Text(widget.track.trackTime.toString(),style: TextStyle(color: Colors.white),),
+                  Text(widget.track.trackTime.toString(),style: TextStyle(color: Colors.grey),),
                   SizedBox(height: 3,),
-
-
                 ],
               ),
-
-
             ],
           ),
 
@@ -210,7 +197,7 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
                 8,
                 trackId: widget.track.trackId,
               callBack: (int? playListId){
-                if(playListId != null) {
+                if (playListId != null) {
                   playListProv.setPlayListTrack(playListId, widget.track.trackId!);
                 }
               });
@@ -235,32 +222,8 @@ class _TrackMoreInfoScreenState extends State<TrackMoreInfoScreen> {
             ),
           ),
 
-          GestureDetector(
-            onTap: () async {
-              print('플리에 추가 버튼 클릭');
 
-            },
-            child: Container(
-              width: 94.w,
-              padding: EdgeInsets.all(10),
-              child: Row(
-                children: [
-                  Icon(Icons.account_circle,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: 5,),
-                  Text(
-                    "Go to profile",
-                    style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-
-        if(isAuth)
+        if (isAuth)
           GestureDetector(
             onTap: () async {
               await trackProv.setLockTrack(widget.track.trackId,!widget.track.isTrackPrivacy!);

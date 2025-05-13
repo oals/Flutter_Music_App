@@ -360,12 +360,12 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                   trackItem: trackItem,
                                                   trackItemIdx : i ,
                                                   appScreenName: "memberPopularTrackList",
-                                                  initAudioPlayerTrackListCallBack: () async {
+                                                  initAudioPlayerTrackListCallBack: () {
 
                                                     List<int> trackIdList = popularTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
                                                     trackProv.audioPlayerTrackList = popularTrackList;
-                                                    await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                                    trackProv.setAudioPlayerTrackIdList(trackIdList);
                                                     trackProv.notify();
 
                                                   },
@@ -415,7 +415,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                       fontWeight: FontWeight.w600),
                                                 ),
 
-                                              if(isAuth)...[
+                                              if (isAuth)...[
                                                 SizedBox(width: 5,),
 
                                                 GestureDetector(
@@ -495,7 +495,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                         fontWeight: FontWeight.w600),
                                                   ),
 
-                                                if(isAuth)...[
+                                                if (isAuth)...[
                                                   SizedBox(width: 5,),
 
                                                   GestureDetector(
@@ -610,7 +610,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                 print(trackIdList.length);
 
                                                 trackProv.audioPlayerTrackList = allTrackList;
-                                                await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                                trackProv.setAudioPlayerTrackIdList(trackIdList);
                                                 trackProv.notify();
 
 

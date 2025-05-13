@@ -85,7 +85,7 @@ class _PlayListsListItemState extends State<PlayListsListItem> {
                             children: [
                               Row(
                                 children: [
-                                  if(widget.playList.isPlayListPrivacy!)
+                                  if (widget.playList.isPlayListPrivacy!)
                                     Row(
                                       children: [
                                         Icon(Icons.lock,color: Colors.white,size: 12,),
@@ -100,7 +100,7 @@ class _PlayListsListItemState extends State<PlayListsListItem> {
                                         ),
                                       ],
                                     ),
-                                  if(!widget.playList.isPlayListPrivacy!)
+                                  if (!widget.playList.isPlayListPrivacy!)
                                     Text(
                                       widget.isAlbum ?  'Album' : 'Playlist',
                                       style: TextStyle(

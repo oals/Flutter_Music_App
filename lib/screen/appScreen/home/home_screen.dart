@@ -97,12 +97,12 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                           trackItem: trackItem,
                                           trackItemIdx : i ,
                                           appScreenName: "PopularTrackList",
-                                          initAudioPlayerTrackListCallBack: () async {
+                                          initAudioPlayerTrackListCallBack: () {
 
                                             List<int> trackIdList = trackProv.recommendTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
                                             trackProv.audioPlayerTrackList = trackProv.recommendTrackList;
-                                            await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                            trackProv.setAudioPlayerTrackIdList(trackIdList);
                                             trackProv.notify();
 
                                           },
@@ -224,13 +224,14 @@ class _HomeScreenStateState extends State<HomeScreen> {
                         SizedBox(
                           height: 10,
                         ),
+
                         Padding(
                           padding: const EdgeInsets.only(left : 8.0),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Wrap(
-                              spacing: 5.0, // 아이템 간의 가로 간격
-                              runSpacing: 20.0, // 줄 간격
+                              spacing: 5.0,
+                              runSpacing: 20.0,
                               alignment: WrapAlignment.spaceBetween,
                               children: trackProv.lastListenTrackList.asMap().entries.map((entry) {
                                 int i = entry.key;
@@ -241,11 +242,11 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                       trackItem: trackItem,
                                       trackItemIdx: i,
                                       appScreenName: "LastListenTrackList",
-                                      initAudioPlayerTrackListCallBack: () async {
+                                      initAudioPlayerTrackListCallBack: () {
 
                                         List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
                                         trackProv.audioPlayerTrackList = List.from(trackProv.lastListenTrackList);
-                                        await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                        trackProv.setAudioPlayerTrackIdList(trackIdList);
                                         trackProv.notify();
 
                                       },
@@ -259,6 +260,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
                             ),
                           ),
                         ),
+
 
                         SizedBox(height: 20,),
                         Container(

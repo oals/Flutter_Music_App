@@ -51,19 +51,19 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
         if (!widget.trackItem.isPlaying) {
           widget.trackItem.isPlaying = true;
 
-          if (widget.trackItemIdx == playerProv.currentPage) {
-            trackProv.updateLastListenTrackList(widget.trackItem);
-          }
-
           trackProv.initCurrentTrackPlaying(playerProv.currentPage);
 
-          await playerProv.initAudioPlayer(trackProv,widget.trackItem.trackId!,widget.appScreenName!,widget.initAudioPlayerTrackListCallBack);
+          await playerProv.initAudioPlayer(
+              trackProv,
+              widget.trackItem.trackId!,
+              widget.appScreenName!,
+              widget.initAudioPlayerTrackListCallBack,
+              widget.trackItemIdx,
+          );
 
-          trackProv.updateAudioPlayerSwiper(widget.trackItem.trackId!,playerProv, widget.appScreenName!);
+          await trackProv.updateAudioPlayerSwiper(widget.trackItem.trackId!,playerProv, widget.appScreenName!);
 
-          playerProv.togglePlayPause(false, trackProv);
-
-          playerProv.notify();
+          await playerProv.togglePlayPause(false, trackProv);
 
         } else {
           GoRouter.of(context).push('/trackInfo',
@@ -73,7 +73,6 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
             },
           );
         }
-
       },
       child: Container(
         width: 45.w,
@@ -99,7 +98,7 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
                     ),
                   ),
 
-                  if(widget.trackItem.isPlaying)...[
+                  if (widget.trackItem.isPlaying)...[
                     Positioned(
                       top: 0,
                       left: 0,

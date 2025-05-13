@@ -147,7 +147,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    if(isEdit)...[
+                                    if (isEdit)...[
                                       GestureDetector(
                                         onTap:() async {
                                           String? newTrackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
@@ -325,24 +325,22 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                                                       index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
                                                                       trackProv.audioPlayerTrackList.insert(index + 1, widget.track);
                                                                       await playerProv.addTrack(widget.track, index + 1);
+                                                                      trackProv.notify();
                                                                     }
 
                                                                     List<int> trackIdList = trackProv.audioPlayerTrackList.map((item) => int.parse(item.trackId.toString())).toList();
-                                                                    await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                                                    trackProv.setAudioPlayerTrackIdList(trackIdList);
 
-                                                                    trackProv.updateAudioPlayerSwiper(widget.track.trackId!,playerProv,"TrackInfoScreen");
+                                                                    await trackProv.updateAudioPlayerSwiper(widget.track.trackId!,playerProv,"TrackInfoScreen");
                                                                     playerProv.playerModel.isPlaying = false;
                                                                   }
 
-                                                                  playerProv.togglePlayPause(playerProv.playerModel.isPlaying, trackProv);
-
-                                                                  playerProv.notify();
+                                                                  await playerProv.togglePlayPause(playerProv.playerModel.isPlaying, trackProv);
 
                                                                 }
                                                             ),
                                                           ],
                                                         ),
-
                                                     ],
                                                   ),
                                                 );
@@ -363,7 +361,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                             TrackCommentBtn( track : widget.track),
                                           ],
                                         ),
-                                        if(isEdit)...[
+                                        if (isEdit)...[
                                           SizedBox(
                                             width: 5,
                                           ),

@@ -62,7 +62,7 @@ class _MemberScrollHorizontalItemState
                   ),
                   SizedBox(height: 8),
 
-                  if(widget.memberList![i].isFollowedCd == 2 || widget.memberList![i].isFollowedCd == 3)
+                  if (widget.memberList![i].isFollowedCd == 2 || widget.memberList![i].isFollowedCd == 3)
                     Text(
                       'This account follows you.',
                       style: TextStyle(
@@ -101,9 +101,9 @@ class _MemberScrollHorizontalItemState
 
                         if (widget.memberList![i].isFollowedCd == 0) {
                           widget.memberList![i].isFollowedCd = 1;
-                        } else if(widget.memberList![i].isFollowedCd == 1) {
+                        } else if (widget.memberList![i].isFollowedCd == 1) {
                           widget.memberList![i].isFollowedCd = 0;
-                        } else if(widget.memberList![i].isFollowedCd == 2) {
+                        } else if (widget.memberList![i].isFollowedCd == 2) {
                           widget.memberList![i].isFollowedCd = 3;
                         } else if (widget.memberList![i].isFollowedCd == 3){
                           widget.memberList![i].isFollowedCd = 2;

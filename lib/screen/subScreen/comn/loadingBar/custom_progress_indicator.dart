@@ -19,7 +19,7 @@ class _CustomProgressIndicatorState extends State<CustomProgressIndicator> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if(widget.isApiCall)...[
+        if (widget.isApiCall)...[
           SizedBox(height: 25,),
           CustomProgressIndicatorItem(),
         ],

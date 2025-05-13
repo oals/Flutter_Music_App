@@ -77,12 +77,12 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
               } : null,
               child: SingleChildScrollView(
                 child: Container(
-                  width: 100.w,
                   color: Colors.black,
                   child: Column(
                     children: [
-                      if(appProv.isFullScreen)
+                      if (appProv.isFullScreen)
                         Container(
+                          width: 100.w,
                           height: 100.h,
                           decoration: BoxDecoration(
                             color: Color(0xff000000),
@@ -123,7 +123,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                   ),
 
 
-                                  if(!playerModel.isPlaying)
+                                  if (!playerModel.isPlaying)
                                     GestureDetector(
                                       onTap: () {
                                         playerProv.togglePlayPause(playerModel.isPlaying,trackProv);
@@ -362,7 +362,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                           ),
                         ),
 
-                      if(!appProv.isFullScreen)
+                      if (!appProv.isFullScreen)
                         Container(
                           width : 100.w,
                           height: 10.h,

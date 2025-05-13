@@ -1,5 +1,4 @@
 
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -47,24 +46,21 @@ class _TrackListItemState extends State<TrackListItem> {
       onTap: () async {
 
         if (!widget.trackItem.isPlaying) {
-          widget.trackItem.isPlaying = true;
-
-          if (widget.trackItemIdx == playerProv.currentPage) {
-            trackProv.updateLastListenTrackList(widget.trackItem);
-          }
 
           if (widget.appScreenName != "AudioPlayerTrackListModal") {
-
             trackProv.initCurrentTrackPlaying(playerProv.currentPage);
-
-            await playerProv.initAudioPlayer(trackProv,widget.trackItem.trackId!,widget.appScreenName!,widget.initAudioPlayerTrackListCallBack);
+            await playerProv.initAudioPlayer(
+                trackProv,
+                widget.trackItem.trackId!,
+                widget.appScreenName!,
+                widget.initAudioPlayerTrackListCallBack,
+                widget.trackItemIdx,
+              );
           }
 
-          trackProv.updateAudioPlayerSwiper(widget.trackItem.trackId!, playerProv, widget.appScreenName!);
+          await trackProv.updateAudioPlayerSwiper(widget.trackItem.trackId!, playerProv, widget.appScreenName!);
 
-          playerProv.togglePlayPause(false, trackProv);
-
-          playerProv.notify();
+          await playerProv.togglePlayPause(false, trackProv);
 
         } else {
           if (widget.appScreenName != 'AudioPlayerTrackListModal') {
@@ -107,14 +103,14 @@ class _TrackListItemState extends State<TrackListItem> {
                           ),
                         ),
 
-                        if(widget.trackItem.isTrackPrivacy!)
+                        if (widget.trackItem.isTrackPrivacy!)
                           Positioned(
                             top: 10,
                             right: 6,
                             child: Icon(Icons.lock,color: Colors.white,size: 15,),
                           ),
 
-                        if(widget.trackItem.isPlaying)...[
+                        if (widget.trackItem.isPlaying)...[
                           Positioned(
                             top: 0,
                             left: 0,
@@ -269,7 +265,7 @@ class _TrackListItemState extends State<TrackListItem> {
                   ],
                 ),
 
-                if(!widget.isAudioPlayer)
+                if (!widget.isAudioPlayer)
                   GestureDetector(
                   onTap: () {
                    AppBottomModalRouter.fnModalRouter(context,3, track : widget.trackItem,);

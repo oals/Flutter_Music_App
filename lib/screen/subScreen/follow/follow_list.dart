@@ -56,7 +56,7 @@ class _FollowListState extends State<FollowList> {
           ),
 
 
-        if(filteredFollowList!.length == 0)
+        if (filteredFollowList!.length == 0)
           Container(
             height: 60.h,
             child: Column(

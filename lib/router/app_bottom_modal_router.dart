@@ -49,7 +49,7 @@ class AppBottomModalRouter {
 
       final buildContext = context == null ? findContext() : context;
 
-      if(buildContext != null) {
+      if (buildContext != null) {
         isClosing = true;
 
         Future.microtask(() {

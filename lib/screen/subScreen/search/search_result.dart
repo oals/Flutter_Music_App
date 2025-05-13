@@ -293,10 +293,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                             isAudioPlayer: false,
                             initAudioPlayerTrackListCallBack: () async {
 
-                              /**
-                               * 검색의 경우 조회수 높은 순으로 100개 정도만?
-                               * */
-
                               await trackProv.getSearchTrack(widget.searchText, comnLoadProv.listDataOffset, trackProv.trackModel.searchTrackTotalCount!);
 
                               trackProv.addUniqueTracksToList(
@@ -307,16 +303,11 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                               );
 
                               List<int> trackIdList = searchTrackList.map((item) => int.parse(item.trackId.toString())).toList();
-                              print(trackIdList.length);
 
                               trackProv.audioPlayerTrackList = searchTrackList;
-                              await trackProv.setAudioPlayerTrackIdList(trackIdList);
+                              trackProv.setAudioPlayerTrackIdList(trackIdList);
                               trackProv.notify();
-
-
-
-
-                          },)
+                          },),
                         ],
                       ],
                       CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),

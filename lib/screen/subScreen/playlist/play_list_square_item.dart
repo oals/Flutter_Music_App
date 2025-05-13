@@ -70,7 +70,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
                     ),
                   ),
 
-                  if(!widget.isHome)
+                  if (!widget.isHome)
                     Text(
                       item.memberNickName ?? "",
                       style: TextStyle(
@@ -79,7 +79,7 @@ class _PlayListSquareItemState extends State<PlayListSquareItem> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                  if(widget.isHome)
+                  if (widget.isHome)
                     Text(
                       widget.isAlbum ? "Trending album" : "Trending playlist",
                       style: TextStyle(

@@ -79,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         User? user = await _authService.signInWithGoogle();
                         if (user != null) {
                           bool isCreateJwt = await authProv.fnCreateJwtToken(user);
-                          if(isCreateJwt) {
+                          if (isCreateJwt) {
                             bool isGetMemberInfo = await appProv.firstLoad(user.email!);
                             if (isGetMemberInfo) {
                               await appProv.getCategoryList();

@@ -1,5 +1,5 @@
 import 'dart:async'; // Timer 관련 라이브러리 추가
-import 'package:card_swiper/card_swiper.dart';
+import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -35,12 +35,10 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
     print('HLSStreamPage');
     playerProv = Provider.of<PlayerProv>(context, listen: false);
     _getAudioPlayerTrackListFuture = Provider.of<TrackProv>(context, listen: false).getAudioPlayerTrackList();
-    playerProv.swiperController = SwiperController();
   }
 
   @override
   void dispose() {
-    playerProv.swiperController.dispose();
     super.dispose();
   }
 
@@ -65,42 +63,50 @@ class _HLSStreamPageState extends State<HLSStreamPage> {
                     trackProv.audioPlayerTrackList[index].isPlaying = true;
 
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
-                      await playerProv.initAudio(trackProv);
+                      await playerProv.initAudio(trackProv, index);
                       await playerProv.playTrackAtIndex(index);
                       trackProv.notify();
                     });
-
                   }
                   isInit = true;
                 }
 
                 return trackProv.audioPlayerTrackList.isNotEmpty
-                    ? Swiper(
+                    ? CarouselSlider(
                   key: ValueKey(playerProv.currentPage),
-                  index: playerProv.currentPage,
-                  itemCount: trackProv.audioPlayerTrackList.length,
-                  controller: playerProv.swiperController,
-                  scrollDirection: Axis.horizontal,
-                  axisDirection: AxisDirection.left,
-                  fade: 1.0,
-                  // loop: playerProv.playerModel.audioPlayerPlayOption == 1 ? true : false,
-                  loop: false,
-                  autoplay: false,
-                  onIndexChanged: (index) async {
-                    print('호출 테스트');
-                    print(index);
+                  controller: playerProv.carouselSliderController,
+                  options: CarouselOptions(
+                    initialPage : playerProv.currentPage,
+                    height: 100.h,
+                    enableInfiniteScroll: false,
+                    autoPlay: false,
+                    enlargeCenterPage: false,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 1,
+                    onPageChanged: (index, reason) {
 
-                    if (!isTrackLoad){
-                      isTrackLoad = true;
-                      await playerProv.audioTrackMoveSetting(trackProv, index);
-                      isTrackLoad = false;
-                      print("실행 완료 → 현재 인덱스: $index");
-                    }
-
-                  },
-                  itemBuilder: (BuildContext ctx, int index) {
-                    return AudioPlayerItem(audioPlayerTrackItem : trackProv.audioPlayerTrackList[index]);
-                  },
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (!isTrackLoad) {
+                          playerProv.handleAudioReset();
+                          Future.delayed(Duration(milliseconds: 500), () async {
+                            if ((index - playerProv.currentPage).abs() <= 1) {
+                              isTrackLoad = true;
+                              await playerProv.audioTrackMoveSetting(trackProv, index);
+                              isTrackLoad = false;
+                              playerProv.togglePlayPause(!playerProv.playerModel.isPlaying,trackProv);
+                            }
+                          });
+                        }
+                      });
+                    },
+                  ),
+                  items: trackProv.audioPlayerTrackList.map((trackItem) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return AudioPlayerItem(audioPlayerTrackItem : trackItem);
+                      },
+                    );
+                  }).toList(),
                 ) : AudioPlayerItem(audioPlayerTrackItem : Track());
 
               }
