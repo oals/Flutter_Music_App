@@ -12,9 +12,8 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
-
 
 class UploadTrackScreen extends StatefulWidget {
   const UploadTrackScreen({
@@ -120,7 +119,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                           for (int i = 0 ; i < uploadTrackList.length; i++)...[
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,right: 8),
-                              child: TrackListItem(
+                              child: TrackItem(
                                 trackItem: uploadTrackList[i],
                                 trackItemIdx : i,
                                 appScreenName: "UploadTrackScreen",
@@ -138,7 +137,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
 
                                   List<int> trackIdList = uploadTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
-                                  trackProv.audioPlayerTrackList = uploadTrackList;
+                                  trackProv.audioPlayerTrackList = List.from(uploadTrackList);
                                   trackProv.setAudioPlayerTrackIdList(trackIdList);
                                   trackProv.notify();
                                 },

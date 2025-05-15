@@ -5,11 +5,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
-import 'package:skrrskrr/firebase_options.dart';
+import 'package:skrrskrr/fcm/firebase_options.dart';
 import 'package:skrrskrr/model/player/player.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
@@ -25,16 +26,14 @@ import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
-import 'package:skrrskrr/router/app_screen.dart';
 import 'package:skrrskrr/router/app_router_config.dart';
-
-
 import 'package:skrrskrr/utils/permissions.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "env/config.env");
+  KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_NATIVE_APP_KEY'));
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions,  // FirebaseOptions 설정
   );

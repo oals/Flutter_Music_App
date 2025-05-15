@@ -7,7 +7,7 @@ import 'package:skrrskrr/screen/appScreen/feed/feed_screen.dart';
 import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_screen.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
-import 'package:skrrskrr/screen/modal/new_player.dart';
+import 'package:skrrskrr/screen/modal/audioPlayer/audio_player_modal.dart';
 import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar_v2.dart';
 import 'package:skrrskrr/screen/subScreen/comn/bottomNavigatorBar/custom_bottom_navigation_bar.dart';
@@ -70,7 +70,7 @@ class _AppScreenState extends State<AppScreen> {
                         alignment: Alignment.topCenter,
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 700),
-                          child: HLSStreamPage(),
+                          child: AudioPlayerModal(),
                         ),
                       ),
                     ),

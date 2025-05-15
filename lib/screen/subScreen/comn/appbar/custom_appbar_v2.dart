@@ -8,8 +8,8 @@ import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
-import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class CustomAppbarV2 extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppbarV2({

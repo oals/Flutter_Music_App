@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:skrrskrr/model/follow/follow_info_model.dart';
 import 'package:skrrskrr/model/follow/follow_model.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class FollowProv extends ChangeNotifier{
 
@@ -18,11 +18,11 @@ class FollowProv extends ChangeNotifier{
 
   Future<bool> getFollow() async {
 
-    String loginMemberId = await Helpers.getMemberId();
+    String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getFollow?loginMemberId=${loginMemberId}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json'
@@ -38,7 +38,7 @@ class FollowProv extends ChangeNotifier{
         //검색 api에도 필요함
         // 공통을 만들어야하나
 
-        for (var followerData in Helpers.extractValue(response.body, 'followerList')) {
+        for (var followerData in ComnUtils.extractValue(response.body, 'followerList')) {
 
           FollowInfoModel followInfoModel = FollowInfoModel.fromJson(followerData);
 
@@ -49,7 +49,7 @@ class FollowProv extends ChangeNotifier{
           followModel.followerList?.add(followInfoModel);
         }
 
-        for (var followingData in Helpers.extractValue(response.body, 'followingList')) {
+        for (var followingData in ComnUtils.extractValue(response.body, 'followingList')) {
 
           FollowInfoModel followInfoModel = FollowInfoModel.fromJson(followingData);
 
@@ -63,7 +63,7 @@ class FollowProv extends ChangeNotifier{
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -77,7 +77,7 @@ class FollowProv extends ChangeNotifier{
     final url = '/api/setFollow';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
           url,
           method: "POST",
           headers: {
@@ -93,7 +93,7 @@ class FollowProv extends ChangeNotifier{
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);

@@ -18,7 +18,8 @@ import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
 import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
+import 'package:uni_links/uni_links.dart';
 
 class AppProv extends ChangeNotifier{
 
@@ -44,44 +45,44 @@ class AppProv extends ChangeNotifier{
     final url = '/api/firstLoad?memberEmail=${memberEmail}&deviceToken=${deviceToken}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
       );
 
       if (response.statusCode == 200) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
-        memberProv.model = MemberModel.fromJson(Helpers.extractValue(response.body, 'member'));
+        memberProv.model = MemberModel.fromJson(ComnUtils.extractValue(response.body, 'member'));
         await memberProv.saveMemberData();
 
         trackProv.initTrackToModel(["LastListenTrackList",]);
-        trackProv.addTracksToModel(Helpers.extractValue(response.body, "lastListenTrackList"), "LastListenTrackList");
+        trackProv.addTracksToModel(ComnUtils.extractValue(response.body, "lastListenTrackList"), "LastListenTrackList");
         trackProv.lastListenTrackList = trackProv.trackListFilter("LastListenTrackList");
 
         trackProv.initTrackToModel(["RecommendTrackList",]);
-        trackProv.addTracksToModel(Helpers.extractValue(response.body, "recommendTrackList"), "RecommendTrackList");
+        trackProv.addTracksToModel(ComnUtils.extractValue(response.body, "recommendTrackList"), "RecommendTrackList");
         trackProv.recommendTrackList = trackProv.trackListFilter("RecommendTrackList");
 
-        for (var item in Helpers.extractValue(response.body, "recommendPlayLists")) {
+        for (var item in ComnUtils.extractValue(response.body, "recommendPlayLists")) {
           playListProv.recommendPlayListsList.playList.add(PlayListInfoModel.fromJson(item));
         }
 
-        for (var item in Helpers.extractValue(response.body, "recommendAlbums")) {
+        for (var item in ComnUtils.extractValue(response.body, "recommendAlbums")) {
           playListProv.recommendAlbumList.playList.add(PlayListInfoModel.fromJson(item));
         }
 
-        for (var item in Helpers.extractValue(response.body, "recommendMembers")){
+        for (var item in ComnUtils.extractValue(response.body, "recommendMembers")){
           memberProv.recommendMemberList.add(FollowInfoModel.fromJson(item));
         }
 
-        bool notificationIsView = Helpers.extractValue(response.body, 'notificationIsView');
+        bool notificationIsView = ComnUtils.extractValue(response.body, 'notificationIsView');
         await prefs.setBool('notificationsIsView', notificationIsView);
         notificationsProv.setNotificationsIsView(notificationIsView);
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -95,18 +96,18 @@ class AppProv extends ChangeNotifier{
     final url = '/api/getCategoryList';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
       );
 
       if (response.statusCode == 200) {
 
-        Helpers.categoryList = List<String>.from(Helpers.extractValue(response.body, 'categoryNmList'));
+        ComnUtils.categoryList = List<String>.from(ComnUtils.extractValue(response.body, 'categoryNmList'));
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);

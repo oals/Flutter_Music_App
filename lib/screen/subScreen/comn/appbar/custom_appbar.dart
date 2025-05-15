@@ -7,7 +7,7 @@ import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class CustomAppbar extends StatefulWidget {
   const CustomAppbar({

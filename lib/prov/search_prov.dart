@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:skrrskrr/model/search/search_history_model.dart';
 import 'package:skrrskrr/model/search/search_model.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:http/http.dart' as http;
 
 class SearchProv extends ChangeNotifier {
@@ -22,11 +22,11 @@ class SearchProv extends ChangeNotifier {
 
   Future<bool> fnSearchTextHistory() async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getSearchTextHistory?loginMemberId=${loginMemberId}&limit=${30}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -37,14 +37,14 @@ class SearchProv extends ChangeNotifier {
 
         searchHistoryModel = [];
 
-        for (var item in Helpers.extractValue(response.body, "searchHistoryList")) {
+        for (var item in ComnUtils.extractValue(response.body, "searchHistoryList")) {
           searchHistoryModel.add(SearchHistoryModel.fromJson(item));
         }
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -60,11 +60,11 @@ class SearchProv extends ChangeNotifier {
 
   Future<bool> setSearchHistory(String searchText,offset) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/setSearchHistory?loginMemberId=${loginMemberId}&searchText=$searchText&offset=$offset';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ class SearchProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);

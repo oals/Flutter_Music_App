@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -11,10 +12,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:http/http.dart' as http;
 
 class AuthProv with ChangeNotifier{
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId : dotenv.get("WEB_OAUTH_2_CLIENT_ID")
+  );
 
   MemberModel model = MemberModel();
 
@@ -31,7 +38,7 @@ class AuthProv with ChangeNotifier{
     final url = '/auth/createJwtToken';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         method: "POST",
         headers: {
@@ -47,14 +54,14 @@ class AuthProv with ChangeNotifier{
 
         final storage = FlutterSecureStorage();
 
-        await storage.write(key: "jwt_token", value: Helpers.extractValue(response.body, 'jwtToken'));
+        await storage.write(key: "jwt_token", value: ComnUtils.extractValue(response.body, 'jwtToken'));
 
-        await storage.write(key: "refresh_token", value: Helpers.extractValue(response.body, 'refreshToken'));
+        await storage.write(key: "refresh_token", value: ComnUtils.extractValue(response.body, 'refreshToken'));
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -68,7 +75,7 @@ class AuthProv with ChangeNotifier{
     final url = '/auth/jwtAuthing';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
           url,
           method: "POST",
           headers: {
@@ -81,7 +88,7 @@ class AuthProv with ChangeNotifier{
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -90,14 +97,12 @@ class AuthProv with ChangeNotifier{
     }
   }
 
-
-  // 파이어베이스 id Token 인증을 위한
   Future<bool> fnFireBaseAuthing(User user) async {
 
     final url = '/auth/fireBaseAuthing';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
           url,
           method: "POST",
           headers: {
@@ -110,12 +115,52 @@ class AuthProv with ChangeNotifier{
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
       print('$url - Fail');
       return false;
+    }
+  }
+
+  Future<User?> signInWithGoogle() async {
+    /// 로그인 팝업 생성
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    ///로그인 된 계정에 대한 인증 토큰 가져오기
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    ///Firebase Authentication에 로그인할 수 있는  자격증명 생성
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    ///위 자격 증명을 받아 사용자가 올바른 구글 계정으로
+    ///로그인한 것을 확인 및 로그인 정보를 담은 UserCredential 객체를 반환
+    /// 구글 id token을 통해 파이어베이스 id token 얻음
+    UserCredential userCredential = await _auth.signInWithCredential(credential);
+
+    //idToken 검증 과정 위해 서버로 전송
+    final url = '/auth/fireBaseAuthing';
+
+    try {
+      http.Response response = await ComnUtils.apiCall(
+        url,
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${await userCredential.user?.getIdToken()}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return userCredential.user;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
     }
   }
 

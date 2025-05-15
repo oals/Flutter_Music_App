@@ -3,14 +3,15 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/screen/modal/audio_player_track_list_modal.dart';
-import 'package:skrrskrr/screen/modal/comment/comment.dart';
-import 'package:skrrskrr/screen/modal/playList/my_play_list_modal.dart';
-import 'package:skrrskrr/screen/modal/playList/new_play_list.dart';
-import 'package:skrrskrr/screen/modal/track/info_edit_modal.dart';
-import 'package:skrrskrr/screen/modal/track/track_more_info.dart';
-import 'package:skrrskrr/screen/modal/upload/upload.dart';
-import 'package:skrrskrr/screen/modal/upload/select_category.dart';
+import 'package:skrrskrr/screen/modal/audioPlayer/audio_player_track_list_modal.dart';
+import 'package:skrrskrr/screen/modal/comment/comment_modal.dart';
+import 'package:skrrskrr/screen/modal/playList/select_playlist_modal.dart';
+import 'package:skrrskrr/screen/modal/playList/create_playlist_modal.dart';
+import 'package:skrrskrr/screen/modal/share/select_share_modal.dart';
+import 'package:skrrskrr/screen/modal/Edit/comn_edit_modal.dart';
+import 'package:skrrskrr/screen/modal/track/track_info_modal.dart';
+import 'package:skrrskrr/screen/modal/upload/upload_modal.dart';
+import 'package:skrrskrr/screen/modal/category/select_category_modal.dart';
 
 class AppBottomModalRouter {
 
@@ -80,7 +81,7 @@ class AppBottomModalRouter {
     }
 
     final Map<int, Future<dynamic> Function()> modalWidgets = {
-      0: () async {return CommentScreen(
+      0: () async {return CommentModal(
             trackId: trackId,
             notificationCommentId : commentId,
             callBack: () {
@@ -89,7 +90,7 @@ class AppBottomModalRouter {
             }
           );
         },
-      1: () async {return InfoEditModal(
+      1: () async {return ComnEditModal(
           infoText: infoText!,
           maxLines : maxLines,
           onSave: (String newTrackInfo) {
@@ -98,16 +99,16 @@ class AppBottomModalRouter {
           }
         );
         },
-      2: () async {return NewPlayListScreen();},
-      3: () async {return TrackMoreInfoScreen(track: track!);},
-      5: () async {return UploadScreen(
+      2: () async {return CreatePlaylistModal();},
+      3: () async {return TrackInfoModal(track: track!);},
+      5: () async {return UploadModal(
             isAlbum : isAlbum!,
             callBack: () {
               removeOverlay(null);
             }
           );
         },
-      6: () async {return SelectCategory(
+      6: () async {return SelectCategoryModal(
             categoryId : categoryId,
             callBack: (int categoryIdList) {
               callBack!(categoryIdList);
@@ -120,7 +121,7 @@ class AppBottomModalRouter {
           removeOverlay(null);
         },
       );},
-      8: () async {return MyPlayListModalScreen(
+      8: () async {return SelectPlaylistModal(
           trackId: trackId!,
           callBack : (int? playListId) {
             callBack!(playListId);
@@ -128,6 +129,12 @@ class AppBottomModalRouter {
           }
         );
       },
+      9: () async {return SelectShareModal(
+        callBack: (String selectShareNm){
+          callBack!(selectShareNm);
+          removeOverlay(null);
+        },
+      );},
     };
 
     if (modalWidgets.containsKey(modalIndex)) {
@@ -138,6 +145,8 @@ class AppBottomModalRouter {
         maxSize = 1.0;
       } else if (modalIndex == 7 ) {
         maxSize = 0.93;
+      } else if (modalIndex == 9) {
+        maxSize = 0.18;
       }
 
       void _showOverlay() async {

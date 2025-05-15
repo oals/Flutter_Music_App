@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/comment/comment_model.dart';
-import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
 
 class CommentItem extends StatefulWidget {
   const CommentItem({

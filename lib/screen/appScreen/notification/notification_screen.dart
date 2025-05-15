@@ -10,8 +10,8 @@ import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 
-import 'package:skrrskrr/screen/subScreen/notification/notification_item_screen.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/screen/subScreen/notification/notification_item.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({
@@ -162,7 +162,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   onTap : () {
                                      notificationsProv.moveNotification(notificationsModel.notificationList[i],context);
                                     },
-                                  child: NotificationItemScreen(notificationsModel : notificationsModel.notificationList[i]),
+                                  child: NotificationItem(notificationsModel : notificationsModel.notificationList[i]),
                               ),
                           ],
 

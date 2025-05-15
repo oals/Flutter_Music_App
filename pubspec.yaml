@@ -38,6 +38,10 @@ dependencies:
   flutter_vlc_player: ^7.4.2
   just_audio: ^0.9.46
   carousel_slider_plus: 7.1.0
+  share_plus: 11.0.0
+  kakao_flutter_sdk: 1.9.6
+  url_launcher: 6.3.1
+  uni_links: 0.5.1
 
   flutter:
     sdk: flutter

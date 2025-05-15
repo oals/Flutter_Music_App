@@ -13,17 +13,17 @@ import 'package:skrrskrr/screen/appScreen/album/like_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/category/category_screen.dart';
 import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
 import 'package:skrrskrr/screen/appScreen/album/member_album_screen.dart';
-import 'package:skrrskrr/screen/appScreen/playlist/member_play_list_screen.dart';
+import 'package:skrrskrr/screen/appScreen/playlist/member_playlist_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_member_screen.dart';
-import 'package:skrrskrr/screen/appScreen/search/search_play_list_screen.dart';
+import 'package:skrrskrr/screen/appScreen/search/search_playlist_screen.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 import 'package:skrrskrr/screen/appScreen/feed/feed_screen.dart';
 import 'package:skrrskrr/screen/appScreen/follow/member_follow_screen.dart';
 import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
 import 'package:skrrskrr/screen/appScreen/member/member_page_screen.dart';
 import 'package:skrrskrr/screen/appScreen/notification/notification_screen.dart';
-import 'package:skrrskrr/screen/appScreen/playlist/like_play_list_screen.dart';
-import 'package:skrrskrr/screen/appScreen/playlist/play_list_screen.dart';
+import 'package:skrrskrr/screen/appScreen/playlist/like_playlist_screen.dart';
+import 'package:skrrskrr/screen/appScreen/playlist/playlist_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_screen.dart';
 import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
 import 'package:skrrskrr/screen/appScreen/track/track_info_screen.dart';
@@ -204,7 +204,7 @@ final router = GoRouter(
           return commonPageBuilder(
             context,
             state,
-            SearchPlayListScreen(searchText: searchText),
+            SearchPlaylistScreen(searchText: searchText),
             isShowAudioPlayer: true,
           );
         },
@@ -219,7 +219,7 @@ final router = GoRouter(
           return commonPageBuilder(
             context,
             state,
-            MemberPlayListScreen(memberId: memberId,),
+            MemberPlaylistScreen(memberId: memberId,),
             isShowAudioPlayer: true,
           );
         },
@@ -261,7 +261,7 @@ final router = GoRouter(
           return commonPageBuilder(
             context,
             state,
-            LikePlayListScreen(),
+            LikePlaylistScreen(),
             isShowAudioPlayer: true,
           );
         },
@@ -316,7 +316,7 @@ final router = GoRouter(
           return commonPageBuilder(
             context,
             state,
-            PlayListScreen(playList: playList),
+            PlaylistScreen(playList: playList),
             isShowAudioPlayer: true,
           );
         },

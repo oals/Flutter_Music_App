@@ -10,8 +10,8 @@ import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
-import 'package:skrrskrr/screen/subScreen/playlist/play_lists_list_item.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/playlist_square_item.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 
 class LikeAlbumScreen extends StatefulWidget {
   const LikeAlbumScreen({
@@ -118,7 +118,7 @@ class _LikeAlbumScreenState extends State<LikeAlbumScreen> {
                                 for(int i = 0; i < AlbumList.length; i++)
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15,bottom: 5),
-                                    child: PlayListsListItem(playList: AlbumList[i],isAlbum: false),
+                                    child: PlaylistItem(playList: AlbumList[i],isAlbum: false),
                                   )
                               ],
                             ),

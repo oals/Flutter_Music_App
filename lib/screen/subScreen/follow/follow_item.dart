@@ -7,9 +7,9 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/follow/follow_info_model.dart';
 import 'package:skrrskrr/model/follow/follow_model.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
-import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
 
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 
 class FollowItem extends StatefulWidget {
@@ -116,7 +116,7 @@ class _FollowItemState extends State<FollowItem> {
             ),
             onPressed: () async {
               print('버튼 클릭');
-              int followerId = int.parse(await Helpers.getMemberId());
+              int followerId = int.parse(await ComnUtils.getMemberId());
 
               widget.setFollow(followerId,widget.filteredFollowItem!.followMemberId);
 

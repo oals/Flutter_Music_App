@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_comment_btn.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_like_btn.dart';
+import 'package:skrrskrr/screen/subScreen/comn/button/track_comment_btn_item.dart';
+import 'package:skrrskrr/screen/subScreen/comn/button/track_like_btn_item.dart';
 
 class CustomAudioPlayerBottomNavigation extends StatelessWidget {
   final int currentIndex;
@@ -25,7 +25,7 @@ class CustomAudioPlayerBottomNavigation extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            TrackLikeBtn(track: trackInfoModel),
+            TrackLikeBtnItem(track: trackInfoModel),
             _buildNavItem('assets/images/comment.svg', '', 1,20.w),
             _buildNavItem('assets/images/dotPoints.svg', '', 2,20.w),
             _buildNavItem('assets/images/more.svg', '', 3,20.w),

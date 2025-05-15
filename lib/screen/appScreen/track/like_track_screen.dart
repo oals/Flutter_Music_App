@@ -13,9 +13,9 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 import '../../../prov/player_prov.dart';
 
@@ -121,7 +121,7 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                           for (int i = 0; i < likeTrackList.length; i++) ...[
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0, right: 8),
-                              child: TrackListItem(
+                              child: TrackItem(
                                 trackItem: likeTrackList[i],
                                 trackItemIdx : i,
                                 isAudioPlayer: false,
@@ -139,7 +139,7 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
 
                                   List<int> trackIdList = likeTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
-                                  trackProv.audioPlayerTrackList = likeTrackList;
+                                  trackProv.audioPlayerTrackList = List.from(likeTrackList);
                                   trackProv.setAudioPlayerTrackIdList(trackIdList);
                                   trackProv.notify();
                                 },

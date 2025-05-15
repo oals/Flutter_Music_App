@@ -10,8 +10,6 @@ import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 
-import 'package:skrrskrr/fcm/auth_service.dart';
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -20,7 +18,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         )),
                       ),
                       onPressed: () async {
-                        User? user = await _authService.signInWithGoogle();
+                        User? user = await authProv.signInWithGoogle();
                         if (user != null) {
                           bool isCreateJwt = await authProv.fnCreateJwtToken(user);
                           if (isCreateJwt) {

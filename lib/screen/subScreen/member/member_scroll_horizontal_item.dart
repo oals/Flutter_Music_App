@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
-import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
 
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class MemberScrollHorizontalItem extends StatefulWidget {
   const MemberScrollHorizontalItem({
@@ -95,7 +95,7 @@ class _MemberScrollHorizontalItemState
                       ),
                       onPressed: () async {
 
-                        int followerId = int.parse(await Helpers.getMemberId());
+                        int followerId = int.parse(await ComnUtils.getMemberId());
 
                         await followProv.setFollow(followerId,widget.memberList![i].followMemberId);
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'dart:convert';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:http/http.dart' as http;
 
 class PlayListProv extends ChangeNotifier {
@@ -25,11 +25,11 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> getSearchPlayList(String searchText, int offset, int limit) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getSearchPlayList?loginMemberId=${loginMemberId}&isAlbum=${false}&searchText=$searchText&limit=${limit}&offset=$offset';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -42,16 +42,16 @@ class PlayListProv extends ChangeNotifier {
           playlists = PlaylistList();
         }
 
-        for (var item in Helpers.extractValue(response.body, "playLists")) {
+        for (var item in ComnUtils.extractValue(response.body, "playLists")) {
           playlists.playList.add(PlayListInfoModel.fromJson(item));
         }
 
-        playlists.searchPlayListTotalCount = Helpers.extractValue(response.body, "totalCount");
+        playlists.searchPlayListTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -62,11 +62,11 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> getMemberPagePlayList(int memberId, int offset, int limit) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getMemberPagePlayList?loginMemberId=${loginMemberId}&memberId=${memberId}&limit=${limit}&offset=$offset';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -79,16 +79,16 @@ class PlayListProv extends ChangeNotifier {
           playlists = PlaylistList();
         }
 
-        for (var item in Helpers.extractValue(response.body, "playLists")) {
+        for (var item in ComnUtils.extractValue(response.body, "playLists")) {
           playlists.playList.add(PlayListInfoModel.fromJson(item));
         }
 
-        playlists.memberPagePlayListTotalCount = Helpers.extractValue(response.body, "totalCount");
+        playlists.memberPagePlayListTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -99,11 +99,11 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> getMemberPageAlbum(int memberId, int offset, int limit) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getMemberPageAlbums?loginMemberId=${loginMemberId}&memberId=${memberId}&limit=${limit}&offset=$offset';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -116,16 +116,16 @@ class PlayListProv extends ChangeNotifier {
           albums = PlaylistList();
         }
 
-        for (var item in Helpers.extractValue(response.body, "playLists")) {
+        for (var item in ComnUtils.extractValue(response.body, "playLists")) {
           albums.playList.add(PlayListInfoModel.fromJson(item));
         }
 
-        albums.memberPageAlbumTotalCount = Helpers.extractValue(response.body, "totalCount");
+        albums.memberPageAlbumTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -136,11 +136,11 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> setPlayListLike(int playListId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/setPlayListLike';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
           url,
           method: "POST",
           headers: {
@@ -156,7 +156,7 @@ class PlayListProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -170,7 +170,7 @@ class PlayListProv extends ChangeNotifier {
     final url = '/api/setPlayListInfo';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
             url,
             method : "POST",
             headers: {
@@ -186,7 +186,7 @@ class PlayListProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -197,11 +197,11 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> getRecommendPlayList() async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getRecommendPlayList?loginMemberId=${loginMemberId}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -212,14 +212,14 @@ class PlayListProv extends ChangeNotifier {
 
         playlists = PlaylistList();
 
-        for (var item in Helpers.extractValue(response.body, "playLists")) {
+        for (var item in ComnUtils.extractValue(response.body, "playLists")) {
           playlists.playList.add(PlayListInfoModel.fromJson(item));
         }
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -230,11 +230,11 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> getRecommendAlbum() async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getRecommendAlbum?loginMemberId=${loginMemberId}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -245,14 +245,14 @@ class PlayListProv extends ChangeNotifier {
 
         albums = PlaylistList();
 
-        for (var item in Helpers.extractValue(response.body, "playLists")) {
+        for (var item in ComnUtils.extractValue(response.body, "playLists")) {
           albums.playList.add(PlayListInfoModel.fromJson(item));
         }
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -263,11 +263,11 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> getLikePlayList(int offset,bool isAlbum) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getLikePlayList?loginMemberId=${loginMemberId}&limit=${20}&offset=${offset}&isAlbum=${isAlbum}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -280,16 +280,16 @@ class PlayListProv extends ChangeNotifier {
           playlists = PlaylistList();
         }
 
-        for (var item in Helpers.extractValue(response.body, "playLists")) {
+        for (var item in ComnUtils.extractValue(response.body, "playLists")) {
           playlists.playList.add(PlayListInfoModel.fromJson(item));
         }
 
-        playlists.myPlayListTotalCount = Helpers.extractValue(response.body, "totalCount");
+        playlists.myPlayListTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -300,11 +300,11 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> getPlayList(int trackId,int offset,bool isAlbum) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getPlayList?loginMemberId=${loginMemberId}&trackId=${trackId}&limit=${20}&offset=${offset}&isAlbum=${isAlbum}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -317,16 +317,16 @@ class PlayListProv extends ChangeNotifier {
           playlists = PlaylistList();
         }
 
-        for (var item in Helpers.extractValue(response.body, "playLists")) {
+        for (var item in ComnUtils.extractValue(response.body, "playLists")) {
           playlists.playList.add(PlayListInfoModel.fromJson(item));
         }
 
-        playlists.myPlayListTotalCount = Helpers.extractValue(response.body, "totalCount");
+        playlists.myPlayListTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -337,11 +337,11 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> getPlayListInfo(int playListId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getPlayListInfo?playListId=${playListId}&loginMemberId=${loginMemberId}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -352,12 +352,12 @@ class PlayListProv extends ChangeNotifier {
 
         playListInfoModel = PlayListInfoModel();
 
-        playListInfoModel = PlayListInfoModel.fromJson(Helpers.extractValue(response.body, "playList"));
+        playListInfoModel = PlayListInfoModel.fromJson(ComnUtils.extractValue(response.body, "playList"));
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -371,7 +371,7 @@ class PlayListProv extends ChangeNotifier {
     final url = '/api/setPlayListTrack';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
             url,
             method : "POST",
             headers: {
@@ -387,7 +387,7 @@ class PlayListProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -399,11 +399,11 @@ class PlayListProv extends ChangeNotifier {
 
   Future<bool> setNewPlaylist(String playListNm, bool isPlayListPrivacy,bool isAlbum) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/newPlayList';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
             url,
             method: 'POST',
             headers: {
@@ -428,7 +428,7 @@ class PlayListProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);

@@ -9,7 +9,7 @@ import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/member/member_model_list.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:http/http.dart' as http;
 
 class MemberProv with ChangeNotifier {
@@ -28,11 +28,11 @@ class MemberProv with ChangeNotifier {
 
   Future<void> fnMemberInfoUpdate({memberNickName,memberInfo}) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/setMemberInfoUpdate';
 
     try{
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
             url,
             method: 'POST',
             headers: {
@@ -48,7 +48,7 @@ class MemberProv with ChangeNotifier {
       if (response.statusCode == 200) {
         print('$url - Successful');
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -58,11 +58,11 @@ class MemberProv with ChangeNotifier {
 
   Future<bool> getSearchMember(String searchText, int offset, int limit) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getSearchMember?loginMemberId=${loginMemberId}&searchText=$searchText&limit=${limit}&offset=$offset';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ class MemberProv with ChangeNotifier {
           searchMemberModelList = MemberModelList();
         }
 
-        for (var followerData in Helpers.extractValue(response.body, 'followMemberList')) {
+        for (var followerData in ComnUtils.extractValue(response.body, 'followMemberList')) {
 
           FollowInfoModel followInfoModel = FollowInfoModel.fromJson(followerData);
 
@@ -86,12 +86,12 @@ class MemberProv with ChangeNotifier {
           searchMemberModelList.memberList.add(followInfoModel);
         }
 
-        searchMemberModelList.memberListCnt = Helpers.extractValue(response.body, 'totalCount');
+        searchMemberModelList.memberListCnt = ComnUtils.extractValue(response.body, 'totalCount');
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -106,20 +106,20 @@ class MemberProv with ChangeNotifier {
     final url = '/api/getMemberInfo?memberEmail=${memberEmail}&deviceToken=${deviceToken}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
       );
 
       if (response.statusCode == 200) {
 
-        model = MemberModel.fromJson(Helpers.extractValue(response.body, 'member'));
+        model = MemberModel.fromJson(ComnUtils.extractValue(response.body, 'member'));
 
         await saveMemberData();
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -139,11 +139,11 @@ class MemberProv with ChangeNotifier {
 
   Future<bool> getMemberPageInfo(int memberId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getMemberPageInfo?memberId=${memberId}&loginMemberId=${loginMemberId}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
       );
 
@@ -151,12 +151,12 @@ class MemberProv with ChangeNotifier {
 
         model = MemberModel();
 
-        model = MemberModel.fromJson(Helpers.extractValue(response.body, 'member'));
+        model = MemberModel.fromJson(ComnUtils.extractValue(response.body, 'member'));
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);

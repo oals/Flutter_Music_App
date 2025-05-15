@@ -19,7 +19,7 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({
@@ -67,7 +67,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     onTap: () async {
                       PlayerProv playerProv = Provider.of<PlayerProv>(context, listen: false);;
 
-                      String loginMemberId = await Helpers.getMemberId();
+                      String loginMemberId = await ComnUtils.getMemberId();
                       if (i == 0) {
                         GoRouter.of(context).push('/memberPage/${loginMemberId}');
                       } else if (i == 1) {
@@ -170,7 +170,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
                               List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
-                              trackProv.audioPlayerTrackList = trackProv.lastListenTrackList;
+                              trackProv.audioPlayerTrackList = List.from(trackProv.lastListenTrackList);
                               trackProv.setAudioPlayerTrackIdList(trackIdList);
                               trackProv.notify();
 

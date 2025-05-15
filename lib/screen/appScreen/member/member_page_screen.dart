@@ -18,14 +18,14 @@ import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
-import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-import 'package:skrrskrr/screen/subScreen/playlist/play_lists_list_item.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
 
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 
 class MemberPageScreen extends StatefulWidget {
@@ -79,7 +79,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
   }
 
   void _loadMemberId() async {
-    loginMemberId = await Helpers.getMemberId();
+    loginMemberId = await ComnUtils.getMemberId();
   }
 
   @override
@@ -116,7 +116,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
             } else {
 
               MemberModel memberModel = memberProv.model;
-              isAuth = Helpers.getIsAuth(memberModel.memberId.toString(), loginMemberId!);
+              isAuth = ComnUtils.getIsAuth(memberModel.memberId.toString(), loginMemberId!);
 
               return NotificationListener<ScrollNotification>(
                 onNotification: (notification) {
@@ -162,7 +162,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                 if (isEdit) ...[
                                   GestureDetector(
                                     onTap: () async {
-                                      String? newMemberImagePath = await Helpers.pickImage(memberModel.memberId, true, context);
+                                      String? newMemberImagePath = await ComnUtils.pickImage(memberModel.memberId, true, context);
                                       if (newMemberImagePath != null) {
                                         memberModel.memberImagePath = newMemberImagePath;
                                         setState(() {});
@@ -364,7 +364,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
 
                                                     List<int> trackIdList = popularTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
-                                                    trackProv.audioPlayerTrackList = popularTrackList;
+                                                    trackProv.audioPlayerTrackList = List.from(popularTrackList);
                                                     trackProv.setAudioPlayerTrackIdList(trackIdList);
                                                     trackProv.notify();
 
@@ -456,7 +456,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                         child: Row(
                                           children: [
                                             for(int i = 0; i < memberPlayList.length; i++)
-                                              PlayListsListItem(playList: memberPlayList[i],isAlbum: false),
+                                              PlaylistItem(playList: memberPlayList[i],isAlbum: false),
                                             SizedBox(width: 20),
                                           ],
                                         ),
@@ -535,7 +535,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                           child: Row(
                                             children: [
                                               for(int i = 0; i < memberPlayList.length; i++)
-                                                PlayListsListItem(
+                                                PlaylistItem(
                                                     playList: memberPlayList[i],
                                                     isAlbum: true
                                                 ),
@@ -590,7 +590,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                     children: [
                                       for (int i = 0; i < allTrackList.length; i++) ...[
                                         Container(padding: EdgeInsets.only(bottom: 10),
-                                            child: TrackListItem(
+                                            child: TrackItem(
                                               appScreenName: "MemberPageScreen",
                                               trackItem: allTrackList[i],
                                               trackItemIdx : i,
@@ -609,7 +609,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                 List<int> trackIdList = allTrackList.map((item) => int.parse(item.trackId.toString())).toList();
                                                 print(trackIdList.length);
 
-                                                trackProv.audioPlayerTrackList = allTrackList;
+                                                trackProv.audioPlayerTrackList = List.from(allTrackList);
                                                 trackProv.setAudioPlayerTrackIdList(trackIdList);
                                                 trackProv.notify();
 

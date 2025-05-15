@@ -6,10 +6,10 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
-import 'package:skrrskrr/model/comn/upload.dart';
+import 'package:skrrskrr/model/upload/upload.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class TrackProv extends ChangeNotifier {
   Upload model = Upload();
@@ -114,28 +114,12 @@ class TrackProv extends ChangeNotifier {
       }
   }
 
-  Future<void> updateAudioPlayerSwiper(int trackId, PlayerProv playerProv, String appScreenName) async {
-
-    int index = audioPlayerTrackList.indexWhere((item) => item.trackId == trackId);
-
-    if (index != -1) {
-
-      if (playerProv.currentPage == index) {
-        await playerProv.audioTrackMoveSetting(this, index);
-      } else {
-        playerProv.currentPage = index;
-      }
-
-      playerProv.carouselSliderController.jumpToPage(index);
-    }
-  }
-
   Future<bool> setTrackPlayCnt(int trackId) async {
 
     final url = '/api/setTrackPlayCnt';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         method: 'POST',
         headers: {
@@ -151,7 +135,7 @@ class TrackProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -162,11 +146,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getPlayListTrackList(int playListId, int offset, int limit) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getPlayListTrackList?loginMemberId=${loginMemberId}&playListId=${playListId}&limit=${limit}&offset=${offset}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -179,12 +163,12 @@ class TrackProv extends ChangeNotifier {
           initTrackToModel(["PlayListTrackList"]);
         }
 
-        addTracksToModel(Helpers.extractValue(response.body,"trackList"), "PlayListTrackList");
+        addTracksToModel(ComnUtils.extractValue(response.body,"trackList"), "PlayListTrackList");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -195,11 +179,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getSearchTrack(String searchText, int offset, int limit) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getSearchTrack?loginMemberId=${loginMemberId}&searchText=$searchText&limit=${limit}&offset=$offset';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -212,14 +196,14 @@ class TrackProv extends ChangeNotifier {
           initTrackToModel(["SearchTrackList"]);
         }
 
-        addTracksToModel(Helpers.extractValue(response.body, "trackList"), "SearchTrackList");
+        addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "SearchTrackList");
 
-        trackModel.searchTrackTotalCount = Helpers.extractValue(response.body, "totalCount");
+        trackModel.searchTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -230,11 +214,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getMemberPageTrack(int memberId, int offset, int limit) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getMemberPageTrack?memberId=${memberId}&loginMemberId=${loginMemberId}&limit=${limit}&offset=${offset}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -247,14 +231,14 @@ class TrackProv extends ChangeNotifier {
           initTrackToModel(["MemberPageTrackList"]);
         }
 
-        addTracksToModel(Helpers.extractValue(response.body, "trackList"), "MemberPageTrackList");
+        addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "MemberPageTrackList");
 
-        trackModel.allTrackTotalCount = Helpers.extractValue(response.body, "totalCount");
+        trackModel.allTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -266,11 +250,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getMemberPagePopularTrack(int memberId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getMemberPagePopularTrack?memberId=${memberId}&loginMemberId=${loginMemberId}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -281,12 +265,12 @@ class TrackProv extends ChangeNotifier {
 
         initTrackToModel(["MemberPagePopularTrackList"]);
 
-        addTracksToModel(Helpers.extractValue(response.body, "trackList"), "MemberPagePopularTrackList");
+        addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "MemberPagePopularTrackList");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -301,7 +285,7 @@ class TrackProv extends ChangeNotifier {
     final url = "/api/setTrackInfo";
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
             url,
             method: "PUT",
             headers: {
@@ -317,7 +301,7 @@ class TrackProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -331,7 +315,7 @@ class TrackProv extends ChangeNotifier {
     final url = "/api/setLockTrack";
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
             url,
             method: "PUT",
             headers: {
@@ -347,7 +331,7 @@ class TrackProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -358,11 +342,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getLikeTrack(int offset, int limit) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getLikeTrack?loginMemberId=${loginMemberId}&limit=${limit}&offset=${offset}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -375,14 +359,14 @@ class TrackProv extends ChangeNotifier {
           initTrackToModel(["MyLikeTrackList"]);
         }
 
-        addTracksToModel(Helpers.extractValue(response.body, "trackList"), "MyLikeTrackList" );
+        addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "MyLikeTrackList" );
 
-        trackModel.likeTrackTotalCount = Helpers.extractValue(response.body, "totalCount");
+        trackModel.likeTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -393,23 +377,23 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getLastListenTrackId() async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getLastListenTrackId?loginMemberId=${loginMemberId}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
           url,
           method: 'GET'
       );
 
       if (response.statusCode == 200) {
 
-        lastTrackId = Helpers.extractValue(response.body, "trackId").toString();
+        lastTrackId = ComnUtils.extractValue(response.body, "trackId").toString();
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -433,11 +417,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> setLastListenTrackId(int trackId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/setLastListenTrackId';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
           url,
           headers: {
             'Content-Type': 'application/json',
@@ -456,7 +440,7 @@ class TrackProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -467,11 +451,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> setAudioPlayerTrackIdList(List<int> audioPlayerTrackIdList) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/setAudioPlayerTrackIdList';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
           url,
           headers: {
             'Content-Type': 'application/json',
@@ -487,7 +471,7 @@ class TrackProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -498,11 +482,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> setTrackLike(trackId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/setTrackLike';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
           url,
           method: "POST",
           headers: {
@@ -518,7 +502,7 @@ class TrackProv extends ChangeNotifier {
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -537,14 +521,14 @@ class TrackProv extends ChangeNotifier {
 
       // uploadFile이 null이 아닌 경우에만 처리
       if (upload.uploadFile != null && upload.uploadFile!.files.isNotEmpty) {
-        fileList.add(await Helpers.fnSetUploadAudioFile(upload, "uploadFileList"));
+        fileList.add(await ComnUtils.fnSetUploadAudioFile(upload, "uploadFileList"));
       }
 
     }
 
     // 이미지 파일 추가
     if (uploadTrackList[0].uploadImage != null) {
-      fileList.add(await Helpers.fnSetUploadImageFile(uploadTrackList[0], "uploadImage"));
+      fileList.add(await ComnUtils.fnSetUploadImageFile(uploadTrackList[0], "uploadImage"));
     }
 
     return fileList;
@@ -554,13 +538,13 @@ class TrackProv extends ChangeNotifier {
   Future<void> uploadAlbum(List<Upload> uploadTrackList,
       String title, String info, bool isPrivacy, int categoryId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/albumUpload';
 
     try {
       List<http.MultipartFile?> fileList = await fnSetUploadFileList(uploadTrackList);
 
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         method: 'POST',
         headers: {
@@ -571,7 +555,7 @@ class TrackProv extends ChangeNotifier {
           'loginMemberId': loginMemberId,
           'albumNm': title,
           'trackInfo': info,
-          'trackCategoryId': categoryId,
+          'trackCategoryId': categoryId.toString(),
           'isTrackPrivacy': isPrivacy.toString(),
         },
       );
@@ -586,7 +570,7 @@ class TrackProv extends ChangeNotifier {
 
         print('$url - Successful');
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -598,7 +582,7 @@ class TrackProv extends ChangeNotifier {
   Future<void> uploadTrack(List<Upload> uploadTrackList,
       String title, String info, bool isPrivacy, int categoryId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/trackUpload';
 
     try {
@@ -609,15 +593,15 @@ class TrackProv extends ChangeNotifier {
 
       // 파일을 읽어들여 바이트 배열로 변환
       if (upload.uploadFile != null && upload.uploadFile!.files.isNotEmpty) {
-          fileList.add(await Helpers.fnSetUploadAudioFile(upload, "uploadFile"));
+          fileList.add(await ComnUtils.fnSetUploadAudioFile(upload, "uploadFile"));
       }
 
       // 이미지 파일 추가
       if (uploadTrackList[0].uploadImage != null) {
-        fileList.add(await Helpers.fnSetUploadImageFile(upload, "uploadImage"));
+        fileList.add(await ComnUtils.fnSetUploadImageFile(upload, "uploadImage"));
       }
 
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         method: 'POST',
         headers: {
@@ -643,7 +627,7 @@ class TrackProv extends ChangeNotifier {
         print('$url - Successful');
         notify();
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print('$url - Fail');
@@ -653,11 +637,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getUploadTrack(int offset, int limit) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getUploadTrack?loginMemberId=${loginMemberId}&limit=${limit}&offset=${offset}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -670,14 +654,14 @@ class TrackProv extends ChangeNotifier {
           initTrackToModel(["UploadTrackList"]);
         }
 
-        addTracksToModel(Helpers.extractValue(response.body, "trackList"), "UploadTrackList" );
+        addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "UploadTrackList" );
 
-        trackModel.uploadTrackTotalCount = Helpers.extractValue(response.body, "totalCount");
+        trackModel.uploadTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print('$url - Fail');
@@ -689,11 +673,11 @@ class TrackProv extends ChangeNotifier {
 
     await getLastListenTrackId();
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getAudioPlayerTrackList?loginMemberId=$loginMemberId';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -704,12 +688,12 @@ class TrackProv extends ChangeNotifier {
 
         audioPlayerTrackList = [];
 
-        addAudioPlayerTracksToModel(Helpers.extractValue(response.body, "trackList"), "AudioPlayerTrackList");
+        addAudioPlayerTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "AudioPlayerTrackList");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print('$url - Fail');
@@ -719,11 +703,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getTrackInfo(trackId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getTrackInfo?trackId=${trackId}&loginMemberId=${loginMemberId}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -734,12 +718,12 @@ class TrackProv extends ChangeNotifier {
 
         trackInfoModel = Track();
 
-        trackInfoModel = Track.fromJson(Helpers.extractValue(response.body, "track"));
+        trackInfoModel = Track.fromJson(ComnUtils.extractValue(response.body, "track"));
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -750,11 +734,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getLastListenTrack() async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getLastListenTrackList?loginMemberId=${loginMemberId}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -765,12 +749,12 @@ class TrackProv extends ChangeNotifier {
 
         initTrackToModel(["LastListenTrackList",]);
 
-        addTracksToModel(Helpers.extractValue(response.body, "trackList"), "LastListenTrackList");
+        addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "LastListenTrackList");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -781,11 +765,11 @@ class TrackProv extends ChangeNotifier {
 
   Future<bool> getRecommendTrackList() async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getRecommendTrack?loginMemberId=${loginMemberId}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -796,12 +780,12 @@ class TrackProv extends ChangeNotifier {
 
         initTrackToModel(["RecommendTrackList",]);
 
-        addTracksToModel(Helpers.extractValue(response.body, "trackList"), "RecommendTrackList");
+        addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "RecommendTrackList");
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);

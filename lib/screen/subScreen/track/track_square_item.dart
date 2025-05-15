@@ -12,9 +12,9 @@ import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
-import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
-import 'package:skrrskrr/screen/subScreen/comn/track_bar_graph_animation.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/screen/subScreen/comn/graph/track_bar_graph_animation.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 
 class TrackSquareItem extends StatefulWidget {
@@ -50,20 +50,21 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
       onTap: () async {
         if (!widget.trackItem.isPlaying) {
           widget.trackItem.isPlaying = true;
-
           trackProv.initCurrentTrackPlaying(playerProv.currentPage);
 
-          await playerProv.initAudioPlayer(
-              trackProv,
-              widget.trackItem.trackId!,
-              widget.appScreenName!,
-              widget.initAudioPlayerTrackListCallBack,
-              widget.trackItemIdx,
-          );
+          if (playerProv.currentAppScreen != widget.appScreenName) {
+            playerProv.currentAppScreen = widget.appScreenName;
+            await playerProv.initAudioPlayer(trackProv, widget.initAudioPlayerTrackListCallBack, widget.trackItemIdx);
+          } else {
+            await playerProv.reloadDeleteTrack(trackProv,widget.trackItem,widget.trackItemIdx!);
+          }
 
-          await trackProv.updateAudioPlayerSwiper(widget.trackItem.trackId!,playerProv, widget.appScreenName!);
+          print(widget.trackItem.trackNm);
+          await playerProv.updateAudioPlayerSwiper(widget.trackItem.trackId!,trackProv);
 
           await playerProv.togglePlayPause(false, trackProv);
+
+          playerProv.notify();
 
         } else {
           GoRouter.of(context).push('/trackInfo',

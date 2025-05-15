@@ -17,6 +17,7 @@ class CommentModel {
   String? memberNickName;
 
   int? parentCommentMemberId;
+
   String? parentCommentMemberNickName;
 
   bool? commentLikeStatus;

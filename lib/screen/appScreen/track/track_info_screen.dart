@@ -7,13 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/model/comn/upload.dart';
+import 'package:skrrskrr/model/upload/upload.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
@@ -22,18 +20,19 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 
-import 'package:skrrskrr/screen/modal/comment/comment.dart';
-import 'package:skrrskrr/screen/modal/track/info_edit_modal.dart';
+import 'package:skrrskrr/screen/modal/comment/comment_modal.dart';
+import 'package:skrrskrr/screen/modal/Edit/comn_edit_modal.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
+import 'package:skrrskrr/screen/subScreen/comn/button/share_btn_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/slider/circular_slider_track_shape.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_comment_btn.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_like_btn.dart';
-import 'package:skrrskrr/screen/subScreen/comn/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/screen/subScreen/comn/button/track_comment_btn_item.dart';
+import 'package:skrrskrr/screen/subScreen/comn/button/track_like_btn_item.dart';
+import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
 
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class TrackInfoScreen extends StatefulWidget {
   const TrackInfoScreen({
@@ -71,7 +70,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
   }
 
   void _loadMemberId() async {
-    loginMemberId = await Helpers.getMemberId();
+    loginMemberId = await ComnUtils.getMemberId();
   }
 
 
@@ -99,7 +98,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
 
             widget.track.updateApiData(trackProv.trackInfoModel);
             trackProv.trackInfoModel = widget.track;
-            isAuth = Helpers.getIsAuth(widget.track.memberId.toString(), loginMemberId!);
+            isAuth = ComnUtils.getIsAuth(widget.track.memberId.toString(), loginMemberId!);
       
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +116,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                               GestureDetector(
                                 onTap: () async {
                                   if (isAuth) {
-                                    trackProv.trackInfoModel.trackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
+                                    trackProv.trackInfoModel.trackImagePath = await ComnUtils.pickImage(trackProv.trackInfoModel.trackId, false, context);
                                     setState(() {});
                                   }
                                 },
@@ -150,7 +149,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                     if (isEdit)...[
                                       GestureDetector(
                                         onTap:() async {
-                                          String? newTrackImagePath = await Helpers.pickImage(trackProv.trackInfoModel.trackId, false, context);
+                                          String? newTrackImagePath = await ComnUtils.pickImage(trackProv.trackInfoModel.trackId, false, context);
                                           if (newTrackImagePath != null) {
                                             trackProv.trackInfoModel.trackImagePath = newTrackImagePath;
                                             setState(() {});
@@ -245,7 +244,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                               Text(
                                                 widget.track.trackCategoryId == null
                                                     ? "null"
-                                                    : Helpers.getCategory(widget.track.trackCategoryId!),
+                                                    : ComnUtils.getCategory(widget.track.trackCategoryId!),
                                                 style: TextStyle(color: Colors.grey),
                                               ),
                                               SizedBox(
@@ -277,7 +276,6 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                                   margin: EdgeInsets.only(top: 2.5.h) ,
                                                   child: Row(
                                                     children: [
-                                                      if (!playerProv.playerModel.fullScreen)
                                                         Stack(
                                                           children: [
                                                               Positioned(
@@ -331,7 +329,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                                                     List<int> trackIdList = trackProv.audioPlayerTrackList.map((item) => int.parse(item.trackId.toString())).toList();
                                                                     trackProv.setAudioPlayerTrackIdList(trackIdList);
 
-                                                                    await trackProv.updateAudioPlayerSwiper(widget.track.trackId!,playerProv,"TrackInfoScreen");
+                                                                    await playerProv.updateAudioPlayerSwiper(widget.track.trackId!,trackProv);
                                                                     playerProv.playerModel.isPlaying = false;
                                                                   }
 
@@ -356,9 +354,19 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                       children: [
                                         Row(
                                           children: [
-                                            TrackLikeBtn(track: widget.track),
+                                            TrackLikeBtnItem(track: widget.track),
                                             SizedBox(width: 10,),
-                                            TrackCommentBtn( track : widget.track),
+                                            TrackCommentBtnItem( track : widget.track),
+                                            SizedBox(width: 10,),
+
+
+
+                                            ShareBtn(
+                                                imagePath: widget.track.trackImagePath!,
+                                                title: widget.track.trackNm!,
+                                                info: "🎵 This track is too good not to share!"
+                                            ),
+
                                           ],
                                         ),
                                         if (isEdit)...[

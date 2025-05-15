@@ -9,7 +9,6 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/player/player.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
-import 'package:skrrskrr/screen/modal/new_player.dart';
 
 class PlayerProv extends ChangeNotifier {
 
@@ -38,22 +37,18 @@ class PlayerProv extends ChangeNotifier {
     playerModel.dragOffset = Offset.zero;
   }
 
-  Future<void> initAudioPlayer(TrackProv trackProv,
-      int trackId,
-      String appScreenName,
+  Future<void> initAudioPlayer(
+      TrackProv trackProv,
       Function initAudioPlayerTrackListCallBack,
-      trackItemIdx) async{
-    if (currentAppScreen != appScreenName) {
-      currentAppScreen = appScreenName;
-      await initAudioPlayerTrackListCallBack();
-      await initAudio(trackProv, trackItemIdx);
-    }
+      trackItemIdx) async {
+
+    await initAudioPlayerTrackListCallBack();
+    await initAudio(trackProv, trackItemIdx);
   }
 
   Future<void> setupQueue(List<Track> audioTrackPlayList, int priorityIndex) async {
 
     if (currentRequest != null && !currentRequest!.isCompleted) {
-      print("🚫 기존 요청을 중단하고 새 요청을 실행합니다!");
       currentRequest!.complete();
       currentRequest = null;
     }
@@ -87,7 +82,6 @@ class PlayerProv extends ChangeNotifier {
     await Future.any([
       Future.wait(futureTracks).then((sources) async {
         for (int i = 0; i < audioTrackPlayList.length; i++) {
-          print('트랙 로드 인덱스 : $trackIndex');
           if (i != priorityIndex) {
             await _playlist.removeAt(i);
             await _playlist.insert(i, sources[trackIndex]);
@@ -97,7 +91,7 @@ class PlayerProv extends ChangeNotifier {
         currentRequest!.complete();
         currentRequest = null;
       }),
-      currentRequest!.future
+      currentRequest?.future ?? Future.value()
     ]);
   }
 
@@ -150,6 +144,32 @@ class PlayerProv extends ChangeNotifier {
     // 총 재생 시간 업데이트
     playerModel.totalDuration = _audioPlayer.playbackEvent.duration ?? Duration.zero;
 
+  }
+
+  Future<void> updateAudioPlayerSwiper(int trackId, TrackProv trackProv) async {
+
+    int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId == trackId);
+
+    if (index != -1) {
+
+      if (currentPage == index) {
+        await audioTrackMoveSetting(trackProv, index);
+      } else {
+        currentPage = index;
+      }
+      carouselSliderController.jumpToPage(index);
+    }
+  }
+
+  Future<void> reloadDeleteTrack(TrackProv trackProv,Track trackItem, int trackItemIdx) async {
+
+    int index = trackProv.audioPlayerTrackList.indexWhere((track) => track.trackId == trackItem.trackId);
+
+    if (index == -1) {
+      trackProv.audioPlayerTrackList.insert(trackItemIdx, trackItem);
+      await addTrack(trackItem, trackItemIdx);
+      trackProv.notify();
+    }
   }
 
   Future<void> audioTrackMoveSetting(TrackProv trackProv, int index) async{

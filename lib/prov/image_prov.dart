@@ -5,11 +5,11 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:skrrskrr/model/comn/upload.dart';
+import 'package:skrrskrr/model/upload/upload.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class ImageProv extends ChangeNotifier {
   void notify() {
@@ -32,10 +32,10 @@ class ImageProv extends ChangeNotifier {
 
     try {
       if (upload != null) {
-        fileList.add(await Helpers.fnSetUploadImageFile(upload, "uploadImage"));
+        fileList.add(await ComnUtils.fnSetUploadImageFile(upload, "uploadImage"));
       }
 
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         method: "POST",
         headers: {
@@ -48,9 +48,9 @@ class ImageProv extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        return Helpers.extractValue(response.body, 'memberImagePath').toString();
+        return ComnUtils.extractValue(response.body, 'memberImagePath').toString();
       }
-      throw Exception(Helpers.extractValue(response.body, 'message'));
+      throw Exception(ComnUtils.extractValue(response.body, 'message'));
     } catch (error) {
       print(error);
       print('$url - Fail');
@@ -65,10 +65,10 @@ class ImageProv extends ChangeNotifier {
 
     try {
       if (upload != null) {
-        fileList.add(await Helpers.fnSetUploadImageFile(upload, "uploadImage"));
+        fileList.add(await ComnUtils.fnSetUploadImageFile(upload, "uploadImage"));
       }
 
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         method: "POST",
         headers: {
@@ -81,9 +81,9 @@ class ImageProv extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        return Helpers.extractValue(response.body, "trackImagePath").toString();
+        return ComnUtils.extractValue(response.body, "trackImagePath").toString();
       }
-      throw Exception(Helpers.extractValue(response.body, 'message'));
+      throw Exception(ComnUtils.extractValue(response.body, 'message'));
     } catch (error) {
       print(error);
       print('$url - Fail');

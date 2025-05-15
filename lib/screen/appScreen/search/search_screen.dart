@@ -6,9 +6,9 @@ import 'package:skrrskrr/model/search/search_history_model.dart';
 import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
-import 'package:skrrskrr/screen/subScreen/search/search_find.dart';
-import 'package:skrrskrr/screen/subScreen/search/search_main.dart';
-import 'package:skrrskrr/screen/subScreen/search/search_result.dart';
+import 'package:skrrskrr/screen/subScreen/search/search_find_sub_screen.dart';
+import 'package:skrrskrr/screen/subScreen/search/search_main_sub_screen.dart';
+import 'package:skrrskrr/screen/subScreen/search/search_result_sub_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({
@@ -161,10 +161,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   const SizedBox(height: 15),
 
                   if (searchId == 0)
-                    SearchMainScreen(recentListenTrackHistory: recentListenTrackHistory,)
+                    SearchMainSubScreen(recentListenTrackHistory: recentListenTrackHistory,)
 
                   else if (searchId == 1)
-                    SearchFindScreen(
+                    SearchFindSubScreen(
                       onTap: (String searchHistory) async {
                         _focusNode.unfocus();
                         await searchProv.setSearchHistory(searchHistory, 0);
@@ -175,7 +175,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     )
 
                   else
-                    SearchResultScreen(searchText: _searchController.text),
+                    SearchResultSubScreen(searchText: _searchController.text),
 
                 ],
               );

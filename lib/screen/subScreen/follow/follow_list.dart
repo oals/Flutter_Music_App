@@ -7,7 +7,7 @@ import 'package:skrrskrr/model/follow/follow_info_model.dart';
 import 'package:skrrskrr/model/follow/follow_model.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/screen/subScreen/follow/follow_item.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class FollowList extends StatefulWidget {
   const FollowList({

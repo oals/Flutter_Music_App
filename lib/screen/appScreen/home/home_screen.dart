@@ -16,10 +16,11 @@ import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/category/category_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/member/member_scroll_horizontal_item.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_list_item.dart';
+import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
 
-import 'package:skrrskrr/screen/subScreen/playlist/play_list_square_item.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/playlist_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
+import 'package:skrrskrr/utils/share_utils.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -35,6 +36,17 @@ class _HomeScreenStateState extends State<HomeScreen> {
   late MemberProv memberProv;
   late PlayerProv playerProv;
   late TrackProv trackProv;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    ShareUtils.deepLinkListener();
+
+    ShareUtils.deepLinkInit();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +113,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
 
                                             List<int> trackIdList = trackProv.recommendTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
-                                            trackProv.audioPlayerTrackList = trackProv.recommendTrackList;
+                                            trackProv.audioPlayerTrackList = List.from(trackProv.recommendTrackList);
                                             trackProv.setAudioPlayerTrackIdList(trackIdList);
                                             trackProv.notify();
 
@@ -146,7 +158,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                PlayListSquareItem(
+                                PlaylistSquareItem(
                                   playList: playListProv.recommendAlbumList.playList,
                                   isHome: true,
                                   isAlbum : true,
@@ -181,7 +193,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                PlayListSquareItem(
+                                PlaylistSquareItem(
                                   playList: playListProv.recommendPlayListsList.playList,
                                   isHome: true,
                                   isAlbum : false,
@@ -248,7 +260,6 @@ class _HomeScreenStateState extends State<HomeScreen> {
                                         trackProv.audioPlayerTrackList = List.from(trackProv.lastListenTrackList);
                                         trackProv.setAudioPlayerTrackIdList(trackIdList);
                                         trackProv.notify();
-
                                       },
                                     ),
 

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/notifications/notifications_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/utils/helpers.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationsProv extends ChangeNotifier{
@@ -30,11 +30,11 @@ class NotificationsProv extends ChangeNotifier{
 
   Future<bool> setDelNotificationIsView() async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/setDelNotificationIsView';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
           url,
           method: "POST",
           headers: {
@@ -54,7 +54,7 @@ class NotificationsProv extends ChangeNotifier{
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -64,11 +64,11 @@ class NotificationsProv extends ChangeNotifier{
   }
 
   Future<bool> setAllNotificationIsView() async {
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/setAllNotificationIsView';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
           url,
           method : "POST",
           headers: {
@@ -88,7 +88,7 @@ class NotificationsProv extends ChangeNotifier{
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -99,11 +99,11 @@ class NotificationsProv extends ChangeNotifier{
 
   Future<bool> setNotificationIsView(int notificationId) async {
 
-    final String loginMemberId = await Helpers.getMemberId();
+    final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/setNotificationIsView';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
             url,
             method: "POST",
             headers: {
@@ -117,7 +117,7 @@ class NotificationsProv extends ChangeNotifier{
 
       if (response.statusCode == 200) {
 
-        bool notificationIsView = Helpers.extractValue(response.body, 'notificationIsView');
+        bool notificationIsView = ComnUtils.extractValue(response.body, 'notificationIsView');
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('notificationsIsView', notificationIsView);
         setNotificationsIsView(notificationIsView);
@@ -125,7 +125,7 @@ class NotificationsProv extends ChangeNotifier{
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
@@ -137,12 +137,12 @@ class NotificationsProv extends ChangeNotifier{
 
   Future<bool> getNotifications(offset) async {
 
-    String loginMemberId = await Helpers.getMemberId();
+    String loginMemberId = await ComnUtils.getMemberId();
 
     final url = '/api/getNotifications?loginMemberId=${loginMemberId}&limit=${20}&offset=${offset}';
 
     try {
-      http.Response response = await Helpers.apiCall(
+      http.Response response = await ComnUtils.apiCall(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -155,16 +155,16 @@ class NotificationsProv extends ChangeNotifier{
           model = NotificationsModel();
         }
 
-        for (var item in Helpers.extractValue(response.body, 'notificationList')) {
+        for (var item in ComnUtils.extractValue(response.body, 'notificationList')) {
           model.notificationList.add(NotificationsModel.fromJson(item));
         }
 
-        model.totalCount = Helpers.extractValue(response.body, 'totalCount');
+        model.totalCount = ComnUtils.extractValue(response.body, 'totalCount');
 
         print('$url - Successful');
         return true;
       } else {
-        throw Exception(Helpers.extractValue(response.body, 'message'));
+        throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
     } catch (error) {
       print(error);
