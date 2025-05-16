@@ -359,9 +359,9 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                             TrackCommentBtnItem( track : widget.track),
                                             SizedBox(width: 10,),
 
-
-
                                             ShareBtn(
+                                                shareId: 2,
+                                                shareItemId: widget.track.trackId!,
                                                 imagePath: widget.track.trackImagePath!,
                                                 title: widget.track.trackNm!,
                                                 info: "🎵 This track is too good not to share!"

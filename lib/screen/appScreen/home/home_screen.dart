@@ -6,10 +6,12 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
+import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
@@ -40,12 +42,21 @@ class _HomeScreenStateState extends State<HomeScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    print('home init');
     super.initState();
+    deepLinkMove();
+  }
 
-    ShareUtils.deepLinkListener();
+  void deepLinkMove() async {
 
-    ShareUtils.deepLinkInit();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? deepLink = prefs.getString("deepLink");
 
+    if (deepLink != null && deepLink.isNotEmpty) {
+      Uri uri = Uri.parse(prefs.getString("deepLink")!);
+      ShareUtils.handleDeepLink(uri);
+      prefs.setString('deepLink',"");
+    }
   }
 
   @override

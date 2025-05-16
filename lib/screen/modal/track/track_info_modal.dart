@@ -14,6 +14,7 @@ import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/button/share_btn_item.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
+import 'package:skrrskrr/utils/share_utils.dart';
 
 class TrackInfoModal extends StatefulWidget {
   const TrackInfoModal({
@@ -231,13 +232,26 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
 
                 GestureDetector(
                   onTap:() async {
-                    // String imageUrl = Provider.of<ImageProv>(context,listen: false).imageLoader(widget.track.trackImagePath);
 
-                    // await Helpers.sharePlaylistWithImage(
-                    //     widget.track.trackNm!,
-                    //     "🎵 This track is too good not to share!",
-                    //     imageUrl
-                    // );
+                    AppBottomModalRouter.fnModalRouter(
+                        context,
+                        9,
+                        callBack: (String selectShareNm) async {
+
+                          Map<String, String> shareMap = {
+                            "title": widget.track.trackNm!,
+                            "info":  "🎵 This track is too good not to share!",
+                            "imagePath": widget.track.trackImagePath!,
+                            "shareId" : "1",
+                            "shareItemId" : widget.track.trackId.toString(),
+                            "selectShareNm" : selectShareNm,
+                          };
+
+
+                          await ShareUtils.sendToShareApp(shareMap, context);
+                        });
+
+
                   },
                   child: Row(
                     children: [

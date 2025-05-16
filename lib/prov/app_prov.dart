@@ -30,7 +30,6 @@ class AppProv extends ChangeNotifier{
 
   AppProv(this.trackProv, this.playListProv, this.memberProv, this.notificationsProv);
 
-
   int currentIndex = 0;
   Widget appScreenWidget = Container();
   bool isFullScreen = false;

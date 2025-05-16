@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/utils/comn_utils.dart';
+import 'package:skrrskrr/utils/share_utils.dart';
 
-class SelectShareModal extends StatelessWidget {
+class SelectShareModal extends StatefulWidget {
   const SelectShareModal({
     super.key,
     required this.callBack,
@@ -12,9 +13,31 @@ class SelectShareModal extends StatelessWidget {
   final Function callBack;
 
   @override
+  State<SelectShareModal> createState() => _SelectShareModalState();
+}
+
+class _SelectShareModalState extends State<SelectShareModal> {
+  bool isTwitterInstalled = false;
+  bool isKakaoTalkInstalled = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkInstalledApps();
+  }
+
+  Future<void> checkInstalledApps() async {
+    isTwitterInstalled = await ShareUtils.isShareAppInstalled("com.twitter.android");
+    isKakaoTalkInstalled = await ShareUtils.isShareAppInstalled("com.kakao.talk");
+    setState(() {});
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+
     return Container(
-      // color: Colors.black,
       decoration: BoxDecoration(
           color: Colors.black,
         border: Border(
@@ -46,8 +69,14 @@ class SelectShareModal extends StatelessWidget {
               Column(
                 children: [
                   GestureDetector(
-                    onTap: (){
-                      callBack("KakaoTalk");
+                    onTap: () async {
+
+                      if (isKakaoTalkInstalled) {
+                        widget.callBack("KakaoTalk");
+                      } else {
+                        ShareUtils.openPlayStore("com.kakao.talk");
+                      }
+
                     },
                     child: ClipOval(
                       child: Container(
@@ -56,20 +85,37 @@ class SelectShareModal extends StatelessWidget {
                         color: Colors.white10,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: SvgPicture.asset(
-                            width: 12.w,
-                            height: 6.h,
-                            'assets/images/kakao_talk.svg',
-                            // color: Colors.white,
+                          child: Stack(
+                            children: [
+                              SvgPicture.asset(
+                                width: 12.w,
+                                height: 6.h,
+                                'assets/images/kakao_talk.svg',
+                              ),
+
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                child: ClipOval(
+                                  child: Container(
+                                    width: 12.w,
+                                    height: 6.h,
+                                    color: Colors.white10,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
 
-                  Text("KakaoTalk",
+                  Text( "KakaoTalk",
                     style: TextStyle(
-                        color: Colors.white,
+                        color: isKakaoTalkInstalled ? Colors.white : Colors.white10,
                         fontSize: 13,
                         fontWeight: FontWeight.w500
                     ),
@@ -79,8 +125,12 @@ class SelectShareModal extends StatelessWidget {
               Column(
                 children: [
                   GestureDetector(
-                    onTap: (){
-                      callBack("Twitter");
+                    onTap: () async{
+                      if (isTwitterInstalled) {
+                        widget.callBack("X");
+                      } else {
+                        ShareUtils.openPlayStore("com.twitter.android");
+                      }
                     },
                     child: ClipOval(
                       child: Container(
@@ -101,7 +151,7 @@ class SelectShareModal extends StatelessWidget {
                   ),
                   Text("X",
                     style: TextStyle(
-                        color: Colors.white,
+                        color: isTwitterInstalled ? Colors.white : Colors.white10,
                         fontSize: 13,
                         fontWeight: FontWeight.w500
                     ),
@@ -128,7 +178,7 @@ class SelectShareModal extends StatelessWidget {
                           child: Icon(Icons.more_horiz, color: Colors.white,size: 5.w,)),
                     ),
                     onPressed: () {
-                      callBack("More");
+                      widget.callBack("More");
                     },
                   ),
                   Text("More",

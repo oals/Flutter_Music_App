@@ -95,9 +95,9 @@ class _AppScreenState extends State<AppScreen> {
   void didUpdateWidget(covariant AppScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.child is SplashScreen && _childNotifier.value is! HomeScreen) {
-      _childNotifier.value = HomeScreen();
-    }
+    // if (oldWidget.child is SplashScreen && _childNotifier.value is! HomeScreen) {
+    //   _childNotifier.value = HomeScreen();
+    // }
 
     if (widget.child == appProv.appScreenWidget ) {
       _childNotifier.value = widget.child;
@@ -133,6 +133,7 @@ class _AppScreenState extends State<AppScreen> {
                 duration: const Duration(milliseconds: 700),
                 child: _childNotifier.value,
                 transitionBuilder: (Widget child, Animation<double> animation) {
+
                   return FadeTransition(
                       opacity: animation, child: child);
                 },

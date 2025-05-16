@@ -81,6 +81,18 @@ final router = GoRouter(
 
         },
       ),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) {
+
+          return commonPageBuilder(
+            context,
+            state,
+            LoginScreen(),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
 
       GoRoute(
         path: '/home/:isShowAudioPlayer',
@@ -94,19 +106,6 @@ final router = GoRouter(
             state,
             HomeScreen(),
             isShowAudioPlayer: isShowAudioPlayer,
-          );
-        },
-      ),
-
-      GoRoute(
-        path: '/login',
-        pageBuilder: (context, state) {
-
-          return commonPageBuilder(
-            context,
-            state,
-            LoginScreen(),
-            isShowAudioPlayer: true,
           );
         },
       ),

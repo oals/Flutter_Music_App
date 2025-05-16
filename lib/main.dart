@@ -28,6 +28,7 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/utils/permissions.dart';
+import 'package:skrrskrr/utils/share_utils.dart';
 
 
 void main() async {
@@ -37,6 +38,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions,  // FirebaseOptions 설정
   );
+
+  ShareUtils.deepLinkListener();
+  ShareUtils.deepLinkInit();
 
   runApp(
     MultiProvider(
