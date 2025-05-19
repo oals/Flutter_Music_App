@@ -50,12 +50,21 @@ class _MemberScrollHorizontalItemState
                       print('이동');
                       GoRouter.of(context).push('/memberPage/${widget.memberList[i].followMemberId}');
                     },
-                    child: ClipOval(
-                      child: CustomCachedNetworkImage(
-                          imagePath:widget.memberList![i].followImagePath,
-                          imageWidth : 25.w,
-                          imageHeight : 12.5.h,
-                        isBoxFit: true,
+                    child: Container(
+                      width: 25.w,
+                      height: 12.5.h,
+                      padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(100)
+                      ),
+                      child: ClipOval(
+                        child: CustomCachedNetworkImage(
+                            imagePath:widget.memberList![i].followImagePath,
+                            imageWidth : 25.w,
+                            imageHeight : 12.5.h,
+                          isBoxFit: true,
+                        ),
                       ),
                     ),
 

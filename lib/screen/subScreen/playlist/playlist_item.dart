@@ -152,19 +152,26 @@ class _PlaylistItemState extends State<PlaylistItem> {
                                 ),
                               ),
 
-
                             ],
                           ),
 
                           SizedBox(height: 3,),
                           Row(
                             children: [
-                              ClipOval(
-                                child: CustomCachedNetworkImage(
-                                  imagePath: widget.playList.memberImagePath,
-                                  imageWidth: 3.5.w,
-                                  imageHeight: null,
-                                  isBoxFit: true,
+                              Container(
+                                width: 3.5.w,
+                                padding: EdgeInsets.all(1),
+                                decoration: BoxDecoration(
+                                    color: Colors.white10,
+                                    borderRadius: BorderRadius.circular(100)
+                                ),
+                                child: ClipOval(
+                                  child: CustomCachedNetworkImage(
+                                    imagePath: widget.playList.memberImagePath,
+                                    imageWidth: 3.5.w,
+                                    imageHeight: null,
+                                    isBoxFit: true,
+                                  ),
                                 ),
                               ),
                               SizedBox(width: 3,),

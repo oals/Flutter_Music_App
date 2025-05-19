@@ -35,7 +35,6 @@ dependencies:
   cached_network_image: ^3.2.0
   flutter_dotenv: ^5.0.2
   flutter_secure_storage : ^9.2.4
-  flutter_vlc_player: ^7.4.2
   just_audio: ^0.9.46
   carousel_slider_plus: 7.1.0
   share_plus: 11.0.0
@@ -44,9 +43,12 @@ dependencies:
   uni_links: 0.5.1
   device_apps: 2.2.0
 
+
+
   flutter:
     sdk: flutter
   firebase_messaging: ^15.1.5
+  audio_service: ^0.18.17
 
 flutter:
   uses-material-design: true

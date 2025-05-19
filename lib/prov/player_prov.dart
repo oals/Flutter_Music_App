@@ -306,4 +306,5 @@ class PlayerProv extends ChangeNotifier {
     playerModel.fullScreen = true;
     notify();
   }
+
 }

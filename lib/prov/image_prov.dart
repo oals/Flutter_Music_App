@@ -21,7 +21,9 @@ class ImageProv extends ChangeNotifier {
     if (imagePath == "" || imagePath == null) {
       imagePath = "C:/uploads/trackImage/defaultTrackImage";
     }
+
     final url = dotenv.get('API_URL') + '/viewer/imageLoader?trackImagePath=${imagePath}';
+
     return url;
   }
 

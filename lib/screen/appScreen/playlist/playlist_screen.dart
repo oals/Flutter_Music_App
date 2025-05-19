@@ -208,12 +208,20 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
 
                           Row(
                             children: [
-                              ClipOval(
-                                child: CustomCachedNetworkImage(
-                                    imagePath: widget.playList.memberImagePath,
-                                    imageWidth: 3.5.w,
-                                    imageHeight: null,
-                                  isBoxFit: true,
+                              Container(
+                                width: 3.5.w,
+                                padding: EdgeInsets.all(1),
+                                decoration: BoxDecoration(
+                                    color: Colors.white10,
+                                    borderRadius: BorderRadius.circular(100)
+                                ),
+                                child: ClipOval(
+                                  child: CustomCachedNetworkImage(
+                                      imagePath: widget.playList.memberImagePath,
+                                      imageWidth: 3.5.w,
+                                      imageHeight: null,
+                                    isBoxFit: true,
+                                  ),
                                 ),
                               ),
                               SizedBox(width: 3,),
@@ -267,19 +275,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
 
-                                  ShareBtn(
-                                      shareId: 1,
-                                      shareItemId : widget.playList.playListId!,
-                                      imagePath: widget.playList.playListImagePath!,
-                                      title: widget.playList.playListNm!,
-                                      info: "🎵 This playlist is too good not to share!",
-
-                                  ),
-
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-
                                   Row(
                                     children: [
                                       GestureDetector(
@@ -314,16 +309,23 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                       ),
                                     ],
                                   ),
+
                                   SizedBox(
                                     width: 5,
                                   ),
-                                  SvgPicture.asset(
-                                    'assets/images/repeat.svg',
-                                    color: Colors.white,
+                                  ShareBtn(
+                                    shareId: 1,
+                                    shareItemId : widget.playList.playListId!,
+                                    imagePath: widget.playList.playListImagePath!,
+                                    title: widget.playList.playListNm!,
+                                    info: "🎵 This playlist is too good not to share!",
+
                                   ),
+
                                   SizedBox(
                                     width: 5,
                                   ),
+
                                   SvgPicture.asset(
                                     'assets/images/more.svg',
                                     color: Colors.white,

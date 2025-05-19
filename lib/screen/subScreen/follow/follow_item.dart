@@ -51,12 +51,20 @@ class _FollowItemState extends State<FollowItem> {
             child: Row(
               children: [
 
-                ClipOval(
-                  child: CustomCachedNetworkImage(
-                    imagePath: widget.filteredFollowItem!.followImagePath,
-                    imageWidth : 13.w,
-                    imageHeight : null,
-                    isBoxFit: true,
+                Container(
+                  width: 13.w,
+                  padding: EdgeInsets.all(1.5),
+                  decoration: BoxDecoration(
+                      color: Colors.white10,
+                      borderRadius: BorderRadius.circular(100)
+                  ),
+                  child: ClipOval(
+                    child: CustomCachedNetworkImage(
+                      imagePath: widget.filteredFollowItem!.followImagePath,
+                      imageWidth : 13.w,
+                      imageHeight : null,
+                      isBoxFit: true,
+                    ),
                   ),
                 ),
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -19,28 +20,53 @@ import 'package:skrrskrr/prov/comment_prov.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 
+
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
+import 'package:skrrskrr/prov/test.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/utils/permissions.dart';
 import 'package:skrrskrr/utils/share_utils.dart';
 
+late final AudioHandler _audioHandler;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "env/config.env");
   KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_NATIVE_APP_KEY'));
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions,  // FirebaseOptions 설정
-  );
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions,
+    );
+  }
 
   ShareUtils.deepLinkListener();
   ShareUtils.deepLinkInit();
+
+  _audioHandler = await AudioService.init(
+    builder: () => MyAudioHandler(),
+    config: AudioServiceConfig(
+      androidNotificationChannelId: 'com.mycompany.myapp.channel.audio',
+      androidNotificationChannelName: 'Music playback',
+    ),
+  );
+
+  // await _audioHandler.playMediaItem(
+  //     MediaItem(
+  //       id: 'https://example.com/audio.mp3',
+  //       album: '346346346346e',
+  //       title: '124124124',
+  //       artist: '235235235235',
+  //       duration: const Duration(milliseconds: 123456),
+  //       artUri: Uri.parse('https://example.com/album.jpg'),
+  //     )
+  // );
+
 
   runApp(
     MultiProvider(
@@ -84,7 +110,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     FcmNotifications.initializeNotification(context);  // Firebase 알림 초기화
-    print('메인 빌드');
+
+    print('메인 빌드 테스트');
+
+
+    MyAudioHandler myAudioHandler = MyAudioHandler();
+    myAudioHandler.loadAndPlay("1245124124");
+
 
     return ResponsiveSizer(  // 화면 크기 자동 조정
       builder: (context, orientation, screenType) {

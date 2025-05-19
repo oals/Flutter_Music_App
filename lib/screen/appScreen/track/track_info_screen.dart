@@ -362,7 +362,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                             ShareBtn(
                                                 shareId: 2,
                                                 shareItemId: widget.track.trackId!,
-                                                imagePath: widget.track.trackImagePath!,
+                                                imagePath: widget.track.trackImagePath ?? "",
                                                 title: widget.track.trackNm!,
                                                 info: "🎵 This track is too good not to share!"
                                             ),
@@ -438,14 +438,24 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                 },
                                 child: Column(
                                   children: [
-                                    ClipOval(
-                                      child: CustomCachedNetworkImage(
-                                        imagePath: widget.track.memberImagePath,
-                                        imageWidth: 25.w,
-                                        imageHeight: 12.5.h,
-                                        isBoxFit: true,
+                                      Container(
+                                        width: 25.w,
+                                        height: 12.5.h,
+                                        padding: EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white10,
+                                          borderRadius: BorderRadius.circular(100)
+                                        ),
+                                        child: ClipOval(
+                                        child: CustomCachedNetworkImage(
+                                            imagePath: widget.track.memberImagePath,
+                                            imageWidth: 25.w,
+                                            imageHeight: 12.5.h,
+                                            isBoxFit: true,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+
                                     SizedBox(height: 8),
                                     Text(widget.track.memberNickName ??
                                         "null",

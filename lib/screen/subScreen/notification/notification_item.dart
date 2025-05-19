@@ -37,12 +37,21 @@ class _NotificationItemState extends State<NotificationItem> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
 
-              ClipOval(
-                child: CustomCachedNetworkImage(
-                  imagePath: widget.notificationsModel.memberImagePath,
-                  imageWidth: 10.w,
-                  imageHeight: 5.h,
-                  isBoxFit: false,
+              Container(
+                width: 10.w,
+                height: 5.h,
+                padding: EdgeInsets.all(1.5),
+                decoration: BoxDecoration(
+                    color: Colors.white10,
+                    borderRadius: BorderRadius.circular(100)
+                ),
+                child: ClipOval(
+                  child: CustomCachedNetworkImage(
+                    imagePath: widget.notificationsModel.memberImagePath,
+                    imageWidth: 10.w,
+                    imageHeight: 5.h,
+                    isBoxFit: false,
+                  ),
                 ),
               ),
 
