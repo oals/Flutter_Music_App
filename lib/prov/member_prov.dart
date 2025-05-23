@@ -12,7 +12,7 @@ import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:http/http.dart' as http;
 
-class MemberProv with ChangeNotifier {
+class MemberProv extends ChangeNotifier {
 
   MemberModel model = MemberModel();
   List<FollowInfoModel> recommendMemberList = [];

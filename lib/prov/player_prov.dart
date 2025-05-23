@@ -1,24 +1,28 @@
 
 import 'dart:async';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:carousel_slider_plus/carousel_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/player/player.dart';
 import 'package:skrrskrr/model/track/track.dart';
+import 'package:skrrskrr/handler/audio_back_state_handler.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 
 class PlayerProv extends ChangeNotifier {
 
+  AudioHandler? mediaPlaybackHandler = null;
   final AudioPlayer _audioPlayer = AudioPlayer();
   ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: []);
   PlayerModel playerModel = PlayerModel();
   ValueNotifier<bool> audioPlayerNotifier = ValueNotifier<bool>(false);
   late CarouselSliderController carouselSliderController = CarouselSliderController();
   Completer<void>? currentRequest;
-
+  StreamSubscription? positionSubscription;
   String? currentAppScreen = "";
   int currentPage = 0;
 
@@ -63,7 +67,7 @@ class PlayerProv extends ChangeNotifier {
 
     _playlist = ConcatenatingAudioSource(children: allTracks);
 
-    await _audioPlayer.setAudioSource(_playlist, preload: true);
+    await _audioPlayer.setAudioSource(_playlist, preload: true, );
     await _audioPlayer.seek(Duration.zero, index: priorityIndex);
 
     List<Future<AudioSource>> futureTracks = [];
@@ -83,6 +87,7 @@ class PlayerProv extends ChangeNotifier {
       Future.wait(futureTracks).then((sources) async {
         for (int i = 0; i < audioTrackPlayList.length; i++) {
           if (i != priorityIndex) {
+            print("백그라운드 작업 인덱스 : $i");
             await _playlist.removeAt(i);
             await _playlist.insert(i, sources[trackIndex]);
             trackIndex++;
@@ -123,6 +128,22 @@ class PlayerProv extends ChangeNotifier {
     }
   }
 
+  Future<void> mediaPlaybackHandlerInit(TrackProv trackProv, Track track) async {
+
+    mediaPlaybackHandler = await AudioService.init(
+      builder: () => AudioBackStateHandler(this, trackProv ,track),
+      config: AudioServiceConfig(
+        androidNotificationChannelId: 'com.skrrskrr.music.player',
+        androidNotificationChannelName: 'SkrrSkrr Music Player',
+        androidStopForegroundOnPause: false,
+        androidShowNotificationBadge: true,
+      )
+    );
+
+    await mediaPlaybackHandler!.play();
+    await mediaPlaybackHandler!.pause();
+  }
+
   Future<void> initAudio(TrackProv trackProv, int trackItemIdx) async {
 
     print("initAudio");
@@ -138,12 +159,9 @@ class PlayerProv extends ChangeNotifier {
     
     playerModel.isBuffering = _audioPlayer.playbackEvent.processingState == ProcessingState.buffering;
 
-    // 현재 재생 위치 업데이트
     playerModel.currentPosition = Duration(seconds: (_audioPlayer.position.inMilliseconds / 1000).round());
 
-    // 총 재생 시간 업데이트
     playerModel.totalDuration = _audioPlayer.playbackEvent.duration ?? Duration.zero;
-
   }
 
   Future<void> updateAudioPlayerSwiper(int trackId, TrackProv trackProv) async {
@@ -153,7 +171,12 @@ class PlayerProv extends ChangeNotifier {
     if (index != -1) {
 
       if (currentPage == index) {
+
+        await AudioBackStateHandler(this, trackProv, trackProv.audioPlayerTrackList[index])
+            .mediaItemUpdate(trackProv.audioPlayerTrackList[index]);
+
         await audioTrackMoveSetting(trackProv, index);
+
       } else {
         currentPage = index;
       }
@@ -199,14 +222,24 @@ class PlayerProv extends ChangeNotifier {
     int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
 
     if (index != -1) {
-      trackProv.setTrackPlayCnt(trackProv.audioPlayerTrackList[index].trackId!);
 
-      playerModel.currentPosition = Duration.zero;
+      trackProv.setTrackPlayCnt(trackProv.audioPlayerTrackList[index].trackId!);
 
       if (playerModel.audioPlayerPlayOption == 2) {
         await _audioPlayer.seek(Duration.zero);
+        await mediaPlaybackHandler?.seek(Duration.zero);
+
       } else if (index + 1 < trackProv.audioPlayerTrackList.length) {
-          await carouselSliderController.animateToPage(index + 1, duration: Duration(milliseconds: 450));
+
+        const platform = MethodChannel('device_lock_status');
+        bool isLockScreen = await platform.invokeMethod('isDeviceLocked');
+
+        if (isLockScreen) {
+          carouselSliderController.jumpToPage(index + 1);
+        } else {
+          await carouselSliderController.animateToPage(index + 1, duration: Duration(milliseconds: 500));
+        }
+
       } else {
         if (playerModel.audioPlayerPlayOption == 1) {
           currentPage = 0;
@@ -217,65 +250,78 @@ class PlayerProv extends ChangeNotifier {
           await _audioPlayer.pause();
         }
         await _audioPlayer.seek(Duration.zero);
+        await mediaPlaybackHandler?.seek(Duration.zero);
       }
     }
   }
 
   void setTimer(TrackProv trackProv) async {
 
-    if (playerModel.timer == null) {
-      audioPlayerPositionUpdate();
+    if (positionSubscription == null) {
 
-      playerModel.timer = Timer.periodic(Duration(milliseconds: 500), (timer) async {
+      int prevPosition = 0;
 
-        audioPlayerPositionUpdate();
+      positionSubscription?.cancel();
+      positionSubscription = _audioPlayer.positionStream.listen((position) async {
 
-        if (playerModel.totalDuration.inSeconds != 0) {
-          if (playerModel.currentPosition.inSeconds == playerModel.totalDuration.inSeconds) {
-            await nextTrackLoad(trackProv);
-          } else {
-            notify();
+        if (prevPosition != position.inSeconds) {
+          audioPlayerPositionUpdate();
+          if (playerModel.totalDuration.inSeconds != 0) {
+            if (prevPosition + 1 == playerModel.totalDuration.inSeconds) {
+              prevPosition = 0;
+              await _audioPlayer.pause();
+              await nextTrackLoad(trackProv);
+            } else {
+              notify();
+            }
           }
+          prevPosition = position.inSeconds;
         }
-
       });
     }
   }
 
   void stopTimer() {
-    playerModel.timer?.cancel();
-    playerModel.timer = null;
+    positionSubscription?.cancel();
+    positionSubscription = null;
   }
 
   Future<void> handleAudioReset() async {
     audioPlayerClear();
+    await _audioPlayer.pause();
+    notify();
+  }
+
+  void pausePlay() {
+    playerModel.isPlaying = false;
+    stopTimer();
     _audioPlayer.pause();
     notify();
   }
 
-  // 재생/일시정지 버튼
-  Future<void> togglePlayPause(bool isPlaying, TrackProv trackProv) async {
-
-    if (isPlaying) {
-      playerModel.isPlaying = false;
-      stopTimer();
-      await _audioPlayer.pause();
-    } else {
-      playerModel.isPlaying = true;
-      setTimer(trackProv);
-      await _audioPlayer.play();
-    }
+  void resumePlay(TrackProv trackProv) {
+    playerModel.isPlaying = true;
+    setTimer(trackProv);
+    _audioPlayer.play();
     notify();
+  }
+
+  Future<void> togglePlayPause(bool isPlaying, TrackProv trackProv) async {
+    if (isPlaying) {
+      await mediaPlaybackHandler?.pause();
+    } else {
+      await mediaPlaybackHandler?.play();
+    }
   }
 
   // 드래그 중일 때 크기 조정
   void handleDragUpdate(DragUpdateDetails details) {
     playerModel.dragOffset += details.delta;
     if (playerModel.dragOffset.dy > 90) {
-      playerModel.height = 80; // 작은 플레이어 크기
+      playerModel.height = 80;
 
     } else if (playerModel.dragOffset.dy < 90) {
-      playerModel.height = 100.h; // 전체 화면 크기
+      playerModel.height = 100.h;
     }
     notify();
   }
@@ -288,23 +334,24 @@ class PlayerProv extends ChangeNotifier {
       playerModel.fullScreen = true;
     }
 
-    // 드래그 후 위치 초기화
     playerModel.dragOffset = Offset.zero;
     notify();
     return playerModel.fullScreen;
   }
 
   // 슬라이더 터치가 끝났을 때 위치 조정
-  void onSliderChangeEnd(double value) {
-    final newPosition = Duration(seconds: value.toInt());
-    _audioPlayer.seek(newPosition);
-    notify();
+  Future<void> onSliderChangeEnd(double value, bool isPlayBackUpdate) async {
+
+    await _audioPlayer.seek(Duration(seconds: value.toInt()));
+
+    if (isPlayBackUpdate) {
+      await mediaPlaybackHandler?.seek(Duration(seconds: value.toInt()));
+    }
   }
 
   void setFullScreen() {
-    playerModel.height = 100.h; // 화면 전체 크기 확장
+    playerModel.height = 100.h;
     playerModel.fullScreen = true;
     notify();
   }
-
 }

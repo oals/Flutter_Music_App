@@ -1,4 +1,5 @@
 import 'dart:async'; // Timer 관련 라이브러리 추가
+import 'package:audio_service/audio_service.dart';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import 'package:skrrskrr/model/player/player.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
+import 'package:skrrskrr/handler/audio_back_state_handler.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/modal/audioPlayer/audio_player_item.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
@@ -63,8 +65,15 @@ class _AudioPlayerModalState extends State<AudioPlayerModal> {
                     trackProv.audioPlayerTrackList[index].isPlaying = true;
 
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
+
                       await playerProv.initAudio(trackProv, index);
                       await playerProv.playTrackAtIndex(index);
+
+                      if (playerProv.mediaPlaybackHandler == null) {
+                        playerProv.mediaPlaybackHandlerInit(trackProv,trackProv.audioPlayerTrackList[index]);
+                      }
+
+
                       trackProv.notify();
                     });
                   }
@@ -83,21 +92,27 @@ class _AudioPlayerModalState extends State<AudioPlayerModal> {
                     enlargeCenterPage: false,
                     aspectRatio: 16 / 9,
                     viewportFraction: 1,
-                    onPageChanged: (index, reason) {
+                    onPageChanged: (index, reason) async {
 
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
+
+
+                      // `WidgetsBinding.instance.addPostFrameCallback((_) async {`
                         if (!isTrackLoad) {
-                          playerProv.handleAudioReset();
-                          Future.delayed(Duration(milliseconds: 500), () async {
+                          await playerProv.handleAudioReset();
+                          Future.delayed(Duration(milliseconds: 600), () async {
                             if ((index - playerProv.currentPage).abs() <= 1) {
+
                               isTrackLoad = true;
+                              await AudioBackStateHandler(playerProv, trackProv, trackProv.audioPlayerTrackList[index])
+                                  .mediaItemUpdate(trackProv.audioPlayerTrackList[index]);
+
                               await playerProv.audioTrackMoveSetting(trackProv, index);
                               isTrackLoad = false;
-                              playerProv.togglePlayPause(!playerProv.playerModel.isPlaying,trackProv);
+
                             }
                           });
                         }
-                      });
+                      // });
                     },
                   ),
                   items: trackProv.audioPlayerTrackList.map((trackItem) {

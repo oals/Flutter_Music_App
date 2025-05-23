@@ -279,27 +279,31 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                           return Column(
                                             crossAxisAlignment: CrossAxisAlignment.end,
                                             children: [
-                                              SliderTheme(
-                                                data: SliderTheme.of(context).copyWith(
-                                                  thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0.0), // 동그라미 크기를 0으로 설정
+
+                                              if (playerModel.currentPosition.inSeconds <= playerModel.totalDuration.inSeconds)
+                                                SliderTheme(
+                                                  data: SliderTheme.of(context).copyWith(
+                                                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0.0), // 동그라미 크기를 0으로 설정
+                                                  ),
+                                                  child: Slider(
+                                                    value: playerModel.currentPosition.inSeconds.toDouble(),
+                                                    min: 0.0,
+                                                    max: playerModel.totalDuration.inSeconds.toDouble(),
+                                                    onChanged: playerProv.playerModel.isBuffering
+                                                        ? null
+                                                        : (value) {
+                                                      playerModel.currentPosition = Duration(seconds: value.toInt());
+                                                      setState(() {});
+                                                    },
+                                                    onChangeEnd: playerModel.isBuffering
+                                                        ? null
+                                                        : (value) async {
+                                                      await playerProv.onSliderChangeEnd(value,true);
+                                                    },
+                                                    activeColor: Colors.white,
+                                                    inactiveColor: Colors.white10,
+                                                  ),
                                                 ),
-                                                child: Slider(
-                                                  value: playerModel.currentPosition.inSeconds.toDouble(),
-                                                  min: 0.0,
-                                                  max: playerModel.totalDuration.inSeconds.toDouble(),
-                                                  onChanged: playerProv.playerModel.isBuffering
-                                                      ? null
-                                                      : (value) {
-                                                    playerModel.currentPosition = Duration(seconds: value.toInt());
-                                                    setState(() {});
-                                                  },
-                                                  onChangeEnd: playerModel.isBuffering
-                                                      ? null
-                                                      : playerProv.onSliderChangeEnd,
-                                                  activeColor: Colors.white,
-                                                  inactiveColor: Colors.white10,
-                                                ),
-                                              ),
 
                                               Container(
                                                 padding: EdgeInsets.only(left: 20, right: 30),

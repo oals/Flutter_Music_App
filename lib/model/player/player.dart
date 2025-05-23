@@ -11,7 +11,6 @@ class PlayerModel with ChangeNotifier{
   int audioPlayerPlayOption = 0;
   Duration currentPosition = Duration.zero;
   Duration totalDuration = Duration.zero;
-  Timer? timer;
   double? height;
   Offset dragOffset = Offset.zero;
 

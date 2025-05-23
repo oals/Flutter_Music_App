@@ -26,7 +26,7 @@ import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
-import 'package:skrrskrr/prov/test.dart';
+import 'package:skrrskrr/handler/audio_back_state_handler.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/router/app_router_config.dart';
@@ -47,25 +47,6 @@ void main() async {
 
   ShareUtils.deepLinkListener();
   ShareUtils.deepLinkInit();
-
-  _audioHandler = await AudioService.init(
-    builder: () => MyAudioHandler(),
-    config: AudioServiceConfig(
-      androidNotificationChannelId: 'com.mycompany.myapp.channel.audio',
-      androidNotificationChannelName: 'Music playback',
-    ),
-  );
-
-  // await _audioHandler.playMediaItem(
-  //     MediaItem(
-  //       id: 'https://example.com/audio.mp3',
-  //       album: '346346346346e',
-  //       title: '124124124',
-  //       artist: '235235235235',
-  //       duration: const Duration(milliseconds: 123456),
-  //       artUri: Uri.parse('https://example.com/album.jpg'),
-  //     )
-  // );
 
 
   runApp(
@@ -111,12 +92,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     FcmNotifications.initializeNotification(context);  // Firebase 알림 초기화
 
-    print('메인 빌드 테스트');
-
-
-    MyAudioHandler myAudioHandler = MyAudioHandler();
-    myAudioHandler.loadAndPlay("1245124124");
-
+    print('메인 빌드');
 
     return ResponsiveSizer(  // 화면 크기 자동 조정
       builder: (context, orientation, screenType) {

@@ -10,9 +10,10 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 <!--    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />-->
+
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+<!--    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>-->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <application
@@ -23,14 +24,20 @@
             android:usesCleartextTraffic="true"
             android:networkSecurityConfig="@xml/network_security_config">
 
-        <!-- EDIT THE android:name ATTRIBUTE IN YOUR EXISTING "ACTIVITY" ELEMENT -->
         <activity android:name="com.ryanheise.audioservice.AudioServiceActivity">
 
         </activity>
 
+<!--        <service-->
+<!--                android:name="com.pravera.flutter_foreground_task.service.ForegroundService"-->
+<!--                android:foregroundServiceType="mediaPlayback"-->
+<!--                android:stopWithTask="false"-->
+<!--                android:exported="true" />-->
+
         <service android:name="com.ryanheise.audioservice.AudioService"
                  android:foregroundServiceType="mediaPlayback"
-                 android:exported="true" tools:ignore="Instantiatable">
+                 android:exported="true">
+
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
@@ -42,8 +49,6 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-
-
 
         <activity
                 android:name=".MainActivity"
