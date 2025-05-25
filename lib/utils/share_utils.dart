@@ -2,9 +2,11 @@
 import 'dart:io';
 
 import 'package:device_apps/device_apps.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -13,6 +15,7 @@ import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:uni_links/uni_links.dart';
@@ -20,21 +23,23 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ShareUtils {
 
-  static String redirectPath = "https://c317-116-32-95-167.ngrok-free.app/redirect"; // 테스트 (ngrok 주소)
+  static String redirectPath = "https://19eb-116-32-95-167.ngrok-free.app/redirect"; // 테스트 (ngrok 주소)
 
   static void deepLinkListener() {
     uriLinkStream.listen((Uri? uri) async {
       if (uri != null) {
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        AuthProv authProv = Provider.of<AuthProv>(navigatorKey.currentContext!,listen: false);
 
         print("✅ 앱 실행 되어 있을 시 감지된 딥 링크: ${uri.toString()}");
 
-        if (authProv.model.memberEmail != null) {
+        // User? user = FirebaseAuth.instance.currentUser;
+        if (FirebaseAuth.instance.currentUser != null) {
+          print('딥링크테스트1');
            await prefs.setString('deepLink', "");
            handleDeepLink(uri);
         } else {
+          print('딥링크테스트2');
           await prefs.setString('deepLink', uri.toString());
         }
       }
@@ -54,6 +59,8 @@ class ShareUtils {
   }
 
   static void handleDeepLink(Uri uri) {
+
+    print('if문실행');
 
     if (uri.queryParameters.containsKey('playlistId')) {
       String playlistId = uri.queryParameters['playlistId']!;
@@ -87,7 +94,7 @@ class ShareUtils {
 
   static Future<void> shareToKakaoTalk(Map<String, String> shareMap) async {
 
-    String imagePath = shareMap['imagePath']!.replaceAll("http://10.0.2.2:8102","https://c317-116-32-95-167.ngrok-free.app");
+    String imagePath = shareMap['imagePath']!.replaceAll("http://10.0.2.2:8102","https://19eb-116-32-95-167.ngrok-free.app");
 
     final response = await ShareClient.instance.shareCustom(
       templateId: 120629,

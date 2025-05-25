@@ -59,9 +59,11 @@ class _AudioPlayerModalState extends State<AudioPlayerModal> {
               } else {
 
                 if (!isInit) {
+                  isInit = true;
+
                   int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
                   if (index != -1) {
-                    playerProv.currentPage = index;
+                    playerProv.playerModel.currentPage = index;
                     trackProv.audioPlayerTrackList[index].isPlaying = true;
 
                     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -69,23 +71,22 @@ class _AudioPlayerModalState extends State<AudioPlayerModal> {
                       await playerProv.initAudio(trackProv, index);
                       await playerProv.playTrackAtIndex(index);
 
-                      if (playerProv.mediaPlaybackHandler == null) {
-                        playerProv.mediaPlaybackHandlerInit(trackProv,trackProv.audioPlayerTrackList[index]);
-                      }
-
+                      // if (playerProv.mediaPlaybackHandler == null) {
+                        playerProv.mediaPlaybackHandlerInit(trackProv,trackProv.audioPlayerTrackList[index],playerProv.isInitMediaPlaybackHandler);
+                        playerProv.isInitMediaPlaybackHandler = true;
+                      // }
 
                       trackProv.notify();
                     });
                   }
-                  isInit = true;
                 }
 
                 return trackProv.audioPlayerTrackList.isNotEmpty
                     ? CarouselSlider(
-                  key: ValueKey(playerProv.currentPage),
-                  controller: playerProv.carouselSliderController,
+                  key: ValueKey(playerProv.playerModel.currentPage),
+                  controller: playerProv.playerModel.carouselSliderController,
                   options: CarouselOptions(
-                    initialPage : playerProv.currentPage,
+                    initialPage : playerProv.playerModel.currentPage,
                     height: 100.h,
                     enableInfiniteScroll: false,
                     autoPlay: false,
@@ -94,14 +95,11 @@ class _AudioPlayerModalState extends State<AudioPlayerModal> {
                     viewportFraction: 1,
                     onPageChanged: (index, reason) async {
 
-
-
                       // `WidgetsBinding.instance.addPostFrameCallback((_) async {`
                         if (!isTrackLoad) {
                           await playerProv.handleAudioReset();
                           Future.delayed(Duration(milliseconds: 600), () async {
-                            if ((index - playerProv.currentPage).abs() <= 1) {
-
+                            if ((index - playerProv.playerModel.currentPage).abs() <= 1) {
                               isTrackLoad = true;
                               await AudioBackStateHandler(playerProv, trackProv, trackProv.audioPlayerTrackList[index])
                                   .mediaItemUpdate(trackProv.audioPlayerTrackList[index]);
@@ -123,9 +121,8 @@ class _AudioPlayerModalState extends State<AudioPlayerModal> {
                     );
                   }).toList(),
                 ) : AudioPlayerItem(audioPlayerTrackItem : Track());
-
               }
-          },
+              },
         ),
     );
   }

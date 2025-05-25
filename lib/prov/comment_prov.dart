@@ -7,6 +7,10 @@ class CommentProv extends ChangeNotifier {
 
   List<CommentModel> commentModel = [];
 
+  void clear() {
+    commentModel = [];
+  }
+
   void notify() {
     notifyListeners();
   }

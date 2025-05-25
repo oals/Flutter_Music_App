@@ -8,10 +8,8 @@ import 'package:http/http.dart' as http;
 class PlayListProv extends ChangeNotifier {
   PlaylistList playlists = PlaylistList();
   PlaylistList albums = PlaylistList();
-
   PlaylistList recommendPlayListsList = PlaylistList();
   PlaylistList recommendAlbumList = PlaylistList();
-
   PlayListInfoModel playListInfoModel = PlayListInfoModel();
 
   void notify() {
@@ -20,6 +18,9 @@ class PlayListProv extends ChangeNotifier {
 
   void clear() {
     playlists = PlaylistList();
+    albums = PlaylistList();
+    recommendPlayListsList = PlaylistList();
+    recommendAlbumList = PlaylistList();
     playListInfoModel = PlayListInfoModel();
   }
 

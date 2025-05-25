@@ -15,16 +15,11 @@ import 'package:skrrskrr/prov/track_prov.dart';
 
 class PlayerProv extends ChangeNotifier {
 
-  AudioHandler? mediaPlaybackHandler = null;
+  PlayerModel playerModel = PlayerModel();
+  bool isInitMediaPlaybackHandler = false;
   final AudioPlayer _audioPlayer = AudioPlayer();
   ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: []);
-  PlayerModel playerModel = PlayerModel();
   ValueNotifier<bool> audioPlayerNotifier = ValueNotifier<bool>(false);
-  late CarouselSliderController carouselSliderController = CarouselSliderController();
-  Completer<void>? currentRequest;
-  StreamSubscription? positionSubscription;
-  String? currentAppScreen = "";
-  int currentPage = 0;
 
   void notify() {
     notifyListeners();
@@ -32,6 +27,8 @@ class PlayerProv extends ChangeNotifier {
 
   void clear() {
     playerModel = PlayerModel();
+    audioPlayerNotifier = ValueNotifier<bool>(false);
+    _playlist = ConcatenatingAudioSource(children: []);
   }
 
   void audioPlayerClear() {
@@ -52,12 +49,12 @@ class PlayerProv extends ChangeNotifier {
 
   Future<void> setupQueue(List<Track> audioTrackPlayList, int priorityIndex) async {
 
-    if (currentRequest != null && !currentRequest!.isCompleted) {
-      currentRequest!.complete();
-      currentRequest = null;
+    if (playerModel.currentRequest != null && !playerModel.currentRequest!.isCompleted) {
+      playerModel.currentRequest!.complete();
+      playerModel.currentRequest = null;
     }
 
-    currentRequest = Completer<void>();
+    playerModel.currentRequest = Completer<void>();
 
     _playlist.clear();
 
@@ -93,10 +90,10 @@ class PlayerProv extends ChangeNotifier {
             trackIndex++;
           }
         }
-        currentRequest!.complete();
-        currentRequest = null;
+        playerModel.currentRequest!.complete();
+        playerModel.currentRequest = null;
       }),
-      currentRequest?.future ?? Future.value()
+      playerModel.currentRequest?.future ?? Future.value()
     ]);
   }
 
@@ -128,20 +125,25 @@ class PlayerProv extends ChangeNotifier {
     }
   }
 
-  Future<void> mediaPlaybackHandlerInit(TrackProv trackProv, Track track) async {
+  Future<void> mediaPlaybackHandlerInit(TrackProv trackProv, Track track, bool isInitMediaPlaybackHandler) async {
 
-    mediaPlaybackHandler = await AudioService.init(
-      builder: () => AudioBackStateHandler(this, trackProv ,track),
-      config: AudioServiceConfig(
-        androidNotificationChannelId: 'com.skrrskrr.music.player',
-        androidNotificationChannelName: 'SkrrSkrr Music Player',
-        androidStopForegroundOnPause: false,
-        androidShowNotificationBadge: true,
-      )
-    );
+    if (!isInitMediaPlaybackHandler) {
+      playerModel.mediaPlaybackHandler = await AudioService.init(
+          builder: () => AudioBackStateHandler(this, trackProv ,track),
+          config: AudioServiceConfig(
+            androidNotificationChannelId: 'com.skrrskrr.music.player',
+            androidNotificationChannelName: 'SkrrSkrr Music Player',
+            androidStopForegroundOnPause: true,
+            androidShowNotificationBadge: true,
+          )
+      );
+    } else {
+      playerModel.mediaPlaybackHandler = await AudioBackStateHandler.instance;
+      await AudioBackStateHandler.instance?.mediaItemUpdate(track);
+    }
 
-    await mediaPlaybackHandler!.play();
-    await mediaPlaybackHandler!.pause();
+    await playerModel.mediaPlaybackHandler!.play();
+    await playerModel.mediaPlaybackHandler!.pause();
   }
 
   Future<void> initAudio(TrackProv trackProv, int trackItemIdx) async {
@@ -170,7 +172,7 @@ class PlayerProv extends ChangeNotifier {
 
     if (index != -1) {
 
-      if (currentPage == index) {
+      if (playerModel.currentPage == index) {
 
         await AudioBackStateHandler(this, trackProv, trackProv.audioPlayerTrackList[index])
             .mediaItemUpdate(trackProv.audioPlayerTrackList[index]);
@@ -178,9 +180,9 @@ class PlayerProv extends ChangeNotifier {
         await audioTrackMoveSetting(trackProv, index);
 
       } else {
-        currentPage = index;
+        playerModel.currentPage = index;
       }
-      carouselSliderController.jumpToPage(index);
+      playerModel.carouselSliderController.jumpToPage(index);
     }
   }
 
@@ -201,14 +203,14 @@ class PlayerProv extends ChangeNotifier {
 
     togglePlayPause(!playerModel.isPlaying,trackProv);
 
-    if (trackProv.audioPlayerTrackList.length > currentPage) {
-      trackProv.audioPlayerTrackList[currentPage].isPlaying = false;
+    if (trackProv.audioPlayerTrackList.length > playerModel.currentPage) {
+      trackProv.audioPlayerTrackList[playerModel.currentPage].isPlaying = false;
     }
 
     trackProv.audioPlayerTrackList[index].isPlaying = true;
 
-    currentPage = index;
-    await playTrackAtIndex(currentPage);
+    playerModel.currentPage = index;
+    await playTrackAtIndex(playerModel.currentPage);
 
     if (trackProv.lastListenTrackList[0].trackId != trackProv.audioPlayerTrackList[index].trackId!) {
       trackProv.updateLastListenTrackList(trackProv.audioPlayerTrackList[index]);
@@ -227,7 +229,7 @@ class PlayerProv extends ChangeNotifier {
 
       if (playerModel.audioPlayerPlayOption == 2) {
         await _audioPlayer.seek(Duration.zero);
-        await mediaPlaybackHandler?.seek(Duration.zero);
+        await playerModel.mediaPlaybackHandler?.seek(Duration.zero);
 
       } else if (index + 1 < trackProv.audioPlayerTrackList.length) {
 
@@ -235,34 +237,34 @@ class PlayerProv extends ChangeNotifier {
         bool isLockScreen = await platform.invokeMethod('isDeviceLocked');
 
         if (isLockScreen) {
-          carouselSliderController.jumpToPage(index + 1);
+          playerModel.carouselSliderController.jumpToPage(index + 1);
         } else {
-          await carouselSliderController.animateToPage(index + 1, duration: Duration(milliseconds: 500));
+          await playerModel.carouselSliderController.animateToPage(index + 1, duration: Duration(milliseconds: 500));
         }
 
       } else {
         if (playerModel.audioPlayerPlayOption == 1) {
-          currentPage = 0;
-          carouselSliderController.jumpToPage(0);
+          playerModel.currentPage = 0;
+          playerModel.carouselSliderController.jumpToPage(0);
         } else {
           playerModel.isPlaying = false;
           stopTimer();
           await _audioPlayer.pause();
         }
         await _audioPlayer.seek(Duration.zero);
-        await mediaPlaybackHandler?.seek(Duration.zero);
+        await playerModel.mediaPlaybackHandler?.seek(Duration.zero);
       }
     }
   }
 
   void setTimer(TrackProv trackProv) async {
 
-    if (positionSubscription == null) {
+    if (playerModel.positionSubscription == null) {
 
       int prevPosition = 0;
 
-      positionSubscription?.cancel();
-      positionSubscription = _audioPlayer.positionStream.listen((position) async {
+      playerModel.positionSubscription?.cancel();
+      playerModel.positionSubscription = _audioPlayer.positionStream.listen((position) async {
 
         if (prevPosition != position.inSeconds) {
           audioPlayerPositionUpdate();
@@ -282,8 +284,8 @@ class PlayerProv extends ChangeNotifier {
   }
 
   void stopTimer() {
-    positionSubscription?.cancel();
-    positionSubscription = null;
+    playerModel.positionSubscription?.cancel();
+    playerModel.positionSubscription = null;
   }
 
   Future<void> handleAudioReset() async {
@@ -300,6 +302,7 @@ class PlayerProv extends ChangeNotifier {
   }
 
   void resumePlay(TrackProv trackProv) {
+    print('resumePlay()실행');
     playerModel.isPlaying = true;
     setTimer(trackProv);
     _audioPlayer.play();
@@ -308,9 +311,9 @@ class PlayerProv extends ChangeNotifier {
 
   Future<void> togglePlayPause(bool isPlaying, TrackProv trackProv) async {
     if (isPlaying) {
-      await mediaPlaybackHandler?.pause();
+      await playerModel.mediaPlaybackHandler?.pause();
     } else {
-      await mediaPlaybackHandler?.play();
+      await playerModel.mediaPlaybackHandler?.play();
     }
   }
 
@@ -345,7 +348,7 @@ class PlayerProv extends ChangeNotifier {
     await _audioPlayer.seek(Duration(seconds: value.toInt()));
 
     if (isPlayBackUpdate) {
-      await mediaPlaybackHandler?.seek(Duration(seconds: value.toInt()));
+      await playerModel.mediaPlaybackHandler?.seek(Duration(seconds: value.toInt()));
     }
   }
 

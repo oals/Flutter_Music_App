@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
@@ -7,18 +8,42 @@ import 'package:skrrskrr/prov/track_prov.dart';
 class AudioBackStateHandler extends BaseAudioHandler {
   final PlayerProv playerProv;
   final TrackProv trackProv;
-  late MediaItem updatedMediaItem;
   bool isPlaying = false;
-
-  static AudioBackStateHandler? _instance;
+  static AudioBackStateHandler? instance;
 
   factory AudioBackStateHandler(playerProv, trackProv, trackItem) {
-    _instance ??= AudioBackStateHandler.internal(playerProv, trackProv, trackItem);
-    return _instance!;
+    instance ??= AudioBackStateHandler.internal(playerProv, trackProv, trackItem);
+    return instance!;
   }
 
   AudioBackStateHandler.internal(this.playerProv, this.trackProv, Track track) {
     mediaItemUpdate(track);
+  }
+
+  Future<void> deleteMediaItem() async {
+    await pause();
+
+    mediaItem.value = null;
+    isPlaying = false;
+
+    playbackState.add(
+      PlaybackState(
+        controls: [],
+        androidCompactActionIndices: [],
+        processingState: AudioProcessingState.idle,
+        playing: false,
+        systemActions: const {},
+        updatePosition: Duration.zero,
+        updateTime: DateTime.now(),
+      ),
+    );
+
+    playerProv.playerModel.currentPosition = Duration.zero;
+    playerProv.playerModel.totalDuration = Duration.zero;
+    playerProv.notify();
+
+    await AudioService.stop();
+
   }
 
   Future<void> mediaItemUpdate(Track track) async {
@@ -65,6 +90,7 @@ class AudioBackStateHandler extends BaseAudioHandler {
 
     await playerProv.onSliderChangeEnd(position.inSeconds.toDouble(), false);
     playerProv.playerModel.currentPosition = position;
+    playerProv.playerModel.totalDuration = (this.mediaItem.value?.duration)!;
 
     playbackState.add(
         playbackState.value.copyWith(
@@ -72,6 +98,8 @@ class AudioBackStateHandler extends BaseAudioHandler {
             processingState: AudioProcessingState.ready
         )
     );
+
+    playerProv.notify();
   }
 
   void playbackStateUpdate(){
@@ -108,15 +136,15 @@ class AudioBackStateHandler extends BaseAudioHandler {
 
   @override
   Future<void> skipToNext() async {
-    if (playerProv.currentPage + 1 < trackProv.audioPlayerTrackList.length) {
-      playerProv.carouselSliderController.jumpToPage(playerProv.currentPage + 1);
+    if (playerProv.playerModel.currentPage + 1 < trackProv.audioPlayerTrackList.length) {
+      playerProv.playerModel.carouselSliderController.jumpToPage(playerProv.playerModel.currentPage + 1);
     }
   }
 
   @override
   Future<void> skipToPrevious() async {
-    if (playerProv.currentPage - 1 >= 0) {
-      playerProv.carouselSliderController.jumpToPage(playerProv.currentPage - 1);
+    if (playerProv.playerModel.currentPage - 1 >= 0) {
+      playerProv.playerModel.carouselSliderController.jumpToPage(playerProv.playerModel.currentPage - 1);
     }
   }
 

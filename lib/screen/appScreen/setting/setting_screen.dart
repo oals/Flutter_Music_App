@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:skrrskrr/main.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
@@ -16,6 +17,7 @@ import 'package:skrrskrr/prov/auth_prov.dart';
 
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
+import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
@@ -84,7 +86,8 @@ class _SettingScreenState extends State<SettingScreen> {
                         print('로그아웃 클릭');
                         playerProv.togglePlayPause(true,trackProv);
                         await authProv.logout();
-                        context.go('/splash');
+                        GoRouter.of(context).pushReplacement("/splash");
+
                       }
                     },
                     child: Row(

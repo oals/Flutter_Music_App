@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,8 +11,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
+import 'package:skrrskrr/handler/audio_back_state_handler.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
+import 'package:skrrskrr/model/track/track.dart';
+import 'package:skrrskrr/prov/comment_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/prov/play_list.prov.dart';
+import 'package:skrrskrr/prov/player_prov.dart';
+import 'package:skrrskrr/prov/track_prov.dart';
+import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,14 +31,8 @@ class AuthProv with ChangeNotifier{
       clientId : dotenv.get("WEB_OAUTH_2_CLIENT_ID")
   );
 
-  MemberModel model = MemberModel();
-
   void notify() {
     notifyListeners();
-  }
-
-  void clear() {
-    model = MemberModel();
   }
 
   Future<bool> fnCreateJwtToken(User user) async {
@@ -170,6 +172,12 @@ class AuthProv with ChangeNotifier{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
+    Provider.of<MemberProv>(navigatorKey.currentContext!,listen: false).clear();
+    Provider.of<PlayerProv>(navigatorKey.currentContext!,listen: false).clear();
+    Provider.of<TrackProv>(navigatorKey.currentContext!,listen: false).clear();
+    Provider.of<PlayListProv>(navigatorKey.currentContext!,listen: false).clear();
+    Provider.of<CommentProv>(navigatorKey.currentContext!,listen: false).clear();
+
     // 저장된 JWT 토큰 삭제
     await storage.delete(key: "jwt_token");
     await storage.delete(key: "refresh_token");
@@ -178,7 +186,9 @@ class AuthProv with ChangeNotifier{
     await _googleSignIn.signOut();
 
     await FirebaseAuth.instance.signOut();
-    model.memberEmail = null;
+
+    await AudioBackStateHandler.instance?.deleteMediaItem();
+
     notifyListeners(); // 상태 변경 알림
   }
 }

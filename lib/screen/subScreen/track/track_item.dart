@@ -50,10 +50,10 @@ class _TrackItemState extends State<TrackItem> {
           widget.trackItem.isPlaying = true;
           if (widget.appScreenName != "AudioPlayerTrackListModal") {
 
-            trackProv.initCurrentTrackPlaying(playerProv.currentPage);
+            trackProv.initCurrentTrackPlaying(playerProv.playerModel.currentPage);
 
-            if (playerProv.currentAppScreen != widget.appScreenName) {
-              playerProv.currentAppScreen = widget.appScreenName;
+            if (playerProv.playerModel.currentAppScreen != widget.appScreenName) {
+              playerProv.playerModel.currentAppScreen = widget.appScreenName;
               await playerProv.initAudioPlayer(trackProv, widget.initAudioPlayerTrackListCallBack, widget.trackItemIdx);
             } else {
               await playerProv.reloadDeleteTrack(trackProv,widget.trackItem,widget.trackItemIdx!);

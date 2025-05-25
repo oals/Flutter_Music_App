@@ -214,7 +214,7 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
                               await trackProv.audioPlayerTrackList.removeAt(i);
                               await playerProv.removeTrack(i);
 
-                              playerProv.currentPage = trackProv.audioPlayerTrackList.indexWhere(
+                              playerProv.playerModel.currentPage = trackProv.audioPlayerTrackList.indexWhere(
                                       (item) => item.trackId.toString() == trackProv.lastTrackId);
 
                               trackProv.audioPlayerTrackList = List.from(trackProv.audioPlayerTrackList);

@@ -451,32 +451,33 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                             Stack(
                                               children: [
 
-                                                Positioned(
-                                                  left: 1,
-                                                  right: 1,
-                                                  child: SliderTheme(
-                                                    data: SliderThemeData(
-                                                      thumbShape: RoundSliderThumbShape(
-                                                          enabledThumbRadius: 0.0),
-                                                      trackShape: CircularSliderTrackShape(
-                                                        progress: playerModel.totalDuration.inSeconds > 0
-                                                            ? playerModel.currentPosition.inSeconds / playerModel.totalDuration.inSeconds
-                                                            : 0.0, // 진행 비율 계산
-                                                      ),
+                                                if (playerModel.currentPosition.inSeconds <= playerModel.totalDuration.inSeconds)
+                                                  Positioned(
+                                                    left: 1,
+                                                    right: 1,
+                                                    child: SliderTheme(
+                                                      data: SliderThemeData(
+                                                        thumbShape: RoundSliderThumbShape(
+                                                            enabledThumbRadius: 0.0),
+                                                        trackShape: CircularSliderTrackShape(
+                                                          progress: playerModel.totalDuration.inSeconds > 0
+                                                              ? playerModel.currentPosition.inSeconds / playerModel.totalDuration.inSeconds
+                                                              : 0.0, // 진행 비율 계산
+                                                        ),
 
-                                                      trackHeight: 3.5, // 트랙의 두께
-                                                    ),
-                                                    child: Slider(
-                                                      value: playerModel.currentPosition.inSeconds.toDouble(),
-                                                      min: 0.0,
-                                                      max: playerModel.totalDuration.inSeconds.toDouble(),
-                                                      onChanged: null,
-                                                      onChangeEnd: null,
-                                                      activeColor: Colors.white,
-                                                      inactiveColor: Colors.grey,
+                                                        trackHeight: 3.5, // 트랙의 두께
+                                                      ),
+                                                      child: Slider(
+                                                        value: playerModel.currentPosition.inSeconds.toDouble(),
+                                                        min: 0.0,
+                                                        max: playerModel.totalDuration.inSeconds.toDouble(),
+                                                        onChanged: null,
+                                                        onChangeEnd: null,
+                                                        activeColor: Colors.white,
+                                                        inactiveColor: Colors.grey,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
 
 
                                                 IconButton(

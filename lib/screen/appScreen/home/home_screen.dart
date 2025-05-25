@@ -44,7 +44,10 @@ class _HomeScreenStateState extends State<HomeScreen> {
     // TODO: implement initState
     print('home init');
     super.initState();
-    deepLinkMove();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      deepLinkMove();
+    });
   }
 
   void deepLinkMove() async {

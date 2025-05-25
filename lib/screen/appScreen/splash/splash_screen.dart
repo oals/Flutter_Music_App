@@ -43,9 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
       AuthProv authProv = Provider.of<AuthProv>(context, listen: false);
       AppProv appProv = Provider.of<AppProv>(context,listen: false);
 
-
       final storage = FlutterSecureStorage();
-
 
       Future<void> _jwtAuthing() async {
         final jwt_Token = await storage.read(key: "jwt_token");

@@ -27,6 +27,8 @@ class AppScreen extends StatefulWidget {
   _AppScreenState createState() => _AppScreenState();
 }
 
+
+
 class _AppScreenState extends State<AppScreen> {
 
   late AppProv appProv;
@@ -44,38 +46,40 @@ class _AppScreenState extends State<AppScreen> {
     return OverlayEntry(
       builder: (context) {
         bool isHideAudioPlayer = appProv.isHideAudioPlayer(appProv.appScreenWidget);
-        return isHideAudioPlayer
-            ? Container()
-            : Stack(
+
+        return Stack(
           children: [
             AnimatedPositioned(
-                  duration: const Duration(milliseconds: 700),
-                  curve: Curves.easeInOut,
-                  left: 0,
-                  right: 0,
-                  bottom: !appProv.isFullScreen ? 5.5.h : 0, // 위치를 애니메이션으로 변경
-                  child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 700),
+              curve: Curves.easeInOut,
+              left: 0,
+              right: 0,
+              bottom: !appProv.isFullScreen ? 5.5.h : 0,
+              child: IgnorePointer(
+                ignoring: !isHideAudioPlayer? false : true,
+                child: Opacity(
+                  // duration: const Duration(milliseconds: 10),
+                  opacity: !isHideAudioPlayer? appProv.isFullScreen ? 1.0 : 0.85 : 0.0,
+                  // curve: Curves.easeInOut,
+                  child: AnimatedContainer(
                     duration: const Duration(milliseconds: 700),
-                    opacity: appProv.isFullScreen ? 1.0 : 0.85,  // 투명도 애니메이션 적용
-                    curve: Curves.easeInOut,
-                    child:  AnimatedContainer(
-                      duration: const Duration(milliseconds: 700),
+                    height: appProv.isFullScreen ? 100.h : 10.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    alignment: Alignment.topCenter,
+                    child: Container(
                       height: appProv.isFullScreen ? 100.h : 10.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                       alignment: Alignment.topCenter,
-                      child: Container(
-                        height: appProv.isFullScreen ? 100.h : 10.h,
-                        alignment: Alignment.topCenter,
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 700),
-                          child: AudioPlayerModal(),
-                        ),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 700),
+                        child: AudioPlayerModal(),
                       ),
                     ),
                   ),
                 ),
+              ),
+            ),
           ],
         );
       },
@@ -111,7 +115,6 @@ class _AppScreenState extends State<AppScreen> {
     showOverlayIfNeeded();
   }
 
-
   @override
   Widget build(BuildContext context) {
 
@@ -133,7 +136,6 @@ class _AppScreenState extends State<AppScreen> {
                 duration: const Duration(milliseconds: 700),
                 child: _childNotifier.value,
                 transitionBuilder: (Widget child, Animation<double> animation) {
-
                   return FadeTransition(
                       opacity: animation, child: child);
                 },

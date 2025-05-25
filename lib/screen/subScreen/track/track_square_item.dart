@@ -53,10 +53,10 @@ class _TrackSquareItemState extends State<TrackSquareItem> {
       onTap: () async {
         if (!widget.trackItem.isPlaying) {
           widget.trackItem.isPlaying = true;
-          trackProv.initCurrentTrackPlaying(playerProv.currentPage);
+          trackProv.initCurrentTrackPlaying(playerProv.playerModel.currentPage);
 
-          if (playerProv.currentAppScreen != widget.appScreenName) {
-            playerProv.currentAppScreen = widget.appScreenName;
+          if (playerProv.playerModel.currentAppScreen != widget.appScreenName) {
+            playerProv.playerModel.currentAppScreen = widget.appScreenName;
             await playerProv.initAudioPlayer(trackProv, widget.initAudioPlayerTrackListCallBack, widget.trackItemIdx);
           } else {
             await playerProv.reloadDeleteTrack(trackProv,widget.trackItem,widget.trackItemIdx!);

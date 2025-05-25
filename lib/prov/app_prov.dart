@@ -121,7 +121,7 @@ class AppProv extends ChangeNotifier{
   }
 
   bool isHideAudioPlayer(Widget widget) {
-    return  (widget is SplashScreen || widget is LoginScreen);
+    return (widget is SplashScreen || widget is LoginScreen);
   }
 
   bool isShowBottomNav(Widget widget) {

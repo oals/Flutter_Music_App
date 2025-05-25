@@ -21,6 +21,17 @@ class TrackProv extends ChangeNotifier {
   List<Track> audioPlayerTrackList = [];
   String lastTrackId = '';
 
+
+  void clear() {
+    model = Upload();
+    trackModel = TrackList();
+    trackInfoModel = Track();
+    lastListenTrackList = [];
+    recommendTrackList = [];
+    audioPlayerTrackList = [];
+    lastTrackId = '';
+  }
+
   void notify() {
     notifyListeners();
   }

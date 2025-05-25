@@ -33,8 +33,6 @@ import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/utils/permissions.dart';
 import 'package:skrrskrr/utils/share_utils.dart';
 
-late final AudioHandler _audioHandler;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "env/config.env");
@@ -47,7 +45,6 @@ void main() async {
 
   ShareUtils.deepLinkListener();
   ShareUtils.deepLinkInit();
-
 
   runApp(
     MultiProvider(
