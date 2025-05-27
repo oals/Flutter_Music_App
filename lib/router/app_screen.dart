@@ -27,8 +27,6 @@ class AppScreen extends StatefulWidget {
   _AppScreenState createState() => _AppScreenState();
 }
 
-
-
 class _AppScreenState extends State<AppScreen> {
 
   late AppProv appProv;
@@ -99,10 +97,6 @@ class _AppScreenState extends State<AppScreen> {
   void didUpdateWidget(covariant AppScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // if (oldWidget.child is SplashScreen && _childNotifier.value is! HomeScreen) {
-    //   _childNotifier.value = HomeScreen();
-    // }
-
     if (widget.child == appProv.appScreenWidget ) {
       _childNotifier.value = widget.child;
       showOverlayIfNeeded();
@@ -123,6 +117,9 @@ class _AppScreenState extends State<AppScreen> {
     bool showAppbar = appProv.isShowAppbar(appProv.appScreenWidget);
     bool showBottomNav = appProv.isShowBottomNav(appProv.appScreenWidget);
 
+
+
+
     return Scaffold(
       appBar: !showAppbar ? CustomAppbarV2(isNotification: true) : null,
 
@@ -137,7 +134,9 @@ class _AppScreenState extends State<AppScreen> {
                 child: _childNotifier.value,
                 transitionBuilder: (Widget child, Animation<double> animation) {
                   return FadeTransition(
-                      opacity: animation, child: child);
+                      opacity: animation,
+                      child: child
+                  );
                 },
               );
             },

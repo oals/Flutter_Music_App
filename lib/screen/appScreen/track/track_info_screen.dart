@@ -65,7 +65,9 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
     _loadMemberId();
 
     if (widget.commentId != null) {
-      AppBottomModalRouter.fnModalRouter(context, 0, trackId: widget.track.trackId,commentId: widget.commentId);
+      Future.delayed(Duration(milliseconds: 700), () async {
+        AppBottomModalRouter.fnModalRouter(context, 0, trackId: widget.track.trackId,commentId: widget.commentId);
+      });
     }
   }
 

@@ -120,7 +120,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
 
               return NotificationListener<ScrollNotification>(
                 onNotification: (notification) {
-                  if (trackProv.trackModel.allTrackTotalCount! > allTrackList.length) {
+                  if (trackProv.trackListModel.allTrackTotalCount! > allTrackList.length) {
                     if (comnLoadProv.shouldLoadMoreData(notification)) {
                       comnLoadProv.loadMoreData(trackProv, 'MemberPageTrack', allTrackList.length, memberId: widget.memberId);
                     }
@@ -577,7 +577,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                 } else {
 
                                   Set<Track> allTrackSet = allTrackList.toSet(); // 중복 제거용 Set 생성
-                                  List<Track> list = trackProv.trackModel.trackList;
+                                  List<Track> list = trackProv.trackListModel.trackList;
 
                                   trackProv.addUniqueTracksToList(
                                     sourceList: list,
@@ -597,7 +597,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                               isAudioPlayer: false,
                                               initAudioPlayerTrackListCallBack: () async {
 
-                                                await trackProv.getMemberPageTrack(widget.memberId,comnLoadProv.listDataOffset, trackProv.trackModel.allTrackTotalCount!);
+                                                await trackProv.getMemberPageTrack(widget.memberId,comnLoadProv.listDataOffset, trackProv.trackListModel.allTrackTotalCount!);
 
                                                 trackProv.addUniqueTracksToList(
                                                   sourceList: list,

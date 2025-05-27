@@ -17,9 +17,6 @@ class PlayerProv extends ChangeNotifier {
 
   PlayerModel playerModel = PlayerModel();
   bool isInitMediaPlaybackHandler = false;
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: []);
-  ValueNotifier<bool> audioPlayerNotifier = ValueNotifier<bool>(false);
 
   void notify() {
     notifyListeners();
@@ -27,8 +24,6 @@ class PlayerProv extends ChangeNotifier {
 
   void clear() {
     playerModel = PlayerModel();
-    audioPlayerNotifier = ValueNotifier<bool>(false);
-    _playlist = ConcatenatingAudioSource(children: []);
   }
 
   void audioPlayerClear() {
@@ -56,16 +51,16 @@ class PlayerProv extends ChangeNotifier {
 
     playerModel.currentRequest = Completer<void>();
 
-    _playlist.clear();
+    playerModel.playlist.clear();
 
     List<AudioSource> allTracks = List.generate(audioTrackPlayList.length, (index) =>
         AudioSource.uri(Uri.parse(dotenv.get("STREAM_URL") + '/${audioTrackPlayList[priorityIndex].trackId}/playList.m3u8'))
     );
 
-    _playlist = ConcatenatingAudioSource(children: allTracks);
+    playerModel.playlist = ConcatenatingAudioSource(children: allTracks);
 
-    await _audioPlayer.setAudioSource(_playlist, preload: true, );
-    await _audioPlayer.seek(Duration.zero, index: priorityIndex);
+    await playerModel.audioPlayer.setAudioSource(playerModel.playlist, preload: true, );
+    await playerModel.audioPlayer.seek(Duration.zero, index: priorityIndex);
 
     List<Future<AudioSource>> futureTracks = [];
 
@@ -85,8 +80,8 @@ class PlayerProv extends ChangeNotifier {
         for (int i = 0; i < audioTrackPlayList.length; i++) {
           if (i != priorityIndex) {
             print("백그라운드 작업 인덱스 : $i");
-            await _playlist.removeAt(i);
-            await _playlist.insert(i, sources[trackIndex]);
+            await playerModel.playlist.removeAt(i);
+            await playerModel.playlist.insert(i, sources[trackIndex]);
             trackIndex++;
           }
         }
@@ -102,24 +97,24 @@ class PlayerProv extends ChangeNotifier {
 
     final newSource = AudioSource.uri(Uri.parse(m3u8Url));
 
-    await _playlist.insert(index,newSource);
+    await playerModel.playlist.insert(index,newSource);
 
-    await _audioPlayer.load();
+    await playerModel.audioPlayer.load();
   }
 
   Future<void> playTrackAtIndex(int index) async {
 
-    if (index >= 0 && index <= ( _playlist.length - 1) ) {
-      await _audioPlayer.seek(Duration.zero, index: index);
+    if (index >= 0 && index <= ( playerModel.playlist.length - 1) ) {
+      await playerModel.audioPlayer.seek(Duration.zero, index: index);
       if (playerModel.isPlaying) {
-        await _audioPlayer.play();
+        await playerModel.audioPlayer.play();
       }
     }
   }
 
   Future<void> removeTrack(int index) async {
-    if (index >= 0 && index < _playlist.length) {
-      _playlist.removeAt(index);
+    if (index >= 0 && index < playerModel.playlist.length) {
+      playerModel.playlist.removeAt(index);
     } else {
       print("오디오 플레이리스트 트랙 제거 중 오류");
     }
@@ -133,6 +128,7 @@ class PlayerProv extends ChangeNotifier {
           config: AudioServiceConfig(
             androidNotificationChannelId: 'com.skrrskrr.music.player',
             androidNotificationChannelName: 'SkrrSkrr Music Player',
+            androidNotificationOngoing: true,
             androidStopForegroundOnPause: true,
             androidShowNotificationBadge: true,
           )
@@ -150,20 +146,20 @@ class PlayerProv extends ChangeNotifier {
 
     print("initAudio");
 
-    _audioPlayer.stop();
-    _audioPlayer.setLoopMode(LoopMode.off);
-    _audioPlayer.setShuffleModeEnabled(false);
+    playerModel.audioPlayer.stop();
+    playerModel.audioPlayer.setLoopMode(LoopMode.off);
+    playerModel.audioPlayer.setShuffleModeEnabled(false);
     audioPlayerClear();
     setupQueue(trackProv.audioPlayerTrackList,trackItemIdx);
   }
 
   void audioPlayerPositionUpdate() {
     
-    playerModel.isBuffering = _audioPlayer.playbackEvent.processingState == ProcessingState.buffering;
+    playerModel.isBuffering = playerModel.audioPlayer.playbackEvent.processingState == ProcessingState.buffering;
 
-    playerModel.currentPosition = Duration(seconds: (_audioPlayer.position.inMilliseconds / 1000).round());
+    playerModel.currentPosition = Duration(seconds: (playerModel.audioPlayer.position.inMilliseconds / 1000).round());
 
-    playerModel.totalDuration = _audioPlayer.playbackEvent.duration ?? Duration.zero;
+    playerModel.totalDuration = playerModel.audioPlayer.playbackEvent.duration ?? Duration.zero;
   }
 
   Future<void> updateAudioPlayerSwiper(int trackId, TrackProv trackProv) async {
@@ -228,7 +224,7 @@ class PlayerProv extends ChangeNotifier {
       trackProv.setTrackPlayCnt(trackProv.audioPlayerTrackList[index].trackId!);
 
       if (playerModel.audioPlayerPlayOption == 2) {
-        await _audioPlayer.seek(Duration.zero);
+        await playerModel.audioPlayer.seek(Duration.zero);
         await playerModel.mediaPlaybackHandler?.seek(Duration.zero);
 
       } else if (index + 1 < trackProv.audioPlayerTrackList.length) {
@@ -249,9 +245,9 @@ class PlayerProv extends ChangeNotifier {
         } else {
           playerModel.isPlaying = false;
           stopTimer();
-          await _audioPlayer.pause();
+          await playerModel.audioPlayer.pause();
         }
-        await _audioPlayer.seek(Duration.zero);
+        await playerModel.audioPlayer.seek(Duration.zero);
         await playerModel.mediaPlaybackHandler?.seek(Duration.zero);
       }
     }
@@ -264,14 +260,14 @@ class PlayerProv extends ChangeNotifier {
       int prevPosition = 0;
 
       playerModel.positionSubscription?.cancel();
-      playerModel.positionSubscription = _audioPlayer.positionStream.listen((position) async {
+      playerModel.positionSubscription = playerModel.audioPlayer.positionStream.listen((position) async {
 
         if (prevPosition != position.inSeconds) {
           audioPlayerPositionUpdate();
           if (playerModel.totalDuration.inSeconds != 0) {
             if (prevPosition + 1 == playerModel.totalDuration.inSeconds) {
               prevPosition = 0;
-              await _audioPlayer.pause();
+              await playerModel.audioPlayer.pause();
               await nextTrackLoad(trackProv);
             } else {
               notify();
@@ -290,14 +286,14 @@ class PlayerProv extends ChangeNotifier {
 
   Future<void> handleAudioReset() async {
     audioPlayerClear();
-    await _audioPlayer.pause();
+    await playerModel.audioPlayer.pause();
     notify();
   }
 
   void pausePlay() {
     playerModel.isPlaying = false;
     stopTimer();
-    _audioPlayer.pause();
+    playerModel.audioPlayer.pause();
     notify();
   }
 
@@ -305,7 +301,7 @@ class PlayerProv extends ChangeNotifier {
     print('resumePlay()실행');
     playerModel.isPlaying = true;
     setTimer(trackProv);
-    _audioPlayer.play();
+    playerModel.audioPlayer.play();
     notify();
   }
 
@@ -345,7 +341,7 @@ class PlayerProv extends ChangeNotifier {
   // 슬라이더 터치가 끝났을 때 위치 조정
   Future<void> onSliderChangeEnd(double value, bool isPlayBackUpdate) async {
 
-    await _audioPlayer.seek(Duration(seconds: value.toInt()));
+    await playerModel.audioPlayer.seek(Duration(seconds: value.toInt()));
 
     if (isPlayBackUpdate) {
       await playerModel.mediaPlaybackHandler?.seek(Duration(seconds: value.toInt()));

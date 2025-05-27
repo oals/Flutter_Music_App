@@ -14,8 +14,11 @@ import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/handler/audio_back_state_handler.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
+import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/comment_prov.dart';
+import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
@@ -172,11 +175,14 @@ class AuthProv with ChangeNotifier{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
+    Provider.of<AppProv>(navigatorKey.currentContext!,listen: false).clear();
     Provider.of<MemberProv>(navigatorKey.currentContext!,listen: false).clear();
     Provider.of<PlayerProv>(navigatorKey.currentContext!,listen: false).clear();
     Provider.of<TrackProv>(navigatorKey.currentContext!,listen: false).clear();
     Provider.of<PlayListProv>(navigatorKey.currentContext!,listen: false).clear();
     Provider.of<CommentProv>(navigatorKey.currentContext!,listen: false).clear();
+    Provider.of<FollowProv>(navigatorKey.currentContext!,listen: false).clear();
+    Provider.of<NotificationsProv>(navigatorKey.currentContext!,listen: false).clear();
 
     // 저장된 JWT 토큰 삭제
     await storage.delete(key: "jwt_token");
@@ -189,6 +195,6 @@ class AuthProv with ChangeNotifier{
 
     await AudioBackStateHandler.instance?.deleteMediaItem();
 
-    notifyListeners(); // 상태 변경 알림
+    notify();
   }
 }

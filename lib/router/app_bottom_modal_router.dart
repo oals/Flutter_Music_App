@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
+import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/screen/modal/audioPlayer/audio_player_track_list_modal.dart';
 import 'package:skrrskrr/screen/modal/comment/comment_modal.dart';
 import 'package:skrrskrr/screen/modal/playList/select_playlist_modal.dart';
@@ -14,6 +15,55 @@ import 'package:skrrskrr/screen/modal/upload/upload_modal.dart';
 import 'package:skrrskrr/screen/modal/category/select_category_modal.dart';
 
 class AppBottomModalRouter {
+
+  static OverlayEntry? parentOverlayEntry;
+  static OverlayEntry? childOverlayEntry;
+  static bool isClosing = false;
+  static GlobalKey listenerKey = GlobalKey();
+
+  static Future<void> removeOverlay(BuildContext? context) async {
+
+    final buildContext = context == null ? findContext() : context;
+
+    if (buildContext != null) {
+      isClosing = true;
+
+     await Future.microtask(() {
+        childOverlayEntry = OverlayEntry(
+          builder: (context) {
+            return TweenAnimationBuilder<double>(
+              tween:  Tween<double>(begin: 1.0, end: 0.0),
+              duration: const Duration(milliseconds: 650),
+              curve: Curves.easeInOut,
+              builder: (context, value, child) {
+                return Transform.translate(
+                    offset: Offset(0, value * 100.h),
+                    child: child
+                );
+              },
+              onEnd: () {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  childOverlayEntry?.remove();
+                  parentOverlayEntry?.remove();
+                });
+              },
+            );
+          },
+        );
+        Overlay.of(buildContext).insert(childOverlayEntry!);
+      });
+    }
+  }
+
+  static BuildContext? findContext(){
+    final context = listenerKey.currentContext;
+
+    if (context != null) {
+      return context;
+    }
+
+    return null;
+  }
 
   static void fnModalRouter(
       BuildContext context,
@@ -30,55 +80,9 @@ class AppBottomModalRouter {
         Function? callBack,
       }) async {
 
-    OverlayEntry? parentOverlayEntry;
-    OverlayEntry? childOverlayEntry;
-    bool isClosing = false;
-
-    final GlobalKey listenerKey = GlobalKey();
-
-    BuildContext? findContext(){
-      final context = listenerKey.currentContext;
-
-      if (context != null) {
-        return context;
-      }
-
-      return null;
-    }
-
-    void removeOverlay(BuildContext? context){
-
-      final buildContext = context == null ? findContext() : context;
-
-      if (buildContext != null) {
-        isClosing = true;
-
-        Future.microtask(() {
-          childOverlayEntry = OverlayEntry(
-            builder: (context) {
-              return TweenAnimationBuilder<double>(
-                tween:  Tween<double>(begin: 1.0, end: 0.0),
-                duration: const Duration(milliseconds: 650),
-                curve: Curves.easeInOut,
-                builder: (context, value, child) {
-                  return Transform.translate(
-                      offset: Offset(0, value * 100.h),
-                      child: child
-                  );
-                },
-                onEnd: () {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    childOverlayEntry?.remove();
-                    parentOverlayEntry?.remove();
-                  });
-                },
-              );
-            },
-          );
-          Overlay.of(buildContext).insert(childOverlayEntry!);
-        });
-      }
-    }
+    parentOverlayEntry = null;
+    childOverlayEntry = null;
+    isClosing = false;
 
     final Map<int, Future<dynamic> Function()> modalWidgets = {
       0: () async {return CommentModal(

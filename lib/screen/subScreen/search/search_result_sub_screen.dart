@@ -88,7 +88,7 @@ class _SearchResultSubScreenState extends State<SearchResultSubScreen> {
     return Expanded(
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
-          if (trackProv.trackModel.searchTrackTotalCount! > searchTrackList.length) {
+          if (trackProv.trackListModel.searchTrackTotalCount! > searchTrackList.length) {
             if (comnLoadProv.shouldLoadMoreData(notification)) {
               comnLoadProv.loadMoreData(trackProv, "SearchTrack", searchTrackList.length,searchText: widget.searchText);
             }
@@ -253,7 +253,7 @@ class _SearchResultSubScreenState extends State<SearchResultSubScreen> {
 
 
                     Set<Track> searchTrackSet = searchTrackList.toSet();
-                    List<Track> list = trackProv.trackModel.trackList;
+                    List<Track> list = trackProv.trackListModel.trackList;
 
                     trackProv.addUniqueTracksToList(
                       sourceList: list,
@@ -291,7 +291,7 @@ class _SearchResultSubScreenState extends State<SearchResultSubScreen> {
                             isAudioPlayer: false,
                             initAudioPlayerTrackListCallBack: () async {
 
-                              await trackProv.getSearchTrack(widget.searchText, comnLoadProv.listDataOffset, trackProv.trackModel.searchTrackTotalCount!);
+                              await trackProv.getSearchTrack(widget.searchText, comnLoadProv.listDataOffset, trackProv.trackListModel.searchTrackTotalCount!);
 
                               trackProv.addUniqueTracksToList(
                                 sourceList: list,

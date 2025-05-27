@@ -1,11 +1,18 @@
 
+import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skrrskrr/model/notifications/notifications_model.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
+import 'package:skrrskrr/router/app_bottom_modal_router.dart';
+import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 
 class FcmNotifications{
@@ -16,6 +23,22 @@ class FcmNotifications{
     print("내 디바이스 토큰: $token");
     return token;
 
+  }
+
+  static void FcmBackgroundDeepLink(BuildContext context) async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? fcmBackgroundMessage = await prefs.getString('fcmBackgroundMessage') ?? "";
+
+    if (fcmBackgroundMessage != "") {
+      NotificationsModel notificationsModel = NotificationsModel.fromJson(jsonDecode(fcmBackgroundMessage.toString()));
+
+      Future.delayed(Duration(milliseconds: 700), () async {
+        Provider.of<NotificationsProv>(context,listen: false).moveNotification(notificationsModel,context);
+      });
+
+      await prefs.remove('fcmBackgroundMessage');
+    }
   }
 
   /**
@@ -48,9 +71,35 @@ class FcmNotifications{
      *  알림을 표시하기 전에 꼭 초기화를 해야함
      * */
 
-    await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
-      android: AndroidInitializationSettings("@mipmap/ic_launcher"), /** 알림에 표시 될 아이콘 */
-    ));
+    await flutterLocalNotificationsPlugin.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings("@mipmap/ic_launcher"), /** 알림에 표시 될 아이콘 */
+      ),
+      onSelectNotification: (String? payload) async {
+        print("🔔 알림 클릭됨! Payload: $payload");
+
+        NotificationsModel notificationsModel = NotificationsModel.fromJson(jsonDecode(payload!));
+
+        if (GoRouter.of(navigatorKey.currentContext!).canPop()) {
+          await AppBottomModalRouter.removeOverlay(null);
+        }
+
+        Future.delayed(Duration(milliseconds: 700), () async {
+          Provider.of<NotificationsProv>(context,listen: false).moveNotification(notificationsModel,navigatorKey.currentContext!);
+        });
+      
+      },
+    );
+
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+
+      print("🔔 백그라운드/종료 후 ${message.notification!.body}");
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('fcmBackgroundMessage', message.notification!.body.toString() );
+
+    });
 
     /** 포그라운드 살태일 때 푸시 알림을 어떻게 표시할지 설정*/
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
@@ -122,12 +171,14 @@ class FcmNotifications{
          * */
         final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-        // 이미 초기화된 flutterLocalNotificationsPlugin을 사용해야 함
+        String rawBody = notification.body.toString(); // JSON 형식의 body 데이터
+        Map<String, dynamic> bodyMap = jsonDecode(rawBody); // JSON을 Map으로 변환
+
         /** 푸시 알림을 화면에 표시*/
         await flutterLocalNotificationsPlugin.show(
           notification.hashCode, // 알림의 고유 id
           notification.title, // 알림의 제목
-          notification.body, // 알림의 내용
+          bodyMap["body"] , // 알림의 내용
           NotificationDetails(
             android: AndroidNotificationDetails(
               'high_importance_channel',
@@ -137,15 +188,22 @@ class FcmNotifications{
               category: 'category_alert',
             ),
           ),
+          payload: rawBody
         );
 
-        print("Foreground 메시지 수신: ${{message.notification!.body!}}");
+        print("Foreground 메시지 수신: ${message.notification?.toMap()}");
+
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('notificationsIsView', true);
         Provider.of<NotificationsProv>(context, listen: false).sharedSaveNotificationsIsView();
+
       }
     });
 
+
   }
+
+
+
 
 }

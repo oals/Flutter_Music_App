@@ -16,6 +16,10 @@ class FollowProv extends ChangeNotifier{
     notifyListeners();
   }
 
+  void clear() {
+    followModel = FollowModel();
+  }
+
   Future<bool> getFollow() async {
 
     String loginMemberId = await ComnUtils.getMemberId();

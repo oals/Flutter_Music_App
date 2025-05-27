@@ -7,12 +7,12 @@ class CommentProv extends ChangeNotifier {
 
   List<CommentModel> commentModel = [];
 
-  void clear() {
-    commentModel = [];
-  }
-
   void notify() {
     notifyListeners();
+  }
+
+  void clear() {
+    commentModel = [];
   }
 
   Future<bool> setCommentLike(commentId) async {

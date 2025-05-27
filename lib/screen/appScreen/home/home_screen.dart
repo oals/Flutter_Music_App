@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +9,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skrrskrr/fcm/fcm_notifications.dart';
+import 'package:skrrskrr/model/notifications/notifications_model.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
@@ -22,6 +27,7 @@ import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
 
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:skrrskrr/utils/share_utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,21 +52,11 @@ class _HomeScreenStateState extends State<HomeScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      deepLinkMove();
+      ShareUtils.deepLinkMove();
+      FcmNotifications.FcmBackgroundDeepLink(context);
     });
   }
 
-  void deepLinkMove() async {
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? deepLink = prefs.getString("deepLink");
-
-    if (deepLink != null && deepLink.isNotEmpty) {
-      Uri uri = Uri.parse(prefs.getString("deepLink")!);
-      ShareUtils.handleDeepLink(uri);
-      prefs.setString('deepLink',"");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

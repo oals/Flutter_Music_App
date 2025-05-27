@@ -12,8 +12,8 @@ import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 
 class TrackProv extends ChangeNotifier {
-  Upload model = Upload();
-  TrackList trackModel = TrackList();
+  Upload uploadModel = Upload();
+  TrackList trackListModel = TrackList();
   Track trackInfoModel = Track();
 
   List<Track> lastListenTrackList = [];
@@ -21,10 +21,13 @@ class TrackProv extends ChangeNotifier {
   List<Track> audioPlayerTrackList = [];
   String lastTrackId = '';
 
+  void notify() {
+    notifyListeners();
+  }
 
   void clear() {
-    model = Upload();
-    trackModel = TrackList();
+    uploadModel = Upload();
+    trackListModel = TrackList();
     trackInfoModel = Track();
     lastListenTrackList = [];
     recommendTrackList = [];
@@ -32,12 +35,8 @@ class TrackProv extends ChangeNotifier {
     lastTrackId = '';
   }
 
-  void notify() {
-    notifyListeners();
-  }
-
   List<Track> trackListFilter(String trackCd) {
-    return trackModel.trackList.where((item) => item.trackListCd.contains(trackCd)).toList();
+    return trackListModel.trackList.where((item) => item.trackListCd.contains(trackCd)).toList();
   }
 
   void addUniqueTracksToList({
@@ -60,13 +59,13 @@ class TrackProv extends ChangeNotifier {
       Track track = Track.fromJson(item);
       track.trackListCd.add(trackListCd);
 
-      int duplicateIndex = trackModel.trackList.indexWhere((existingTrack) => existingTrack.trackId == track.trackId);
+      int duplicateIndex = trackListModel.trackList.indexWhere((existingTrack) => existingTrack.trackId == track.trackId);
 
       if (duplicateIndex == -1) {
         audioPlayerTrackList.add(track);
-        trackModel.trackList.add(track);
+        trackListModel.trackList.add(track);
       } else {
-        audioPlayerTrackList.add(trackModel.trackList[duplicateIndex]);
+        audioPlayerTrackList.add(trackListModel.trackList[duplicateIndex]);
       }
     }
   }
@@ -77,14 +76,14 @@ class TrackProv extends ChangeNotifier {
       Track track = Track.fromJson(item);
       track.trackListCd.add(trackListCd);
 
-      int duplicateIndex = trackModel.trackList.indexWhere((existingTrack) => existingTrack.trackId == track.trackId);
+      int duplicateIndex = trackListModel.trackList.indexWhere((existingTrack) => existingTrack.trackId == track.trackId);
 
       if (duplicateIndex == -1) {
-        trackModel.trackList.add(track);
+        trackListModel.trackList.add(track);
       } else {
-        Track existingTrack = trackModel.trackList.removeAt(duplicateIndex);
+        Track existingTrack = trackListModel.trackList.removeAt(duplicateIndex);
         existingTrack.trackListCd.add(trackListCd);
-        trackModel.trackList.add(existingTrack);
+        trackListModel.trackList.add(existingTrack);
       }
     }
   }
@@ -92,14 +91,14 @@ class TrackProv extends ChangeNotifier {
   void initTrackToModel(List<String> trackCdList){
     try {
       for (String trackCd in trackCdList) {
-        List<dynamic> trackListCopy = List.from(trackModel.trackList);
+        List<dynamic> trackListCopy = List.from(trackListModel.trackList);
 
         for (var item in trackListCopy) {
           int duplicateIndex = item.trackListCd.indexWhere((trackListItemCd) => trackListItemCd == trackCd);
 
           if (duplicateIndex != -1) {
             if (item.trackListCd.length == 1) {
-              trackModel.trackList.remove(item); // 복사본에서 순회 후 삭제
+              trackListModel.trackList.remove(item); // 복사본에서 순회 후 삭제
             } else {
               item.trackListCd.removeAt(duplicateIndex);
             }
@@ -209,7 +208,7 @@ class TrackProv extends ChangeNotifier {
 
         addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "SearchTrackList");
 
-        trackModel.searchTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
+        trackListModel.searchTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
@@ -244,7 +243,7 @@ class TrackProv extends ChangeNotifier {
 
         addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "MemberPageTrackList");
 
-        trackModel.allTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
+        trackListModel.allTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
@@ -372,7 +371,7 @@ class TrackProv extends ChangeNotifier {
 
         addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "MyLikeTrackList" );
 
-        trackModel.likeTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
+        trackListModel.likeTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;
@@ -573,7 +572,7 @@ class TrackProv extends ChangeNotifier {
 
       if (response.statusCode == 200) {
 
-        trackModel = TrackList();
+        trackListModel = TrackList();
 
         await getUploadTrack(0,20);
 
@@ -623,7 +622,7 @@ class TrackProv extends ChangeNotifier {
           'loginMemberId': loginMemberId,
           'trackNm': title,
           'trackInfo': info,
-          'trackTime': model.trackTime ?? "00:00",
+          'trackTime': uploadModel.trackTime ?? "00:00",
           'trackCategoryId': categoryId.toString(),
           'isTrackPrivacy': isPrivacy.toString(),
         },
@@ -631,7 +630,7 @@ class TrackProv extends ChangeNotifier {
 
       if (response.statusCode == 200) {
 
-        trackModel = TrackList();
+        trackListModel = TrackList();
 
         await getUploadTrack(0,20);
 
@@ -667,7 +666,7 @@ class TrackProv extends ChangeNotifier {
 
         addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "UploadTrackList" );
 
-        trackModel.uploadTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
+        trackListModel.uploadTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
         return true;

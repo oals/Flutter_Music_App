@@ -12,6 +12,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 
 class ImageProv extends ChangeNotifier {
+
   void notify() {
     notifyListeners();
   }

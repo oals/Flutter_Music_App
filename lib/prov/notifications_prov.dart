@@ -17,6 +17,10 @@ class NotificationsProv extends ChangeNotifier{
     notifyListeners();
   }
 
+  void clear() {
+    model = NotificationsModel();
+  }
+
   void setNotificationsIsView(bool isView) async{
     notificationsIsView = isView;
     notify();
@@ -188,8 +192,9 @@ class NotificationsProv extends ChangeNotifier{
     return false;
   }
 
-  Future<void> moveNotification(NotificationsModel notificationItem,BuildContext context) async {
+  Future<void> moveNotification(NotificationsModel notificationItem, BuildContext context) async {
 
+    // 읽은 적이 없는 알림일 때 isView 토글
     if (!notificationItem.notificationIsView!) {
       await setNotificationIsView(notificationItem.notificationId!);
       notificationItem.notificationIsView = true;
@@ -222,4 +227,7 @@ class NotificationsProv extends ChangeNotifier{
       GoRouter.of(context).push('/memberPage/${notificationItem.notificationMemberId}');
     }
   }
+
+
+
 }

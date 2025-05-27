@@ -57,7 +57,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
         ),
       ),
       child: ValueListenableBuilder<bool>(
-          valueListenable: playerProv.audioPlayerNotifier,
+          valueListenable: playerProv.playerModel.audioPlayerNotifier,
           builder: (context, value, child) {
             final bool isTrackSelected = widget.audioPlayerTrackItem.trackId != null;
 

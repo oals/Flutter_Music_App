@@ -38,6 +38,13 @@ class AppProv extends ChangeNotifier{
     notifyListeners();
   }
 
+  void clear() {
+    currentIndex = 0;
+    appScreenWidget = Container();
+    isFullScreen = false;
+  }
+
+
   Future<bool> firstLoad(String memberEmail) async {
 
     final String? deviceToken = await FcmNotifications.getMyDeviceToken();

@@ -68,9 +68,9 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
               return Center(child: Text('데이터가 없습니다.'));
             }
 
-            TrackList trackModel = trackProv.trackModel;
+            TrackList trackListModel = trackProv.trackListModel;
             Set<Track> uploadTrackSet = uploadTrackList.toSet();
-            List<Track> list = trackProv.trackModel.trackList;
+            List<Track> list = trackProv.trackListModel.trackList;
 
             trackProv.addUniqueTracksToList(
               sourceList: list,
@@ -81,7 +81,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if (trackModel.uploadTrackTotalCount! > uploadTrackList.length) {
+                if (trackListModel.uploadTrackTotalCount! > uploadTrackList.length) {
                   if (comnLoadProv.shouldLoadMoreData(notification)) {
                     comnLoadProv.loadMoreData(trackProv, "UploadTrack", uploadTrackList.length);
                   }
@@ -126,7 +126,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                                 isAudioPlayer: false,
                                 initAudioPlayerTrackListCallBack: () async {
 
-                                  await trackProv.getUploadTrack(comnLoadProv.listDataOffset, trackModel.uploadTrackTotalCount!);
+                                  await trackProv.getUploadTrack(comnLoadProv.listDataOffset, trackListModel.uploadTrackTotalCount!);
 
                                   trackProv.addUniqueTracksToList(
                                     sourceList: list,

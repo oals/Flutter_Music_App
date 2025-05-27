@@ -72,10 +72,10 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
               return Center(child: Text('데이터가 없습니다.'));
             }
 
-            TrackList trackModel = trackProv.trackModel;
+            TrackList trackListModel = trackProv.trackListModel;
 
             Set<Track> likeTrackSet = likeTrackList.toSet();
-            List<Track> list = trackProv.trackModel.trackList;
+            List<Track> list = trackProv.trackListModel.trackList;
 
             trackProv.addUniqueTracksToList(
               sourceList: list,
@@ -86,7 +86,7 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if (trackModel.likeTrackTotalCount! > likeTrackList.length) {
+                if (trackListModel.likeTrackTotalCount! > likeTrackList.length) {
                   if (comnLoadProv.shouldLoadMoreData(notification)) {
                     comnLoadProv.loadMoreData(trackProv, "LikeTrack", likeTrackList.length);
                   }
@@ -128,7 +128,7 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                                 appScreenName: "LikeTrackScreen",
                                 initAudioPlayerTrackListCallBack: () async {
 
-                                  await trackProv.getLikeTrack(comnLoadProv.listDataOffset, trackModel.likeTrackTotalCount!);
+                                  await trackProv.getLikeTrack(comnLoadProv.listDataOffset, trackListModel.likeTrackTotalCount!);
 
                                   trackProv.addUniqueTracksToList(
                                     sourceList: list,

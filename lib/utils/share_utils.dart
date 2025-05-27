@@ -33,13 +33,10 @@ class ShareUtils {
 
         print("✅ 앱 실행 되어 있을 시 감지된 딥 링크: ${uri.toString()}");
 
-        // User? user = FirebaseAuth.instance.currentUser;
         if (FirebaseAuth.instance.currentUser != null) {
-          print('딥링크테스트1');
            await prefs.setString('deepLink', "");
            handleDeepLink(uri);
         } else {
-          print('딥링크테스트2');
           await prefs.setString('deepLink', uri.toString());
         }
       }
@@ -58,9 +55,19 @@ class ShareUtils {
     }
   }
 
-  static void handleDeepLink(Uri uri) {
+  static void deepLinkMove() async {
 
-    print('if문실행');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? deepLink = prefs.getString("deepLink");
+
+    if (deepLink != null && deepLink.isNotEmpty) {
+      Uri uri = Uri.parse(prefs.getString("deepLink")!);
+      ShareUtils.handleDeepLink(uri);
+      prefs.setString('deepLink',"");
+    }
+  }
+
+  static void handleDeepLink(Uri uri) {
 
     if (uri.queryParameters.containsKey('playlistId')) {
       String playlistId = uri.queryParameters['playlistId']!;

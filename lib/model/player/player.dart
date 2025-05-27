@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:carousel_slider_plus/carousel_controller.dart';
+import 'package:just_audio/just_audio.dart';
 
 class PlayerModel with ChangeNotifier{
   bool fullScreen = false;
@@ -16,6 +16,9 @@ class PlayerModel with ChangeNotifier{
   double? height;
   Offset dragOffset = Offset.zero;
 
+  AudioPlayer audioPlayer = AudioPlayer();
+  ConcatenatingAudioSource playlist = ConcatenatingAudioSource(children: []);
+  ValueNotifier<bool> audioPlayerNotifier = ValueNotifier<bool>(false);
   AudioHandler? mediaPlaybackHandler = null;
   CarouselSliderController carouselSliderController = CarouselSliderController();
   Completer<void>? currentRequest;

@@ -24,6 +24,8 @@ class MemberProv extends ChangeNotifier {
 
   void clear() {
     model = MemberModel();
+    recommendMemberList = [];
+    searchMemberModelList = MemberModelList();
   }
 
   Future<void> fnMemberInfoUpdate({memberNickName,memberInfo}) async {
