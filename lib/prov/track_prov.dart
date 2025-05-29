@@ -1,14 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/model/upload/upload.dart';
-import 'package:skrrskrr/prov/player_prov.dart';
-
 import 'package:skrrskrr/utils/comn_utils.dart';
 
 class TrackProv extends ChangeNotifier {
@@ -88,7 +82,7 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
-  void initTrackToModel(List<String> trackCdList){
+  void initTrackToModel(List<String> trackCdList) {
     try {
       for (String trackCd in trackCdList) {
         List<dynamic> trackListCopy = List.from(trackListModel.trackList);
@@ -169,7 +163,7 @@ class TrackProv extends ChangeNotifier {
 
       if (response.statusCode == 200) {
 
-        if (offset == 0){
+        if (offset == 0) {
           initTrackToModel(["PlayListTrackList"]);
         }
 
@@ -412,7 +406,7 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
-  void fnUpdateTrackLikeStatus(Track track){
+  void fnUpdateTrackLikeStatus(Track track) {
 
     track.isTrackLikeStatus = !track.isTrackLikeStatus!;
 

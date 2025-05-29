@@ -1,13 +1,7 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/follow/follow_info_model.dart';
-import 'package:skrrskrr/model/follow/follow_model.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/screen/subScreen/follow/follow_item.dart';
-import 'package:skrrskrr/utils/comn_utils.dart';
 
 class FollowList extends StatefulWidget {
   const FollowList({

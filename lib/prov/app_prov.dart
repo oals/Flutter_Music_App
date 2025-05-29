@@ -1,6 +1,3 @@
-
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,14 +9,12 @@ import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
-import 'package:skrrskrr/router/app_screen.dart';
 import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
 import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:skrrskrr/utils/comn_utils.dart';
-import 'package:uni_links/uni_links.dart';
 
 class AppProv extends ChangeNotifier{
 
@@ -44,11 +39,10 @@ class AppProv extends ChangeNotifier{
     isFullScreen = false;
   }
 
-
   Future<bool> firstLoad(String memberEmail) async {
 
     final String? deviceToken = await FcmNotifications.getMyDeviceToken();
-    final url = '/api/firstLoad?memberEmail=${memberEmail}&deviceToken=${deviceToken}';
+    final url = '/api/firstLoad?memberEmail=${memberEmail}&memberDeviceToken=${deviceToken}';
 
     try {
       http.Response response = await ComnUtils.apiCall(
@@ -77,7 +71,7 @@ class AppProv extends ChangeNotifier{
           playListProv.recommendAlbumList.playList.add(PlayListInfoModel.fromJson(item));
         }
 
-        for (var item in ComnUtils.extractValue(response.body, "recommendMembers")){
+        for (var item in ComnUtils.extractValue(response.body, "recommendMembers")) {
           memberProv.recommendMemberList.add(FollowInfoModel.fromJson(item));
         }
 

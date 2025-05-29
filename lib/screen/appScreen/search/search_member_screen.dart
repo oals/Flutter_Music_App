@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/member/member_model_list.dart';
-import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';

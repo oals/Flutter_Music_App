@@ -1,7 +1,4 @@
-
 import 'dart:convert';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +10,8 @@ import 'package:skrrskrr/model/notifications/notifications_model.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/router/app_router_config.dart';
-import 'package:skrrskrr/utils/comn_utils.dart';
 
 class FcmNotifications{
-
 
   static Future<String?> getMyDeviceToken() async { // 디바이스에 설정된 토큰 가져오기
     final token = await FirebaseMessaging.instance.getToken();

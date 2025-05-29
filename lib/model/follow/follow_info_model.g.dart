@@ -11,7 +11,6 @@ FollowInfoModel _$FollowInfoModelFromJson(Map<String, dynamic> json) =>
       ..followMemberId = (json['followMemberId'] as num?)?.toInt()
       ..followNickName = json['followNickName'] as String?
       ..followImagePath = json['followImagePath'] as String?
-      ..mutualFollow = json['mutualFollow'] as bool?
       ..isFollowedCd = (json['isFollowedCd'] as num?)?.toInt();
 
 Map<String, dynamic> _$FollowInfoModelToJson(FollowInfoModel instance) =>
@@ -19,6 +18,5 @@ Map<String, dynamic> _$FollowInfoModelToJson(FollowInfoModel instance) =>
       'followMemberId': instance.followMemberId,
       'followNickName': instance.followNickName,
       'followImagePath': instance.followImagePath,
-      'mutualFollow': instance.mutualFollow,
       'isFollowedCd': instance.isFollowedCd,
     };

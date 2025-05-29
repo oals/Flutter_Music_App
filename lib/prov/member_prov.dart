@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,8 +5,6 @@ import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/model/follow/follow_info_model.dart';
 import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/model/member/member_model_list.dart';
-import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:http/http.dart' as http;
 
@@ -105,7 +101,7 @@ class MemberProv extends ChangeNotifier {
   Future<bool> getMemberInfo(String memberEmail) async {
 
     final String? deviceToken = await FcmNotifications.getMyDeviceToken();
-    final url = '/api/getMemberInfo?memberEmail=${memberEmail}&deviceToken=${deviceToken}';
+    final url = '/api/getMemberInfo?memberEmail=${memberEmail}&memberDeviceToken=${deviceToken}';
 
     try {
       http.Response response = await ComnUtils.apiCall(

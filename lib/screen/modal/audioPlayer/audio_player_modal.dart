@@ -1,18 +1,13 @@
-import 'dart:async'; // Timer 관련 라이브러리 추가
-import 'package:audio_service/audio_service.dart';
+import 'dart:async';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/model/player/player.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/handler/audio_back_state_handler.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/modal/audioPlayer/audio_player_item.dart';
-import 'package:skrrskrr/utils/comn_utils.dart';
-
 
 class AudioPlayerModal extends StatefulWidget {
   const AudioPlayerModal({

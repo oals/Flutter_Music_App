@@ -1,24 +1,12 @@
-import 'package:audio_service/audio_service.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/model/track/track_list.dart';
-import 'package:skrrskrr/prov/app_prov.dart';
-import 'package:skrrskrr/handler/audio_back_state_handler.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/graph/track_bar_graph_animation.dart';
-import 'package:skrrskrr/utils/comn_utils.dart';
-
 
 class TrackSquareItem extends StatefulWidget {
   const TrackSquareItem({

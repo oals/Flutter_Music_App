@@ -1,15 +1,8 @@
-import 'dart:math';
-
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-
-import 'package:skrrskrr/model/playList/playlist_list.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';

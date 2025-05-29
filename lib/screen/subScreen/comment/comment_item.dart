@@ -72,7 +72,7 @@ class _CommentItemState extends State<CommentItem> {
                     children: [
 
                       GestureDetector(
-                        onTap:(){
+                        onTap:() {
                           fnRouter(widget.commentModel.memberId);
                         },
                         child: Text(

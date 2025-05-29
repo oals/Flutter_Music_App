@@ -1,16 +1,9 @@
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/comment/comment_model.dart';
 import 'package:skrrskrr/prov/comment_prov.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
-import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comment/comment_item.dart';
-import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 
 class CommentModal extends StatefulWidget {
@@ -111,13 +104,13 @@ class _CommentModalState extends State<CommentModal> {
                                     commentProv.setCommentLike(comment.commentId);
                                     commentProv.fnUpdateCommentLike(comment);
                                   },
-                                  replyCommentCallBack: (){
+                                  replyCommentCallBack: () {
                                     selectCommentMemberNickName = '@${comment.memberNickName} ';
                                     commentId = comment.commentId;
                                     textController.text = '@${comment.memberNickName} ';
                                     textController.selection = TextSelection.fromPosition(TextPosition(offset: textController.text.length));
                                   },
-                                  modalCloseCallBack: (){
+                                  modalCloseCallBack: () {
                                       widget.callBack();
                                   },
                                   isChildComment: false,
@@ -132,13 +125,13 @@ class _CommentModalState extends State<CommentModal> {
                                         commentProv.setCommentLike(childComment.commentId);
                                         commentProv.fnUpdateCommentLike(childComment);
                                       },
-                                      replyCommentCallBack: (){
+                                      replyCommentCallBack: () {
                                         selectCommentMemberNickName = '@${childComment.memberNickName} ';
                                         commentId = childComment.commentId;
                                         textController.text = '@${childComment.memberNickName} ';
                                         textController.selection = TextSelection.fromPosition(TextPosition(offset: textController.text.length));
                                       },
-                                      modalCloseCallBack: (){
+                                      modalCloseCallBack: () {
                                         widget.callBack();
                                       },
                                      isChildComment: true,

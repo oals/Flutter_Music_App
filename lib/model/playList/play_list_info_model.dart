@@ -1,8 +1,7 @@
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:skrrskrr/model/track/track.dart';
 
-part 'play_list_info_model.g.dart'; // 생성될 파일
+part 'play_list_info_model.g.dart';
 
 @JsonSerializable()
 class PlayListInfoModel {
@@ -25,8 +24,6 @@ class PlayListInfoModel {
 
   int? trackCnt;
 
-  List<Track>? playListTrackList;
-
   int? memberId;
 
   String? memberNickName;
@@ -40,7 +37,6 @@ class PlayListInfoModel {
 
   factory PlayListInfoModel.fromJson(Map<String, dynamic> json) => _$PlayListInfoModelFromJson(json);
   Map<String, dynamic> toJson() => _$PlayListInfoModelToJson(this);
-
 
   void updateApiData(PlayListInfoModel updatedPlayList) {
     playListId = updatedPlayList.playListId ?? playListId;
@@ -56,6 +52,5 @@ class PlayListInfoModel {
     memberNickName = updatedPlayList.memberNickName ?? memberNickName;
     memberImagePath = updatedPlayList.memberImagePath ?? memberImagePath;
   }
-
 
 }

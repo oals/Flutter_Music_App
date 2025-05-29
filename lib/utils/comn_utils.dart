@@ -1,10 +1,6 @@
-
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +18,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/router/app_router_config.dart';
-import 'package:skrrskrr/utils/share_utils.dart';
 
 class ComnUtils {
 
@@ -175,7 +170,7 @@ class ComnUtils {
 
       final storage = FlutterSecureStorage();
 
-      if (isGetRefreshToken){
+      if (isGetRefreshToken) {
         String? refreshToken = await storage.read(key: "refresh_token");
         if (refreshToken != null) {
           headers ??= {}; // headers가 null인 경우 빈 맵으로 초기화
@@ -252,10 +247,10 @@ class ComnUtils {
 
     if (response.statusCode == 200) {
       // 성공적인 응답 처리
-      final decodedBody = utf8.decode(response.bodyBytes);
+      // final decodedBody = utf8.decode(response.bodyBytes);
       return response;
 
-    } else if (response.statusCode == 401){
+    } else if (response.statusCode == 401) {
       // Refresh 토큰을 사용하여 새로운 JWT 토큰을 얻어오는 로직
       http.Response refreshResponse = await _getRefreshToken();
 

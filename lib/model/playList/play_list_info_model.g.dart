@@ -17,9 +17,6 @@ PlayListInfoModel _$PlayListInfoModelFromJson(Map<String, dynamic> json) =>
       ..isPlayListLike = json['isPlayListLike'] as bool?
       ..totalPlayTime = json['totalPlayTime'] as String?
       ..trackCnt = (json['trackCnt'] as num?)?.toInt()
-      ..playListTrackList = (json['playListTrackList'] as List<dynamic>?)
-          ?.map((e) => Track.fromJson(e as Map<String, dynamic>))
-          .toList()
       ..memberId = (json['memberId'] as num?)?.toInt()
       ..memberNickName = json['memberNickName'] as String?
       ..memberImagePath = json['memberImagePath'] as String?;
@@ -35,7 +32,6 @@ Map<String, dynamic> _$PlayListInfoModelToJson(PlayListInfoModel instance) =>
       'isPlayListLike': instance.isPlayListLike,
       'totalPlayTime': instance.totalPlayTime,
       'trackCnt': instance.trackCnt,
-      'playListTrackList': instance.playListTrackList,
       'memberId': instance.memberId,
       'memberNickName': instance.memberNickName,
       'memberImagePath': instance.memberImagePath,

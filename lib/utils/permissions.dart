@@ -1,9 +1,6 @@
-
-
 import 'package:permission_handler/permission_handler.dart';
 
 class Permissions {
-
 
   /** 요청 알림 권한*/
   static Future<void> requestNotificationPermission() async {

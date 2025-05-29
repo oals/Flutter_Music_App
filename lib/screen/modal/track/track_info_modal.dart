@@ -1,18 +1,12 @@
-import 'dart:typed_data';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
-import 'package:skrrskrr/screen/subScreen/comn/button/share_btn_item.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:skrrskrr/utils/share_utils.dart';
 
@@ -198,7 +192,7 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                 context,
                 8,
                 trackId: widget.track.trackId,
-              callBack: (int? playListId){
+              callBack: (int? playListId) {
                 if (playListId != null) {
                   playListProv.setPlayListTrack(playListId, widget.track.trackId!);
                 }

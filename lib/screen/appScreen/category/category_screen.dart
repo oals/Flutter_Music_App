@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 
-
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({
     super.key,

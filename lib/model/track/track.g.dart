@@ -17,12 +17,9 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track()
   ..trackLikeCnt = (json['trackLikeCnt'] as num?)?.toInt()
   ..trackUploadDate = json['trackUploadDate'] as String?
   ..memberId = (json['memberId'] as num?)?.toInt()
-  ..memberTrackid = (json['memberTrackid'] as num?)?.toInt()
   ..memberNickName = json['memberNickName'] as String?
   ..memberImagePath = json['memberImagePath'] as String?
-  ..playListId = (json['playListId'] as num?)?.toInt()
   ..trackCategoryId = (json['trackCategoryId'] as num?)?.toInt()
-  ..categoryNm = json['categoryNm'] as String?
   ..isTrackLikeStatus = json['isTrackLikeStatus'] as bool?
   ..isFollowMember = json['isFollowMember'] as bool?
   ..commentsCnt = (json['commentsCnt'] as num?)?.toInt();
@@ -38,12 +35,9 @@ Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'trackLikeCnt': instance.trackLikeCnt,
       'trackUploadDate': instance.trackUploadDate,
       'memberId': instance.memberId,
-      'memberTrackid': instance.memberTrackid,
       'memberNickName': instance.memberNickName,
       'memberImagePath': instance.memberImagePath,
-      'playListId': instance.playListId,
       'trackCategoryId': instance.trackCategoryId,
-      'categoryNm': instance.categoryNm,
       'isTrackLikeStatus': instance.isTrackLikeStatus,
       'isFollowMember': instance.isFollowMember,
       'commentsCnt': instance.commentsCnt,

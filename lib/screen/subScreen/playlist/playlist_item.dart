@@ -23,7 +23,7 @@ class _PlaylistItemState extends State<PlaylistItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         GoRouter.of(context).push('/playList',extra: widget.playList);
       },
       child: Container(
@@ -176,7 +176,7 @@ class _PlaylistItemState extends State<PlaylistItem> {
                               ),
                               SizedBox(width: 3,),
                               GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   GoRouter.of(context).push('/memberPage/${widget.playList.memberId}');
                                 },
                                 child: Text(

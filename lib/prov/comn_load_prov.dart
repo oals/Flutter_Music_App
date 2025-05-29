@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
-import 'package:skrrskrr/prov/track_prov.dart';
 
 class ComnLoadProv extends ChangeNotifier{
 
@@ -23,7 +21,7 @@ class ComnLoadProv extends ChangeNotifier{
       await Future.delayed(Duration(seconds: 3));  // API 호출 후 지연 처리
       if (apiName == 'UploadTrack') {
         await provider.getUploadTrack(offset,20);
-      } else if (apiName == 'LikeTrack'){
+      } else if (apiName == 'LikeTrack') {
         await provider.getLikeTrack(offset,20);
       } else if (apiName == 'MemberPageTrack') {
         await provider.getMemberPageTrack(memberId,offset,20);

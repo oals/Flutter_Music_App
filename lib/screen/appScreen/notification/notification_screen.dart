@@ -4,14 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/notifications/notifications_model.dart';
-import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-
 import 'package:skrrskrr/screen/subScreen/notification/notification_item.dart';
-import 'package:skrrskrr/utils/comn_utils.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({
@@ -66,7 +63,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               padding: EdgeInsets.only(left: 8,right: 8),
               child: FutureBuilder<bool>(
                 future: _getNotificationInitFuture,
-                builder: (context, snapshot){
+                builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
                   } else {
@@ -86,7 +83,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             comnLoadProv.loadMoreData(notificationsProv, "Notifications",  notificationsModel.notificationList.length );
                           }
                         } else {
-                          if (comnLoadProv.isApiCall){
+                          if (comnLoadProv.isApiCall) {
                             comnLoadProv.resetApiCallStatus();
                           }
                         }

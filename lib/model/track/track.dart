@@ -1,8 +1,6 @@
-
 import 'package:json_annotation/json_annotation.dart';
-import 'package:skrrskrr/model/track/track_list.dart';
 
-part 'track.g.dart'; // 생성될 파일
+part 'track.g.dart';
 
 @JsonSerializable()
 class Track {
@@ -27,17 +25,11 @@ class Track {
 
   int? memberId;
 
-  int? memberTrackid;
-
   String? memberNickName;
 
   String? memberImagePath;
 
-  int? playListId;
-
   int? trackCategoryId;
-
-  String? categoryNm;
 
   bool? isTrackLikeStatus;
 
@@ -67,12 +59,9 @@ class Track {
     trackLikeCnt = updatedTrack.trackLikeCnt ?? trackLikeCnt;
     trackUploadDate = updatedTrack.trackUploadDate ?? trackUploadDate;
     memberId = updatedTrack.memberId ?? memberId;
-    memberTrackid = updatedTrack.memberTrackid ?? memberTrackid;
     memberNickName = updatedTrack.memberNickName ?? memberNickName;
     memberImagePath = updatedTrack.memberImagePath ?? memberImagePath;
-    playListId = updatedTrack.playListId ?? playListId;
     trackCategoryId = updatedTrack.trackCategoryId ?? trackCategoryId;
-    categoryNm = updatedTrack.categoryNm ?? categoryNm;
     isTrackLikeStatus = updatedTrack.isTrackLikeStatus ?? isTrackLikeStatus;
     isFollowMember = updatedTrack.isFollowMember ?? isFollowMember;
     commentsCnt = updatedTrack.commentsCnt ?? commentsCnt;

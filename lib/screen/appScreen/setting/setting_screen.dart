@@ -1,25 +1,12 @@
-import 'dart:typed_data';
-
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/main.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/model/track/track_list.dart';
-import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
-
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
-import 'package:skrrskrr/router/app_router_config.dart';
-import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
-
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 

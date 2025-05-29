@@ -1,8 +1,6 @@
-
-
 import 'package:json_annotation/json_annotation.dart';
 
-part 'notifications_model.g.dart'; // 생성될 파일
+part 'notifications_model.g.dart';
 
 @JsonSerializable()
 class NotificationsModel {

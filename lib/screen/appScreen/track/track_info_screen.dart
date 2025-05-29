@@ -1,37 +1,21 @@
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/model/upload/upload.dart';
-import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
-import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
-
-import 'package:skrrskrr/screen/modal/comment/comment_modal.dart';
-import 'package:skrrskrr/screen/modal/Edit/comn_edit_modal.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/button/share_btn_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/slider/circular_slider_track_shape.dart';
 import 'package:skrrskrr/screen/subScreen/comn/button/track_comment_btn_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/button/track_like_btn_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
-
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
-
-import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 
 class TrackInfoScreen extends StatefulWidget {

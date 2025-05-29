@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
-import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 
 class CustomCachedNetworkImage extends StatefulWidget {
   const CustomCachedNetworkImage({

@@ -1,5 +1,4 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
@@ -102,7 +101,7 @@ class AudioBackStateHandler extends BaseAudioHandler {
     playerProv.notify();
   }
 
-  void playbackStateUpdate(){
+  void playbackStateUpdate() {
     playbackState.add(
       PlaybackState(
         controls: [

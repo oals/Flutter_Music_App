@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -7,13 +5,11 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
-import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 
 class UploadTrackScreen extends StatefulWidget {
   const UploadTrackScreen({

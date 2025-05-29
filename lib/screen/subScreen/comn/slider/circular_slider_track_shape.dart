@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-
 class CircularSliderTrackShape extends SliderTrackShape {
   final double progress; // 진행 비율
 
@@ -15,9 +14,8 @@ class CircularSliderTrackShape extends SliderTrackShape {
     bool isEnabled = false,
     bool isDiscrete = false,
   }) {
-    final double trackHeight = sliderTheme.trackHeight ?? 3.5;
-    final double trackDiameter = min(parentBox.size.width, parentBox.size.height);
 
+    final double trackDiameter = min(parentBox.size.width, parentBox.size.height);
     final double trackLeft = (parentBox.size.width - trackDiameter) / 2;
     final double trackTop = (parentBox.size.height - trackDiameter) / 2;
 

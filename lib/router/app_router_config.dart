@@ -1,14 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
-
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/router/app_screen.dart';
-
 import 'package:skrrskrr/screen/appScreen/album/like_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/category/category_screen.dart';
 import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
@@ -29,8 +25,6 @@ import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
 import 'package:skrrskrr/screen/appScreen/track/track_info_screen.dart';
 import 'package:skrrskrr/screen/appScreen/track/like_track_screen.dart';
 import 'package:skrrskrr/screen/appScreen/track/upload_track_screen.dart';
-
-
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

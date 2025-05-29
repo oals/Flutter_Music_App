@@ -1,26 +1,18 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/member/member_model_list.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
-import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-
 import 'package:skrrskrr/screen/subScreen/follow/follow_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_square_item.dart';

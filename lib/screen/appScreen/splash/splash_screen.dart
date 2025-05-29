@@ -1,19 +1,12 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/main.dart';
-import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
-import 'package:skrrskrr/prov/member_prov.dart';
-import 'package:skrrskrr/prov/track_prov.dart';
-
-import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -21,7 +14,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
 
   @override
   void initState() {

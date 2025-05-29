@@ -4,15 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/screen/appScreen/feed/feed_screen.dart';
-import 'package:skrrskrr/screen/appScreen/home/home_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_screen.dart';
-import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
 import 'package:skrrskrr/screen/modal/audioPlayer/audio_player_modal.dart';
 import 'package:skrrskrr/screen/appScreen/setting/setting_screen.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar_v2.dart';
 import 'package:skrrskrr/screen/subScreen/comn/bottomNavigatorBar/custom_bottom_navigation_bar.dart';
-
-
 
 class AppScreen extends StatefulWidget {
   late final Widget child;

@@ -1,9 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +20,6 @@ import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
-
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 
@@ -339,7 +335,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                   return CircularProgressIndicator();
                                 } else {
 
-                                  if (popularTrackList.isEmpty){
+                                  if (popularTrackList.isEmpty) {
                                     popularTrackList = trackProv.trackListFilter("MemberPagePopularTrackList");
                                   }
 

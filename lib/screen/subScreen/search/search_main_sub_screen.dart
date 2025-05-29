@@ -1,10 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/model/search/search_history_model.dart';
 import 'package:skrrskrr/screen/subScreen/category/category_square_item.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
 
 class SearchMainSubScreen extends StatefulWidget {
   const SearchMainSubScreen({

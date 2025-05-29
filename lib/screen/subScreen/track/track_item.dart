@@ -1,11 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/handler/audio_back_state_handler.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
@@ -149,7 +147,7 @@ class _TrackItemState extends State<TrackItem> {
                           SizedBox(
                             width: 57.w,
                             child: GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 if (widget.appScreenName != 'AudioPlayerTrackListModal') {
                                   GoRouter.of(context).push('/trackInfo',
                                     extra: {
@@ -255,7 +253,7 @@ class _TrackItemState extends State<TrackItem> {
                                 ),
                                 SizedBox(width: 3,),
                                 GestureDetector(
-                                  onTap: (){
+                                  onTap: () {
                                     if (!widget.isAudioPlayer) {
                                       GoRouter.of(context).push('/memberPage/${widget.trackItem.memberId}');
                                     }

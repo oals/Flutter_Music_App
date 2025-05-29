@@ -77,7 +77,7 @@ class CommentProv extends ChangeNotifier {
         }
 
         print('$url - Successful');
-        return true;;
+        return true;
       } else {
         throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
@@ -107,7 +107,7 @@ class CommentProv extends ChangeNotifier {
         }
 
         print('$url - Successful');
-        return true;;
+        return true;
       } else {
         throw Exception(ComnUtils.extractValue(response.body, 'message'));
       }
@@ -168,7 +168,7 @@ class CommentProv extends ChangeNotifier {
     return flatComments.indexWhere((comment) => comment.commentId == targetCommentId);
   }
 
-  void fnUpdateCommentLike(CommentModel commentModel){
+  void fnUpdateCommentLike(CommentModel commentModel) {
 
     commentModel.commentLikeStatus = !commentModel.commentLikeStatus!;
 

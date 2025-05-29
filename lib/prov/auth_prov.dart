@@ -1,19 +1,11 @@
-
-import 'dart:convert';
-
-import 'package:audio_service/audio_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/handler/audio_back_state_handler.dart';
-import 'package:skrrskrr/model/member/member_model.dart';
-import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/comment_prov.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';

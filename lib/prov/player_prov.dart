@@ -1,8 +1,5 @@
-
 import 'dart:async';
-
 import 'package:audio_service/audio_service.dart';
-import 'package:carousel_slider_plus/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

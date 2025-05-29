@@ -1,8 +1,7 @@
-
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'comment_model.g.dart';
+
 @JsonSerializable()
 class CommentModel {
 
@@ -16,10 +15,6 @@ class CommentModel {
 
   String? memberNickName;
 
-  int? parentCommentMemberId;
-
-  String? parentCommentMemberNickName;
-
   bool? commentLikeStatus;
 
   int? commentLikeCnt;
@@ -27,10 +22,6 @@ class CommentModel {
   String? commentText;
 
   String? commentDate;
-
-  int? parentCommentId;
-
-  bool? isChildCommentActive;
 
   List<CommentModel>? childComments = [];
 

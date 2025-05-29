@@ -56,7 +56,7 @@ class _SearchFindSubScreenState extends State<SearchFindSubScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       print('검색어 선택');
                       widget.onTap(searchHistoryList[i].historyText);
                     },

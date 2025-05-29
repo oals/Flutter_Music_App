@@ -1,4 +1,3 @@
-
 import 'package:file_picker/file_picker.dart';
 
 class Upload {
@@ -7,21 +6,7 @@ class Upload {
 
   int? trackId;
 
-  String? trackNm;
-
-  String? albumNm;
-
-  String? albumInfo;
-
-  String? trackInfo;
-
   String? trackTime;
-
-  int trackCategoryId = 0;
-
-  int? albumId;
-
-  bool isTrackPrivacy = false;
 
   FilePickerResult? uploadFile; // 업로드할 파일
 
@@ -30,7 +15,5 @@ class Upload {
   String? uploadFileNm; // 파일 이름
 
   String? uploadImageNm; // 이미지 이름
-
-
 
 }

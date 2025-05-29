@@ -1,23 +1,15 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/model/track/track_list.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
-import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
-import 'package:skrrskrr/utils/comn_utils.dart';
-
-import '../../../prov/player_prov.dart';
 
 class LikeTrackScreen extends StatefulWidget {
   const LikeTrackScreen({

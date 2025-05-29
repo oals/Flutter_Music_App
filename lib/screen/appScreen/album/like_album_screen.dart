@@ -5,12 +5,10 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-import 'package:skrrskrr/screen/subScreen/playlist/playlist_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 
 class LikeAlbumScreen extends StatefulWidget {
@@ -77,7 +75,7 @@ class _LikeAlbumScreenState extends State<LikeAlbumScreen> {
                     comnLoadProv.loadMoreData(playListProv, "LikePlayLists", AlbumList.length , isAlbum: true);
                   }
                 } else {
-                  if (comnLoadProv.isApiCall){
+                  if (comnLoadProv.isApiCall) {
                     comnLoadProv.resetApiCallStatus();
                   }
                 }

@@ -1,24 +1,17 @@
-
-import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:go_router/go_router.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/upload/upload.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/upload/upload_text_field_item.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
-
 import '../../../router/app_bottom_modal_router.dart';
 
 class UploadModal extends StatefulWidget {
@@ -152,7 +145,7 @@ class _UploadModalState extends State<UploadModal> {
                 children: [
                   if (!widget.isAlbum)...[
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         _pickImage();
                       },
                       child: Center(
@@ -201,7 +194,7 @@ class _UploadModalState extends State<UploadModal> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               _pickImage();
                             },
                             child: _imageBytes != null // 선택된 이미지가 있을 경우
@@ -266,7 +259,7 @@ class _UploadModalState extends State<UploadModal> {
                               children: [
                                 for(int i = 0; i < uploadTrackList.length; i++)...[
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
 
                                       if (uploadTrackList[i].uploadFile != null) {
                                         if (_imageBytes == null) {
@@ -414,7 +407,7 @@ class _UploadModalState extends State<UploadModal> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            onTap : (){
+                            onTap : () {
                               setState(() {
                                 _isToggled = !_isToggled;
                                 isPrivacy = _isToggled;

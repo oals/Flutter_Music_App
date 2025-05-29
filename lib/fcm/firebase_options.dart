@@ -8,4 +8,3 @@ final DefaultFirebaseOptions =  FirebaseOptions(
   projectId: dotenv.get("PROJECT_ID"),
   storageBucket: dotenv.get("STORAGE_BUCKET"),
 );
-

@@ -8,11 +8,9 @@ import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/follow/follow_list.dart';
 
-
 class MemberFollowScreen extends StatefulWidget {
   const MemberFollowScreen({
     super.key,
-    
   });
 
   @override

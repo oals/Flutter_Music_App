@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
-import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:skrrskrr/utils/share_utils.dart';
 
 class ShareBtn extends StatelessWidget {

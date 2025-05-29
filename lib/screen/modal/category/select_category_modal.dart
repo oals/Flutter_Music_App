@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 
 class SelectCategoryModal extends StatefulWidget {
@@ -63,7 +61,7 @@ class _SelectCategoryModalState extends State<SelectCategoryModal> {
               spacing: 10.0, // 위젯 사이의 가로 간격
               runSpacing: 20.0, // 줄 사이의 세로 간격
               children: [
-                for (int i = 0; i < categoryList!.length; i++)
+                for (int i = 0; i < categoryList.length; i++)
                   GestureDetector(
                     onTap: () {
                       selectedCategoryId = i;
@@ -83,7 +81,7 @@ class _SelectCategoryModalState extends State<SelectCategoryModal> {
                       ),
                       child: Center(
                         child: Text(
-                          categoryList![i],
+                          categoryList[i],
                           style: TextStyle(
                             color: selectedCategoryId == i
                                 ? Colors.white
@@ -99,7 +97,7 @@ class _SelectCategoryModalState extends State<SelectCategoryModal> {
             ),
 
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 widget.callBack(selectedCategoryId);
               },
               child: Text('완료',

@@ -11,8 +11,6 @@ class FollowInfoModel {
 
   String? followImagePath;
 
-  bool? mutualFollow;
-
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool? isFollow = false;
 

@@ -347,7 +347,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                               context,
                                               0,
                                               trackId: widget.audioPlayerTrackItem.trackId,
-                                              callBack: (){
+                                              callBack: () {
                                                 playerProv.playerModel.fullScreen = false;
                                                 appProv.isFullScreenFunc(false);
                                               }

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/model/search/search_history_model.dart';
-import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/prov/search_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/search/search_find_sub_screen.dart';
@@ -25,8 +22,6 @@ class _SearchScreenState extends State<SearchScreen> {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
   int? searchId = 0;
-
-  late SearchModel searchModel;
   late List<String> recentListenTrackHistory;
   late Future<bool> _getSearchInitFuture;
 

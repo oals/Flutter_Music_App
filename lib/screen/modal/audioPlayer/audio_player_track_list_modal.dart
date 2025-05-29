@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/player_prov.dart';
 import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
@@ -39,7 +37,7 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
     super.dispose();
   }
 
-  void setCurrentPlaying(){
+  void setCurrentPlaying() {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
 
@@ -83,7 +81,7 @@ class _AudioPlayerTrackListModalState extends State<AudioPlayerTrackListModal> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           GestureDetector(
-                            onTap:(){
+                            onTap:() {
                               widget.callBack();
                             },
                             child: Icon(

@@ -9,7 +9,6 @@ import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-import 'package:skrrskrr/screen/subScreen/playlist/playlist_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 
 class MemberAlbumScreen extends StatefulWidget {

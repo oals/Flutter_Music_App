@@ -1,14 +1,9 @@
-import 'dart:typed_data';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/follow_prov.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
-
 import 'package:skrrskrr/utils/comn_utils.dart';
 
 class MemberScrollHorizontalItem extends StatefulWidget {
@@ -114,7 +109,7 @@ class _MemberScrollHorizontalItemState
                           widget.memberList![i].isFollowedCd = 0;
                         } else if (widget.memberList![i].isFollowedCd == 2) {
                           widget.memberList![i].isFollowedCd = 3;
-                        } else if (widget.memberList![i].isFollowedCd == 3){
+                        } else if (widget.memberList![i].isFollowedCd == 3) {
                           widget.memberList![i].isFollowedCd = 2;
                         }
                         setState(() {});

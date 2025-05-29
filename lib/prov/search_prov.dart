@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:skrrskrr/model/search/search_history_model.dart';
-import 'package:skrrskrr/model/search/search_model.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:http/http.dart' as http;
 
 class SearchProv extends ChangeNotifier {
-  SearchModel model = SearchModel();
   List<SearchHistoryModel> searchHistoryModel = [];
   List<String> recentListenTrackHistory = [];
 
@@ -15,7 +12,6 @@ class SearchProv extends ChangeNotifier {
   }
 
   void clear() {
-    model = SearchModel();
     searchHistoryModel = [];
     recentListenTrackHistory = [];
   }

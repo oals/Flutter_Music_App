@@ -1,22 +1,14 @@
-import 'dart:typed_data';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-
 import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
-import 'package:skrrskrr/prov/image_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
-import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
-import 'package:skrrskrr/screen/subScreen/playlist/playlist_square_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 
 class LikePlaylistScreen extends StatefulWidget {
@@ -78,7 +70,7 @@ class _LikePlaylistScreenState extends State<LikePlaylistScreen> {
                     comnLoadProv.loadMoreData(playListProv, "LikePlayLists", playLists.length , isAlbum: false);
                   }
                 } else {
-                  if (comnLoadProv.isApiCall){
+                  if (comnLoadProv.isApiCall) {
                     comnLoadProv.resetApiCallStatus();
                   }
                 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
-import 'dart:convert';
 import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/utils/comn_utils.dart';
 import 'package:http/http.dart' as http;
@@ -39,7 +38,7 @@ class PlayListProv extends ChangeNotifier {
 
       if (response.statusCode == 200) {
 
-        if (offset == 0){
+        if (offset == 0) {
           playlists = PlaylistList();
         }
 
@@ -277,7 +276,7 @@ class PlayListProv extends ChangeNotifier {
 
       if (response.statusCode == 200) {
 
-        if (offset == 0){
+        if (offset == 0) {
           playlists = PlaylistList();
         }
 
@@ -314,7 +313,7 @@ class PlayListProv extends ChangeNotifier {
 
       if (response.statusCode == 200) {
 
-        if (offset == 0){
+        if (offset == 0) {
           playlists = PlaylistList();
         }
 

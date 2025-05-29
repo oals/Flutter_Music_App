@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({
     super.key,
-    
   });
-
-  
 
   @override
   State<FeedScreen> createState() => _FeedScreenState();

@@ -1,9 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/track/track.dart';
-import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/screen/modal/audioPlayer/audio_player_track_list_modal.dart';
 import 'package:skrrskrr/screen/modal/comment/comment_modal.dart';
 import 'package:skrrskrr/screen/modal/playList/select_playlist_modal.dart';
@@ -144,7 +141,7 @@ class AppBottomModalRouter {
         );
       },
       9: () async {return SelectShareModal(
-        callBack: (String selectShareNm){
+        callBack: (String selectShareNm) {
           callBack!(selectShareNm);
           removeOverlay(null);
         },

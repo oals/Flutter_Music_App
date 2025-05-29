@@ -4,11 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/main.dart';
-import 'package:skrrskrr/model/member/member_model.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
-import 'package:skrrskrr/prov/member_prov.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
