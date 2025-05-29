@@ -28,7 +28,7 @@ class ShareBtn extends StatelessWidget {
     return GestureDetector(
       onTap:() async {
 
-        AppBottomModalRouter.fnModalRouter(
+        await AppBottomModalRouter().fnModalRouter(
             context,
             9,
             callBack: (String selectShareNm) async {

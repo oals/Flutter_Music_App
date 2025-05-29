@@ -19,10 +19,10 @@ class SelectShareModal extends StatefulWidget {
 class _SelectShareModalState extends State<SelectShareModal> {
   bool isTwitterInstalled = false;
   bool isKakaoTalkInstalled = false;
+  bool isLineInstalled = false;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     checkInstalledApps();
   }
@@ -30,6 +30,7 @@ class _SelectShareModalState extends State<SelectShareModal> {
   Future<void> checkInstalledApps() async {
     isTwitterInstalled = await ShareUtils.isShareAppInstalled("com.twitter.android");
     isKakaoTalkInstalled = await ShareUtils.isShareAppInstalled("com.kakao.talk");
+    isLineInstalled = await ShareUtils.isShareAppInstalled("jp.naver.line.android");
     setState(() {});
   }
 
@@ -159,12 +160,40 @@ class _SelectShareModalState extends State<SelectShareModal> {
                 ],
               ),
 
-
-              IconButton(
-                icon: Icon(Icons.account_circle, color: Colors.white,size: 12.w,),
-                onPressed: () {
-
-                },
+              Column(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      if (isLineInstalled) {
+                        widget.callBack("Line");
+                      } else {
+                        ShareUtils.openPlayStore("jp.naver.line.android");
+                      }
+                    },
+                    child: ClipOval(
+                      child: Container(
+                        width: 12.w,
+                        height: 6.h,
+                        color: Colors.white10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Image.asset(
+                            width: 7.w,
+                            height: 3.5.h,
+                            'assets/images/line.png',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text("Line",
+                    style: TextStyle(
+                        color: isLineInstalled ? Colors.white : Colors.white10,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500
+                    ),
+                  ),
+                ],
               ),
 
               Column(

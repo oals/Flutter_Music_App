@@ -66,7 +66,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
 
     if (widget.commentId != null) {
       Future.delayed(Duration(milliseconds: 700), () async {
-        AppBottomModalRouter.fnModalRouter(context, 0, trackId: widget.track.trackId,commentId: widget.commentId);
+        await AppBottomModalRouter().fnModalRouter(context, 0, trackId: widget.track.trackId,commentId: widget.commentId);
       });
     }
   }
@@ -376,10 +376,10 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                             width: 5,
                                           ),
                                           GestureDetector(
-                                            onTap: () {
+                                            onTap: () async {
                                               print('음원 소개 편집 버튼');
 
-                                              AppBottomModalRouter.fnModalRouter(
+                                              await AppBottomModalRouter().fnModalRouter(
                                                   context,
                                                   1,
                                                   maxLines: null,

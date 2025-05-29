@@ -87,8 +87,8 @@ class _CustomAppbarState extends State<CustomAppbar> {
 
               if (widget.isAddTrackBtn) ...[
                 GestureDetector(
-                  onTap: () {
-                    AppBottomModalRouter.fnModalRouter(context,5,isAlbum: false);
+                  onTap: () async {
+                    await AppBottomModalRouter().fnModalRouter(context,5,isAlbum: false);
                   },
                   child:SvgPicture.asset(
                     'assets/images/upload.svg',

@@ -180,9 +180,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                               if (isEdit)...[
                                 SizedBox(width: 3),
                                 GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
                                     print('플리 소개 편집 버튼');
-                                    AppBottomModalRouter.fnModalRouter(
+                                    await AppBottomModalRouter().fnModalRouter(
                                         context,
                                         1,
                                         maxLines: 1,

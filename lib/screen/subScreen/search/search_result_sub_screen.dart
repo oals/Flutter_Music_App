@@ -108,7 +108,7 @@ class _SearchResultSubScreenState extends State<SearchResultSubScreen> {
                   future: _getSearchMemberFuture, // 비동기 메소드 호출
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CustomProgressIndicatorItem());
+                      return CustomProgressIndicatorItem();
                     } else if (snapshot.hasError) {
                       return Center(child: Text('오류 발생: ${snapshot.error}'));
                     } else if (!snapshot.hasData) {
@@ -174,7 +174,7 @@ class _SearchResultSubScreenState extends State<SearchResultSubScreen> {
               future: _getSearchPlayListFuture, // 비동기 메소드 호출
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CustomProgressIndicatorItem());
+                      return CustomProgressIndicatorItem();
                     } else if (snapshot.hasError) {
                       return Center(child: Text('오류 발생: ${snapshot.error}'));
                     } else if (!snapshot.hasData) {
@@ -244,7 +244,7 @@ class _SearchResultSubScreenState extends State<SearchResultSubScreen> {
               future: _getSearchTrackFuture, // 비동기 메소드 호출
                   builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CustomProgressIndicatorItem());
+                    return CustomProgressIndicatorItem();
                   } else if (snapshot.hasError) {
                     return Center(child: Text('오류 발생: ${snapshot.error}'));
                   } else if (!snapshot.hasData) {

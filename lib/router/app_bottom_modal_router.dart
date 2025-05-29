@@ -16,12 +16,22 @@ import 'package:skrrskrr/screen/modal/category/select_category_modal.dart';
 
 class AppBottomModalRouter {
 
-  static OverlayEntry? parentOverlayEntry;
-  static OverlayEntry? childOverlayEntry;
-  static bool isClosing = false;
-  static GlobalKey listenerKey = GlobalKey();
+  static final List<AppBottomModalRouter> _instances = [];
 
-  static Future<void> removeOverlay(BuildContext? context) async {
+  OverlayEntry? parentOverlayEntry;
+  OverlayEntry? childOverlayEntry;
+  bool isClosing = false;
+  GlobalKey listenerKey = GlobalKey();
+
+  factory AppBottomModalRouter() {
+    final instance = AppBottomModalRouter._internal();
+    _instances.add(instance);
+    return instance;
+  }
+
+  AppBottomModalRouter._internal();
+
+  Future<void> removeOverlay(BuildContext? context) async {
 
     final buildContext = context == null ? findContext() : context;
 
@@ -55,7 +65,7 @@ class AppBottomModalRouter {
     }
   }
 
-  static BuildContext? findContext(){
+  BuildContext? findContext() {
     final context = listenerKey.currentContext;
 
     if (context != null) {
@@ -65,7 +75,7 @@ class AppBottomModalRouter {
     return null;
   }
 
-  static void fnModalRouter(
+  Future<void> fnModalRouter(
       BuildContext context,
       int modalIndex,
       {

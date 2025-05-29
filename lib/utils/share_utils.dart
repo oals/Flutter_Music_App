@@ -23,7 +23,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ShareUtils {
 
-  static String redirectPath = "https://19eb-116-32-95-167.ngrok-free.app/redirect"; // 테스트 (ngrok 주소)
+  static String redirectPath = "https://351f-116-32-95-167.ngrok-free.app/redirect";
 
   static void deepLinkListener() {
     uriLinkStream.listen((Uri? uri) async {
@@ -101,7 +101,7 @@ class ShareUtils {
 
   static Future<void> shareToKakaoTalk(Map<String, String> shareMap) async {
 
-    String imagePath = shareMap['imagePath']!.replaceAll("http://10.0.2.2:8102","https://19eb-116-32-95-167.ngrok-free.app");
+    String imagePath = shareMap['imagePath']!.replaceAll("http://10.0.2.2:8102","https://351f-116-32-95-167.ngrok-free.app");
 
     final response = await ShareClient.instance.shareCustom(
       templateId: 120629,
@@ -109,7 +109,7 @@ class ShareUtils {
         "imagePath" : imagePath,
         "shareId": shareMap['shareId']!,
         'shareItemId' : shareMap['shareItemId']!,
-        "title": '🎵' + shareMap['title']! + '\n',
+        "title": shareMap['title']! + '\n',
         "info": shareMap['info']! + "\n",
       },
     );
@@ -127,13 +127,23 @@ class ShareUtils {
 
   static Future<void> shareToTwitter(Map<String,String> shareMap) async {
 
-    final twitterUrl = "https://twitter.com/intent/tweet?text="
-        "${Uri.encodeComponent("$shareMap['title']\n$shareMap['info']")}&url=$shareMap['url']";
+    final twitterUrl = "https://twitter.com/intent/tweet?text=${Uri.encodeComponent("${shareMap['title']}\n${shareMap['info']}\n\n${redirectPath + "/${shareMap['shareId']}/${shareMap['shareItemId']}"}")}";
 
     if (await canLaunchUrl(Uri.parse(twitterUrl))) {
       await launchUrl(Uri.parse(twitterUrl), mode: LaunchMode.externalApplication);
     } else {
       print("트위터 실행 실패 ❌");
+    }
+  }
+
+  static Future<void> shareToLine(Map<String, String> shareMap) async {
+
+    final lineUrl = "line://msg/text/${Uri.encodeComponent("${shareMap['title']}\n${shareMap['info']}\n\n${redirectPath + "/${shareMap['shareId']}/${shareMap['shareItemId']}"} ")}";
+
+    if (await canLaunchUrl(Uri.parse(lineUrl))) {
+      await launchUrl(Uri.parse(lineUrl), mode: LaunchMode.externalApplication);
+    } else {
+      print("LINE 실행 실패 ❌");
     }
   }
 
@@ -161,22 +171,15 @@ class ShareUtils {
   }
 
  static Future<void> sendToShareApp(Map<String, String> shareMap, BuildContext context) async {
+
    if (shareMap['selectShareNm'] == "KakaoTalk") {
-     String imageUrl = Provider.of<ImageProv>(context,listen: false).imageLoader(shareMap['imagePath']);
-
-     shareMap['imagePath'] = imageUrl;
-
+     shareMap['imagePath'] = Provider.of<ImageProv>(context,listen: false).imageLoader(shareMap['imagePath']);;
      await ShareUtils.shareToKakaoTalk(shareMap);
-
    } else if (shareMap['selectShareNm'] == "X") {
-
-     String imageUrl = Provider.of<ImageProv>(context,listen: false).imageLoader(shareMap['imagePath']);
-
-     shareMap['imagePath'] = imageUrl;
-
      await ShareUtils.shareToTwitter(shareMap);
-
-   } else if (shareMap['selectShareNm'] == "More"){
+   } else if (shareMap['selectShareNm'] == "Line") {
+     await ShareUtils.shareToLine(shareMap);
+   } else {
      ShareUtils.shareToMore(shareMap);
    }
  }

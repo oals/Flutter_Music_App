@@ -30,10 +30,17 @@ class _CustomCachedNetworkImageState extends State<CustomCachedNetworkImage> {
     return CachedNetworkImage(
       imageUrl: imageProv.imageLoader(widget.imagePath),  // 이미지 URL
       placeholder: (context, url) {
-        return SizedBox();
+        return Container(
+          width: widget.imageWidth ?? null,  // 이미지의 세로 크기
+          height: widget.imageHeight ?? null,
+        );
       },
       errorWidget: (context, url, error) {
-        return Icon(Icons.error);
+        return Icon(
+          null,
+          color: Colors.black,
+          size: widget.imageWidth,
+        );
       },
       fadeInDuration: Duration(milliseconds: 500),  // 이미지가 로드될 때 페이드 인 효과
       fadeOutDuration: Duration(milliseconds: 500),  // 이미지가 사라질 때 페이드 아웃 효과

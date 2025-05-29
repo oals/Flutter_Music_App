@@ -194,7 +194,7 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
             onTap: () async {
               print('플리에 추가 버튼 클릭');
 
-              AppBottomModalRouter.fnModalRouter(
+              await AppBottomModalRouter().fnModalRouter(
                 context,
                 8,
                 trackId: widget.track.trackId,
@@ -233,7 +233,7 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                 GestureDetector(
                   onTap:() async {
 
-                    AppBottomModalRouter.fnModalRouter(
+                    await AppBottomModalRouter().fnModalRouter(
                         context,
                         9,
                         callBack: (String selectShareNm) async {
@@ -247,10 +247,8 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                             "selectShareNm" : selectShareNm,
                           };
 
-
                           await ShareUtils.sendToShareApp(shareMap, context);
                         });
-
 
                   },
                   child: Row(

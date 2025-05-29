@@ -278,8 +278,8 @@ class _TrackItemState extends State<TrackItem> {
 
                 if (!widget.isAudioPlayer)
                   GestureDetector(
-                  onTap: () {
-                   AppBottomModalRouter.fnModalRouter(context,3, track : widget.trackItem,);
+                  onTap: () async {
+                   await AppBottomModalRouter().fnModalRouter(context,3, track : widget.trackItem,);
                   },
                   child: SvgPicture.asset(
                     'assets/images/ellipsis.svg',

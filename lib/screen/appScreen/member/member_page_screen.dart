@@ -225,7 +225,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                         onTap: () async {
                                           print('닉네임 수정');
 
-                                          AppBottomModalRouter.fnModalRouter(
+                                          await AppBottomModalRouter().fnModalRouter(
                                               context,
                                               1,
                                               maxLines: 1,
@@ -289,7 +289,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                   GestureDetector(
                                     onTap: () async {
                                       print('자기소개 수정');
-                                      AppBottomModalRouter.fnModalRouter(
+                                      await AppBottomModalRouter().fnModalRouter(
                                         context,
                                         1,
                                         maxLines: null,
@@ -419,8 +419,8 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                 SizedBox(width: 5,),
 
                                                 GestureDetector(
-                                                  onTap: () {
-                                                    AppBottomModalRouter.fnModalRouter(context, 2);
+                                                  onTap: () async {
+                                                    await AppBottomModalRouter().fnModalRouter(context, 2);
                                                   },
                                                   child: Icon(
                                                     Icons.add_circle_outline,
@@ -499,8 +499,8 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                   SizedBox(width: 5,),
 
                                                   GestureDetector(
-                                                    onTap : (){
-                                                      AppBottomModalRouter.fnModalRouter(context, 5,isAlbum: true);
+                                                    onTap : () async {
+                                                      await AppBottomModalRouter().fnModalRouter(context, 5,isAlbum: true);
                                                     },
                                                     child: Icon(
                                                       Icons.add_circle_outline,

@@ -21,8 +21,8 @@ class _TrackCommentBtnItemState extends State<TrackCommentBtnItem> {
     return Row(
       children: [
         GestureDetector(
-          onTap: (){
-            AppBottomModalRouter.fnModalRouter(context, 0, trackId: widget.track.trackId);
+          onTap: () async {
+            await AppBottomModalRouter().fnModalRouter(context, 0, trackId: widget.track.trackId);
           },
           child: SvgPicture.asset(
             'assets/images/comment.svg',

@@ -81,7 +81,7 @@ class FcmNotifications{
         NotificationsModel notificationsModel = NotificationsModel.fromJson(jsonDecode(payload!));
 
         if (GoRouter.of(navigatorKey.currentContext!).canPop()) {
-          await AppBottomModalRouter.removeOverlay(null);
+          await AppBottomModalRouter().removeOverlay(null);
         }
 
         Future.delayed(Duration(milliseconds: 700), () async {

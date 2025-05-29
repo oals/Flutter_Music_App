@@ -360,9 +360,8 @@ class _UploadModalState extends State<UploadModal> {
                       focusNode: null,
                       isReadOnly : true,
                       isOnTap : true,
-                      callBack : ()=>{
-
-                        AppBottomModalRouter.fnModalRouter(
+                      callBack : () async {
+                        await AppBottomModalRouter().fnModalRouter(
                             categoryId: categoryId - 1,
                             context,6,
                             callBack:(int selectedCategoryId) {
@@ -370,8 +369,7 @@ class _UploadModalState extends State<UploadModal> {
                               categoryId = selectedCategoryId + 1;
                               controller4.text = ComnUtils.getCategory(categoryId);
 
-                            })
-
+                            });
                       },
                     ),
                   ),

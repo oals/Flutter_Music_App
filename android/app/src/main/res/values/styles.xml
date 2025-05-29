@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="colorPrimary">#6200EE</color> <!-- 예시 색상 -->
-    <color name="colorPrimaryDark">#3700B3</color> <!-- 예시 색상 -->
-    <color name="colorAccent">#03DAC5</color> <!-- 예시 색상 -->
-
+    <color name="colorPrimary">#6200EE</color>
+    <!-- 예시 색상 -->
+    <color name="colorPrimaryDark">#3700B3</color>
+    <!-- 예시 색상 -->
+    <color name="colorAccent">#03DAC5</color>
+    <!-- 예시 색상 -->
     <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is off -->
     <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:windowFullscreen">false</item>
     </style>
-
     <!-- Theme applied to the Android Window as soon as the process has started. -->
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
-
     <!-- 기본 애플리케이션 테마 -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
     <!-- UCropActivity에 사용할 테마 -->
     <style name="UCropTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>

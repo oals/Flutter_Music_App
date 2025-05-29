@@ -343,7 +343,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                       onTap: (index) async {
                                         appProv.currentIndex = index;
                                         if (index == 1) {
-                                          AppBottomModalRouter.fnModalRouter(
+                                          await AppBottomModalRouter().fnModalRouter(
                                               context,
                                               0,
                                               trackId: widget.audioPlayerTrackItem.trackId,
@@ -353,9 +353,9 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                               }
                                           );
                                         } else if (index == 2) {
-                                          AppBottomModalRouter.fnModalRouter(context, 7);
+                                          await AppBottomModalRouter().fnModalRouter(context, 7);
                                         } else if (index == 3) {
-                                          AppBottomModalRouter.fnModalRouter(context, 3, track: widget.audioPlayerTrackItem);
+                                          await AppBottomModalRouter().fnModalRouter(context, 3, track: widget.audioPlayerTrackItem);
                                         }
                                       },
                                     ),
@@ -428,7 +428,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                       Text(
                                         widget.audioPlayerTrackItem
                                             .memberNickName ??
-                                            "Lofi",
+                                            "AudioX",
                                         style: TextStyle(
                                             color: Colors
                                                 .grey,
