@@ -142,7 +142,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                           }
                                         },
                                         child: Text(
-                                          '이미지 변경',
+                                          'Change Image',
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ),

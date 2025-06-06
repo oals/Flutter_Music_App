@@ -9,6 +9,7 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
+import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
 
 class UploadTrackScreen extends StatefulWidget {
@@ -29,14 +30,12 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getUploadInitFuture = Provider.of<TrackProv>(context, listen: false).getUploadTrack(0,20);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     comnLoadProv.clear();
     super.dispose();
   }
@@ -111,6 +110,9 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+
+                          if (uploadTrackList.length == 0)
+                            EmptyMessageItem(paddingHeight: 30.h),
 
                           for (int i = 0 ; i < uploadTrackList.length; i++)...[
                             Padding(

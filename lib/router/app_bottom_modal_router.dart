@@ -110,12 +110,17 @@ class AppBottomModalRouter {
           }
         );
         },
-      2: () async {return CreatePlaylistModal();},
+      2: () async {return CreatePlaylistModal(
+          callBack: (){
+            removeOverlay(null);
+          });
+        },
       3: () async {return TrackInfoModal(track: track!);},
       5: () async {return UploadModal(
             isAlbum : isAlbum!,
             callBack: () {
               removeOverlay(null);
+              callBack!();
             }
           );
         },

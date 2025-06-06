@@ -92,6 +92,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+                android:name="com.yalantis.ucrop.UCropActivity"
+                android:theme="@style/UCropTheme" />
+
         <meta-data
                 android:name="flutterEmbedding"
                 android:value="2" />

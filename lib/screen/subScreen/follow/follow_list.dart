@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/model/follow/follow_info_model.dart';
+import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/follow/follow_item.dart';
 
 class FollowList extends StatefulWidget {
@@ -51,22 +52,7 @@ class _FollowListState extends State<FollowList> {
 
 
         if (filteredFollowList!.length == 0)
-          Container(
-            height: 60.h,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Empty',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          EmptyMessageItem(paddingHeight: 30.h)
       ],
     );
   }

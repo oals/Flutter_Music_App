@@ -23,10 +23,10 @@ class PlayListProv extends ChangeNotifier {
     playListInfoModel = PlayListInfoModel();
   }
 
-  Future<bool> getSearchPlayList(String searchText, int offset, int limit) async {
+  Future<bool> getSearchPlayList(String searchText, int offset, int limit, bool isAlbum) async {
 
     final String loginMemberId = await ComnUtils.getMemberId();
-    final url = '/api/getSearchPlayList?loginMemberId=${loginMemberId}&isAlbum=${false}&searchText=$searchText&limit=${limit}&offset=$offset';
+    final url = '/api/getSearchPlayList?loginMemberId=${loginMemberId}&isAlbum=${isAlbum}&searchText=$searchText&limit=${limit}&offset=$offset';
 
     try {
       http.Response response = await ComnUtils.apiCall(
@@ -38,15 +38,30 @@ class PlayListProv extends ChangeNotifier {
 
       if (response.statusCode == 200) {
 
-        if (offset == 0) {
-          playlists = PlaylistList();
-        }
+        if (isAlbum) {
+          if (offset == 0) {
+            albums = PlaylistList();
+          }
 
-        for (var item in ComnUtils.extractValue(response.body, "playLists")) {
-          playlists.playList.add(PlayListInfoModel.fromJson(item));
-        }
+          for (var item in ComnUtils.extractValue(response.body, "playLists")) {
+            albums.playList.add(PlayListInfoModel.fromJson(item));
+          }
 
-        playlists.searchPlayListTotalCount = ComnUtils.extractValue(response.body, "totalCount");
+          albums.searchPlayListTotalCount = ComnUtils.extractValue(response.body, "totalCount");
+
+        } else {
+
+          if (offset == 0) {
+            playlists = PlaylistList();
+          }
+
+          for (var item in ComnUtils.extractValue(response.body, "playLists")) {
+            playlists.playList.add(PlayListInfoModel.fromJson(item));
+          }
+
+          playlists.searchPlayListTotalCount = ComnUtils.extractValue(response.body, "totalCount");
+
+        }
 
         print('$url - Successful');
         return true;

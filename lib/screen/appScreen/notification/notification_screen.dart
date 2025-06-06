@@ -7,7 +7,9 @@ import 'package:skrrskrr/model/notifications/notifications_model.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
+import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/notification/notification_item.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -65,7 +67,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 future: _getNotificationInitFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return Center(child: CustomProgressIndicatorItem());
                   } else {
 
                     NotificationsModel notificationsModel = notificationsProv.model;
@@ -163,21 +165,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               ),
                           ],
 
-                          if (!notificationIsExistence)...[
-                            Container(
-                              width : 100.w,
-                              padding: EdgeInsets.only(top: 33.h),
-                              child: Text(
-                                'Empty',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
+                          if (!notificationIsExistence)
+                            EmptyMessageItem(paddingHeight: 30.h),
 
                           Center(
                               child: CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)

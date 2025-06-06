@@ -9,6 +9,7 @@ import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
+import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 
 class MemberAlbumScreen extends StatefulWidget {
@@ -66,7 +67,6 @@ class _MemberAlbumScreenScreenState extends State<MemberAlbumScreen> {
               return Center(child: Text('데이터가 없습니다.'));
             } else {
 
-
               PlaylistList playListList = playListProv.albums;
               List<PlayListInfoModel> memberAlbums = playListProv.albums.playList;
 
@@ -105,6 +105,9 @@ class _MemberAlbumScreenScreenState extends State<MemberAlbumScreen> {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
+
+                            if (memberAlbums.length == 0)
+                              EmptyMessageItem(paddingHeight: 30.h),
 
                             if (memberAlbums.length != 0) ...[
 

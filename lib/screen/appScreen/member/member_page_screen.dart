@@ -17,7 +17,9 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
+import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_square_item.dart';
@@ -48,22 +50,17 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
   late Future<bool> _getUserTrackFuture;
   late Future<bool> _getUserPlayListFuture;
   late Future<bool> _getUserAlbumFuture;
-  late Future<bool> _getUserPopularTrackFuture;
   late ComnLoadProv comnLoadProv;
   late PlayListProv playListProv;
-
-  List<Track> popularTrackList = [];
-  List<Track> allTrackList = [];
 
   @override
   void initState() {
     print("UserPageScreen initstate");
     super.initState();
     _getUserInitFuture = Provider.of<MemberProv>(context, listen: false).getMemberPageInfo(widget.memberId);
-    _getUserTrackFuture = Provider.of<TrackProv>(context, listen: false).getMemberPageTrack(widget.memberId, 0,20);
     _getUserPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getMemberPagePlayList(widget.memberId,0,7);
     _getUserAlbumFuture = Provider.of<PlayListProv>(context, listen: false).getMemberPageAlbum(widget.memberId,0,7);
-    _getUserPopularTrackFuture = Provider.of<TrackProv>(context, listen: false).getMemberPagePopularTrack(widget.memberId);
+    _getUserTrackFuture = Provider.of<TrackProv>(context, listen: false).getMemberPageTrack(widget.memberId);
     _loadMemberId();
   }
 
@@ -108,17 +105,16 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
           future: _getUserInitFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return Center(child: CustomProgressIndicatorItem());
             } else {
-
               MemberModel memberModel = memberProv.model;
               isAuth = ComnUtils.getIsAuth(memberModel.memberId.toString(), loginMemberId!);
 
               return NotificationListener<ScrollNotification>(
                 onNotification: (notification) {
-                  if (trackProv.trackListModel.allTrackTotalCount! > allTrackList.length) {
+                  if (trackProv.trackListModel.allTrackTotalCount! > trackProv.memberTrackList.length) {
                     if (comnLoadProv.shouldLoadMoreData(notification)) {
-                      comnLoadProv.loadMoreData(trackProv, 'MemberPageTrack', allTrackList.length, memberId: widget.memberId);
+                      comnLoadProv.loadMoreData(trackProv, 'MemberPageTrack', trackProv.memberTrackList.length, memberId: widget.memberId);
                     }
                   } else {
                     comnLoadProv.resetApiCallStatus();
@@ -165,7 +161,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                       }
                                     },
                                     child: Text(
-                                      '이미지 변경',
+                                      'Change Image',
                                       style: TextStyle(color: Colors.white),
                                     ),
                                   ),
@@ -328,26 +324,26 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                               height: 10,
                             ),
 
-                              FutureBuilder<bool>(
-                              future: _getUserPopularTrackFuture,
+                            if (trackProv.memberPopularTrackList.length == 0)
+                              EmptyMessageItem(paddingHeight: 0,),
+
+                            FutureBuilder<bool>(
+                              future: _getUserTrackFuture,
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
+                                  return Center(child: CustomProgressIndicatorItem());
                                 } else {
-
-                                  if (popularTrackList.isEmpty) {
-                                    popularTrackList = trackProv.trackListFilter("MemberPagePopularTrackList");
-                                  }
 
                                   return SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Row(
                                       children: [
+
                                         Wrap(
                                           spacing: 5.0, // 아이템 간의 가로 간격
                                           runSpacing: 20.0, // 줄 간격
                                           alignment: WrapAlignment.spaceBetween,
-                                          children: popularTrackList.asMap().entries.map((entry) {
+                                          children: trackProv.memberPopularTrackList.asMap().entries.map((entry) {
                                             int i = entry.key;
                                             Track trackItem = entry.value;
                                             return Row(
@@ -358,9 +354,9 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                   appScreenName: "memberPopularTrackList",
                                                   initAudioPlayerTrackListCallBack: () {
 
-                                                    List<int> trackIdList = popularTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                                    List<int> trackIdList = trackProv.memberPopularTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
-                                                    trackProv.audioPlayerTrackList = List.from(popularTrackList);
+                                                    trackProv.audioPlayerTrackList = List.from(trackProv.memberPopularTrackList);
                                                     trackProv.setAudioPlayerTrackIdList(trackIdList);
                                                     trackProv.notify();
 
@@ -389,13 +385,14 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                 future: _getUserPlayListFuture,
                                 builder: (context, snapshot) {
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
+                                  return Center(child: CustomProgressIndicatorItem());
                                 } else {
 
                                   PlaylistList playListList = playListProv.playlists;
                                   List<PlayListInfoModel> memberPlayList = playListProv.playlists.playList;
 
                                   return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -412,14 +409,14 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                 ),
 
                                               if (isAuth)...[
-                                                SizedBox(width: 5,),
+                                                SizedBox(width: 3,),
 
                                                 GestureDetector(
                                                   onTap: () async {
                                                     await AppBottomModalRouter().fnModalRouter(context, 2);
                                                   },
                                                   child: Icon(
-                                                    Icons.add_circle_outline,
+                                                    Icons.add,
                                                     color: Colors.white,
                                                   ),
                                                 )
@@ -447,13 +444,18 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                         height: 15,
                                       ),
 
+                                      if (memberPlayList.length == 0)
+                                        EmptyMessageItem(paddingHeight: 0),
+
                                       SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
                                         child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
-                                            for(int i = 0; i < memberPlayList.length; i++)
+                                            for (int i = 0; i < memberPlayList.length; i++)...[
                                               PlaylistItem(playList: memberPlayList[i],isAlbum: false),
-                                            SizedBox(width: 20),
+                                              SizedBox(width: 5),
+                                            ]
                                           ],
                                         ),
                                       ),
@@ -469,19 +471,22 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                 future: _getUserAlbumFuture,
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return CircularProgressIndicator();
+                                    return Center(child: CustomProgressIndicatorItem());
                                   } else {
 
                                     PlaylistList playListList = playListProv.albums;
                                     List<PlayListInfoModel> memberPlayList = playListProv.albums.playList;
 
                                     return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
                                             Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.end,
                                               children: [
                                                   Text(
                                                     'Albums',
@@ -492,14 +497,23 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                                   ),
 
                                                 if (isAuth)...[
-                                                  SizedBox(width: 5,),
+                                                  SizedBox(width: 3,),
 
                                                   GestureDetector(
                                                     onTap : () async {
-                                                      await AppBottomModalRouter().fnModalRouter(context, 5,isAlbum: true);
+                                                      await AppBottomModalRouter().fnModalRouter(
+                                                            context,
+                                                            5,
+                                                            isAlbum: true,
+                                                            callBack: () async {
+                                                              GoRouter.of(context).pop();
+                                                              await GoRouter.of(context).push('/memberPage/${loginMemberId}');
+                                                            }
+                                                          );
+
                                                     },
                                                     child: Icon(
-                                                      Icons.add_circle_outline,
+                                                      Icons.add,
                                                       color: Colors.white,
                                                     ),
                                                   )
@@ -525,17 +539,22 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                                         SizedBox(
                                           height: 15,
                                         ),
+                                        if (memberPlayList.length == 0)
+                                          EmptyMessageItem(paddingHeight: 0),
 
                                         SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
                                           child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
-                                              for(int i = 0; i < memberPlayList.length; i++)
+                                              for (int i = 0; i < memberPlayList.length; i++)...[
                                                 PlaylistItem(
                                                     playList: memberPlayList[i],
                                                     isAlbum: true
                                                 ),
-                                              SizedBox(width: 20),
+                                                SizedBox(width: 5),
+                                              ]
+
                                             ],
                                           ),
                                         ),
@@ -567,50 +586,34 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
                             FutureBuilder<bool>(
                               future: _getUserTrackFuture,
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return Center(child: CustomProgressIndicatorItem());
                                 } else {
-
-                                  Set<Track> allTrackSet = allTrackList.toSet(); // 중복 제거용 Set 생성
-                                  List<Track> list = trackProv.trackListModel.trackList;
-
-                                  trackProv.addUniqueTracksToList(
-                                    sourceList: list,
-                                    targetSet: allTrackSet,
-                                    targetList: allTrackList,
-                                    trackCd: "MemberPageTrackList",
-                                  );
 
                                   return Column(
                                     children: [
-                                      for (int i = 0; i < allTrackList.length; i++) ...[
-                                        Container(padding: EdgeInsets.only(bottom: 10),
+
+                                      if (trackProv.memberTrackList.length == 0)
+                                        EmptyMessageItem(paddingHeight: 0),
+
+                                      for (int i = 0; i < trackProv.memberTrackList.length; i++) ...[
+                                        Container(
+                                            padding: EdgeInsets.only(bottom: 10),
                                             child: TrackItem(
                                               appScreenName: "MemberPageScreen",
-                                              trackItem: allTrackList[i],
+                                              trackItem: trackProv.memberTrackList[i],
                                               trackItemIdx : i,
                                               isAudioPlayer: false,
                                               initAudioPlayerTrackListCallBack: () async {
 
-                                                await trackProv.getMemberPageTrack(widget.memberId,comnLoadProv.listDataOffset, trackProv.trackListModel.allTrackTotalCount!);
+                                                await trackProv.getMemberPageAllTrack(widget.memberId,comnLoadProv.listDataOffset, trackProv.trackListModel.allTrackTotalCount!);
 
-                                                trackProv.addUniqueTracksToList(
-                                                  sourceList: list,
-                                                  targetSet: allTrackSet,
-                                                  targetList: allTrackList,
-                                                  trackCd: "MemberPageTrackList",
-                                                );
+                                                List<int> trackIdList = trackProv.memberTrackList.map((item) => int.parse(item.trackId.toString())).toList();
 
-                                                List<int> trackIdList = allTrackList.map((item) => int.parse(item.trackId.toString())).toList();
-                                                print(trackIdList.length);
-
-                                                trackProv.audioPlayerTrackList = List.from(allTrackList);
+                                                trackProv.audioPlayerTrackList = List.from(trackProv.memberTrackList);
                                                 trackProv.setAudioPlayerTrackIdList(trackIdList);
                                                 trackProv.notify();
-
-
-                                            },)
+                                            },),
                                         ),
                                       ],
                                       CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),

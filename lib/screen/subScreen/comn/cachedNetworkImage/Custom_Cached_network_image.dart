@@ -24,34 +24,36 @@ class _CustomCachedNetworkImageState extends State<CustomCachedNetworkImage> {
   @override
   Widget build(BuildContext context) {
 
-    ImageProv imageProv = Provider.of<ImageProv>(context);
-
-    return CachedNetworkImage(
-      imageUrl: imageProv.imageLoader(widget.imagePath),  // 이미지 URL
-      placeholder: (context, url) {
-        return Container(
+    return Consumer<ImageProv>(
+        builder: (context, imageProv, child) {
+        return CachedNetworkImage(
+          imageUrl: widget.imagePath.toString(),  // 이미지 URL
+          placeholder: (context, url) {
+            return Container(
+              width: widget.imageWidth ?? null,  // 이미지의 세로 크기
+              height: widget.imageHeight ?? null,
+            );
+          },
+          errorWidget: (context, url, error) {
+            return Icon(
+              null,
+              color: Colors.black,
+              size: widget.imageWidth,
+            );
+          },
+          fadeInDuration: Duration(milliseconds: 500),  // 이미지가 로드될 때 페이드 인 효과
+          fadeOutDuration: Duration(milliseconds: 500),  // 이미지가 사라질 때 페이드 아웃 효과
           width: widget.imageWidth ?? null,  // 이미지의 세로 크기
           height: widget.imageHeight ?? null,
+          fit: BoxFit.cover,  // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
+          imageBuilder: (context, imageProvider) {
+            return Image(
+              image: imageProvider,
+              fit: widget.isBoxFit ? BoxFit.cover : null,
+            );  // 이미지가 로드되면 표시
+          },
         );
-      },
-      errorWidget: (context, url, error) {
-        return Icon(
-          null,
-          color: Colors.black,
-          size: widget.imageWidth,
-        );
-      },
-      fadeInDuration: Duration(milliseconds: 500),  // 이미지가 로드될 때 페이드 인 효과
-      fadeOutDuration: Duration(milliseconds: 500),  // 이미지가 사라질 때 페이드 아웃 효과
-      width: widget.imageWidth ?? null,  // 이미지의 세로 크기
-      height: widget.imageHeight ?? null,
-      fit: BoxFit.cover,  // 이미지가 위젯 크기에 맞게 자르거나 확대하는 방식
-      imageBuilder: (context, imageProvider) {
-        return Image(
-          image: imageProvider,
-          fit: widget.isBoxFit ? BoxFit.cover : null,
-        );  // 이미지가 로드되면 표시
-      },
+      }
     );
   }
 }

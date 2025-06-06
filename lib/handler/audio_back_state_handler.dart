@@ -47,32 +47,38 @@ class AudioBackStateHandler extends BaseAudioHandler {
 
   Future<void> mediaItemUpdate(Track track) async {
 
-    List<String> timeParts = track.trackTime!.split(":");
-    Duration? totalDuration = null;
+    if (track.trackId != null) {
+      List<String> timeParts = track.trackTime!.split(":");
+      Duration? totalDuration = null;
 
-    if (timeParts.length == 2) {
-      int minutes = int.parse(timeParts[0]);
-      int seconds = int.parse(timeParts[1]);
+      if (timeParts.length == 2) {
+        int minutes = int.parse(timeParts[0]);
+        int seconds = int.parse(timeParts[1]);
 
-      totalDuration = Duration(minutes: minutes, seconds: seconds);
+        totalDuration = Duration(minutes: minutes, seconds: seconds);
+      } else {
+        int hours = int.parse(timeParts[0]);
+        int minutes = int.parse(timeParts[1]);
+        int seconds = int.parse(timeParts[2]);
+
+        totalDuration = Duration(hours: hours ,minutes: minutes, seconds: seconds);
+      }
+
+      this.mediaItem.value = MediaItem(
+        id: track.trackId.toString(),
+        title: "🎶 ${track.trackNm}",
+        artist: "🎤 ${track.memberNickName}",
+        artUri: track.trackImagePath != null ? Uri.parse(track.trackImagePath.toString()) : null,
+        duration: totalDuration,
+      );
     } else {
-      int hours = int.parse(timeParts[0]);
-      int minutes = int.parse(timeParts[1]);
-      int seconds = int.parse(timeParts[2]);
-
-      totalDuration = Duration(hours: hours ,minutes: minutes, seconds: seconds);
+      this.mediaItem.value = MediaItem(
+        id: "0",
+        title: "🎶 ${"Select a track"}",
+        artist: "🎤 ${"AudioX"}",
+        duration: Duration.zero,
+      );
     }
-
-    this.mediaItem.value = MediaItem(
-      id: track.trackId.toString(),
-      title: "🎶 ${track.trackNm}",
-      artist: "🎤 ${track.memberNickName}",
-      artUri: Uri.parse(
-          dotenv.get('API_URL') + '/viewer/imageLoader?trackImagePath=' +
-              Uri.encodeComponent(track.trackImagePath ?? "")
-      ),
-      duration: totalDuration,
-    );
   }
 
   @override
@@ -83,7 +89,6 @@ class AudioBackStateHandler extends BaseAudioHandler {
             updatePosition: position,
             playing : !isPlaying,
             processingState: AudioProcessingState.buffering
-
         )
     );
 

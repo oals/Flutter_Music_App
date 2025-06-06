@@ -57,23 +57,25 @@ class _AudioPlayerModalState extends State<AudioPlayerModal> {
                   isInit = true;
 
                   int index = trackProv.audioPlayerTrackList.indexWhere((item) => item.trackId.toString() == trackProv.lastTrackId);
+
                   if (index != -1) {
                     playerProv.playerModel.currentPage = index;
                     trackProv.audioPlayerTrackList[index].isPlaying = true;
+                  }
 
-                    WidgetsBinding.instance.addPostFrameCallback((_) async {
-
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    if (index != -1) {
                       await playerProv.initAudio(trackProv, index);
                       await playerProv.playTrackAtIndex(index);
+                      playerProv.mediaPlaybackHandlerInit(trackProv,trackProv.audioPlayerTrackList[index],playerProv.isInitMediaPlaybackHandler);
+                    } else {
+                      playerProv.mediaPlaybackHandlerInit(trackProv,Track(),playerProv.isInitMediaPlaybackHandler);
+                    }
 
-                      // if (playerProv.mediaPlaybackHandler == null) {
-                        playerProv.mediaPlaybackHandlerInit(trackProv,trackProv.audioPlayerTrackList[index],playerProv.isInitMediaPlaybackHandler);
-                        playerProv.isInitMediaPlaybackHandler = true;
-                      // }
+                    playerProv.isInitMediaPlaybackHandler = true;
+                    trackProv.notify();
+                  });
 
-                      trackProv.notify();
-                    });
-                  }
                 }
 
                 return trackProv.audioPlayerTrackList.isNotEmpty
@@ -90,10 +92,11 @@ class _AudioPlayerModalState extends State<AudioPlayerModal> {
                     viewportFraction: 1,
                     onPageChanged: (index, reason) async {
 
-                      // `WidgetsBinding.instance.addPostFrameCallback((_) async {`
+                      // WidgetsBinding.instance.addPostFrameCallback((_) async {
                         if (!isTrackLoad) {
+
                           await playerProv.handleAudioReset();
-                          Future.delayed(Duration(milliseconds: 600), () async {
+                          Future.delayed(Duration(milliseconds: 700), () async {
                             if ((index - playerProv.playerModel.currentPage).abs() <= 1) {
                               isTrackLoad = true;
                               await AudioBackStateHandler(playerProv, trackProv, trackProv.audioPlayerTrackList[index])

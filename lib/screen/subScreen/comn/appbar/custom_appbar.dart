@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class CustomAppbar extends StatefulWidget {
   const CustomAppbar({
@@ -85,7 +86,16 @@ class _CustomAppbarState extends State<CustomAppbar> {
               if (widget.isAddTrackBtn) ...[
                 GestureDetector(
                   onTap: () async {
-                    await AppBottomModalRouter().fnModalRouter(context,5,isAlbum: false);
+                    String loginMemberId = await ComnUtils.getMemberId();
+
+                    await AppBottomModalRouter().fnModalRouter(
+                        context,
+                        5,
+                        isAlbum: false,
+                        callBack: () async {
+                          GoRouter.of(context).pop();
+                          await GoRouter.of(context).push('/uploadTrack/${loginMemberId}');
+                      });
                   },
                   child:SvgPicture.asset(
                     'assets/images/upload.svg',

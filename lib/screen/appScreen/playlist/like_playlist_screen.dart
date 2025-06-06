@@ -9,6 +9,7 @@ import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
+import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 
 class LikePlaylistScreen extends StatefulWidget {
@@ -84,10 +85,10 @@ class _LikePlaylistScreenState extends State<LikePlaylistScreen> {
                     top: 0,
                     left: 0,
                     right: 0,
-                    child:  CustomAppbar(
+                    child: CustomAppbar(
                       fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
                       fnUpdateBtnCallBack:()=>{},
-                      title: "Liked PlayLists",
+                      title: "Liked Playlists",
                       isNotification : false,
                       isEditBtn: false,
                       isAddTrackBtn : false,
@@ -103,11 +104,13 @@ class _LikePlaylistScreenState extends State<LikePlaylistScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
 
+                          if (playLists.length == 0)
+                            EmptyMessageItem(paddingHeight: 30.h),
+
                           Container(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-
 
                                 for(int i = 0; i < playLists.length; i++)
                                   Padding(

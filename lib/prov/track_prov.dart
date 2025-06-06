@@ -13,6 +13,8 @@ class TrackProv extends ChangeNotifier {
   List<Track> lastListenTrackList = [];
   List<Track> recommendTrackList = [];
   List<Track> audioPlayerTrackList = [];
+  List<Track> memberPopularTrackList = [];
+  List<Track> memberTrackList = [];
   String lastTrackId = '';
 
   void notify() {
@@ -39,6 +41,7 @@ class TrackProv extends ChangeNotifier {
     required List<Track> targetList,
     required String trackCd,
   }) {
+
     sourceList.where((item) => item.trackListCd.contains(trackCd)).forEach((item) {
       if (!targetSet.contains(item)) {
         targetList.add(item);
@@ -92,7 +95,9 @@ class TrackProv extends ChangeNotifier {
 
           if (duplicateIndex != -1) {
             if (item.trackListCd.length == 1) {
-              trackListModel.trackList.remove(item); // 복사본에서 순회 후 삭제
+              if (!item.trackListCd.contains(trackCd)) {
+                trackListModel.trackList.remove(item);
+              }
             } else {
               item.trackListCd.removeAt(duplicateIndex);
             }
@@ -216,7 +221,7 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
-  Future<bool> getMemberPageTrack(int memberId, int offset, int limit) async {
+  Future<bool> getMemberPageAllTrack(int memberId, int offset, int limit) async {
 
     final String loginMemberId = await ComnUtils.getMemberId();
     final url = '/api/getMemberPageTrack?memberId=${memberId}&loginMemberId=${loginMemberId}&limit=${limit}&offset=${offset}';
@@ -237,9 +242,13 @@ class TrackProv extends ChangeNotifier {
 
         addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "MemberPageTrackList");
 
+        memberTrackList = trackListFilter("MemberPageTrackList");
+
         trackListModel.allTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
+        notify();
+
         return true;
       } else {
         throw Exception(ComnUtils.extractValue(response.body, 'message'));
@@ -251,11 +260,10 @@ class TrackProv extends ChangeNotifier {
     }
   }
 
-
-  Future<bool> getMemberPagePopularTrack(int memberId) async {
+  Future<bool> getMemberPageTrack(int memberId) async {
 
     final String loginMemberId = await ComnUtils.getMemberId();
-    final url = '/api/getMemberPagePopularTrack?memberId=${memberId}&loginMemberId=${loginMemberId}';
+    final url = '/api/getMemberPagePopularTrack?memberId=${memberId}&loginMemberId=${loginMemberId}&limit=${20}&offset=${0}';
 
     try {
       http.Response response = await ComnUtils.apiCall(
@@ -268,10 +276,18 @@ class TrackProv extends ChangeNotifier {
       if (response.statusCode == 200) {
 
         initTrackToModel(["MemberPagePopularTrackList"]);
-
         addTracksToModel(ComnUtils.extractValue(response.body, "trackList"), "MemberPagePopularTrackList");
+        memberPopularTrackList = trackListFilter("MemberPagePopularTrackList");
+
+        initTrackToModel(["MemberPageTrackList"]);
+        addTracksToModel(ComnUtils.extractValue(response.body, "trackList2"), "MemberPageTrackList");
+        memberTrackList = trackListFilter("MemberPageTrackList");
+
+        trackListModel.allTrackTotalCount = ComnUtils.extractValue(response.body, "totalCount");
 
         print('$url - Successful');
+        notify();
+
         return true;
       } else {
         throw Exception(ComnUtils.extractValue(response.body, 'message'));
@@ -565,13 +581,6 @@ class TrackProv extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-
-        trackListModel = TrackList();
-
-        await getUploadTrack(0,20);
-
-        notify();
-
         print('$url - Successful');
       } else {
         throw Exception(ComnUtils.extractValue(response.body, 'message'));
@@ -623,10 +632,6 @@ class TrackProv extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-
-        trackListModel = TrackList();
-
-        await getUploadTrack(0,20);
 
         print('$url - Successful');
         notify();

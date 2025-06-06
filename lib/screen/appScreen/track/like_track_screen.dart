@@ -9,6 +9,7 @@ import 'package:skrrskrr/prov/track_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
+import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/track/track_item.dart';
 
 class LikeTrackScreen extends StatefulWidget {
@@ -65,7 +66,6 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
             }
 
             TrackList trackListModel = trackProv.trackListModel;
-
             Set<Track> likeTrackSet = likeTrackList.toSet();
             List<Track> list = trackProv.trackListModel.trackList;
 
@@ -98,7 +98,7 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                     child: CustomAppbar(
                       fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
                       fnUpdateBtnCallBack: () => {},
-                      title: "Liked Track",
+                      title: "Liked Tracks",
                       isNotification: false,
                       isEditBtn: false,
                       isAddTrackBtn: false,
@@ -109,6 +109,9 @@ class _LikeTrackScreenState extends State<LikeTrackScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+
+                          if (likeTrackList.length == 0)
+                            EmptyMessageItem(paddingHeight: 30.h),
 
                           for (int i = 0; i < likeTrackList.length; i++) ...[
                             Padding(

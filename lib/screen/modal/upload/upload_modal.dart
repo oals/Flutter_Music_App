@@ -3,7 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -32,13 +32,13 @@ class _UploadModalState extends State<UploadModal> {
 
   bool _isToggled = false;
   Uint8List? _imageBytes;
-  final TextEditingController controller1 = TextEditingController();
-  final TextEditingController controller2 = TextEditingController();
-  final TextEditingController controller3 = TextEditingController();
-  final TextEditingController controller4 = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController infoController = TextEditingController();
+  final TextEditingController fileController = TextEditingController();
+  final TextEditingController categoryController = TextEditingController();
 
-  final FocusNode controller1FocusNode = FocusNode();
-  final FocusNode controller2FocusNode = FocusNode();
+  final FocusNode titleControllerFocusNode = FocusNode();
+  final FocusNode infoControllerFocusNode = FocusNode();
 
   List<Upload> uploadTrackList = [];
   late String? title;
@@ -55,11 +55,10 @@ class _UploadModalState extends State<UploadModal> {
       uploadTrackList.add(upload);
     }
 
-    controller1.text = '';
-    controller2.text = '';
-    controller3.text = '파일을 선택해주세요.';
-    controller4.text = '카테고리를 선택해주세요.';
-
+    titleController.text = '';
+    infoController.text = '';
+    fileController.text = 'Select a file';
+    categoryController.text = 'Select a category';
 
     super.initState();
   }
@@ -77,15 +76,7 @@ class _UploadModalState extends State<UploadModal> {
       if (selectedFile != null && selectedFile.files.isNotEmpty) {
         uploadTrackList[i].uploadFile = selectedFile;
         uploadTrackList[i].uploadFileNm = selectedFile.files.first.name;
-
-        controller3.text = uploadTrackList[0].uploadFileNm!;
-        String fileName = uploadTrackList[0].uploadFileNm!;
-        String fileNameWithoutExtension = fileName.split('.').first;
-
-        if (!widget.isAlbum) {
-          controller1.text = fileNameWithoutExtension;
-        }
-
+        fileController.text = uploadTrackList[0].uploadFileNm!;
         setState(() {});
       } else {
         print("파일이 선택되지 않았습니다.");
@@ -94,8 +85,8 @@ class _UploadModalState extends State<UploadModal> {
     }
 
     void _saveTrackInfo() {
-      title = controller1.text;
-      info = controller2.text;
+      title = titleController.text;
+      info = infoController.text;
     }
 
     Future<void> _pickImage() async {
@@ -159,11 +150,11 @@ class _UploadModalState extends State<UploadModal> {
                             width: 100.w,
                             height: 35.h,
                             fit: BoxFit.cover,
-                          ): SvgPicture.asset(
-                            'assets/images/upload_image.svg',
-                            color: Color(0xffffffff),
-                            width: 8.w,
-                            height: 4.h,
+                          ): Center(
+                            child: Text(
+                              'Select Image',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                       ),
@@ -174,9 +165,9 @@ class _UploadModalState extends State<UploadModal> {
                     Padding(
                       padding: const EdgeInsets.only(top: 8, bottom: 8),
                       child: UploadTextFieldItem(
-                        label: "파일 이름",
+                        label: "File",
                         maxLines: 1,
-                        controller: controller3,
+                        controller: fileController,
                         focusNode: null,
                         isReadOnly : true,
                         isOnTap : true,
@@ -203,15 +194,13 @@ class _UploadModalState extends State<UploadModal> {
                               width: 100.w,
                               height: 35.h,
                               fit: BoxFit.cover,
-                            ) :SvgPicture.asset(
-                              'assets/images/upload_image.svg',
-                              color: Color(0xffffffff),
-                              width: 8.w,
-                              height: 4.h,
+                            ) : Center(
+                              child: Text(
+                                'Select Image',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
-
-
                         ],
                       ),
                     ),
@@ -230,7 +219,7 @@ class _UploadModalState extends State<UploadModal> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
-                            child: Text('앨범 수록곡',
+                            child: Text('Album Tracks',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -347,9 +336,9 @@ class _UploadModalState extends State<UploadModal> {
                   Padding(
                     padding: const EdgeInsets.only(top: 15, bottom: 8),
                     child: UploadTextFieldItem(
-                      label: "카테고리",
+                      label: "Category",
                       maxLines: 1,
-                      controller: controller4,
+                      controller: categoryController,
                       focusNode: null,
                       isReadOnly : true,
                       isOnTap : true,
@@ -360,7 +349,7 @@ class _UploadModalState extends State<UploadModal> {
                             callBack:(int selectedCategoryId) {
 
                               categoryId = selectedCategoryId + 1;
-                              controller4.text = ComnUtils.getCategory(categoryId);
+                              categoryController.text = ComnUtils.getCategory(categoryId);
 
                             });
                       },
@@ -370,10 +359,10 @@ class _UploadModalState extends State<UploadModal> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8, bottom: 8),
                     child: UploadTextFieldItem(
-                      label: widget.isAlbum ? "앨범명" : "타이틀",
+                      label: widget.isAlbum ? "Album Name" : "Title",
                       maxLines: 1,
-                      controller: controller1,
-                      focusNode: controller1FocusNode,
+                      controller: titleController,
+                      focusNode: titleControllerFocusNode,
                       isReadOnly : false,
                       isOnTap : false,
                       callBack : ()=>{},
@@ -383,10 +372,10 @@ class _UploadModalState extends State<UploadModal> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8, bottom: 8),
                     child: UploadTextFieldItem(
-                      label: widget.isAlbum ? "앨범 소개" : "곡 소개",
+                      label: "Info",
                       maxLines: 4,
-                      controller: controller2,
-                      focusNode: controller2FocusNode,
+                      controller: infoController,
+                      focusNode: infoControllerFocusNode,
                       isReadOnly : false,
                       isOnTap : false,
                       callBack : ()=>{},
@@ -408,30 +397,15 @@ class _UploadModalState extends State<UploadModal> {
                         children: [
                           GestureDetector(
                             onTap : () {
-                              setState(() {
-                                _isToggled = !_isToggled;
-                                isPrivacy = _isToggled;
-                              });
+                              _isToggled = !_isToggled;
+                              isPrivacy = _isToggled;
+                              setState(() {});
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Container(
-                                    height: 50,
-                                    child:  !_isToggled ? SvgPicture.asset(
-                                      'assets/images/lock_on.svg',
-                                      width: 2.5.w,
-                                      height: 2.5.h,
-                                      color: Colors.white,
-                                    ) : SvgPicture.asset(
-                                      'assets/images/lock_off.svg',
-                                      width: 2.5.w,
-                                      height: 2.5.h,
-                                      color: Colors.white,
-                                    )
-                                ),
-                                SizedBox(width: 1.5,),
-                                Text( !_isToggled ? '공개' : '비공개',
+                                Text(
+                                  !_isToggled ? 'Public' : 'Private',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w700
@@ -450,24 +424,24 @@ class _UploadModalState extends State<UploadModal> {
                     onTap: () async {
 
                       if (uploadTrackList[0].uploadFileNm == "") {
-                        Fluttertoast.showToast(msg: "음원을 선택해주세요.");
+                        ComnUtils.customFlutterToast("음원을 선택해주세요.");
                         return;
                       }
 
                       if (categoryId == 0) {
-                        Fluttertoast.showToast(msg: "카테고리를 선택해주세요.");
+                        ComnUtils.customFlutterToast("카테고리를 선택해주세요.");
                         return;
                       }
 
-                      if (controller1.text.length == 0) {
-                        Fluttertoast.showToast(msg: "제목을 입력해주세요.");
+                      if (titleController.text.length == 0) {
+                        ComnUtils.customFlutterToast("제목을 입력해주세요.");
                         return;
                       }
 
                       _saveTrackInfo();
                       isUploading = true;
-                      controller1FocusNode.unfocus();
-                      controller2FocusNode.unfocus();
+                      titleControllerFocusNode.unfocus();
+                      infoControllerFocusNode.unfocus();
                       setState(() {});
 
                       if (widget.isAlbum) {
@@ -476,7 +450,7 @@ class _UploadModalState extends State<UploadModal> {
                         await trackProv.uploadTrack(uploadTrackList,title!,info!,isPrivacy,categoryId);
                       }
 
-                      Fluttertoast.showToast(msg: "업로드 되었습니다.");
+                      ComnUtils.customFlutterToast("업로드 되었습니다.");
 
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         widget.callBack();
@@ -494,7 +468,7 @@ class _UploadModalState extends State<UploadModal> {
                         ),
                         child: Center(
                           child: Text(
-                            '업로드',
+                            'Upload',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 15,

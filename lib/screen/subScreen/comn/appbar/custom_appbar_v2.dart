@@ -5,6 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/cachedNetworkImage/Custom_Cached_network_image.dart';
+import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 
 class CustomAppbarV2 extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppbarV2({
@@ -48,7 +49,7 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
   Widget build(BuildContext context) {
 
     if (!isLoading) {
-      return CircularProgressIndicator();
+      return Center(child: CustomProgressIndicatorItem());
     }
 
     notificationsProv = Provider.of<NotificationsProv>(context);

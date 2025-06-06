@@ -118,7 +118,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                     child: Container(
                                       width: 100.w,
                                       height: 99.h,
-                                      color: Colors .transparent,
+                                      color: Colors.transparent,
                                     ),
                                   ),
 

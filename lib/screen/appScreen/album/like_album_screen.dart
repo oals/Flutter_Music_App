@@ -9,6 +9,7 @@ import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
+import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 
 class LikeAlbumScreen extends StatefulWidget {
@@ -66,13 +67,13 @@ class _LikeAlbumScreenState extends State<LikeAlbumScreen> {
             }
 
             PlaylistList playListList = playListProv.playlists;
-            List<PlayListInfoModel> AlbumList = playListProv.playlists.playList;
+            List<PlayListInfoModel> albumList = playListProv.playlists.playList;
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if (playListList.myPlayListTotalCount! > AlbumList.length) {
+                if (playListList.myPlayListTotalCount! > albumList.length) {
                   if (comnLoadProv.shouldLoadMoreData(notification)) {
-                    comnLoadProv.loadMoreData(playListProv, "LikePlayLists", AlbumList.length , isAlbum: true);
+                    comnLoadProv.loadMoreData(playListProv, "LikePlayLists", albumList.length , isAlbum: true);
                   }
                 } else {
                   if (comnLoadProv.isApiCall) {
@@ -91,7 +92,7 @@ class _LikeAlbumScreenState extends State<LikeAlbumScreen> {
                     child: CustomAppbar(
                       fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
                       fnUpdateBtnCallBack:()=>{},
-                      title: "Liked Album",
+                      title: "Liked Albums",
                       isNotification : false,
                       isEditBtn: false,
                       isAddTrackBtn : false,
@@ -107,16 +108,19 @@ class _LikeAlbumScreenState extends State<LikeAlbumScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
 
+                          if (albumList.length == 0)
+                            EmptyMessageItem(paddingHeight: 30.h),
+
                           Container(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
 
 
-                                for(int i = 0; i < AlbumList.length; i++)
+                                for(int i = 0; i < albumList.length; i++)
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15,bottom: 5),
-                                    child: PlaylistItem(playList: AlbumList[i],isAlbum: false),
+                                    child: PlaylistItem(playList: albumList[i],isAlbum: false),
                                   )
                               ],
                             ),

@@ -51,7 +51,7 @@ class PlayerProv extends ChangeNotifier {
     playerModel.playlist.clear();
 
     List<AudioSource> allTracks = List.generate(audioTrackPlayList.length, (index) =>
-        AudioSource.uri(Uri.parse(dotenv.get("STREAM_URL") + '/${audioTrackPlayList[priorityIndex].trackId}/playList.m3u8'))
+        AudioSource.uri(Uri.parse(audioTrackPlayList[priorityIndex].trackPath.toString()))
     );
 
     playerModel.playlist = ConcatenatingAudioSource(children: allTracks);
@@ -63,9 +63,8 @@ class PlayerProv extends ChangeNotifier {
 
     for (int i = 0; i < audioTrackPlayList.length; i++) {
       if (i != priorityIndex) {
-        String m3u8Url = dotenv.get("STREAM_URL") + '/${audioTrackPlayList[i].trackId}/playList.m3u8';
         futureTracks.add(Future(() async {
-          return AudioSource.uri(Uri.parse(m3u8Url));
+          return AudioSource.uri(Uri.parse(audioTrackPlayList[i].trackPath.toString()));
         }));
       }
     }
@@ -90,9 +89,8 @@ class PlayerProv extends ChangeNotifier {
   }
 
   Future<void> addTrack(Track newTrack,int index) async {
-    String m3u8Url = dotenv.get("STREAM_URL") + '/${newTrack.trackId}/playList.m3u8';
 
-    final newSource = AudioSource.uri(Uri.parse(m3u8Url));
+    final newSource = AudioSource.uri(Uri.parse(newTrack.trackPath.toString()));
 
     await playerModel.playlist.insert(index,newSource);
 
@@ -104,7 +102,7 @@ class PlayerProv extends ChangeNotifier {
     if (index >= 0 && index <= ( playerModel.playlist.length - 1) ) {
       await playerModel.audioPlayer.seek(Duration.zero, index: index);
       if (playerModel.isPlaying) {
-        await playerModel.audioPlayer.play();
+        playerModel.audioPlayer.play();
       }
     }
   }
@@ -165,17 +163,11 @@ class PlayerProv extends ChangeNotifier {
 
     if (index != -1) {
 
-      if (playerModel.currentPage == index) {
+      await AudioBackStateHandler(this, trackProv, trackProv.audioPlayerTrackList[index])
+          .mediaItemUpdate(trackProv.audioPlayerTrackList[index]);
 
-        await AudioBackStateHandler(this, trackProv, trackProv.audioPlayerTrackList[index])
-            .mediaItemUpdate(trackProv.audioPlayerTrackList[index]);
+      await audioTrackMoveSetting(trackProv, index);
 
-        await audioTrackMoveSetting(trackProv, index);
-
-      } else {
-        playerModel.currentPage = index;
-      }
-      playerModel.carouselSliderController.jumpToPage(index);
     }
   }
 
@@ -205,8 +197,13 @@ class PlayerProv extends ChangeNotifier {
     playerModel.currentPage = index;
     await playTrackAtIndex(playerModel.currentPage);
 
-    if (trackProv.lastListenTrackList[0].trackId != trackProv.audioPlayerTrackList[index].trackId!) {
-      trackProv.updateLastListenTrackList(trackProv.audioPlayerTrackList[index]);
+    if (trackProv.lastListenTrackList.isNotEmpty) {
+      if (trackProv.lastListenTrackList[0].trackId != trackProv.audioPlayerTrackList[index].trackId!) {
+        trackProv.updateLastListenTrackList(trackProv.audioPlayerTrackList[index]);
+      }
+    } else {
+      trackProv.lastListenTrackList.insert(0, trackProv.audioPlayerTrackList[index]);
+      trackProv.lastListenTrackList[0].isPlaying = true;
     }
 
     await trackProv.setLastListenTrackId(trackProv.audioPlayerTrackList[index].trackId!);

@@ -312,10 +312,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                   ShareBtn(
                                     shareId: 1,
                                     shareItemId : widget.playList.playListId!,
-                                    imagePath: widget.playList.playListImagePath!,
+                                    imagePath: widget.playList.playListImagePath ?? "",
                                     title: widget.playList.playListNm!,
                                     info: "🎵 This playlist is too good not to share!",
-
                                   ),
 
                                   SizedBox(

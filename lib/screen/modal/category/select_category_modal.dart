@@ -38,10 +38,12 @@ class _SelectCategoryModalState extends State<SelectCategoryModal> {
       color: Colors.black,
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(
+            Padding(
+              padding: const EdgeInsets.all(10.0),
               child: Text(
-                '카테고리',
+                'Category',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
@@ -49,63 +51,90 @@ class _SelectCategoryModalState extends State<SelectCategoryModal> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
             Container(
               width: 100.w,
               height: 1,
               color: Colors.grey,
             ),
-            SizedBox(height: 20),
+
+            SizedBox(height: 25),
 
             Wrap(
               spacing: 10.0, // 위젯 사이의 가로 간격
               runSpacing: 20.0, // 줄 사이의 세로 간격
-              children: [
-                for (int i = 0; i < categoryList.length; i++)
-                  GestureDetector(
-                    onTap: () {
-                      selectedCategoryId = i;
-                      setState(() {});
-                    },
-                    child: Container(
-                      width: 30.w,
-                      height: 5.h,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 2,
-                            color: selectedCategoryId == i
-                                ? Colors.white
-                                : Colors.grey.withOpacity(0.7)
-                        ),
-                        borderRadius: BorderRadius.circular(100),
+                alignment : WrapAlignment.center,
+              children: categoryList.map((category) {
+                // 텍스트 크기 측정
+                TextPainter textPainter = TextPainter(
+                  text: TextSpan(
+                    text: category,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  maxLines: 1,
+                  textDirection: TextDirection.ltr,
+                );
+                textPainter.layout();
+
+                double textWidth = textPainter.width + 10.w;
+
+                return GestureDetector(
+                  onTap: () {
+                    selectedCategoryId = categoryList.indexOf(category);
+                    setState(() {});
+                  },
+                  child: Container(
+                    width: textWidth,
+                    height: 5.h,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1.5,
+                        color: selectedCategoryId == categoryList.indexOf(category)
+                            ? Colors.white
+                            : Colors.grey.withOpacity(0.7),
                       ),
-                      child: Center(
-                        child: Text(
-                          categoryList[i],
-                          style: TextStyle(
-                            color: selectedCategoryId == i
-                                ? Colors.white
-                                : Colors.grey.withOpacity(0.7),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                          ),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Center(
+                      child: Text(
+                        category,
+                        style: TextStyle(
+                          color: selectedCategoryId == categoryList.indexOf(category)
+                              ? Colors.white
+                              : Colors.grey.withOpacity(0.7),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
                         ),
                       ),
                     ),
                   ),
-              ],
+                );
+              }).toList(),
             ),
 
-            GestureDetector(
-              onTap: () {
+            SizedBox(height: 15,),
+
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Color(0xff1c1c1c)), // 버튼 배경을 투명으로 설정
+                shadowColor: WidgetStateProperty.all(Color(0xff1c1c1c)), // 그림자 제거
+                shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8), // 둥근 모서리 설정
+                )),
+              ),
+              onPressed: () {
                 widget.callBack(selectedCategoryId);
               },
-              child: Text('완료',
+              child: Text(
+                'save',
                 style: TextStyle(
-                    color: Colors.white
+                  color: Colors.white,
                 ),
               ),
-            )
+            ),
+
           ],
         ),
       ),

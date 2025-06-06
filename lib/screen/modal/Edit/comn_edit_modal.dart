@@ -71,12 +71,20 @@ class _ComnEditModalState extends State<ComnEditModal> {
             children: [
 
               ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Color(0xff1c1c1c)), // 버튼 배경을 투명으로 설정
+                  shadowColor: WidgetStateProperty.all(Color(0xff1c1c1c)), // 그림자 제거
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8), // 둥근 모서리 설정
+                  )),
+                ),
                 onPressed: () {
                   widget.onSave(_editController.text);
                 },
-                child: Text('save',
+                child: Text(
+                  'save',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
               ),

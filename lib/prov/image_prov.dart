@@ -11,17 +11,6 @@ class ImageProv extends ChangeNotifier {
     notifyListeners();
   }
 
-  String imageLoader(imagePath) {
-
-    if (imagePath == "" || imagePath == null) {
-      imagePath = "C:/uploads/trackImage/defaultTrackImage";
-    }
-
-    final url = dotenv.get('API_URL') + '/viewer/imageLoader?trackImagePath=${imagePath}';
-
-    return url;
-  }
-
   Future<String> updateMemberImage(Upload? upload) async {
 
     List<http.MultipartFile?> fileList = [];

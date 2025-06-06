@@ -10,6 +10,7 @@ import 'package:skrrskrr/screen/appScreen/category/category_screen.dart';
 import 'package:skrrskrr/screen/appScreen/login/login_screen.dart';
 import 'package:skrrskrr/screen/appScreen/album/member_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/playlist/member_playlist_screen.dart';
+import 'package:skrrskrr/screen/appScreen/search/search_album_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_member_screen.dart';
 import 'package:skrrskrr/screen/appScreen/search/search_playlist_screen.dart';
 import 'package:skrrskrr/screen/appScreen/splash/splash_screen.dart';
@@ -190,7 +191,7 @@ final router = GoRouter(
       ),
 
       GoRoute(
-        path: '/SearchPlayList/:searchText',
+        path: '/searchPlayList/:searchText',
         pageBuilder: (context, state) {
           final searchText = state.pathParameters['searchText']!;
 
@@ -198,6 +199,20 @@ final router = GoRouter(
             context,
             state,
             SearchPlaylistScreen(searchText: searchText),
+            isShowAudioPlayer: true,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/searchAlbumList/:searchText',
+        pageBuilder: (context, state) {
+          final searchText = state.pathParameters['searchText']!;
+
+          return commonPageBuilder(
+            context,
+            state,
+            SearchAlbumScreen(searchText: searchText),
             isShowAudioPlayer: true,
           );
         },

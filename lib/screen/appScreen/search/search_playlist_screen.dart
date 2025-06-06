@@ -9,6 +9,7 @@ import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
+import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 
 class SearchPlaylistScreen extends StatefulWidget {
@@ -27,28 +28,24 @@ class _SearchPlaylistScreenState extends State<SearchPlaylistScreen> {
   late PlayListProv playListProv;
   late ComnLoadProv comnLoadProv;
   late Future<bool>? _getSearchPlayListFuture;
-  List<PlayListInfoModel> searchPlayList = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _getSearchPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getSearchPlayList(widget.searchText,0,20);
+    _getSearchPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getSearchPlayList(widget.searchText,0,20,false);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     comnLoadProv.clear();
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
+
     playListProv = Provider.of<PlayListProv>(context);
     comnLoadProv = Provider.of<ComnLoadProv>(context);
-
 
     return Container(
       width: 100.w,
@@ -64,7 +61,6 @@ class _SearchPlaylistScreenState extends State<SearchPlaylistScreen> {
             } else if (!snapshot.hasData) {
               return Center(child: Text('데이터가 없습니다.'));
             } else {
-
 
               PlaylistList playListList = playListProv.playlists;
               List<PlayListInfoModel> searchPlayList = playListList.playList;
@@ -92,7 +88,7 @@ class _SearchPlaylistScreenState extends State<SearchPlaylistScreen> {
                       child: CustomAppbar(
                         fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
                         fnUpdateBtnCallBack:()=>{},
-                        title: "PlayLists",
+                        title: "Playlists",
                         isNotification : false,
                         isEditBtn: false,
                         isAddTrackBtn : false,
@@ -104,6 +100,8 @@ class _SearchPlaylistScreenState extends State<SearchPlaylistScreen> {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
+                            if (searchPlayList.length == 0)
+                              EmptyMessageItem(paddingHeight: 30.h),
 
                             if (searchPlayList.length != 0) ...[
                               SizedBox(

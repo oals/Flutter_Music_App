@@ -93,12 +93,10 @@ class ShareUtils {
 
   static Future<void> shareToKakaoTalk(Map<String, String> shareMap) async {
 
-    String imagePath = shareMap['imagePath']!.replaceAll("http://10.0.2.2:8102","https://351f-116-32-95-167.ngrok-free.app");
-
     final response = await ShareClient.instance.shareCustom(
       templateId: 120629,
       templateArgs: {
-        "imagePath" : imagePath,
+        "imagePath" : shareMap['imagePath'] ?? "",
         "shareId": shareMap['shareId']!,
         'shareItemId' : shareMap['shareItemId']!,
         "title": shareMap['title']! + '\n',
@@ -165,7 +163,6 @@ class ShareUtils {
  static Future<void> sendToShareApp(Map<String, String> shareMap, BuildContext context) async {
 
    if (shareMap['selectShareNm'] == "KakaoTalk") {
-     shareMap['imagePath'] = Provider.of<ImageProv>(context,listen: false).imageLoader(shareMap['imagePath']);;
      await ShareUtils.shareToKakaoTalk(shareMap);
    } else if (shareMap['selectShareNm'] == "X") {
      await ShareUtils.shareToTwitter(shareMap);

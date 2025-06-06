@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class CreatePlaylistModal extends StatefulWidget {
-  const CreatePlaylistModal({super.key});
+  const CreatePlaylistModal({
+    super.key,
+    required this.callBack
+  });
+
+  final Function callBack;
 
   @override
   State<CreatePlaylistModal> createState() => _CreatePlaylistModalState();
 }
 
 class _CreatePlaylistModalState extends State<CreatePlaylistModal> {
-  final TextEditingController textController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
   bool _isToggled = true;
   bool isAlbumPrivacy = true;
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    textController.dispose();
+    titleController.dispose();
     super.dispose();
   }
 
@@ -38,7 +42,7 @@ class _CreatePlaylistModalState extends State<CreatePlaylistModal> {
         children: [
 
           Text(
-            "생성",
+            "Create Playlist",
             style: TextStyle(
               color: Colors.white,
               fontSize: 18,
@@ -47,9 +51,9 @@ class _CreatePlaylistModalState extends State<CreatePlaylistModal> {
           ),
           SizedBox(height: 36),
           TextField(
-            controller: textController,
+            controller: titleController,
             decoration: InputDecoration(
-              labelText: '플레이리스트명',
+              labelText: 'Playlist Name',
               labelStyle: TextStyle(color: Colors.white),
             ),
             style: TextStyle(color: Colors.white), // 입력 텍스트 색상을 흰색으로 설정
@@ -72,7 +76,7 @@ class _CreatePlaylistModalState extends State<CreatePlaylistModal> {
                 },
                 child: Center(
                     child: Text(
-                  !_isToggled ? '공개' : '비공개',
+                  !_isToggled ? 'Public' : 'Private',
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -89,15 +93,15 @@ class _CreatePlaylistModalState extends State<CreatePlaylistModal> {
               )),
             ),
             onPressed: () {
-              if (textController.text == "") {
-                Fluttertoast.showToast(msg: "플리명을 입력해주세요.");
+              if (titleController.text == "") {
+                ComnUtils.customFlutterToast("플리명을 입력해주세요.");
                 return;
               }
-
-              playListProv.setNewPlaylist(textController.text, isAlbumPrivacy,false);
-              Fluttertoast.showToast(msg: "생성 되었습니다.");
+              playListProv.setNewPlaylist(titleController.text, isAlbumPrivacy,false);
+              ComnUtils.customFlutterToast("생성 되었습니다.");
+              widget.callBack();
             },
-            child: Text('생성',style: TextStyle(color: Colors.white),),
+            child: Text('save',style: TextStyle(color: Colors.white),),
           ),
         ],
       ),

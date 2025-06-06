@@ -9,6 +9,7 @@ import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
+import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 
 class MemberPlaylistScreen extends StatefulWidget {
@@ -66,7 +67,6 @@ class _MemberPlaylistScreenState extends State<MemberPlaylistScreen> {
               return Center(child: Text('데이터가 없습니다.'));
             } else {
 
-
               PlaylistList playListList = playListProv.playlists;
               List<PlayListInfoModel> memberPlayList = playListProv.playlists.playList;
 
@@ -94,7 +94,7 @@ class _MemberPlaylistScreenState extends State<MemberPlaylistScreen> {
                       child: CustomAppbar(
                         fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
                         fnUpdateBtnCallBack:()=>{},
-                        title: "PlayLists",
+                        title: "Playlists",
                         isNotification : false,
                         isEditBtn: false,
                         isAddTrackBtn : false,
@@ -106,6 +106,8 @@ class _MemberPlaylistScreenState extends State<MemberPlaylistScreen> {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
+                            if (memberPlayList.length == 0)
+                              EmptyMessageItem(paddingHeight: 30.h),
 
                             if (memberPlayList.length != 0) ...[
 

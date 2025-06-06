@@ -47,7 +47,7 @@ class _SettingScreenState extends State<SettingScreen> {
         height: 100.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             for (int i = 0; i < 7; i++) ...[
               Container(
@@ -114,31 +114,25 @@ class _SettingScreenState extends State<SettingScreen> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Recently Listened Track',
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700),
-                  ),
-                  // Text(
-                  //   'more',
-                  //   style: TextStyle(
-                  //       fontSize: 14,
-                  //       color: Colors.grey,
-                  //       fontWeight: FontWeight.w700),
-                  // ),
-                ],
+            if (trackProv.lastListenTrackList.length != 0)...[
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Recently Listened Track',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SingleChildScrollView(
+              SizedBox(
+                height: 10,
+              ),
+              SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
@@ -176,8 +170,8 @@ class _SettingScreenState extends State<SettingScreen> {
 
                 ],
               ),
-            )
-
+            ),
+            ],
           ],
         ),
       ),

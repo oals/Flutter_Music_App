@@ -17,6 +17,8 @@ class Track {
 
   String? trackImagePath;
 
+  String? trackPath;
+
   int? trackPlayCnt;
 
   int? trackLikeCnt;
@@ -58,6 +60,7 @@ class Track {
     trackPlayCnt = updatedTrack.trackPlayCnt ?? trackPlayCnt;
     trackLikeCnt = updatedTrack.trackLikeCnt ?? trackLikeCnt;
     trackUploadDate = updatedTrack.trackUploadDate ?? trackUploadDate;
+    trackPath = updatedTrack.trackPath ?? trackPath;
     memberId = updatedTrack.memberId ?? memberId;
     memberNickName = updatedTrack.memberNickName ?? memberNickName;
     memberImagePath = updatedTrack.memberImagePath ?? memberImagePath;

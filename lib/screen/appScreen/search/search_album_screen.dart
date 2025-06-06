@@ -2,40 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skrrskrr/model/member/member_model_list.dart';
+import 'package:skrrskrr/model/playList/play_list_info_model.dart';
+import 'package:skrrskrr/model/playList/playlist_list.dart';
 import 'package:skrrskrr/prov/comn_load_prov.dart';
-import 'package:skrrskrr/prov/follow_prov.dart';
-import 'package:skrrskrr/prov/member_prov.dart';
+import 'package:skrrskrr/prov/play_list.prov.dart';
 import 'package:skrrskrr/screen/subScreen/comn/appbar/custom_appbar.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indicator_item.dart';
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
-import 'package:skrrskrr/screen/subScreen/follow/follow_item.dart';
+import 'package:skrrskrr/screen/subScreen/playlist/playlist_item.dart';
 
-class SearchMemberScreen extends StatefulWidget {
-  const SearchMemberScreen({
+class SearchAlbumScreen extends StatefulWidget {
+  const SearchAlbumScreen({
     super.key,
     required this.searchText,
   });
 
   final String searchText;
 
-
   @override
-  State<SearchMemberScreen> createState() => _SearchMemberScreenState();
+  State<SearchAlbumScreen> createState() => _SearchAlbumScreenState();
 }
 
-class _SearchMemberScreenState extends State<SearchMemberScreen> {
-
-  late MemberProv memberProv;
-  late FollowProv followProv;
+class _SearchAlbumScreenState extends State<SearchAlbumScreen> {
+  late PlayListProv playListProv;
   late ComnLoadProv comnLoadProv;
-  late Future<bool>? _getSearchMemberFuture;
+  late Future<bool>? _getSearchPlayListFuture;
 
   @override
   void initState() {
     super.initState();
-    _getSearchMemberFuture = Provider.of<MemberProv>(context, listen: false).getSearchMember(widget.searchText,0, 20);
+    _getSearchPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getSearchPlayList(widget.searchText,0,20,true);
   }
 
   @override
@@ -44,22 +41,18 @@ class _SearchMemberScreenState extends State<SearchMemberScreen> {
     super.dispose();
   }
 
-  void setFollow(int? followerId, int? followingId) async {
-    await followProv.setFollow(followerId, followingId);
-  }
-
   @override
   Widget build(BuildContext context) {
-    memberProv = Provider.of<MemberProv>(context);
+
+    playListProv = Provider.of<PlayListProv>(context);
     comnLoadProv = Provider.of<ComnLoadProv>(context);
-    followProv = Provider.of<FollowProv>(context);
 
     return Container(
       width: 100.w,
       height: 100.h,
       color: Colors.black,
       child: FutureBuilder<bool>(
-          future: _getSearchMemberFuture, // 비동기 메소드 호출
+          future: _getSearchPlayListFuture, // 비동기 메소드 호출
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CustomProgressIndicatorItem());
@@ -69,13 +62,14 @@ class _SearchMemberScreenState extends State<SearchMemberScreen> {
               return Center(child: Text('데이터가 없습니다.'));
             } else {
 
-              MemberModelList memberModelList = memberProv.searchMemberModelList;
+              PlaylistList albumList = playListProv.albums;
+              List<PlayListInfoModel> searchAlbums = albumList.playList;
 
               return NotificationListener <ScrollNotification>(
                 onNotification: (notification) {
-                  if (memberProv.searchMemberModelList.memberListCnt! > memberModelList.memberList.length) {
+                  if (albumList.searchPlayListTotalCount! > searchAlbums.length) {
                     if (comnLoadProv.shouldLoadMoreData(notification)) {
-                      comnLoadProv.loadMoreData(memberProv, "SearchMember", memberModelList.memberList.length , searchText: widget.searchText);
+                      comnLoadProv.loadMoreData(playListProv, "SearchAlbum", searchAlbums.length , searchText: widget.searchText);
                     }
                   } else {
                     if (comnLoadProv.isApiCall) {
@@ -94,7 +88,7 @@ class _SearchMemberScreenState extends State<SearchMemberScreen> {
                       child: CustomAppbar(
                         fnBackBtnCallBack: () => {GoRouter.of(context).pop()},
                         fnUpdateBtnCallBack:()=>{},
-                        title: "Users",
+                        title: "Albums",
                         isNotification : false,
                         isEditBtn: false,
                         isAddTrackBtn : false,
@@ -102,38 +96,35 @@ class _SearchMemberScreenState extends State<SearchMemberScreen> {
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.only(top : 100.0),
+                      padding: const EdgeInsets.only(top: 100.0),
                       child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
+                        child: Column(
+                          children: [
+                            if (searchAlbums.length == 0)
+                              EmptyMessageItem(paddingHeight: 30.h),
 
-                              if (memberModelList.memberList.length == 0)
-                                EmptyMessageItem(paddingHeight: 30.h),
+                            if (searchAlbums.length != 0) ...[
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    for(int i = 0 ; i < searchAlbums.length; i++)
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15, bottom: 5.0),
+                                        child: PlaylistItem(playList: searchAlbums[i],isAlbum: true),
+                                      ),
 
-                              if (memberModelList.memberList.length != 0) ...[
-
-                                SizedBox(
-                                  height: 8,
+                                  ],
                                 ),
-                                for (int i = 0; i < memberModelList.memberList.length; i++) ...[
-                                  FollowItem(
-                                    filteredFollowItem: memberModelList.memberList[i],
-                                    setFollow: setFollow,
-                                    isFollowingItem: false,
-                                    isSearch: true,
-                                  ),
-                                ],
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
+                              ),
+                              CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)
 
 
-                              ],
                             ],
-                          ),
+                          ],
                         ),
                       ),
                     ),

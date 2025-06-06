@@ -20,7 +20,7 @@ class FcmNotifications{
 
   }
 
-  static void FcmBackgroundDeepLink(BuildContext context) async {
+  static void fcmBackgroundDeepLink(BuildContext context) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? fcmBackgroundMessage = await prefs.getString('fcmBackgroundMessage') ?? "";

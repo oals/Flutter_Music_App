@@ -235,7 +235,7 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                           Map<String, String> shareMap = {
                             "title": widget.track.trackNm!,
                             "info":  "🎵 This track is too good not to share!",
-                            "imagePath": widget.track.trackImagePath!,
+                            "imagePath": widget.track.trackImagePath ?? "",
                             "shareId" : "1",
                             "shareItemId" : widget.track.trackId.toString(),
                             "selectShareNm" : selectShareNm,

@@ -24,13 +24,15 @@ class ComnLoadProv extends ChangeNotifier{
       } else if (apiName == 'LikeTrack') {
         await provider.getLikeTrack(offset,20);
       } else if (apiName == 'MemberPageTrack') {
-        await provider.getMemberPageTrack(memberId,offset,20);
+        await provider.getMemberPageAllTrack(memberId,offset,20);
       } else if (apiName == 'SearchTrack') {
         await provider.getSearchTrack(searchText,offset,20);
       } else if (apiName == 'SearchMember') {
         await provider.getSearchMember(searchText,offset,20);
       } else if (apiName == 'SearchPlayList') {
-        await provider.getSearchPlayList(searchText,offset,20);
+        await provider.getSearchPlayList(searchText,offset,20,false);
+      } else if (apiName == 'SearchAlbum') {
+        await provider.getSearchPlayList(searchText,offset,20,true);
       } else if (apiName == 'MemberPagePlayList') {
         await provider.getMemberPagePlayList(memberId,offset,20);
       } else if (apiName == 'PlayListTrackList') {

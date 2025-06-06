@@ -35,7 +35,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ShareUtils.deepLinkMove();
-      FcmNotifications.FcmBackgroundDeepLink(context);
+      FcmNotifications.fcmBackgroundDeepLink(context);
     });
   }
 
@@ -67,13 +67,14 @@ class _HomeScreenStateState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 10,),
+
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Recommend Track',
+                                'Recommended Track',
                                 style: TextStyle(color: Colors.white,
                                     fontWeight: FontWeight.w800,
                                     fontSize: 20),
@@ -123,7 +124,6 @@ class _HomeScreenStateState extends State<HomeScreen> {
                             ),
                           ),
 
-
                             ],
                           ),
                         ),
@@ -145,7 +145,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
                         ),
 
                         Padding(
-                          padding: const EdgeInsets.only(top: 5, left: 10,),
+                          padding: const EdgeInsets.only(top: 0, left: 10, bottom: 10),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
@@ -166,7 +166,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
                         ),
 
                         Padding(
-                          padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+                          padding: const EdgeInsets.only(top: 0, left: 10, bottom: 10),
                           child: Text(
                             'Recommended Playlist',
                             style: TextStyle(color: Colors.white,
@@ -180,7 +180,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
                         ),
 
                         Padding(
-                          padding: const EdgeInsets.only(top: 5, left: 10,),
+                          padding: const EdgeInsets.only(top: 0, left: 10, bottom: 10),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
@@ -200,70 +200,63 @@ class _HomeScreenStateState extends State<HomeScreen> {
                           height: 20,
                         ),
 
-
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Recently Listened Track',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                // Text(
-                                //   'more',
-                                //   style: TextStyle(
-                                //       fontSize: 14,
-                                //       color: Colors.grey,
-                                //       fontWeight: FontWeight.w700),
-                                // ),
-                              ],
+                        if (trackProv.lastListenTrackList.length != 0)...[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 0, left: 10, bottom: 10),
+                            child: Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Recently Listened Track',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
+                          SizedBox(
+                            height: 10,
+                          ),
 
-                        Padding(
-                          padding: const EdgeInsets.only(left : 8.0),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Wrap(
-                              spacing: 5.0,
-                              runSpacing: 20.0,
-                              alignment: WrapAlignment.spaceBetween,
-                              children: trackProv.lastListenTrackList.asMap().entries.map((entry) {
-                                int i = entry.key;
-                                Track trackItem = entry.value;
-                                return Row(
-                                  children: [
-                                    TrackSquareItem(
-                                      trackItem: trackItem,
-                                      trackItemIdx: i,
-                                      appScreenName: "LastListenTrackList",
-                                      initAudioPlayerTrackListCallBack: () {
+                          Padding(
+                            padding: const EdgeInsets.only(top: 0, left: 10, bottom: 10),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Wrap(
+                                spacing: 5.0,
+                                runSpacing: 20.0,
+                                alignment: WrapAlignment.spaceBetween,
+                                children: trackProv.lastListenTrackList.asMap().entries.map((entry) {
+                                  int i = entry.key;
+                                  Track trackItem = entry.value;
+                                  return Row(
+                                    children: [
+                                      TrackSquareItem(
+                                        trackItem: trackItem,
+                                        trackItemIdx: i,
+                                        appScreenName: "LastListenTrackList",
+                                        initAudioPlayerTrackListCallBack: () {
 
-                                        List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
-                                        trackProv.audioPlayerTrackList = List.from(trackProv.lastListenTrackList);
-                                        trackProv.setAudioPlayerTrackIdList(trackIdList);
-                                        trackProv.notify();
-                                      },
-                                    ),
+                                          List<int> trackIdList = trackProv.lastListenTrackList.map((item) => int.parse(item.trackId.toString())).toList();
+                                          trackProv.audioPlayerTrackList = List.from(trackProv.lastListenTrackList);
+                                          trackProv.setAudioPlayerTrackIdList(trackIdList);
+                                          trackProv.notify();
+                                        },
+                                      ),
 
-                                    SizedBox(width: 3,),
-                                  ],
-                                );
-                              },
-                              ).toList(),
+                                      SizedBox(width: 3,),
+                                    ],
+                                  );
+                                },
+                                ).toList(),
+                              ),
                             ),
                           ),
-                        ),
-
+                        ],
 
                         SizedBox(height: 20,),
                         Container(
@@ -271,7 +264,7 @@ class _HomeScreenStateState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left : 8.0),
+                                padding: const EdgeInsets.only(top: 0, left: 10, bottom: 10),
                                 child: Text(
                                   'Artists you should follow',
                                   style: TextStyle(

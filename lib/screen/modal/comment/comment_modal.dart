@@ -24,7 +24,7 @@ class CommentModal extends StatefulWidget {
 
 class _CommentModalState extends State<CommentModal> {
   late CommentProv commentProv;
-  final TextEditingController textController = TextEditingController();
+  final TextEditingController commentController = TextEditingController();
   String? selectCommentMemberNickName = "";
   int? commentId = null;
   late Future<bool> _getCommentInitFuture;
@@ -49,7 +49,7 @@ class _CommentModalState extends State<CommentModal> {
 
   @override
   void dispose() {
-    textController.dispose();
+    commentController.dispose();
     scrollController.dispose();
     super.dispose();
   }
@@ -107,8 +107,8 @@ class _CommentModalState extends State<CommentModal> {
                                   replyCommentCallBack: () {
                                     selectCommentMemberNickName = '@${comment.memberNickName} ';
                                     commentId = comment.commentId;
-                                    textController.text = '@${comment.memberNickName} ';
-                                    textController.selection = TextSelection.fromPosition(TextPosition(offset: textController.text.length));
+                                    commentController.text = '@${comment.memberNickName} ';
+                                    commentController.selection = TextSelection.fromPosition(TextPosition(offset: commentController.text.length));
                                   },
                                   modalCloseCallBack: () {
                                       widget.callBack();
@@ -128,8 +128,8 @@ class _CommentModalState extends State<CommentModal> {
                                       replyCommentCallBack: () {
                                         selectCommentMemberNickName = '@${childComment.memberNickName} ';
                                         commentId = childComment.commentId;
-                                        textController.text = '@${childComment.memberNickName} ';
-                                        textController.selection = TextSelection.fromPosition(TextPosition(offset: textController.text.length));
+                                        commentController.text = '@${childComment.memberNickName} ';
+                                        commentController.selection = TextSelection.fromPosition(TextPosition(offset: commentController.text.length));
                                       },
                                       modalCloseCallBack: () {
                                         widget.callBack();
@@ -172,10 +172,10 @@ class _CommentModalState extends State<CommentModal> {
                     child: TextField(
                       onChanged: (text) {
                         if (!text.contains(selectCommentMemberNickName.toString())) {
-                          textController.text = "";
+                          commentController.text = "";
                         }
                       },
-                      controller: textController,
+                      controller: commentController,
                       decoration: InputDecoration(
                         hintText: '댓글을 입력하세요...',
                         hintStyle: TextStyle(color: Colors.black),
@@ -187,15 +187,15 @@ class _CommentModalState extends State<CommentModal> {
                   IconButton(
                     icon: Icon(Icons.send, color: Colors.black), // 전송 버튼 아이콘
                     onPressed: () async {
-                      if (textController.text != "") {
+                      if (commentController.text != "") {
 
                         await commentProv.setComment(
                             widget.trackId,
-                            textController.text,
+                            commentController.text,
                             commentId
                         );
 
-                        textController.text = "";
+                        commentController.text = "";
                         selectCommentMemberNickName = "";
                         commentId = null;
 
