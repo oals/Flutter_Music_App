@@ -36,7 +36,7 @@ class _TrackLikeBtnItemState extends State<TrackLikeBtnItem> {
             widget.track.isTrackLikeStatus!
                 ? 'assets/images/heart_red.svg'
                 : 'assets/images/heart.svg' ,
-            width: 27,
+            width: 29,
           ),
         ),
         SizedBox(

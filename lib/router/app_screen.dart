@@ -153,9 +153,6 @@ class _AppScreenState extends State<AppScreen> {
               appProv.currentIndex = index;
               if (index == 0) {
                 context.go('/home/${true}');
-              } else if (index == 1) {
-                appProv.appScreenWidget = FeedScreen();
-                context.go('/feed');
               } else if (index == 2) {
                 appProv.appScreenWidget = SearchScreen();
                 context.go('/search');

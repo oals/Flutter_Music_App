@@ -116,7 +116,7 @@ class _CommentModalState extends State<CommentModal> {
                                   isChildComment: false,
                               ),
                               SizedBox(height: 15),
-                              for(CommentModel childComment in comment.childComments ?? []) ...[
+                              for (CommentModel childComment in comment.childComments ?? [])...[
                                 Padding(
                                   padding: const EdgeInsets.only(left: 30),
                                   child: CommentItem(

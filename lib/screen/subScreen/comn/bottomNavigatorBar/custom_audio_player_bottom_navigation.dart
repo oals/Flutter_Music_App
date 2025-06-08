@@ -25,23 +25,23 @@ class CustomAudioPlayerBottomNavigation extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             TrackLikeBtnItem(track: trackInfoModel),
-            _buildNavItem('assets/images/comment.svg', '', 1,20.w),
-            _buildNavItem('assets/images/dotPoints.svg', '', 2,20.w),
-            _buildNavItem('assets/images/more.svg', '', 3,20.w),
+            _buildNavItem('assets/images/comment.svg', '', 1,27),
+            _buildNavItem('assets/images/dotPoints.svg', '', 2,23),
+            _buildNavItem('assets/images/more.svg', '', 3,23),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(String svgPath, String label, int index, double width) {
+  Widget _buildNavItem(String svgPath, String label, int index, double iconWidth) {
 
     return GestureDetector(
       onTap: () => onTap(index),
       child: Container(
         child: SvgPicture.asset(
             svgPath,
-          width: 23,
+          width: iconWidth,
         ),
       ),
     );

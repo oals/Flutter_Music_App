@@ -58,9 +58,7 @@ class _UploadTrackScreenState extends State<UploadTrackScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CustomProgressIndicatorItem());
             } else if (snapshot.hasError) {
-              return Center(child: Text('오류 발생: ${snapshot.error}'));
-            } else if (!snapshot.hasData) {
-              return Center(child: Text('데이터가 없습니다.'));
+              return Center(child: Text('${snapshot.error}'));
             }
 
             TrackList trackListModel = trackProv.trackListModel;

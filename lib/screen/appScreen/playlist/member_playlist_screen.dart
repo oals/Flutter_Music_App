@@ -62,9 +62,7 @@ class _MemberPlaylistScreenState extends State<MemberPlaylistScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CustomProgressIndicatorItem());
             } else if (snapshot.hasError) {
-              return Center(child: Text('오류 발생: ${snapshot.error}'));
-            } else if (!snapshot.hasData) {
-              return Center(child: Text('데이터가 없습니다.'));
+              return Center(child: Text('${snapshot.error}'));
             } else {
 
               PlaylistList playListList = playListProv.playlists;
@@ -115,7 +113,7 @@ class _MemberPlaylistScreenState extends State<MemberPlaylistScreen> {
                                 height: 8,
                               ),
 
-                              for(int i = 0; i < memberPlayList.length; i++)
+                              for (int i = 0; i < memberPlayList.length; i++)
                                 Padding(
                                   padding: const EdgeInsets.only(left: 15,bottom: 5),
                                   child: PlaylistItem(playList: memberPlayList[i],isAlbum: false),

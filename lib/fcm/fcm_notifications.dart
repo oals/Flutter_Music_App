@@ -75,9 +75,8 @@ class FcmNotifications{
 
         NotificationsModel notificationsModel = NotificationsModel.fromJson(jsonDecode(payload!));
 
-        if (GoRouter.of(navigatorKey.currentContext!).canPop()) {
-          await AppBottomModalRouter().removeOverlay(null);
-        }
+        await AppBottomModalRouter(isChild: true).removeOverlay(null);
+        await AppBottomModalRouter(isChild: false).removeOverlay(null);
 
         Future.delayed(Duration(milliseconds: 700), () async {
           Provider.of<NotificationsProv>(context,listen: false).moveNotification(notificationsModel,navigatorKey.currentContext!);
@@ -85,7 +84,6 @@ class FcmNotifications{
       
       },
     );
-
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
 
@@ -191,14 +189,7 @@ class FcmNotifications{
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('notificationsIsView', true);
         Provider.of<NotificationsProv>(context, listen: false).sharedSaveNotificationsIsView();
-
       }
     });
-
-
   }
-
-
-
-
 }

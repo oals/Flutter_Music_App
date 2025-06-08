@@ -58,7 +58,7 @@ class _LikePlaylistScreenState extends State<LikePlaylistScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CustomProgressIndicatorItem());
             } else if (snapshot.hasError) {
-              return Center(child: Text('오류 발생: ${snapshot.error}'));
+              return Center(child: Text('${snapshot.error}'));
             }
 
             PlaylistList playListList = playListProv.playlists;
@@ -112,7 +112,7 @@ class _LikePlaylistScreenState extends State<LikePlaylistScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
 
-                                for(int i = 0; i < playLists.length; i++)
+                                for (int i = 0; i < playLists.length; i++)
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15,bottom: 5),
                                     child: PlaylistItem(playList: playLists[i],isAlbum: false,),

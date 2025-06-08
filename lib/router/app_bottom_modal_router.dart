@@ -13,17 +13,20 @@ import 'package:skrrskrr/screen/modal/category/select_category_modal.dart';
 
 class AppBottomModalRouter {
 
-  static final List<AppBottomModalRouter> _instances = [];
+  static AppBottomModalRouter? _parentInstance;
+  static AppBottomModalRouter? _childInstance;
 
   OverlayEntry? parentOverlayEntry;
   OverlayEntry? childOverlayEntry;
   bool isClosing = false;
   GlobalKey listenerKey = GlobalKey();
 
-  factory AppBottomModalRouter() {
-    final instance = AppBottomModalRouter._internal();
-    _instances.add(instance);
-    return instance;
+  factory AppBottomModalRouter({bool isChild = false}) {
+    if (isChild) {
+      return _childInstance ??= AppBottomModalRouter._internal();
+    } else {
+      return _parentInstance ??= AppBottomModalRouter._internal();
+    }
   }
 
   AppBottomModalRouter._internal();
@@ -111,7 +114,7 @@ class AppBottomModalRouter {
         );
         },
       2: () async {return CreatePlaylistModal(
-          callBack: (){
+          callBack: () {
             removeOverlay(null);
           });
         },
@@ -230,10 +233,7 @@ class AppBottomModalRouter {
             );
           },
         );
-
         Overlay.of(context).insert(parentOverlayEntry!);
-
-
       }
 
       _showOverlay();

@@ -94,11 +94,11 @@ class _CreatePlaylistModalState extends State<CreatePlaylistModal> {
             ),
             onPressed: () {
               if (titleController.text == "") {
-                ComnUtils.customFlutterToast("플리명을 입력해주세요.");
+                ComnUtils.customFlutterToast("Please enter a title");
                 return;
               }
               playListProv.setNewPlaylist(titleController.text, isAlbumPrivacy,false);
-              ComnUtils.customFlutterToast("생성 되었습니다.");
+              ComnUtils.customFlutterToast("Successfully completed");
               widget.callBack();
             },
             child: Text('save',style: TextStyle(color: Colors.white),),

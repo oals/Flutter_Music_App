@@ -77,9 +77,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CustomProgressIndicatorItem());
             } else if (snapshot.hasError) {
-              return Center(child: Text('오류 발생: ${snapshot.error}'));
-            } else if (!snapshot.hasData) {
-              return Center(child: Text('데이터가 없습니다.'));
+              return Center(child: Text('${snapshot.error}'));
             }
 
             widget.track.updateApiData(trackProv.trackInfoModel);
@@ -210,19 +208,22 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                               SizedBox(
                                                 height: 5,
                                               ),
-                                              Row(
-                                                children: [
-                                                  SvgPicture.asset(
-                                                    'assets/images/play.svg',
-                                                    color: Colors.grey,
-                                                    width: 10,
-                                                    height: 10,
-                                                  ),
-                                                  Text(' ${widget.track.trackPlayCnt} plays ',
-                                                    style: TextStyle(
-                                                        color: Colors.grey),
-                                                  ),
-                                                ],
+                                              Transform.translate(
+                                                offset: Offset(-4, 0),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.play_arrow_sharp,
+                                                      color: Colors.grey,
+                                                      size: 17,
+                                                    ),
+                                                    Text(
+                                                      ' ${widget.track.trackPlayCnt} plays ',
+                                                      style: TextStyle(color: Colors.grey),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                               SizedBox(
                                                 height: 3,
@@ -230,7 +231,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                               Text(
                                                 widget.track.trackCategoryId == null
                                                     ? "null"
-                                                    : ComnUtils.getCategory(widget.track.trackCategoryId!),
+                                                    : "#" + ComnUtils.getCategory(widget.track.trackCategoryId!),
                                                 style: TextStyle(color: Colors.grey),
                                               ),
                                               SizedBox(
@@ -375,9 +376,9 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                                                     widget.track.trackInfo = newTrackInfo;
 
                                                     if (isUpdate) {
-                                                      Fluttertoast.showToast(msg: '변경되었습니다.');
+                                                      ComnUtils.customFlutterToast("Successfully completed");
                                                     } else {
-                                                      Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요');
+                                                      ComnUtils.customFlutterToast("Please try again later");
                                                     }
 
                                                     setState(() {});
@@ -406,7 +407,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                           width: 98.w,
                           padding: EdgeInsets.all(10),
                           child: Text(
-                            widget.track.trackInfo ?? "정보 없음",
+                            widget.track.trackInfo ?? "",
                             style: TextStyle(color: Colors.white),
                             overflow: TextOverflow.ellipsis,
                           ),

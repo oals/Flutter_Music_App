@@ -180,16 +180,14 @@ class _TrackItemState extends State<TrackItem> {
                                     fontWeight: FontWeight.w500
                                 ),
                               ),
-                              SizedBox(width: 3,),
+                              SizedBox(width: 2,),
                               Row(
                                 children: [
-                                  SvgPicture.asset(
-                                    'assets/images/play.svg',
-                                    width: 11,
-                                    height: 11,
+                                  Icon(
+                                    Icons.play_arrow_sharp,
                                     color: Colors.grey,
+                                    size: 17,
                                   ),
-                                  SizedBox(width: 1,),
                                   Text(
                                     '${widget.trackItem.trackPlayCnt}',
                                     style: TextStyle(
@@ -203,13 +201,12 @@ class _TrackItemState extends State<TrackItem> {
                               SizedBox(width: 5,),
                               Row(
                                 children: [
-
                                   SvgPicture.asset(
                                     widget.trackItem.isTrackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
                                     width: 15,
                                     height: 15,
                                   ),
-                                  SizedBox(width: 1,),
+                                  SizedBox(width: 2,),
                                   Text(
                                     '${widget.trackItem.trackLikeCnt}',
                                     style: TextStyle(

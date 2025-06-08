@@ -11,6 +11,7 @@ import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_Indica
 import 'package:skrrskrr/screen/subScreen/comn/loadingBar/custom_progress_indicator.dart';
 import 'package:skrrskrr/screen/subScreen/comn/messages/empty_message_item.dart';
 import 'package:skrrskrr/screen/subScreen/notification/notification_item.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({
@@ -109,7 +110,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       notificationsModel.notificationList[i].notificationIsView = true
                                     },
 
-                                    Fluttertoast.showToast(msg: '전체 읽음 처리 되었습니다..'),
+                                    ComnUtils.customFlutterToast("Successfully completed"),
                                     notificationIsViewExistence = false,
                                     setState(() {}),
                                   },
@@ -130,13 +131,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               SizedBox(width: 5,),
 
                               GestureDetector(
-                                onTap: ()=>{
-
+                                onTap: () => {
                                   if (notificationIsExistence) {
                                     notificationsProv.setDelNotificationIsView(),
                                     notificationsModel.notificationList = [],
                                     notificationIsExistence = false,
                                     notificationIsViewExistence = false,
+                                    ComnUtils.customFlutterToast("Successfully completed"),
                                     setState(() {})
                                   }
                                 },

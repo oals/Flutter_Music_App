@@ -54,9 +54,8 @@ class _SearchScreenState extends State<SearchScreen> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CustomProgressIndicatorItem());
               } else if (snapshot.hasError) {
-                return Center(child: Text('오류 발생: ${snapshot.error}'));
+                return Center(child: Text('${snapshot.error}'));
               }
-
 
               recentListenTrackHistory = searchProv.recentListenTrackHistory;
 

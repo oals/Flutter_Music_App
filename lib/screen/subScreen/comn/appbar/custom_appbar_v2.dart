@@ -63,7 +63,7 @@ class _CustomAppbarV2State extends State<CustomAppbarV2> {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return Center();
       } else if (snapshot.hasError) {
-        return Center(child: Text('오류 발생: ${snapshot.error}'));
+        return Center(child: Text('${snapshot.error}'));
       }  else {
       return Container(
         padding: EdgeInsets.only(top: 40, left: 10, right: 15),

@@ -1,6 +1,7 @@
 import 'package:device_apps/device_apps.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:provider/provider.dart';
@@ -9,13 +10,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/model/playList/play_list_info_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/image_prov.dart';
+import 'package:skrrskrr/router/app_bottom_modal_router.dart';
 import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ShareUtils {
 
-  static String redirectPath = "https://351f-116-32-95-167.ngrok-free.app/redirect";
+  static String redirectPath = "${dotenv.get('API_URL')}/redirect";
 
   static void deepLinkListener() {
     uriLinkStream.listen((Uri? uri) async {
@@ -26,8 +28,13 @@ class ShareUtils {
         print("✅ 앱 실행 되어 있을 시 감지된 딥 링크: ${uri.toString()}");
 
         if (FirebaseAuth.instance.currentUser != null) {
-           await prefs.setString('deepLink', "");
-           handleDeepLink(uri);
+
+          await AppBottomModalRouter(isChild: true).removeOverlay(null);
+          await AppBottomModalRouter(isChild: false).removeOverlay(null);
+
+          await prefs.setString('deepLink', "");
+          handleDeepLink(uri);
+
         } else {
           await prefs.setString('deepLink', uri.toString());
         }
@@ -117,7 +124,7 @@ class ShareUtils {
 
   static Future<void> shareToTwitter(Map<String,String> shareMap) async {
 
-    final twitterUrl = "https://twitter.com/intent/tweet?text=${Uri.encodeComponent("${shareMap['title']}\n${shareMap['info']}\n\n${redirectPath + "/${shareMap['shareId']}/${shareMap['shareItemId']}"}")}";
+    final twitterUrl = "https://twitter.com/intent/tweet?text=${Uri.encodeComponent("${shareMap['title']}\n\n${shareMap['info']}\n\n${redirectPath + "/${shareMap['shareId']}/${shareMap['shareItemId']}"}")}";
 
     if (await canLaunchUrl(Uri.parse(twitterUrl))) {
       await launchUrl(Uri.parse(twitterUrl), mode: LaunchMode.externalApplication);
@@ -128,7 +135,7 @@ class ShareUtils {
 
   static Future<void> shareToLine(Map<String, String> shareMap) async {
 
-    final lineUrl = "line://msg/text/${Uri.encodeComponent("${shareMap['title']}\n${shareMap['info']}\n\n${redirectPath + "/${shareMap['shareId']}/${shareMap['shareItemId']}"} ")}";
+    final lineUrl = "line://msg/text/${Uri.encodeComponent("${shareMap['title']}\n\n${shareMap['info']}\n\n${redirectPath + "/${shareMap['shareId']}/${shareMap['shareItemId']}"} ")}";
 
     if (await canLaunchUrl(Uri.parse(lineUrl))) {
       await launchUrl(Uri.parse(lineUrl), mode: LaunchMode.externalApplication);
@@ -143,7 +150,7 @@ class ShareUtils {
       ShareParams(
         text: "${shareMap['title']}\n\n"
               "${shareMap['info']}\n\n"
-              "[${redirectPath + "/${shareMap['shareId']}/${shareMap['shareItemId']}"}]",
+              "${redirectPath + "/${shareMap['shareId']}/${shareMap['shareItemId']}"}",
       ),
     );
   }

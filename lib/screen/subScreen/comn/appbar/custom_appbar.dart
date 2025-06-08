@@ -97,14 +97,10 @@ class _CustomAppbarState extends State<CustomAppbar> {
                           await GoRouter.of(context).push('/uploadTrack/${loginMemberId}');
                       });
                   },
-                  child:SvgPicture.asset(
-                    'assets/images/upload.svg',
-                    color: Colors.white,
-                    width: 28,
-                    height: 28,
-                  ),
+                  child: Icon(Icons.cloud_upload_outlined,color: Colors.white,size: 27,)
                 ),
               ],
+
 
 
 
@@ -115,7 +111,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CustomProgressIndicatorItem());
                       } else if (snapshot.hasError) {
-                        return Center(child: Text('오류 발생: ${snapshot.error}'));
+                        return Center(child: Text('${snapshot.error}'));
                       } else {
                         return Stack(
                           children: [

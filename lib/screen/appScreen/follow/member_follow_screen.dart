@@ -61,7 +61,6 @@ class _MemberFollowScreenState extends State<MemberFollowScreen>
 
               FollowModel followModel = followProv.followModel;
 
-
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

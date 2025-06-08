@@ -79,7 +79,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CustomProgressIndicatorItem());
             } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
+              return Center(child: Text('${snapshot.error}'));
             }
 
             widget.playList.updateApiData(playListProv.playListInfoModel);
@@ -243,15 +243,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(5),
-                                child: SvgPicture.asset(
-                                  'assets/images/circle.svg',
-                                  color: Colors.grey,
-                                  width: 15,
-                                  height: 10,
-                                ),
-                              ),
+                              SizedBox(width: 7,),
                               Text(
                                 widget.playList.totalPlayTime!,
                                 style: TextStyle(
@@ -292,6 +284,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                           widget.playList.isPlayListLike!
                                               ? 'assets/images/heart_red.svg'
                                               : 'assets/images/heart.svg',
+                                          width: 29,
                                         ),
                                       ),
                                       SizedBox(width: 2),
@@ -305,7 +298,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                       ),
                                     ],
                                   ),
-
                                   SizedBox(
                                     width: 5,
                                   ),
@@ -317,14 +309,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                     info: "🎵 This playlist is too good not to share!",
                                   ),
 
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-
-                                  SvgPicture.asset(
-                                    'assets/images/more.svg',
-                                    color: Colors.white,
-                                  ),
                                 ],
                               ),
                             ],
@@ -337,7 +321,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                 if (snapshot.connectionState == ConnectionState.waiting) {
                                   return Center(child: CustomProgressIndicatorItem());
                                 } else if (snapshot.hasError) {
-                                  return Center(child: Text('Error: ${snapshot.error}'));
+                                  return Center(child: Text('${snapshot.error}'));
                                 } else {
 
                                   trackList = trackProv.trackListFilter("PlayListTrackList");

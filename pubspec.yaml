@@ -55,7 +55,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    - assets/audios/
     - env/
 
 flutter_icons:

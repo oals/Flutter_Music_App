@@ -41,7 +41,7 @@ class _SearchFindSubScreenState extends State<SearchFindSubScreen> {
             child: Center(child: CustomProgressIndicatorItem())
         );
       } else if (snapshot.hasError) {
-        return Center(child: Text('오류 발생: ${snapshot.error}'));
+        return Center(child: Text('${snapshot.error}'));
       }
 
       List<SearchHistoryModel> searchHistoryList = searchProv.searchHistoryModel;

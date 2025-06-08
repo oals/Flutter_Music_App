@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
 import 'package:skrrskrr/prov/auth_prov.dart';
+import 'package:skrrskrr/utils/comn_utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -79,13 +80,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               await appProv.getCategoryList();
                               GoRouter.of(context).push('/home/${false}');
                             } else {
-                              Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요..');
+                              ComnUtils.customFlutterToast("Please try again later");
                             }
                           } else {
-                            Fluttertoast.showToast(msg: '잠시 후 다시 시도해주세요..');
+                            ComnUtils.customFlutterToast("Please try again later");
                         }
                         } else {
-                          Fluttertoast.showToast(msg: '로그인 실패');
+                          ComnUtils.customFlutterToast("Login failed");
                         }
                       },
                       child: Container(

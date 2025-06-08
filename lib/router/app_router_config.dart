@@ -105,18 +105,18 @@ final router = GoRouter(
         },
       ),
 
-      GoRoute(
-        path: '/feed',
-        pageBuilder: (context, state) {
-
-          return commonPageBuilder(
-            context,
-            state,
-            FeedScreen(),
-            isShowAudioPlayer: true,
-          );
-        },
-      ),
+      // GoRoute(
+      //   path: '/feed',
+      //   pageBuilder: (context, state) {
+      //
+      //     return commonPageBuilder(
+      //       context,
+      //       state,
+      //       FeedScreen(),
+      //       isShowAudioPlayer: true,
+      //     );
+      //   },
+      // ),
 
       GoRoute(
         path: '/search',
@@ -344,18 +344,18 @@ final router = GoRouter(
         },
       ),
 
-      GoRoute(
-        path: '/category/:categoryId',
-        pageBuilder: (context, state) {
-
-          return commonPageBuilder(
-            context,
-            state,
-            CategoryScreen(),
-            isShowAudioPlayer: true,
-          );
-        },
-      ),
+      // GoRoute(
+      //   path: '/category/:categoryId',
+      //   pageBuilder: (context, state) {
+      //
+      //     return commonPageBuilder(
+      //       context,
+      //       state,
+      //       CategoryScreen(),
+      //       isShowAudioPlayer: true,
+      //     );
+      //   },
+      // ),
 
     ],
   );

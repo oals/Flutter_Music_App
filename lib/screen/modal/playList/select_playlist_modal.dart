@@ -52,9 +52,7 @@ class _SelectPlaylistModalState extends State<SelectPlaylistModal> {
             // 데이터 로딩 중
             return Center(child: CustomProgressIndicatorItem());
           } else if (snapshot.hasError) {
-            return Center(child: Text('오류 발생: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
-            return Center(child: Text('플레이리스트가 없습니다.'));
+            return Center(child: Text('${snapshot.error}'));
           }
 
           List<PlayListInfoModel> PlayLists = playListProv.playlists.playList;
@@ -87,7 +85,7 @@ class _SelectPlaylistModalState extends State<SelectPlaylistModal> {
                           return GestureDetector(
                             onTap: () {
                               if (playlistItem.isInPlayList == true) {
-                                ComnUtils.customFlutterToast("이미 재생목록에 추가되어 있습니다.");
+                                ComnUtils.customFlutterToast("It has already been added to the playlist.");
                               } else {
                                 widget.callBack(playlistItem.playListId);
                               }

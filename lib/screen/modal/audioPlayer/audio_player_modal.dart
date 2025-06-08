@@ -50,7 +50,7 @@ class _AudioPlayerModalState extends State<AudioPlayerModal> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center();
               } else if (snapshot.hasError) {
-                return Center(child: Text('오류 발생: ${snapshot.error}'));
+                return Center(child: Text('${snapshot.error}'));
               } else {
 
                 if (!isInit) {

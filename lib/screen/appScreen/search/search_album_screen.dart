@@ -57,9 +57,7 @@ class _SearchAlbumScreenState extends State<SearchAlbumScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CustomProgressIndicatorItem());
             } else if (snapshot.hasError) {
-              return Center(child: Text('오류 발생: ${snapshot.error}'));
-            } else if (!snapshot.hasData) {
-              return Center(child: Text('데이터가 없습니다.'));
+              return Center(child: Text('${snapshot.error}'));
             } else {
 
               PlaylistList albumList = playListProv.albums;
@@ -111,7 +109,7 @@ class _SearchAlbumScreenState extends State<SearchAlbumScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    for(int i = 0 ; i < searchAlbums.length; i++)
+                                    for (int i = 0 ; i < searchAlbums.length; i++)
                                       Padding(
                                         padding: const EdgeInsets.only(left: 15, bottom: 5.0),
                                         child: PlaylistItem(playList: searchAlbums[i],isAlbum: true),

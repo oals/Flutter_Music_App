@@ -107,6 +107,7 @@ class _MemberPageScreenState extends State<MemberPageScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CustomProgressIndicatorItem());
             } else {
+
               MemberModel memberModel = memberProv.model;
               isAuth = ComnUtils.getIsAuth(memberModel.memberId.toString(), loginMemberId!);
 

@@ -201,7 +201,6 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  print('해당 곡 정보 페이지로 이동');
                                                   playerProv.playerModel.fullScreen = false;
                                                   appProv.isFullScreenFunc(false);
                                                   GoRouter.of(context).push('/trackInfo',
@@ -214,7 +213,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                                 child: SizedBox(
                                                   width: 70.w,
                                                   child: Text(
-                                                    widget.audioPlayerTrackItem.trackNm ?? "잠시 후 다시 시도해주세요.",
+                                                    widget.audioPlayerTrackItem.trackNm ?? "null",
                                                     style: TextStyle(
                                                       fontSize: 16,
                                                       fontWeight: FontWeight.w600,
@@ -233,7 +232,7 @@ class _AudioPlayerItemState extends State<AudioPlayerItem> {
                                                   GoRouter.of(context).push('/memberPage/${widget.audioPlayerTrackItem.memberId}');
                                                 },
                                                 child: Text(
-                                                  widget.audioPlayerTrackItem.memberNickName ?? "잠시 후 다시 시도해주세요.",
+                                                  widget.audioPlayerTrackItem.memberNickName ?? "null",
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight

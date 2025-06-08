@@ -87,10 +87,10 @@ class _SelectShareModalState extends State<SelectShareModal> {
                           padding: const EdgeInsets.all(8.0),
                           child: Stack(
                             children: [
-                              SvgPicture.asset(
+                              Image.asset(
                                 width: 12.w,
                                 height: 6.h,
-                                'assets/images/kakao_talk.svg',
+                                'assets/images/kakao_talk.png',
                               ),
 
                               Positioned(

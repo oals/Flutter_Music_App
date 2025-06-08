@@ -246,33 +246,28 @@ class _UploadModalState extends State<UploadModal> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                for(int i = 0; i < uploadTrackList.length; i++)...[
+                                for (int i = 0; i < uploadTrackList.length; i++)...[
                                   GestureDetector(
                                     onTap: () {
-
                                       if (uploadTrackList[i].uploadFile != null) {
                                         if (_imageBytes == null) {
                                           _pickImage();
                                         } else {
                                           selectedFile(i);
                                         }
-
                                       } else {
                                         selectedFile(i);
                                         Upload addUpload = new Upload();
                                         addUpload.uploadFileNm ='';
                                         uploadTrackList.add(addUpload);
                                       }
-
-
-
                                     },
                                     child: Container(
                                       width: 17.w,
-                                      height: 11.h,
+                                      height: uploadTrackList[0].uploadFileNm! != '' ? 12.5.h : 11.h,
                                       padding: EdgeInsets.only(left: 7),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           uploadTrackList[i].uploadFile!= null && _imageBytes != null // 선택된 이미지가 있을 경우
                                               ? ClipRRect(
@@ -280,16 +275,26 @@ class _UploadModalState extends State<UploadModal> {
                                             child: Image.memory(
                                               _imageBytes!, // 선택된 이미지 표시
                                               width: 15.w,
+                                              height: 9.h,
                                               fit: BoxFit.cover,
                                             ),
                                           ) : uploadTrackList[i].uploadFile != null ?
-                                          Padding(
-                                            padding: const EdgeInsets.all(17.0),
-                                            child: SvgPicture.asset(
-                                              'assets/images/upload_image.svg',
-                                              color: Color(0xffffffff),
-                                              width: 15.w,
-                                              height: 3.h,
+                                          Container(
+                                            width: 15.w,
+                                            height: 9.h,
+                                            decoration: BoxDecoration(
+                                                color: Color(0x33ffffff),
+                                                borderRadius: BorderRadius.circular(10)
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                'Select Image',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12
+                                                ),
+                                                  textAlign : TextAlign.center,
+                                              ),
                                             ),
                                           ) :
                                           Container(
@@ -311,7 +316,7 @@ class _UploadModalState extends State<UploadModal> {
                                               uploadTrackList[i].uploadFileNm!,
                                               style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 16,
+                                                  fontSize: 15,
                                                   fontWeight: FontWeight.w700
                                               ),
                                               overflow: TextOverflow.ellipsis,
@@ -322,7 +327,7 @@ class _UploadModalState extends State<UploadModal> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 5,),
+
                                 ],
 
                               ],
@@ -334,7 +339,7 @@ class _UploadModalState extends State<UploadModal> {
                   ],
 
                   Padding(
-                    padding: const EdgeInsets.only(top: 15, bottom: 8),
+                    padding: const EdgeInsets.only(bottom: 8),
                     child: UploadTextFieldItem(
                       label: "Category",
                       maxLines: 1,
@@ -343,9 +348,10 @@ class _UploadModalState extends State<UploadModal> {
                       isReadOnly : true,
                       isOnTap : true,
                       callBack : () async {
-                        await AppBottomModalRouter().fnModalRouter(
+                        await AppBottomModalRouter(isChild: true).fnModalRouter(
                             categoryId: categoryId - 1,
-                            context,6,
+                            context,
+                            6,
                             callBack:(int selectedCategoryId) {
 
                               categoryId = selectedCategoryId + 1;
@@ -424,17 +430,17 @@ class _UploadModalState extends State<UploadModal> {
                     onTap: () async {
 
                       if (uploadTrackList[0].uploadFileNm == "") {
-                        ComnUtils.customFlutterToast("음원을 선택해주세요.");
+                        ComnUtils.customFlutterToast("Please select a file");
                         return;
                       }
 
                       if (categoryId == 0) {
-                        ComnUtils.customFlutterToast("카테고리를 선택해주세요.");
+                        ComnUtils.customFlutterToast("Please select a category");
                         return;
                       }
 
                       if (titleController.text.length == 0) {
-                        ComnUtils.customFlutterToast("제목을 입력해주세요.");
+                        ComnUtils.customFlutterToast("Please enter a title");
                         return;
                       }
 
@@ -450,7 +456,7 @@ class _UploadModalState extends State<UploadModal> {
                         await trackProv.uploadTrack(uploadTrackList,title!,info!,isPrivacy,categoryId);
                       }
 
-                      ComnUtils.customFlutterToast("업로드 되었습니다.");
+                      ComnUtils.customFlutterToast("Successfully completed");
 
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         widget.callBack();

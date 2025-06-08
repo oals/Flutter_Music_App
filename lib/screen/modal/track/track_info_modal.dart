@@ -105,25 +105,24 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                   Text(widget.track.memberNickName ?? "",style: TextStyle(color: Colors.grey),),
                   SizedBox(height: 3,),
                   Text(
-                    ComnUtils.getCategory(widget.track.trackCategoryId!),
+                    "#" + ComnUtils.getCategory(widget.track.trackCategoryId!),
                     style: TextStyle(
                         color: Colors.grey
                     ),
                   ),
                   SizedBox(height: 3,),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        width: 13,
-                        height: 13,
-                        'assets/images/play.svg',
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 4,
-                      ),
-                      Text(widget.track.trackPlayCnt.toString(),style: TextStyle(color: Colors.white),),
-                    ],
+                  Transform.translate(
+                    offset: Offset(-4, 0),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.play_arrow_sharp,
+                          color: Colors.grey,
+                          size: 21.4,
+                        ),
+                        Text(widget.track.trackPlayCnt.toString(),style: TextStyle(color: Colors.white),),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 3,),
                   Row(
@@ -172,6 +171,7 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                     widget.track.isTrackLikeStatus!
                         ? 'assets/images/heart_red.svg'
                         : 'assets/images/heart.svg',
+                    width: 24,
                   ),
                   SizedBox(width: 5,),
                   Text(
@@ -188,7 +188,7 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
             onTap: () async {
               print('플리에 추가 버튼 클릭');
 
-              await AppBottomModalRouter().fnModalRouter(
+              await AppBottomModalRouter(isChild: true).fnModalRouter(
                 context,
                 8,
                 trackId: widget.track.trackId,
@@ -206,6 +206,7 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                 children: [
                   Icon(Icons.playlist_add,
                     color: Colors.white,
+                    size: 27,
                   ),
                   SizedBox(width: 5,),
                   Text(
@@ -227,7 +228,7 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                 GestureDetector(
                   onTap:() async {
 
-                    await AppBottomModalRouter().fnModalRouter(
+                    await AppBottomModalRouter(isChild: true).fnModalRouter(
                         context,
                         9,
                         callBack: (String selectShareNm) async {
@@ -236,7 +237,7 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                             "title": widget.track.trackNm!,
                             "info":  "🎵 This track is too good not to share!",
                             "imagePath": widget.track.trackImagePath ?? "",
-                            "shareId" : "1",
+                            "shareId" : "2",
                             "shareItemId" : widget.track.trackId.toString(),
                             "selectShareNm" : selectShareNm,
                           };
@@ -247,12 +248,7 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                   },
                   child: Row(
                     children: [
-                      SvgPicture.asset(
-                        'assets/images/share.svg',
-                        width: 26,
-                        height: 26,
-                        color: Colors.white,
-                      ),
+                      Icon(Icons.share_rounded,color: Colors.white,size: 26,),
 
                       SizedBox(width: 5,),
                       Text(
