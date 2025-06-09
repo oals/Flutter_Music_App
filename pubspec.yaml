@@ -60,12 +60,13 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/intro.png"
-  adaptive_icon_foreground: "assets/images/intro.png"
+  image_path: assets/images/appIcon.png
+  adaptive_icon_foreground: assets/images/appIcon_foreground.png
+  adaptive_icon_background: "#000000"
   remove_alpha_ios: true
 
 flutter_native_splash:
   color: "#000000"
-  image: assets/images/intro.png
+  image: assets/images/appIcon.png
   android_12:
-    image: assets/images/intro.png
+    image: assets/images/appIcon.png

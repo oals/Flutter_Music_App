@@ -21,7 +21,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
-  int? searchId = 0;
+  int? searchId = 1;
   late List<String> recentListenTrackHistory;
   late Future<bool> _getSearchInitFuture;
 
@@ -101,27 +101,25 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         prefixIcon: IconButton(
                           icon: Icon(
-                            searchId != 0 ? Icons.arrow_back : Icons.search,
+                            searchId != 1 ? Icons.arrow_back : Icons.search,
                             color: Colors.white,
                           ),
-                          onPressed: () => {
-                            _searchController.text = "",
+                          onPressed: () {
+                            _searchController.text = "";
 
-                            if (searchId != 0) {
-                              FocusScope.of(context).requestFocus(_focusNode),
+                            if (searchId != 1) {
+                              FocusScope.of(context).requestFocus(_focusNode);
                               if (searchId == 2) {
-                                searchId = 1,
-                              } else {
-                                searchId = 0,
-                                _focusNode.unfocus(),
-                              },
-                              setState(() {})
+                                searchId = 1;
+                              }
+
+                              setState(() {});
                             }
                           },
                         ),
 
                         // 오른쪽 끝에 X 버튼 추가
-                        suffixIcon: searchId != 0 && _searchController.text.isNotEmpty
+                        suffixIcon: searchId != 1 && _searchController.text.isNotEmpty
                             ? IconButton(
                           icon: const Icon(
                               Icons.close,
@@ -130,7 +128,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           onPressed: () {
                             _searchController.clear(); // 텍스트 필드 비우기
-                            setState(() {});
+                            // setState(() {});
                           },
                         ) : null, // 텍스트가 비어 있으면 X 버튼을 안 보이게 함
                       ),
