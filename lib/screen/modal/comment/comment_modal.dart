@@ -143,7 +143,7 @@ class _CommentModalState extends State<CommentModal> {
 
                             if (commentModel.isEmpty) ...[
                               Text(
-                                '댓글을 남겨보세요.',
+                                'Empty',
                                 style: TextStyle(
                                     color: Colors.grey,
                                 ),

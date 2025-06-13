@@ -93,8 +93,9 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         Container(
-                          height: 68.h,
+                          height: 66.h,
                           child: Stack(
                             children: [
                               GestureDetector(
@@ -402,6 +403,7 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                             ],
                           ),
                         ),
+
                         /// 곡 정보
                         Container(
                           width: 98.w,
@@ -409,7 +411,6 @@ class _TrackInfoScreenState extends State<TrackInfoScreen> {
                           child: Text(
                             widget.track.trackInfo ?? "",
                             style: TextStyle(color: Colors.white),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
 

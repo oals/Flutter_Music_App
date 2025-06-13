@@ -97,6 +97,8 @@ class TrackProv extends ChangeNotifier {
             if (item.trackListCd.length == 1) {
               if (!item.trackListCd.contains(trackCd)) {
                 trackListModel.trackList.remove(item);
+              } else {
+                item.trackListCd.removeAt(duplicateIndex);
               }
             } else {
               item.trackListCd.removeAt(duplicateIndex);

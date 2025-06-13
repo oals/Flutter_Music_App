@@ -165,7 +165,7 @@ class AppBottomModalRouter {
       } else if (modalIndex == 7 ) {
         maxSize = 0.93;
       } else if (modalIndex == 9) {
-        maxSize = 0.18;
+        maxSize = 0.20;
       }
 
       void _showOverlay() async {

@@ -88,6 +88,7 @@ class _SelectPlaylistModalState extends State<SelectPlaylistModal> {
                                 ComnUtils.customFlutterToast("It has already been added to the playlist.");
                               } else {
                                 widget.callBack(playlistItem.playListId);
+                                ComnUtils.customFlutterToast("Successfully completed");
                               }
 
                             },

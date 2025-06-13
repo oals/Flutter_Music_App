@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
+import 'package:skrrskrr/main.dart';
+import 'package:skrrskrr/model/notifications/notifications_model.dart';
 import 'package:skrrskrr/model/track/track.dart';
 import 'package:skrrskrr/prov/member_prov.dart';
 import 'package:skrrskrr/prov/play_list.prov.dart';
@@ -35,7 +41,20 @@ class _HomeScreenStateState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ShareUtils.deepLinkMove();
-      FcmNotifications.fcmBackgroundDeepLink(context);
+
+      final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool firstLoad = prefs.getBool('isFirstLoad') ?? false;
+
+      if (firstLoad && notificationAppLaunchDetails!.didNotificationLaunchApp) {
+        String? payload = notificationAppLaunchDetails!.payload;
+        NotificationsModel notificationsModel = NotificationsModel.fromJson(jsonDecode(payload ?? ""));
+        FcmNotifications.fcmBackgroundDeepLink(context, notificationsModel);
+      }
+
+      if (firstLoad) {
+        await prefs.setBool('isFirstLoad', false);
+      }
     });
   }
 
@@ -285,10 +304,11 @@ class _HomeScreenStateState extends State<HomeScreen> {
                         ),
 
 
-                        SizedBox(height: 120,),
+                        Container(height: 10.h,),
                       ],
                     ),
                   ),
+
                 ],
               );
             }

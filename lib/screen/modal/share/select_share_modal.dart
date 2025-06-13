@@ -45,7 +45,7 @@ class _SelectShareModalState extends State<SelectShareModal> {
         ),
       ),
       width: 100.w,
-      height: 18.h,
+      height: 20.h,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,

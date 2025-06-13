@@ -39,11 +39,11 @@ class _SearchResultSubScreenState extends State<SearchResultSubScreen> {
   late MemberProv memberProv;
   late SearchProv searchProv;
   late ComnLoadProv comnLoadProv;
-  late Future<bool>? _getSearchTrackFuture;
-  late Future<bool>? _getSearchPlayListFuture;
-  late Future<bool>? _getSearchAlbumFuture;
-  late Future<bool>? _getSearchMemberFuture;
-
+  late Future<bool> _getSearchTrackFuture;
+  late Future<bool> _getSearchPlayListFuture;
+  late Future<bool> _getSearchAlbumFuture;
+  late Future<bool> _getSearchMemberFuture;
+  late Future<List<bool>> _cachedFuture;
   List<Track> searchTrackList = [];
   List<PlayListInfoModel> searchPlayList = [];
   List<PlayListInfoModel> searchAlbum = [];
@@ -52,10 +52,18 @@ class _SearchResultSubScreenState extends State<SearchResultSubScreen> {
   @override
   void initState() {
     super.initState();
+
     _getSearchTrackFuture = Provider.of<TrackProv>(context, listen: false).getSearchTrack(widget.searchText,0,20);
     _getSearchPlayListFuture = Provider.of<PlayListProv>(context, listen: false).getSearchPlayList(widget.searchText,0, 8, false);
     _getSearchAlbumFuture = Provider.of<PlayListProv>(context, listen: false).getSearchPlayList(widget.searchText,0, 8, true);
     _getSearchMemberFuture = Provider.of<MemberProv>(context, listen: false).getSearchMember(widget.searchText,0, 6);
+
+    _cachedFuture = Future.wait([
+      _getSearchPlayListFuture,
+      _getSearchMemberFuture,
+      _getSearchTrackFuture,
+      _getSearchAlbumFuture,
+    ]);
   }
 
   @override
@@ -98,12 +106,7 @@ class _SearchResultSubScreenState extends State<SearchResultSubScreen> {
             children: [
 
               FutureBuilder<List<bool>>(
-                  future: Future.wait([
-                    _getSearchMemberFuture as Future<bool>,
-                    _getSearchPlayListFuture as Future<bool>,
-                    _getSearchAlbumFuture as Future<bool>,
-                    _getSearchTrackFuture as Future<bool>,
-                  ]),
+                  future: _cachedFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Container(padding: EdgeInsets.only(top: 30.h), child: CustomProgressIndicatorItem());
@@ -319,18 +322,13 @@ class _SearchResultSubScreenState extends State<SearchResultSubScreen> {
                                 },),
                             ],
                           ],
-                          CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall),
-
+                          Center(child: CustomProgressIndicator(isApiCall: comnLoadProv.isApiCall)),
 
                         ],
                       );
                     }
                 }
               ),
-
-
-
-
             ],
           ),
         ),

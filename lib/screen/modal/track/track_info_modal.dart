@@ -88,61 +88,65 @@ class _TrackInfoModalState extends State<TrackInfoModal> {
                 ),
               ),
               SizedBox(width: 15,),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // SizedBox(height: 13,),
-                  Text(
-                    widget.track.trackNm!,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600
+              Container(
+                width: 48.w,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.track.trackNm!,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  SizedBox(height: 3,),
-                  Text(widget.track.memberNickName ?? "",style: TextStyle(color: Colors.grey),),
-                  SizedBox(height: 3,),
-                  Text(
-                    "#" + ComnUtils.getCategory(widget.track.trackCategoryId!),
-                    style: TextStyle(
-                        color: Colors.grey
+
+                    SizedBox(height: 3,),
+                    Text(widget.track.memberNickName ?? "",style: TextStyle(color: Colors.grey),),
+                    SizedBox(height: 3,),
+                    Text(
+                      "#" + ComnUtils.getCategory(widget.track.trackCategoryId!),
+                      style: TextStyle(
+                          color: Colors.grey
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 3,),
-                  Transform.translate(
-                    offset: Offset(-4, 0),
-                    child: Row(
+                    SizedBox(height: 3,),
+                    Transform.translate(
+                      offset: Offset(-4, 0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.play_arrow_sharp,
+                            color: Colors.grey,
+                            size: 21.4,
+                          ),
+                          Text(widget.track.trackPlayCnt.toString(),style: TextStyle(color: Colors.white),),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 3,),
+                    Row(
                       children: [
-                        Icon(
-                          Icons.play_arrow_sharp,
-                          color: Colors.grey,
-                          size: 21.4,
+                        SvgPicture.asset(
+                          width: 16,
+                          height: 16,
+                          widget.track.isTrackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
                         ),
-                        Text(widget.track.trackPlayCnt.toString(),style: TextStyle(color: Colors.white),),
+                        SizedBox(
+                          width: 2,
+                        ),
+                        Text(widget.track.trackLikeCnt.toString(),style: TextStyle(color: Colors.white),),
                       ],
                     ),
-                  ),
-                  SizedBox(height: 3,),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        width: 16,
-                        height: 16,
-                        widget.track.isTrackLikeStatus! ? 'assets/images/heart_red.svg' : 'assets/images/heart.svg',
-                      ),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      Text(widget.track.trackLikeCnt.toString(),style: TextStyle(color: Colors.white),),
-                    ],
-                  ),
 
-                  SizedBox(height: 3,),
-                  Text(widget.track.trackTime.toString(),style: TextStyle(color: Colors.grey),),
-                  SizedBox(height: 3,),
-                ],
+                    SizedBox(height: 3,),
+                    Text(widget.track.trackTime.toString(),style: TextStyle(color: Colors.grey),),
+                    SizedBox(height: 3,),
+                  ],
+                ),
               ),
             ],
           ),

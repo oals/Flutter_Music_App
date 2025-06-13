@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:skrrskrr/main.dart';
 import 'package:skrrskrr/model/notifications/notifications_model.dart';
 import 'package:skrrskrr/prov/notifications_prov.dart';
 import 'package:skrrskrr/router/app_bottom_modal_router.dart';
@@ -20,20 +21,12 @@ class FcmNotifications{
 
   }
 
-  static void fcmBackgroundDeepLink(BuildContext context) async {
+  static void fcmBackgroundDeepLink(BuildContext context, NotificationsModel notificationsModel) async {
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? fcmBackgroundMessage = await prefs.getString('fcmBackgroundMessage') ?? "";
+    Future.delayed(Duration(milliseconds: 700), () async {
+      Provider.of<NotificationsProv>(context,listen: false).moveNotification(notificationsModel,context);
+    });
 
-    if (fcmBackgroundMessage != "") {
-      NotificationsModel notificationsModel = NotificationsModel.fromJson(jsonDecode(fcmBackgroundMessage.toString()));
-
-      Future.delayed(Duration(milliseconds: 700), () async {
-        Provider.of<NotificationsProv>(context,listen: false).moveNotification(notificationsModel,context);
-      });
-
-      await prefs.remove('fcmBackgroundMessage');
-    }
   }
 
   /**
@@ -48,8 +41,6 @@ class FcmNotifications{
     /** fcm에서 받은 메시지를 화면에 표시하기 위함
      * 이 객체를 통해 알림 채널을 설정, 초기화, 알림 표시 등 작업
      * */
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
     await flutterLocalNotificationsPlugin
           /** Android 플랫폼에 특화된 기능을 사용할 수 있게 해줌 */
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
@@ -61,11 +52,9 @@ class FcmNotifications{
             importance: Importance.max    /** 알림 채널 중요도  */
         ));
 
-
     /**로컬 알림을 초기화 하는 메서드
      *  알림을 표시하기 전에 꼭 초기화를 해야함
      * */
-
     await flutterLocalNotificationsPlugin.initialize(
       const InitializationSettings(
         android: AndroidInitializationSettings("@mipmap/ic_launcher"), /** 알림에 표시 될 아이콘 */
@@ -85,15 +74,6 @@ class FcmNotifications{
       },
     );
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-
-      print("🔔 백그라운드/종료 후 ${message.notification!.body}");
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('fcmBackgroundMessage', message.notification!.body.toString() );
-
-    });
-
     /** 포그라운드 살태일 때 푸시 알림을 어떻게 표시할지 설정*/
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true, /** 알림을 화면에 띄울 지*/
@@ -107,6 +87,7 @@ class FcmNotifications{
     FirebaseMessaging.onBackgroundMessage(
         _firebaseMessagingBackgroundHandler /** 메서드 전달 */
     );
+
   }
 
   /** 백그라운드 이벤트 리스너*/
@@ -117,28 +98,26 @@ class FcmNotifications{
 
       print("백그라운드 메시지 처리 중...");
 
-      // 메시지 데이터 확인
-      if (message.data.isNotEmpty) {
-        print("메시지 데이터: ${message.data}");
-      }
+      String? rawBody = notification?.body.toString(); // JSON 형식의 body 데이터
+      Map<String, dynamic> bodyMap = jsonDecode(rawBody ?? ""); // JSON을 Map으로 변환
 
       // 로컬 알림 생성 (flutter_local_notifications 활용)
-      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
       await flutterLocalNotificationsPlugin.show(
-        notification.hashCode, // 알림의 고유 id
-        notification?.title,
-        notification?.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            'high_importance_channel',
-            'high_importance_notification',
-            importance: Importance.max,
-            color: Colors.black54, // 알림 아이콘 색상 설정 (배경 색상은 따로 스타일로 설정)
-            category: 'category_alert',
+          notification.hashCode, // 알림의 고유 id
+          notification?.title,
+          bodyMap["body"],
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel',
+              'high_importance_notification',
+              importance: Importance.max,
+              color: Colors.black54, // 알림 아이콘 색상 설정 (배경 색상은 따로 스타일로 설정)
+              category: 'category_alert',
+            ),
           ),
-        ),
-      );
+          payload: rawBody
+        );
 
 
     } catch (e) {
@@ -162,7 +141,6 @@ class FcmNotifications{
          * fcm에서 수신한 푸시 메시지를 화면에 표시하는 데 사용됨
          * 앱 전체에서 한번만 선언되도록 변경해야함
          * */
-        final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
         String rawBody = notification.body.toString(); // JSON 형식의 body 데이터
         Map<String, dynamic> bodyMap = jsonDecode(rawBody); // JSON을 Map으로 변환

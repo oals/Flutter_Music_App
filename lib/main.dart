@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skrrskrr/fcm/fcm_notifications.dart';
 import 'package:skrrskrr/fcm/firebase_options.dart';
 import 'package:skrrskrr/prov/app_prov.dart';
@@ -23,11 +25,14 @@ import 'package:skrrskrr/router/app_router_config.dart';
 import 'package:skrrskrr/utils/permissions.dart';
 import 'package:skrrskrr/utils/share_utils.dart';
 
-void main() async {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "env/config.env");
   KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_NATIVE_APP_KEY'));
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('isFirstLoad', true);
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions,
@@ -77,9 +82,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   @override
-  Widget build(BuildContext context) {
-    FcmNotifications.initializeNotification(context);  // Firebase 알림 초기화
+  void initState() {
+    super.initState();
+    FcmNotifications.initializeNotification(context);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return ResponsiveSizer(  // 화면 크기 자동 조정
       builder: (context, orientation, screenType) {
         return MaterialApp.router(
